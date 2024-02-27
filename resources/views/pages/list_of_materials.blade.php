@@ -18,7 +18,7 @@
                             <table id="example" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Material Name</th>
+                                        <th>Material Name123</th>
                                         <th>Material Category</th>
                                         <th>Unit</th>
                                         <th>Price</th>
