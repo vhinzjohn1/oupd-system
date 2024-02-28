@@ -16,32 +16,32 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="material_name">Material Name</label>
-                                <input type="text" class="form-control" id="material_name" name="material_name"
-                                    required>
+                                <label for="add_material_name">Material Name</label>
+                                <input type="text" class="form-control" id="add_material_name"
+                                    name="add_material_name" required>
                             </div>
                             <div class="form-group">
-                                <label for="material_category">Material Category</label>
-                                <input type="text" class="form-control" id="material_category"
-                                    name="material_category" required>
+                                <label for="add_material_category">Material Category</label>
+                                <input type="text" class="form-control" id="add_material_category"
+                                    name="add_material_category" required>
                             </div>
                             <div class="form-group">
-                                <label for="unit">Unit</label>
-                                <input type="text" class="form-control" id="unit" name="unit" required>
+                                <label for="add_unit">Unit</label>
+                                <input type="text" class="form-control" id="add_unit" name="add_unit" required>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="price">Price</label>
-                                <input type="number" class="form-control" id="price" name="price" required>
+                                <label for="add_price">Price</label>
+                                <input type="number" class="form-control" id="add_price" name="add_price" required>
                             </div>
                             <div class="form-group">
-                                <label for="quarter">Quarter</label>
-                                <input type="text" class="form-control" id="quarter" name="quarter" required>
+                                <label for="add_quarter">Quarter</label>
+                                <input type="text" class="form-control" id="add_quarter" name="add_quarter" required>
                             </div>
                             <div class="form-group">
-                                <label for="year">Year</label>
-                                <input type="text" class="form-control" id="year" name="year" required>
+                                <label for="add_year">Year</label>
+                                <input type="text" class="form-control" id="add_year" name="add_year" required>
                             </div>
                         </div>
                     </div>

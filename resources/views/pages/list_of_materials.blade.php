@@ -43,6 +43,7 @@
                                                     data-target="#editMaterialModal{{ $material->material_id }}">
                                                     Edit
                                                 </button>
+                                                @include('modals.edit_materials_modal')
                                                 <form action="" method="POST" style="display: inline;">
                                                     @csrf
                                                     @method('DELETE')
@@ -50,7 +51,6 @@
                                                 </form>
                                             </td>
                                         </tr>
-                                        @include('modals.edit_materials_modal')
                                     @endforeach
                                 </tbody>
                             </table>
@@ -75,12 +75,14 @@
                 e.preventDefault();
 
                 // Get form data
-                var materialName = $('#material_name').val();
-                var materialCategory = $('#material_category').val();
-                var unit = $('#unit').val();
-                var price = $('#price').val();
-                var quarter = $('#quarter').val();
-                var year = $('#year').val();
+                var materialName = $('#add_material_name').val();
+                var materialCategory = $('#add_material_category').val();
+                var unit = $('#add_unit').val();
+                var price = $('#add_price').val();
+                var quarter = $('#add_quarter').val();
+                var year = $('#add_year').val();
+
+
 
                 // Make AJAX request to add new material
                 $.ajax({
@@ -122,6 +124,10 @@
                     }
                 });
             });
+
+
+            // edit ajax form
+
         });
     </script>
 @endsection

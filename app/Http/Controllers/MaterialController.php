@@ -11,8 +11,6 @@ use App\Models\Quarter;
 use App\Models\Year;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Process;
-use Illuminate\Http\JsonResponse;
 
 class MaterialController extends Controller
 {
@@ -45,13 +43,9 @@ class MaterialController extends Controller
             DB::beginTransaction();
 
 
-            // // Before creating records, log or dump the validated data
-            // dd($validatedData);
-            // // or
-            // Log::info($validatedData);
 
             // Retrieve or create material category
-            $materialCategory = MaterialCategory::Create(['material_category_name' => $validatedData['material_category']]);
+            $materialCategory = MaterialCategory::FirstorCreate(['material_category_name' => $validatedData['material_category']]);
 
             // Retrieve or create unit
             $unit = Unit::Create(['unit_name' => $validatedData['unit']]);
@@ -72,11 +66,10 @@ class MaterialController extends Controller
 
             // Create a new material instance and assign IDs
             $material = new Material();
-
-            $material->material_name = $materialCategory->material_category_name;
+            $material->material_name = $validatedData['material_name'];
             $material->material_category_id = $materialCategory->id;
             $material->unit_id = $unit->id;
-            $material->price_id = $price->id;
+            $material->price_id = $price->price_id;
 
             // Save the material
             $material->save();
@@ -95,6 +88,69 @@ class MaterialController extends Controller
 
             // Return error response
             return response()->json(['success' => false, 'message' => 'Failed to add material. Please check the logs for details.']);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validate incoming request data
+        $validatedData = $request->validate([
+            'edit_material_name' => 'required|string',
+            'edit_material_category_name' => 'required|string',
+            'edit_unit' => 'required|string',
+            'edit_price' => 'required|numeric',
+            'edit_quarter' => 'required|string',
+            'edit_year' => 'required|string',
+        ]);
+
+        try {
+            // Start a database transaction
+            DB::beginTransaction();
+
+            // Retrieve the material to be updated
+            $material = Material::findOrFail($id);
+
+            // Retrieve material category
+            $materialCategory = MaterialCategory::where('material_category_name', $validatedData['edit_material_category_name'])->firstOrFail();
+
+            // Retrieve unit
+            $unit = Unit::where('unit_name', $validatedData['edit_unit'])->firstOrFail();
+
+            // Retrieve quarter
+            $quarter = Quarter::where('quarter', $validatedData['edit_quarter'])->firstOrFail();
+
+            // Retrieve year
+            $year = Year::where('year', $validatedData['edit_year'])->firstOrFail();
+
+            // Update price
+            $material->price->update([
+                'price' => $validatedData['edit_price'],
+                'quarter_id' => $quarter->id,
+                'year_id' => $year->id,
+            ]);
+
+            // Update material fields
+            $material->material_name = $validatedData['edit_material_name'];
+            $material->material_category_id = $materialCategory->id;
+            $material->unit_id = $unit->id;
+
+            // Save the updated material
+            $material->save();
+
+            // Commit the transaction
+            DB::commit();
+
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'Material updated successfully']);
+        } catch (\Exception $e) {
+            // Rollback the transaction if an exception occurs
+            DB::rollBack();
+
+            // Log detailed error message
+            Log::error('Failed to update material: ' . $e->getMessage());
+
+            // Return error response
+            return response()->json(['success' => false, 'message' => 'Failed to update material. Please check the logs for details.']);
         }
     }
 
