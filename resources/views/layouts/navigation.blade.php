@@ -1,11 +1,14 @@
 <!-- Sidebar -->
 <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="info">
-            <a href="{{ route('profile.show') }}" class="d-block">{{ Auth::user()->name }}</a>
+    <div class="mt-3 mb-3 pb-2 d-flex justify-content-center ">
+        <div class="">
+            <a href="{{ route('profile.show') }}" class="">{{ Auth::user()->first_name }}
+                {{ Auth::user()->last_name }}</a>
         </div>
     </div>
+    <hr style="background-color: white;">
+
 
     <!-- Sidebar Menu -->
     <nav class="mt-2">

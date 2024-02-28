@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quarter extends Model
 {
-    protected $primaryKey = 'quarter_id';
+
+    protected $fillable = ['quarter'];
 
     public function prices()
     {

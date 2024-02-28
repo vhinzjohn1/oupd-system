@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Year extends Model
 {
-    protected $primaryKey = 'year_id';
+
+    protected $fillable = ['year'];
 
     public function prices()
     {

@@ -11,6 +11,8 @@ class Material extends Model
         'material_category_id',
         'unit_id',
         'price_id',
+        'quarter_id',
+        'year_id',
     ];
 
     public function category()
@@ -27,5 +29,17 @@ class Material extends Model
     public function price()
     {
         return $this->belongsTo(Price::class, 'price_id', 'price_id');
+    }
+
+    // Define relationship with Quarter model
+    public function quarter()
+    {
+        return $this->belongsTo(Quarter::class, 'quarter_id', 'quarter_id');
+    }
+
+    // Define relationship with Year model
+    public function year()
+    {
+        return $this->belongsTo(Year::class, 'year_id', 'year_id');
     }
 }

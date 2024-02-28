@@ -12,10 +12,14 @@ class CreatePricesTable extends Migration
     {
         Schema::create('prices', function (Blueprint $table) {
             $table->id('price_id');
+            $table->decimal('price', 10, 2)->default(0.00);
             $table->foreignId('quarter_id')->nullable();
             $table->foreignId('year_id')->nullable();
-            $table->decimal('price', 10, 2)->default(0.00);
             $table->timestamps();
+
+            // Add foreign key constraint
+            $table->foreign('quarter_id')->references('quarter_id')->on('quarters');
+            $table->foreign('year_id')->references('year_id')->on('years');
         });
     }
 
