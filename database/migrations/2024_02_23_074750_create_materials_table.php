@@ -13,14 +13,10 @@ class CreateMaterialsTable extends Migration
             $table->id('material_id');
             $table->string('material_name');
             $table->unsignedBigInteger('material_category_id')->nullable();
-            $table->unsignedBigInteger('unit_id')->nullable();
-            $table->unsignedBigInteger('price_id')->nullable();
+            $table->string('unit');
+            $table->double('price');
             $table->timestamps();
 
-            // Add foreign key constraint
-            $table->foreign('material_category_id')->references('material_category_id')->on('material_categories');
-            $table->foreign('unit_id')->references('unit_id')->on('units');
-            $table->foreign('price_id')->references('price_id')->on('prices')->onDelete('cascade');
         });
     }
 
