@@ -4,16 +4,6 @@ use App\Http\Controllers\MaterialController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,8 +12,9 @@ Route::get('/', function () {
 Auth::routes();
 
 // Materials Routes and Controller
-// Define the store route for MaterialController
 
+// Routes for Materials
+Route::get('/pages/list_of_materials', [MaterialController::class, 'index'])->name('list_of_materials');
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -32,9 +23,6 @@ Route::middleware('auth')->group(function () {
     Route::view('about', 'about')->name('about');
     Route::view('/pages/list_of_labors', 'pages.list_of_labors')->name('list_of_labors');
 
-
-    // Routes for Materials
-    Route::get('/pages/list_of_materials', [MaterialController::class, 'index'])->name('list_of_materials');
     Route::post('/materials', [MaterialController::class, 'store'])->name('materials.store');
     Route::put('/materials/{id}', [MaterialController::class, 'update'])->name('materials.update');
 
