@@ -33,7 +33,7 @@
                             <div class="form-group">
                                 <label for="edit_unit">Unit</label>
                                 <input type="text" class="form-control" id="edit_unit" name="edit_unit"
-                                    value="{{ $material->unit->unit_name }}" required>
+                                    value="{{ $material->unit }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -41,17 +41,17 @@
                             <div class="form-group">
                                 <label for="edit_price">Price</label>
                                 <input type="text" class="form-control" id="edit_price" name="edit_price"
-                                    value="{{ $material->price->price }}" required>
+                                    value="{{ $material->prices->first()->price }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="edit_quarter">Quarter</label>
                                 <input type="text" class="form-control" id="edit_quarter" name="edit_quarter"
-                                    value="{{ $material->price->quarter->quarter }}" required>
+                                    value="{{ $material->prices->first()->quarter }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="edit_year">Year</label>
                                 <input type="text" class="form-control" id="edit_year" name="edit_year"
-                                    value="{{ $material->price->year->year }}" required>
+                                    value="{{ $material->prices->first()->year }}" required>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('content')
     <!-- Content List of Materials -->
     <div class="content-header">
@@ -36,10 +37,22 @@
                                             <td>{{ $material->material_id }}</td>
                                             <td>{{ $material->material_name }}</td>
                                             <td>{{ $material->category->material_category_name }}</td>
-                                            <td>{{ $material->unit->unit_name }}</td>
-                                            <td>{{ $material->price->price }}</td>
-                                            <td>{{ $material->price->quarter->quarter }}</td>
-                                            <td>{{ $material->price->year->year }}</td>
+                                            <td>{{ $material->unit }}</td>
+                                            <td>
+                                                @if ($material->prices->isNotEmpty())
+                                                    {{ number_format($material->prices->first()->price, 2, '.', ',') }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($material->prices->isNotEmpty())
+                                                    {{ $material->prices->first()->quarter }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($material->prices->isNotEmpty())
+                                                    {{ $material->prices->first()->year }}
+                                                @endif
+                                            </td>
                                             <td>
                                                 <!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-primary" data-toggle="modal"
@@ -57,11 +70,11 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            <h3>Material Category</h3>
+                            {{-- <h3>Material Category</h3>
                             <h2>{{ $material_category = App\Models\MaterialCategory::where('material_category_id', 3)->first()->material_category_name }}
                                 <h2>{{ $material = App\Models\Material::where('material_id', 2)->first()->material_name }}
                                 </h2>
-                            </h2>
+                            </h2> --}}
                             {{-- <h2>{{ $material->price->price_id }}</h2> --}}
                         </div>
                     </div>
@@ -76,6 +89,10 @@
 
     <!-- Scripts -->
     <script>
+        let tdElements = document.querySelectorAll('td');
+        for (let td of tdElements) {
+            console.log(td.textContent);
+        }
         let table = new DataTable('#materialTable');
 
         $(document).ready(function() {
@@ -112,16 +129,10 @@
                         // $('#addMaterialForm')[0].reset();
 
                         if (response) {
-
-                            // $("#materialTable tbody").prepend('<tr><td>' + response
-                            //     .material_name + '</td><td>' + response.material_category +
-                            //     '</td><td>' + response.unit + '</td><td>' + response.price +
-                            //     '</td><td>' + response.quarter + '</td><td>' + response
-                            //     .year + '</td><td></td></tr>')
                             $('#addMaterialForm')[0].reset();
-                            $('#exampleModal').modal('hide');
+                            $('#addModal').modal('hide');
 
-                            // console.log('successfully added');
+                            console.log('successfully added');
                             // // Example of reloading entire HTML content
                             // // $('.table').load(location.href + ' .table');
                             // // Reload table HTML content without refreshing the page
@@ -149,21 +160,21 @@
                 e.preventDefault();
 
                 // Get form data
-                var edit_materialId = $('#edit_material_id').val();
-                var edit_materialName = $('#edit_material_name').val();
-                var edit_materialCategory = $('#edit_material_category_name').val();
-                var edit_unit = $('#edit_unit').val();
-                var edit_price = $('#edit_price').val();
-                var edit_quarter = $('#edit_quarter').val();
-                var edit_year = $('#edit_year').val();
+                let edit_materialId = $('#edit_material_id').val();
+                let edit_materialName = $('#edit_material_name').val();
+                let edit_materialCategory = $('#edit_material_category_name').val();
+                let edit_unit = $('#edit_unit').val();
+                let edit_price = $('#edit_price').val();
+                let edit_quarter = $('#edit_quarter').val();
+                let edit_year = $('#edit_year').val();
 
-                // console.log("Edit Material ID: " + edit_materialId);
-                // console.log("Edit Material Name: " + edit_materialName);
-                // console.log("Edit Material Category: " + edit_materialCategory);
-                // console.log("Edit Unit: " + edit_unit);
-                // console.log("Edit Price: " + edit_price);
-                // console.log("Edit Quarter: " + edit_quarter);
-                // console.log("Edit Year: " + edit_year);
+                console.log("Edit Material ID: " + edit_materialId);
+                console.log("Edit Material Name: " + edit_materialName);
+                console.log("Edit Material Category: " + edit_materialCategory);
+                console.log("Edit Unit: " + edit_unit);
+                console.log("Edit Price: " + edit_price);
+                console.log("Edit Quarter: " + edit_quarter);
+                console.log("Edit Year: " + edit_year);
 
                 // // Make AJAX request to update material
                 $.ajax({

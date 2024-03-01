@@ -12,9 +12,14 @@ class CreatePricesTable extends Migration
     {
         Schema::create('prices', function (Blueprint $table) {
             $table->id('price_id');
-            $table->decimal('price', 10, 2)->default(0.00);
+            $table->decimal('price', 10, 4);
+            $table->string('status');
             $table->string('quarter');
-            $table->integer('year');
+            $table->string('year');
+            $table->unsignedBigInteger('material_id'); // Foreign Key
+            $table->foreign('material_id')
+                ->references('material_id')
+                ->on('materials');
             $table->timestamps();
         });
     }

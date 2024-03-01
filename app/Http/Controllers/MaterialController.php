@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Material;
 use App\Models\MaterialCategory;
-use App\Models\Unit;
 use App\Models\Price;
-use App\Models\Quarter;
-use App\Models\Year;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
@@ -17,17 +14,9 @@ class MaterialController extends Controller
 
     public function index()
     {
-        $materials = Material::with('category', 'unit', 'price', 'quarter', 'year')->get();
+        $materials = Material::with('category', 'prices')->get();
         return view('pages.list_of_materials', compact('materials'));
     }
-
-
-
-    // public function index()
-    // {
-    //     $materials = Material::with('category', 'unit', 'price', 'quarter', 'year')->get();
-    //     return view('pages.list_of_materials', compact('materials'));
-    // }
 
     public function store(Request $request)
     {
@@ -42,38 +31,35 @@ class MaterialController extends Controller
         ]);
 
         try {
+
             // Start a database transaction
             DB::beginTransaction();
 
             // Retrieve or create material category
-            $materialCategory = MaterialCategory::FirstorCreate(['material_category_name' => $validatedData['material_category']]);
+            $materialCategory = MaterialCategory::create(['material_category_name' => $validatedData['material_category']]);
 
-            // Retrieve or create unit
-            $unit = Unit::Create(['unit_name' => $validatedData['unit']]);
 
-            // Create or retrieve quarter
-            $quarter = Quarter::Create(['quarter' => $validatedData['quarter']]);
-
-            // Create or retrieve Year
-            $year = Year::Create(['year' => $validatedData['year']]);
-
-            //Create Price Table
-            $price = Price::Create([
-                'price' => $validatedData['price'],
-                'quarter_id' => $quarter->id,
-                'year_id' => $year->id,
+            // Associate the category (assuming a belongsTo relationship called 'category')
+            $material = new Material([
+                'material_name' => $validatedData['material_name'],
+                'unit' => $validatedData['unit'],
             ]);
+
+            $material->category()->associate($materialCategory);
+            $material->save();
+
 
 
             // Create a new material instance and assign IDs
-            $material = new Material();
-            $material->material_name = $validatedData['material_name'];
-            $material->material_category_id = $materialCategory->id;
-            $material->unit_id = $unit->id;
-            $material->price_id = $price->price_id;
+            $price = new Price();
+            $price->price = $validatedData['price'];
+            $price->quarter = $validatedData['quarter'];
+            $price->year = $validatedData['year'];
+            $price->material_id = $material->material_id;
+            $price->status = 1;
 
-            // Save the material
-            $material->save();
+            // // Save the material
+            $price->save();
 
             // Commit the transaction
             DB::commit();
@@ -91,6 +77,60 @@ class MaterialController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to add material. Please check the logs for details.']);
         }
     }
+
+
+    public function update(Request $request, $id)
+    {
+        // Validate incoming request data
+        $validatedData = $request->validate([
+            'edit_material_name' => 'required|string',
+            'edit_material_category_name' => 'required|string',
+            'edit_unit' => 'required|string',
+            'edit_price' => 'required|numeric',
+            'edit_quarter' => 'required|string',
+            'edit_year' => 'required|string',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Find the material based on ID
+            $material = Material::findOrFail($id);
+
+            // Update material details
+            $material->material_name = $validatedData['edit_material_name'];
+            $material->unit = $validatedData['edit_unit'];
+
+            // Update material category (retrieve if exists or create if new)
+            $materialCategory = MaterialCategory::firstOrCreate([
+                'material_category_name' => $validatedData['edit_material_category_name'],
+            ]);
+            $material->category()->associate($materialCategory);
+
+            // Retrieve existing price record
+            $price = $material->prices()->where([
+                'material_id' => $material->material_id,
+            ])->firstOrFail();
+
+            // Update price attributes
+            $price->price = $validatedData['edit_price'];
+            $price->quarter = $validatedData['edit_quarter'];
+            $price->year = $validatedData['edit_year'];
+
+            // Save changes
+            $material->save();
+            $price->save();
+            DB::commit();
+
+            return response()->json(['success' => true, 'message' => 'Material updated successfully!']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to update material: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Material update failed. Check logs for details.']);
+        }
+    }
+
+
 
     // public function update(Request $request, $id)
     // {

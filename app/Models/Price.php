@@ -8,22 +8,11 @@ class Price extends Model
 {
 
     protected $primaryKey = 'price_id';
-    protected $fillable = ['price', 'quarter_id', 'year_id'];
+    protected $fillable = ['price', 'status', 'quarter', 'year', 'material_id'];
 
     public function materials()
     {
-        return $this->hasMany(Material::class);
+        return $this->belongsTo(Material::class);
     }
 
-    // Define relationship with Quarter model
-    public function quarter()
-    {
-        return $this->belongsTo(Quarter::class, 'quarter_id', 'quarter_id');
-    }
-
-    // Define relationship with Year model
-    public function year()
-    {
-        return $this->belongsTo(Year::class, 'year_id', 'year_id');
-    }
 }

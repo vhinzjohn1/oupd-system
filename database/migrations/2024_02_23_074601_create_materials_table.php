@@ -12,11 +12,14 @@ class CreateMaterialsTable extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->id('material_id');
             $table->string('material_name');
-            $table->unsignedBigInteger('material_category_id')->nullable();
             $table->string('unit');
-            $table->double('price');
-            $table->timestamps();
+            $table->unsignedBigInteger('material_category_id'); // Foreign Key
 
+            $table->foreign('material_category_id')
+                ->references('material_category_id')
+                ->on('material_categories');
+
+            $table->timestamps();
         });
     }
 
