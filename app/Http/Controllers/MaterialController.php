@@ -14,8 +14,14 @@ class MaterialController extends Controller
 
     public function index()
     {
+        // $materials = Material::with('category', 'prices')->get();
+        // return view('pages.list_of_materials', compact('materials'));
         $materials = Material::with('category', 'prices')->get();
-        return view('pages.list_of_materials', compact('materials'));
+        if (request()->ajax()) {
+            return response()->json($materials);
+        } else {
+            return view('pages.list_of_materials');
+        }
     }
 
     public function store(Request $request)

@@ -1,6 +1,4 @@
 @extends('layouts.app')
-
-
 @section('content')
     <!-- Content List of Materials -->
     <div class="content-header">
@@ -13,14 +11,14 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
                                 Add Material
                             </button>
                             <table id="materialTable" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
 
-                                        <th>Material Id</th>
+                                        {{-- <th>Material Id</th> --}}
                                         <th>Material Name</th>
                                         <th>Material Category</th>
                                         <th>Unit</th>
@@ -31,43 +29,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Iterate over materials data and display in rows -->
-                                    @foreach ($materials as $material)
-                                        <tr>
-                                            <td>{{ $material->material_id }}</td>
-                                            <td>{{ $material->material_name }}</td>
-                                            <td>{{ $material->category->material_category_name }}</td>
-                                            <td>{{ $material->unit }}</td>
-                                            <td>
-                                                @if ($material->prices->isNotEmpty())
-                                                    {{ number_format($material->prices->first()->price, 2, '.', ',') }}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($material->prices->isNotEmpty())
-                                                    {{ $material->prices->first()->quarter }}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($material->prices->isNotEmpty())
-                                                    {{ $material->prices->first()->year }}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <!-- Button trigger modal -->
-                                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                    data-target="#editMaterialModal{{ $material->material_id }}">
-                                                    Edit
-                                                </button>
-                                                @include('modals.edit_materials_modal')
-                                                <form action="" method="POST" style="display: inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                    @include('modals.edit_materials_modal')
                                 </tbody>
                             </table>
                             {{-- <h3>Material Category</h3>
@@ -87,15 +49,103 @@
     @include('modals.add_materials_modal')
 
 
-    <!-- Scripts -->
+
     <script>
-        let tdElements = document.querySelectorAll('td');
-        for (let td of tdElements) {
-            console.log(td.textContent);
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#materialTable').DataTable({
+                // "paging": true,
+                // "lengthChange": false,
+                // "searching": true,
+                // "ordering": true,
+                // "info": true,
+                // "autoWidth": true,
+                // "responsive": true,
+                // "buttons": ["copy", "excel", "pdf", "print"],
+                // "pageLength": 8,
+            }).buttons().container().appendTo('#materialTable_wrapper .col-md-6:eq(0)');
+
+            // Call the function to fetch and populate data in the table
+            refreshMaterialsTable();
+
+            // Attach the click handler to the table itself (or a closer static parent)
+            $('#materialTable').on('click', '.btn-edit-material', function() {
+                console.log("Edit button clicked!");
+
+            });
+        });
+
+        // Fetch categories Samples
+        // $.ajax({
+        //     url: '/material-categories', // Your Laravel route
+        //     type: 'GET',
+        //     dataType: 'json',
+        //     success: function(categories) {
+        //         console.log(categories)
+        //         const select = $('#add_material_category');
+
+        //         // Clear any existing options before populating (optional)
+        //         select.empty();
+
+        //         $.each(categories, function(id, name) {
+        //             select.append($('<option></option>').val(id).text(name));
+        //         });
+        //     },
+        //     error: function(xhr, status, error) {
+        //         console.error('Error fetching categories:', error);
+        //         // Optionally display an error message to the user
+        //     }
+        // });
+
+        function openEditMaterialModal() {
+            $('#editMaterialModal').modal('show');
         }
-        let table = new DataTable('#materialTable');
+
+
+
+
+
+        function refreshMaterialsTable() {
+
+            $.ajax({
+                url: "{{ route('materials.index') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var table = $('#materialTable').DataTable();
+                    var existingRows = table.rows().remove().draw(false);
+                    console.log(data);
+
+                    data.forEach(function(material) {
+                        // Assuming prices is always an array, even if empty
+                        const priceData = material.prices[0] || {}; // Get price data or an empty object
+
+                        table.row.add([
+                            // material.material_id,
+                            material.material_name,
+                            material.category.material_category_name,
+                            material.unit,
+                            priceData.price,
+                            priceData.quarter,
+                            priceData.year,
+                            '<div class="text-center d-flex">' +
+                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2" data-id="${material.material_id}" onclick="openEditMaterialModal()" > Edit </button>` +
+                            `<button type="button" class="btn btn-danger" data-id="${material.material_id}"> Delete </button>` +
+                            // ... (add your delete button logic here) +
+                            '</div>'
+                        ]);
+                    });
+
+                    table.draw();
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
 
         $(document).ready(function() {
+
             // Handle form submission via AJAX
             $('#addMaterialForm').submit(function(e) {
                 e.preventDefault();
@@ -124,23 +174,14 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                        toastr.success('Material added successfully!');
                         console.log(response); // Log response for debugging
-                        // $('#exampleModal').modal('hide');
-                        // $('#addMaterialForm')[0].reset();
+                        refreshMaterialsTable();
 
                         if (response) {
                             $('#addMaterialForm')[0].reset();
                             $('#addModal').modal('hide');
-
                             console.log('successfully added');
-                            // // Example of reloading entire HTML content
-                            // // $('.table').load(location.href + ' .table');
-                            // // Reload table HTML content without refreshing the page
-                            // $('.table').load(location.href + ' .table', function() {
-                            //     // Reinitialize DataTable after loading content
-                            //     $('#example').DataTable();
-                            //     console.log('reloaded');
-                            // });
 
                         } else {
                             // Show error message if material addition fails
@@ -212,4 +253,9 @@
             });
         });
     </script>
+
+
+    </body>
+
+    </html>
 @endsection

@@ -14,16 +14,24 @@
                     <!-- Add form fields for adding a new material -->
                     <div class="row">
                         <div class="col-6">
-                            <div class="form-group">
-                                <label for="add_material_name">Material Name</label>
-                                <input type="text" class="form-control" id="add_material_name"
-                                    name="add_material_name" required>
-                            </div>
+
+                            {{-- <div class="form-group">
+                                <label for="add_material_category">Material Category</label>
+                                <select class="form-control" id="add_material_category" name="add_material_category"
+                                    required>
+                                </select>
+                            </div> --}}
                             <div class="form-group">
                                 <label for="add_material_category">Material Category</label>
                                 <input type="text" class="form-control" id="add_material_category"
                                     name="add_material_category" required>
                             </div>
+                            <div class="form-group">
+                                <label for="add_material_name">Material Name</label>
+                                <input type="text" class="form-control" id="add_material_name"
+                                    name="add_material_name" required>
+                            </div>
+
                             <div class="form-group">
                                 <label for="add_unit">Unit</label>
                                 <input type="text" class="form-control" id="add_unit" name="add_unit" required>
