@@ -15,13 +15,14 @@
 </head>
 
 <body class="antialiased bg-dark">
-    <div class="">
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh">
+        <h3 class="text-light">OUPD SYSTEM</h3>
         @if (Route::has('login'))
-            <div class="d-flex justify-content-center align-items-center">
+            <div>
                 @auth
-                    <a href="{{ url('/home') }}" class="">Home</a>
+                    <a href="{{ url('/home') }}" class="btn btn-primary">Home</a>
                 @else
-                    <a href="{{ route('login') }}" class="">Login</a>
+                    <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
                 @endauth
             </div>
         @endif

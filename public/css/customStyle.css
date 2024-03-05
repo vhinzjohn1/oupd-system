@@ -1,0 +1,10 @@
+.add-material-btn {
+    position: absolute;
+    right: 5%;
+    z-index: 10;
+    top: 8%;
+}
+.table-responsive table {
+    width: 100% !important;
+    overflow-x: auto !important;
+}

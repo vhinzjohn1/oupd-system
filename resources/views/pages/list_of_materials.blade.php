@@ -1,20 +1,17 @@
 @extends('layouts.app')
 @section('content')
-    <!-- Content List of Materials -->
-    <div class="content-header">
-    </div>
-
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
-                        <div class="card-body">
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
-                                Add Material
-                            </button>
+                        <div class="card-body table-responsive">
                             <table id="materialTable" class="table table-bordered table-striped">
+                                <button type="button" class="btn btn-success add-material-btn" data-toggle="modal"
+                                    data-target="#addModal">
+                                    Add Material
+                                </button>
                                 <thead>
                                     <tr>
 
@@ -33,10 +30,10 @@
                                 </tbody>
                             </table>
                             {{-- <h3>Material Category</h3>
-                            <h2>{{ $material_category = App\Models\MaterialCategory::where('material_category_id', 3)->first()->material_category_name }}
-                                <h2>{{ $material = App\Models\Material::where('material_id', 2)->first()->material_name }}
-                                </h2>
-                            </h2> --}}
+                        <h2>{{ $material_category = App\Models\MaterialCategory::where('material_category_id', 3)->first()->material_category_name }}
+                            <h2>{{ $material = App\Models\Material::where('material_id', 2)->first()->material_name }}
+                            </h2>
+                        </h2> --}}
                             {{-- <h2>{{ $material->price->price_id }}</h2> --}}
                         </div>
                     </div>
@@ -48,21 +45,18 @@
     <!-- /.content -->
     @include('modals.add_materials_modal')
 
-
-
     <script>
         $(document).ready(function() {
             // Initialize DataTable
-            $('#materialTable').DataTable({
-                // "paging": true,
-                // "lengthChange": false,
-                // "searching": true,
-                // "ordering": true,
-                // "info": true,
-                // "autoWidth": true,
-                // "responsive": true,
-                // "buttons": ["copy", "excel", "pdf", "print"],
-                // "pageLength": 8,
+            $("#materialTable").DataTable({
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": true,
+                "searching": true,
+                "ordering": true,
+                "paging": true,
+                "info": true,
+                "buttons": ["copy", "excel", "pdf", "print"]
             }).buttons().container().appendTo('#materialTable_wrapper .col-md-6:eq(0)');
 
             // Call the function to fetch and populate data in the table
@@ -75,7 +69,7 @@
             });
         });
 
-        // Fetch categories Samples
+        // // Fetch categories Samples
         // $.ajax({
         //     url: '/material-categories', // Your Laravel route
         //     type: 'GET',
@@ -174,6 +168,7 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                        toastr.options.progressBar = true;
                         toastr.success('Material added successfully!');
                         console.log(response); // Log response for debugging
                         refreshMaterialsTable();
@@ -253,9 +248,4 @@
             });
         });
     </script>
-
-
-    </body>
-
-    </html>
 @endsection
