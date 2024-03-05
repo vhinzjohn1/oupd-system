@@ -15,12 +15,36 @@
                         <div class="col-md-6">
                             <input type="hidden" id="edit_material_id" name="edit_material_id">
                             <div class="form-group">
+                                <label for="edit_material_category_name">Material Category</label>
+                                <input type="text" class="form-control" id="edit_material_category_name"
+                                    name="edit_material_category_name" required>
+                            </div>
+                            <div class="form-group">
                                 <label for="edit_material_name">Material Name</label>
                                 <input type="text" class="form-control" id="edit_material_name"
                                     name="edit_material_name" required>
                             </div>
+
+                            <div class="form-group">
+                                <label for="edit_unit">Unit</label>
+                                <input type="text" class="form-control" id="edit_unit" name="edit_unit" required>
+                            </div>
+
                         </div>
                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit_price">Price</label>
+                                <input type="number" class="form-control" id="edit_price" name="edit_price" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit_quarter">Quarter</label>
+                                <input type="text" class="form-control" id="edit_quarter" name="edit_quarter"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit_year">Year</label>
+                                <input type="text" class="form-control" id="edit_year" name="edit_year" required>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -63,44 +63,68 @@
             refreshMaterialsTable();
 
             // Attach the click handler to the table itself (or a closer static parent)
-            $('#materialTable').on('click', '.btn-edit-material', function() {
-                console.log("Edit button clicked!");
+            // $('#materialTable').on('click', '.btn-edit-material', function() {
+            //     console.log("Edit button clicked!");
 
-            });
+            // });
         });
 
-        // // Fetch categories Samples
-        // $.ajax({
-        //     url: '/material-categories', // Your Laravel route
-        //     type: 'GET',
-        //     dataType: 'json',
-        //     success: function(categories) {
-        //         console.log(categories)
-        //         const select = $('#add_material_category');
+        // Fetch categories Samples
+        $.ajax({
+            url: '/material-categories', // Your Laravel route
+            type: 'GET',
+            dataType: 'json',
+            success: function(categories) {
+                console.log(categories)
+                const select = $('#add_material_category_menu');
 
-        //         // Clear any existing options before populating (optional)
-        //         select.empty();
+                // Clear any existing options before populating (optional)
+                select.empty();
 
-        //         $.each(categories, function(id, name) {
-        //             select.append($('<option></option>').val(id).text(name));
-        //         });
-        //     },
-        //     error: function(xhr, status, error) {
-        //         console.error('Error fetching categories:', error);
-        //         // Optionally display an error message to the user
-        //     }
-        // });
+                $.each(categories, function(id, name) {
+                    select.append($('<a></a>').val(id).text(name));
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching categories:', error);
+                // Optionally display an error message to the user
+            }
+        });
 
-        function openEditMaterialModal() {
+        function openEditMaterialModal(material_id) {
+            // Call a function to fetch material data by material_id
+            fetchMaterialData(material_id);
             $('#editMaterialModal').modal('show');
+        }
+        // Function to fetch material data by material_id
+        function fetchMaterialData(material_id) {
+            $.ajax({
+                url: "{{ route('materials.index') }}/" +
+                    material_id, // Adjust the route to fetch individual material data
+                type: 'GET',
+                dataType: 'json',
+                success: function(material) {
+                    // Populate the form fields with the fetched material data
+                    $('#edit_material_id').val(material.material_id);
+                    $('#edit_material_category_name').val(material.category.material_category_name);
+                    $('#edit_material_name').val(material.material_name);
+                    $('#edit_unit').val(material.unit);
+
+                    // Assuming prices is always an array, even if empty
+                    const priceData = material.prices[0] || {};
+                    $('#edit_price').val(priceData.price);
+                    $('#edit_quarter').val(priceData.quarter);
+                    $('#edit_year').val(priceData.year);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
         }
 
 
 
-
-
         function refreshMaterialsTable() {
-
             $.ajax({
                 url: "{{ route('materials.index') }}",
                 type: 'GET',
@@ -110,11 +134,11 @@
                     var existingRows = table.rows().remove().draw(false);
                     console.log(data);
 
-                    data.forEach(function(material) {
+                    data.forEach(function(material, index) {
                         // Assuming prices is always an array, even if empty
                         const priceData = material.prices[0] || {}; // Get price data or an empty object
 
-                        table.row.add([
+                        var newRow = table.row.add([
                             // material.material_id,
                             material.material_name,
                             material.category.material_category_name,
@@ -123,11 +147,12 @@
                             priceData.quarter,
                             priceData.year,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2" data-id="${material.material_id}" onclick="openEditMaterialModal()" > Edit </button>` +
+                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2" data-id="${material.material_id}" onclick="openEditMaterialModal(${material.material_id})" > Edit </button>` +
                             `<button type="button" class="btn btn-danger" data-id="${material.material_id}"> Delete </button>` +
                             // ... (add your delete button logic here) +
                             '</div>'
-                        ]);
+                        ]).node();
+
                     });
 
                     table.draw();
@@ -137,6 +162,47 @@
                 }
             });
         }
+
+
+
+
+        // function refreshMaterialsTable() {
+        //     $.ajax({
+        //         url: "{{ route('materials.index') }}",
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(data) {
+        //             var table = $('#materialTable').DataTable();
+        //             var existingRows = table.rows().remove().draw(false);
+        //             console.log(data);
+
+        //             data.forEach(function(material) {
+        //                 // Assuming prices is always an array, even if empty
+        //                 const priceData = material.prices[0] || {}; // Get price data or an empty object
+
+        //                 table.row.add([
+        //                     // material.material_id,
+        //                     material.material_name,
+        //                     material.category.material_category_name,
+        //                     material.unit,
+        //                     priceData.price,
+        //                     priceData.quarter,
+        //                     priceData.year,
+        //                     '<div class="text-center d-flex">' +
+        //                     `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2" data-id="${material.material_id}" onclick="openEditMaterialModal(${material.material_id})" > Edit </button>` +
+        //                     `<button type="button" class="btn btn-danger" data-id="${material.material_id}"> Delete </button>` +
+        //                     // ... (add your delete button logic here) +
+        //                     '</div>'
+        //                 ]);
+        //             });
+
+        //             table.draw();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(xhr.responseText);
+        //         }
+        //     });
+        // }
 
         $(document).ready(function() {
 
@@ -169,7 +235,7 @@
                     },
                     success: function(response) {
                         toastr.options.progressBar = true;
-                        toastr.success('Material added successfully!');
+                        toastr.success('Material Added Successfully!');
                         console.log(response); // Log response for debugging
                         refreshMaterialsTable();
 
@@ -204,13 +270,13 @@
                 let edit_quarter = $('#edit_quarter').val();
                 let edit_year = $('#edit_year').val();
 
-                console.log("Edit Material ID: " + edit_materialId);
-                console.log("Edit Material Name: " + edit_materialName);
-                console.log("Edit Material Category: " + edit_materialCategory);
-                console.log("Edit Unit: " + edit_unit);
-                console.log("Edit Price: " + edit_price);
-                console.log("Edit Quarter: " + edit_quarter);
-                console.log("Edit Year: " + edit_year);
+                // console.log("Edit Material ID: " + edit_materialId);
+                // console.log("Edit Material Name: " + edit_materialName);
+                // console.log("Edit Material Category: " + edit_materialCategory);
+                // console.log("Edit Unit: " + edit_unit);
+                // console.log("Edit Price: " + edit_price);
+                // console.log("Edit Quarter: " + edit_quarter);
+                // console.log("Edit Year: " + edit_year);
 
                 // // Make AJAX request to update material
                 $.ajax({
@@ -227,9 +293,11 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        console.log(response); // Log response for debugging
-                        $('#editMaterialForm').modal('hide');
+                        toastr.options.progressBar = true;
+                        toastr.success('Material Updated Successfully!');
+                        $('#editMaterialModal').modal('hide');
                         $('#editMaterialForm')[0].reset();
+                        refreshMaterialsTable();
 
                         if (response.success) {
                             e.preventDefault();

@@ -24,6 +24,13 @@ class MaterialController extends Controller
         }
     }
 
+    // To populate Edit Modal Values
+    public function show($id)
+    {
+        $material = Material::with('category', 'prices')->findOrFail($id);
+        return response()->json($material);
+    }
+
     public function store(Request $request)
     {
         // Validate incoming request data
@@ -42,7 +49,7 @@ class MaterialController extends Controller
             DB::beginTransaction();
 
             // Retrieve or create material category
-            $materialCategory = MaterialCategory::create(['material_category_name' => $validatedData['material_category']]);
+            $materialCategory = MaterialCategory::firstOrCreate(['material_category_name' => $validatedData['material_category']]);
 
 
             // Associate the category (assuming a belongsTo relationship called 'category')

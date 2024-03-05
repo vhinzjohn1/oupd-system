@@ -1,6 +1,15 @@
+<style>
+    .form-group label {
+        display: block;
+    }
+
+    #add_material_category_input {
+        display: none;
+    }
+</style>
 <!-- Add Material Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addModalLabel">Add Material</h5>
@@ -15,17 +24,27 @@
                     <div class="row">
                         <div class="col-6">
 
-                            {{-- <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" aria-label="Text input with dropdown button">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                    <div class="dropdown-menu" id="add_material_category_menu">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="add_material_category">Material Category</label>
                                 <select class="form-control" id="add_material_category" name="add_material_category"
                                     required>
                                 </select>
-                            </div> --}}
-                            <div class="form-group">
+                            </div>
+                            {{-- <div class="form-group">
                                 <label for="add_material_category">Material Category</label>
                                 <input type="text" class="form-control" id="add_material_category"
                                     name="add_material_category" required>
-                            </div>
+                            </div> --}}
                             <div class="form-group">
                                 <label for="add_material_name">Material Name</label>
                                 <input type="text" class="form-control" id="add_material_name"

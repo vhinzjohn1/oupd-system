@@ -16,9 +16,7 @@ Auth::routes();
 
 
 
-Route::get('/pages/list_of_materials', function () {
-    return view('pages.list_of_materials');
-})->name('list_of_materials');
+
 
 Route::resource('materials', MaterialController::class);
 
@@ -31,11 +29,16 @@ Route::get('/material-categories', function () {
 Route::middleware('auth')->group(function () {
     Route::view('about', 'about')->name('about');
     Route::view('/pages/list_of_labors', 'pages.list_of_labors')->name('list_of_labors');
+    Route::get('/pages/list_of_materials', function () {
+        return view('pages.list_of_materials');
+    })->name('list_of_materials');
     // Routes for Materials
     // Route::get('/pages/list_of_materials', [MaterialController::class, 'index'])->name('materials.index');
 
     Route::post('/materials', [MaterialController::class, 'store'])->name('materials.store');
     Route::put('/materials/{id}', [MaterialController::class, 'update'])->name('materials.update');
+
+
 
 
     Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
