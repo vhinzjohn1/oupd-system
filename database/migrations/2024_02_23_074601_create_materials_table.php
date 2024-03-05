@@ -13,7 +13,7 @@ class CreateMaterialsTable extends Migration
             $table->id('material_id');
             $table->string('material_name');
             $table->string('unit');
-            $table->unsignedBigInteger('material_category_id'); // Foreign Key
+            $table->unsignedBigInteger('material_category_id');
 
             $table->foreign('material_category_id')
                 ->references('material_category_id')
