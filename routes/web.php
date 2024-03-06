@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MaterialCategory;
+use App\Models\Project;
 
 
 Route::get('/', function () {
@@ -15,7 +17,9 @@ Auth::routes();
 // Materials Routes and Controller
 
 
+Route::resource('project', ProjectController::class);
 Route::resource('materials', MaterialController::class);
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/material-categories', function () {
@@ -24,7 +28,16 @@ Route::get('/material-categories', function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+
+    // Projects Routes
+    Route::get('projects', function () {
+        return view('projects');
+    })->name('projects');
+
     Route::view('about', 'about')->name('about');
+
+
 
     Route::view('/pages/list_of_labors', 'pages.list_of_labors')->name('list_of_labors');
 

@@ -1,5 +1,19 @@
 @extends('layouts.app')
 @section('content')
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ __('Material List') }}</h1>
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
@@ -7,11 +21,13 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body table-responsive">
-                            <table id="materialTable" class="table table-bordered table-striped">
-                                <button type="button" class="btn btn-success add-material-btn" data-toggle="modal"
-                                    data-target="#addModal">
-                                    Add Material
-                                </button>
+                            <table id="materialTable" class="table table-bordered table-striped col-12">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                        data-target="#addModal">
+                                        Add Material
+                                    </button>
+                                </div>
                                 <thead>
                                     <tr>
 
@@ -164,46 +180,6 @@
         }
 
 
-
-
-        // function refreshMaterialsTable() {
-        //     $.ajax({
-        //         url: "{{ route('materials.index') }}",
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         success: function(data) {
-        //             var table = $('#materialTable').DataTable();
-        //             var existingRows = table.rows().remove().draw(false);
-        //             console.log(data);
-
-        //             data.forEach(function(material) {
-        //                 // Assuming prices is always an array, even if empty
-        //                 const priceData = material.prices[0] || {}; // Get price data or an empty object
-
-        //                 table.row.add([
-        //                     // material.material_id,
-        //                     material.material_name,
-        //                     material.category.material_category_name,
-        //                     material.unit,
-        //                     priceData.price,
-        //                     priceData.quarter,
-        //                     priceData.year,
-        //                     '<div class="text-center d-flex">' +
-        //                     `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2" data-id="${material.material_id}" onclick="openEditMaterialModal(${material.material_id})" > Edit </button>` +
-        //                     `<button type="button" class="btn btn-danger" data-id="${material.material_id}"> Delete </button>` +
-        //                     // ... (add your delete button logic here) +
-        //                     '</div>'
-        //                 ]);
-        //             });
-
-        //             table.draw();
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText);
-        //         }
-        //     });
-        // }
-
         $(document).ready(function() {
 
             // Handle form submission via AJAX
@@ -241,7 +217,7 @@
 
                         if (response) {
                             $('#addMaterialForm')[0].reset();
-                            $('#addModal').modal('hide');
+                            // $('#addModal').modal('hide');
                             console.log('successfully added');
 
                         } else {
@@ -295,7 +271,7 @@
                     success: function(response) {
                         toastr.options.progressBar = true;
                         toastr.success('Material Updated Successfully!');
-                        $('#editMaterialModal').modal('hide');
+                        // $('#editMaterialModal').modal('hide');
                         $('#editMaterialForm')[0].reset();
                         refreshMaterialsTable();
 

@@ -17,8 +17,9 @@
     <div class="content">
         <div class="container-fluid">
             <div class="col-lg-12 d-flex m-3">
+
                 {{-- Small Box Cards --}}
-                <div class="small-box bg-info col-3 mr-3">
+                {{-- <div class="small-box bg-info col-3 mr-3">
                     <div class="inner">
                         <h3>1</h3>
                         <p>New Projects</p>
@@ -29,8 +30,7 @@
                     <a href="#" class="small-box-footer">
                         More info <i class="fas fa-arrow-circle-right"></i>
                     </a>
-                </div>
-
+                </div> --}}
 
             </div>
         </div><!-- /.container-fluid -->

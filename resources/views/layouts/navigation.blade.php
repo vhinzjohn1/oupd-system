@@ -22,6 +22,17 @@
                 </a>
             </li>
 
+
+            <li class="nav-item">
+                <a href="{{ route('projects') }}" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        {{ __('Projects') }}
+                    </p>
+                </a>
+            </li>
+
+
             {{-- List of Material Sidebar Navigation --}}
             <li class="nav-item">
                 <a href="{{ route('list_of_materials') }}" class="nav-link">
@@ -54,15 +65,34 @@
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-circle nav-icon"></i>
                     <p>
-                        Two-level menu
+                        Project Particulars
                         <i class="fas fa-angle-left right"></i>
                     </p>
                 </a>
                 <ul class="nav nav-treeview" style="display: none;">
+
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Child menu</p>
+                            <p> Particular</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Particulal Material </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Particulal Labor</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Particulal Equipment</p>
                         </a>
                     </li>
                 </ul>

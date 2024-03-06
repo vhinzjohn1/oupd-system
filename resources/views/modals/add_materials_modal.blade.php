@@ -15,22 +15,7 @@
                     <div class="row">
                         <div class="col-6">
 
-                            {{-- <div class="input-group">
-                                <input type="text" class="form-control" aria-label="Text input with dropdown button">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                                    <div class="dropdown-menu" id="add_material_category_menu">
-                                    </div>
-                                </div>
-                            </div> --}}
 
-                            {{-- <div class="form-group">
-                                <label for="add_material_category">Material Category</label>
-                                <select class="form-control" id="add_material_category" name="add_material_category"
-                                    required>
-                                </select>
-                            </div> --}}
                             <div class="form-group">
                                 <label for="add_material_category">Material Category</label>
                                 <input type="text" class="form-control" id="add_material_category"
