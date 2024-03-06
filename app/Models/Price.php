@@ -14,5 +14,4 @@ class Price extends Model
     {
         return $this->belongsTo(Material::class);
     }
-
 }
