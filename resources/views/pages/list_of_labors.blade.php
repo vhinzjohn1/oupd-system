@@ -113,7 +113,7 @@
         // Function to fetch labor data by labor_id
         function fetchLaborData(labor_id) {
             $.ajax({
-                url: "{{ route('labor.index') }}/" +
+                url: "{{ route('labors.index') }}/" +
                     labor_id, // Adjust the route to fetch individual labor data
                 type: 'GET',
                 dataType: 'json',

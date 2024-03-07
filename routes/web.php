@@ -20,7 +20,7 @@ Auth::routes();
 
 Route::resource('project', ProjectController::class);
 Route::resource('materials', MaterialController::class);
-Route::resource('labor', LaborController::class);
+Route::resource('labors', LaborController::class);
 Route::resource('particulars', ParticularController::class);
 
 
@@ -40,6 +40,15 @@ Route::middleware('auth')->group(function () {
 
 
     Route::view('/pages/list_of_labors', 'pages.list_of_labors')->name('list_of_labors');
+
+    // Route for the index page of labors
+    Route::get('/labors', [LaborController::class, 'index'])->name('labors.index');
+
+    // Route to get the Store function in the Labor Controller
+    Route::post('/labors', [LaborController::class, 'store'])->name('labors.store');
+
+    // Route to get the update function in the Labor Controller
+    Route::put('/labors/{id}', [LaborController::class, 'update'])->name('labors.update');
 
     // Routes for Materials
     Route::get('/pages/list_of_materials', function () {
