@@ -54,7 +54,7 @@ class LaborController extends Controller
             $labor = new Labor([
                 'labor_name' => $validatedData['labor_name'],
                 'location' => $validatedData['location'],
-                'rate' => $validatedData['rate'],
+                // 'rate' => $validatedData['rate'],
             ]);
 
             // $labor->category()->associate($laborCategory);
