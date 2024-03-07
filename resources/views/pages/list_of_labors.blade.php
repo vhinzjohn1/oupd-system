@@ -20,11 +20,13 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body table-responsive">
-                            <table id="laborTable" class="table table-bordered table-striped">
-                                <button type="button" class="btn btn-success add-labor-btn" data-toggle="modal"
-                                    data-target="#addModal">
-                                    Add Labor Rate
-                                </button>
+                            <table id="laborTable" class="table table-bordered table-striped col-12">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                        data-target="#addModal">
+                                        Add Labor Rate
+                                    </button>
+                                </div>
                                 <thead>
                                     <tr>
 
@@ -105,7 +107,7 @@
 
         function openEditLaborModal(labor_id) {
             // Call a function to fetch labor data by labor_id
-            fetchlLaborData(labor_id);
+            fetchLaborData(labor_id);
             $('#editLaborModal').modal('show');
         }
         // Function to fetch labor data by labor_id
@@ -124,7 +126,7 @@
                     // $('#edit_rate').val(labor.rate);
 
                     // Assuming prices is always an array, even if empty
-                    const rateData = material.rates[0] || {};
+                    const rateData = labor.rates[0] || {};
                     $('#edit_rate').val(rateData.rate);
                     // $('#edit_quarter').val(rateData.quarter);
                     // $('#edit_year').val(rateData.year);
@@ -158,7 +160,7 @@
                             rateData.rate,
                             rateData.date_effective, // Add the date_effective here
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id}" onclick="openEditlaborModal(${labor.labor_id})" > Edit </button>` +
+                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id})" > Edit </button>` +
                             `<button type="button" class="btn btn-danger" data-id="${labor.labor_id}"> Delete </button>` +
                             // ... (add your delete button logic here) +
                             '</div>'
