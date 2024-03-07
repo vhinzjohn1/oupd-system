@@ -8,6 +8,8 @@ use App\Models\MaterialCategory;
 use App\Models\Project;
 use App\Http\Controllers\LaborController;
 
+use App\Http\Controllers\ParticularController;
+
 Route::get('/', function () {
     return view('welcome');
 });
