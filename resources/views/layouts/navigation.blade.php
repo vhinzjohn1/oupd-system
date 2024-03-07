@@ -1,18 +1,19 @@
 <!-- Sidebar -->
 <div class="sidebar">
-    <!-- Sidebar user panel (optional) -->
-    <div class="mt-3 mb-3 pb-2 d-flex justify-content-center ">
-        <div class="">
-            <a href="{{ route('profile.show') }}" class="">{{ Auth::user()->first_name }}
-                {{ Auth::user()->last_name }}</a>
-        </div>
-    </div>
-    <hr style="background-color: white;">
-
 
     <!-- Sidebar Menu -->
     <nav class="mt-2">
+
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+            <li class="nav-item">
+                <a href="{{ route('profile.show') }}" class="nav-link"><i
+                        class="nav-icon fa fa-address-book"></i>{{ Auth::user()->first_name }}
+                    {{ Auth::user()->last_name }}</a>
+
+            </li>
+
+            <hr style="background-color: white;">
             <li class="nav-item">
                 <a href="{{ route('home') }}" class="nav-link">
                     <i class="nav-icon fas fa-th"></i>
@@ -51,18 +52,17 @@
                     </p>
                 </a>
             </li>
-
             <li class="nav-item">
-                <a href="{{ route('about') }}" class="nav-link">
+                <a href="{{ route('particular') }}" class="nav-link">
                     <i class="nav-icon far fa-address-card"></i>
                     <p>
-                        {{ __('About us') }}
+                        {{ __('Particular') }}
                     </p>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="" class="nav-link">
                     <i class="nav-icon fas fa-circle nav-icon"></i>
                     <p>
                         Project Particulars
@@ -72,9 +72,11 @@
                 <ul class="nav nav-treeview" style="display: none;">
 
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p> Particular</p>
+                        <a href="{{ route('project_particular') }}" class="nav-link">
+                            <i class="nav-icon far fa-address-card"></i>
+                            <p>
+                                {{ __('Project Particular') }}
+                            </p>
                         </a>
                     </li>
                     <li class="nav-item">

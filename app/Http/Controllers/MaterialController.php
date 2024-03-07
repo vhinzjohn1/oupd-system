@@ -14,9 +14,14 @@ class MaterialController extends Controller
 
     public function index()
     {
-        // $materials = Material::with('category', 'prices')->get();
-        // return view('pages.list_of_materials', compact('materials'));
-        $materials = Material::with('category', 'prices')->get();
+        // Select materials with their associated active prices and categories
+        $materials = DB::table('materials')
+            ->join('prices', 'materials.material_id', '=', 'prices.material_id')
+            ->join('material_categories', 'materials.material_category_id', '=', 'material_categories.material_category_id')
+            ->select('materials.*', 'prices.price_id', 'prices.price', 'prices.quarter', 'prices.year', 'material_categories.material_category_name')
+            ->where('prices.is_active', true)
+            ->get();
+
         if (request()->ajax()) {
             return response()->json($materials);
         } else {
@@ -44,34 +49,38 @@ class MaterialController extends Controller
         ]);
 
         try {
-
             // Start a database transaction
             DB::beginTransaction();
 
             // Retrieve or create material category
             $materialCategory = MaterialCategory::firstOrCreate(['material_category_name' => $validatedData['material_category']]);
 
+            // Check if material with the same name exists
+            $material = Material::where('material_name', $validatedData['material_name'])->first();
 
-            // Associate the category (assuming a belongsTo relationship called 'category')
-            $material = new Material([
-                'material_name' => $validatedData['material_name'],
-                'unit' => $validatedData['unit'],
-            ]);
+            if (!$material) {
+                // If material does not exist, create a new one
+                $material = new Material([
+                    'material_name' => $validatedData['material_name'],
+                    'unit' => $validatedData['unit'],
+                ]);
 
-            $material->category()->associate($materialCategory);
-            $material->save();
+                $material->category()->associate($materialCategory);
+                $material->save();
+            }
 
+            DB::table('prices')
+                ->where('material_id', $material->material_id)
+                ->update(['is_active' => false]);
 
-
-            // Create a new material instance and assign IDs
+            // Create a new price instance
             $price = new Price();
             $price->price = $validatedData['price'];
             $price->quarter = $validatedData['quarter'];
             $price->year = $validatedData['year'];
             $price->material_id = $material->material_id;
-            $price->status = 1;
 
-            // // Save the material
+            // Save the price
             $price->save();
 
             // Commit the transaction
@@ -90,6 +99,8 @@ class MaterialController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to add material. Please check the logs for details.']);
         }
     }
+
+
 
 
     public function update(Request $request, $id)
@@ -120,19 +131,21 @@ class MaterialController extends Controller
             ]);
             $material->category()->associate($materialCategory);
 
-            // Retrieve existing price record
-            $price = $material->prices()->where([
-                'material_id' => $material->material_id,
-            ])->firstOrFail();
+            // Deactivate existing prices with the same material_id the material
+            DB::table('prices')
+                ->where('material_id', $material->material_id)
+                ->update(['is_active' => false]);
 
-            // Update price attributes
-            $price->price = $validatedData['edit_price'];
-            $price->quarter = $validatedData['edit_quarter'];
-            $price->year = $validatedData['edit_year'];
+            // Create a new price instance
+            $newPrice = new Price();
+            $newPrice->price = $validatedData['edit_price'];
+            $newPrice->quarter = $validatedData['edit_quarter'];
+            $newPrice->year = $validatedData['edit_year'];
+            $newPrice->material_id = $material->material_id; // Associate with the material
 
-            // Save changes
-            $material->save();
-            $price->save();
+            // Save the new price
+            $newPrice->save();
+
             DB::commit();
 
             return response()->json(['success' => true, 'message' => 'Material updated successfully!']);
@@ -142,6 +155,7 @@ class MaterialController extends Controller
             return response()->json(['success' => false, 'message' => 'Material update failed. Check logs for details.']);
         }
     }
+
 
 
     // Other controller methods (create, edit, update, destroy) go here

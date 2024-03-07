@@ -8,9 +8,9 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="editMaterialForm">
-                    @csrf
+            <form id="editMaterialForm">
+                @csrf
+                <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <input type="hidden" id="edit_material_id" name="edit_material_id">
@@ -51,8 +51,8 @@
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
+</div>
 </div>

@@ -8,7 +8,7 @@ class Price extends Model
 {
 
     protected $primaryKey = 'price_id';
-    protected $fillable = ['price', 'status', 'quarter', 'year', 'material_id'];
+    protected $fillable = ['price', 'quarter', 'year', 'material_id'];
 
     public function materials()
     {

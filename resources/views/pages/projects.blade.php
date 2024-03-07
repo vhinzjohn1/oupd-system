@@ -47,14 +47,13 @@
             </div>
         </div><!-- /.container-fluid -->
     </div>
-    @include('modals.add_projects_modal')
+    @include('modals.project.add_projects_modal')
+    @include('modals.project.view_project_modal')
     <!-- /.content -->
 
 
     <script>
         $(document).ready(function() {
-
-
             // Initialize DataTable
             $("#projectTable").DataTable({
                 "responsive": true,
@@ -68,6 +67,8 @@
 
             // Call the function to fetch and populate data in the table
             refreshMaterialsTable();
+
+
         });
 
         function refreshMaterialsTable() {
@@ -88,8 +89,8 @@
                             project.project_owner,
                             project.project_location,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editProjectButton" class="btn btn-primary mr-2" data-id="${project.project_id}" onclick="openEditProjectModal(${project.project_id})" > View </button>` +
-                            `<button type="button" id="editProjectButton" class="btn btn-success mr-2" data-id="${project.project_id}" onclick="openEditProjectModal(${project.project_id})" > Select </button>` +
+                            `<button type="button" id="editProjectButton" class="btn btn-primary mr-2" data-id="${project.project_id}" onclick="viewProjectModal(${project.project_id}, '${project.project_title}', '${project.project_location}', '${project.project_owner}', '${project.unit_office}', '${project.project_description}', '${project.project_contract_duration}', '${project.project_date_prepared}', '${project.project_target_start_date}', '${project.project_appropriation}', '${project.project_source_of_fund}', '${project.project_mode_of_implementation}')"> View </button>` +
+                            `<button type="button" id="selectProjectButton" class="btn btn-success mr-2" data-id="${project.project_id}" onclick="openEditProjectModal(${project.project_id})" > Select </button>` +
                             // ... (add your delete button logic here) +
                             '</div>'
                         ]).node();
@@ -102,6 +103,29 @@
                     console.error(xhr.responseText);
                 }
             });
+        }
+
+        function viewProjectModal(project_id, projectTitle, projectLocation, projectOwner, unitOffice,
+            projectDescription,
+            projectContractDuration, projectDatePrepared, projectTargetStartDate, projectAppropriation, projectSourceOfFund,
+            projectModeOfImplementation) {
+            console.log(project_id)
+            // Populate modal fields with passed values
+            $('#view_project_id').val(project_id);
+            $('#view_project_title').val(projectTitle);
+            $('#view_project_location').val(projectLocation);
+            $('#view_project_owner').val(projectOwner);
+            $('#view_unit_office').val(unitOffice);
+            $('#view_project_description').val(projectDescription);
+            $('#view_project_contract_duration').val(projectContractDuration);
+            $('#view_project_date_prepared').val(projectDatePrepared);
+            $('#view_project_target_start_date').val(projectTargetStartDate);
+            $('#view_project_appropriation').val(projectAppropriation);
+            $('#view_project_source_of_fund').val(projectSourceOfFund);
+            $('#view_project_mode_of_implementation').val(projectModeOfImplementation);
+
+            // Show the modal
+            $('#viewProjectModal').modal('show');
         }
 
         $(document).ready(function() {
@@ -121,21 +145,6 @@
                 let appropriation = $('#add_project_appropriation').val();
                 let sourceOfFund = $('#add_project_source_of_fund').val();
                 let modeOfImplementation = $('#add_project_mode_of_implementation').val();
-
-                // Log the variables
-                // console.log('Title:', title);
-                // console.log('Location:', location);
-                // console.log('Owner:', owner);
-                // console.log('Office:', office);
-                // console.log('Description:', description);
-                // console.log('Contract Duration:', contractDuration);
-                // console.log('Date Prepared:', datePrepared);
-                // console.log('Target Start Date:', targetStartDate);
-                // console.log('Appropriation:', appropriation);
-                // console.log('Source of Fund:', sourceOfFund);
-                // console.log('Mode of Implementation:', modeOfImplementation);
-
-
 
 
                 // Make AJAX request to add new material
@@ -186,6 +195,67 @@
                     }
                 });
             });
+
+            // Handle Editing of Projects
+            $('#viewProjectForm').submit(function(e) {
+                e.preventDefault();
+
+                // Get form data
+                let projectId = $('#view_project_id').val();
+                let title = $('#view_project_title').val();
+                let location = $('#view_project_location').val();
+                let owner = $('#view_project_owner').val();
+                let office = $('#view_unit_office').val();
+                let description = $('#view_project_description').val();
+                let contractDuration = $('#view_project_contract_duration').val();
+                let datePrepared = $('#view_project_date_prepared').val();
+                let targetStartDate = $('#view_project_target_start_date').val();
+                let appropriation = $('#view_project_appropriation').val();
+                let sourceOfFund = $('#view_project_source_of_fund').val();
+                let modeOfImplementation = $('#view_project_mode_of_implementation').val();
+
+                // Make AJAX request to update the project
+                $.ajax({
+                    url: "{{ route('project.update', ['id' => ':id']) }}".replace(':id',
+                        projectId),
+                    type: "PUT", // Assuming you are using PUT method for update, change it if needed
+                    data: {
+                        project_title: title,
+                        project_location: location,
+                        project_owner: owner,
+                        unit_office: office,
+                        project_description: description,
+                        project_contract_duration: contractDuration,
+                        project_date_prepared: datePrepared,
+                        project_target_start_date: targetStartDate,
+                        project_appropriation: appropriation,
+                        project_source_of_fund: sourceOfFund,
+                        project_mode_of_implementation: modeOfImplementation,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        toastr.options.progressBar = true;
+                        toastr.success('Project Updated Successfully!');
+                        console.log(response); // Log response for debugging
+
+                        if (response) {
+                            // Optionally, you can reset the form and close the modal here
+                            // $('#editProjectForm')[0].reset();
+                            // $('#editProjectModal').modal('hide');
+
+                            refreshMaterialsTable(); // Update the materials table
+                        } else {
+                            // Show error message if project update fails
+                            alert('Failed to update project: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText); // Log error response for debugging
+                        alert('Error occurred. Check console for details.');
+                    }
+                });
+            });
+
         });
     </script>
 @endsection
