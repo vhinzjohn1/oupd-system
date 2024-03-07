@@ -66,12 +66,12 @@
             }).buttons().container().appendTo('#projectTable_wrapper .col-12');
 
             // Call the function to fetch and populate data in the table
-            refreshMaterialsTable();
+            refreshProjectsTable();
 
 
         });
 
-        function refreshMaterialsTable() {
+        function refreshProjectsTable() {
             $.ajax({
                 url: "{{ route('project.index') }}",
                 type: 'GET',

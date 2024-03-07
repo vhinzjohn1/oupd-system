@@ -35,11 +35,12 @@ Route::get('/material-categories', function () {
 
 Route::middleware('auth')->group(function () {
 
-
-    // Projects Routes
-    Route::get('projects', function () {
-        return view('projects');
+    Route::get('/pages/projects', function () {
+        return view('pages.projects');
     })->name('projects');
+
+    // Project Update Routes
+    Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('project.update');
 
     Route::view('about', 'about')->name('about');
 

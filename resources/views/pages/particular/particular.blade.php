@@ -66,7 +66,7 @@
             }).buttons().container().appendTo('#particularTable_wrapper .col-12');
 
             // Call the function to fetch and populate data in the table
-            refreshMaterialsTable();
+            refreshParticularTable();
 
             // Trigger to open Particular Modal Manually
             document.getElementById('addParticularButton').addEventListener('click', function() {
@@ -76,7 +76,7 @@
 
         });
 
-        function refreshMaterialsTable() {
+        function refreshParticularTable() {
             $.ajax({
                 url: "{{ route('particulars.index') }}",
                 type: 'GET',
