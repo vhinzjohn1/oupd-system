@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MaterialCategory;
 use App\Models\Project;
-
+use App\Http\Controllers\LaborController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,6 +20,7 @@ Auth::routes();
 
 Route::resource('project', ProjectController::class);
 Route::resource('materials', MaterialController::class);
+Route::resource('labor', LaborController::class);
 Route::resource('particulars', ParticularController::class);
 
 
@@ -39,8 +40,6 @@ Route::middleware('auth')->group(function () {
 
 
     Route::view('/pages/list_of_labors', 'pages.list_of_labors')->name('list_of_labors');
-
-
 
     // Routes for Materials
     Route::get('/pages/list_of_materials', function () {
