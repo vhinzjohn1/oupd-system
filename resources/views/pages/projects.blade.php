@@ -71,6 +71,7 @@
 
         });
 
+
         function refreshProjectsTable() {
             $.ajax({
                 url: "{{ route('project.index') }}",
@@ -90,7 +91,7 @@
                             project.project_location,
                             '<div class="text-center d-flex">' +
                             `<button type="button" id="editProjectButton" class="btn btn-primary mr-2" data-id="${project.project_id}" onclick="viewProjectModal(${project.project_id}, '${project.project_title}', '${project.project_location}', '${project.project_owner}', '${project.unit_office}', '${project.project_description}', '${project.project_contract_duration}', '${project.project_date_prepared}', '${project.project_target_start_date}', '${project.project_appropriation}', '${project.project_source_of_fund}', '${project.project_mode_of_implementation}')"> View </button>` +
-                            `<button type="button" id="selectProjectButton" class="btn btn-success mr-2" data-id="${project.project_id}" onclick="openEditProjectModal(${project.project_id})" > Select </button>` +
+                            `<button type="button" id="selectProjectButton" class="btn btn-success mr-2" data-id="${project.project_id}" onclick="selectProject(${project.project_id}, '${project.project_title}')" > Select </button>` +
                             // ... (add your delete button logic here) +
                             '</div>'
                         ]).node();
@@ -102,6 +103,23 @@
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
                 }
+            });
+        }
+
+        function selectProject(project_id, project_title) {
+            // Save the selected project_id and project_title in localStorage
+            localStorage.setItem('selectedProjectID', project_id);
+            localStorage.setItem('selectedProjectTitle', project_title);
+
+            // Display the project_title and project_id in the center of the navbar
+            document.getElementById('setprojectID').innerText = project_id;
+            document.getElementById('setprojectTitle').innerText = project_title;
+
+            // Show SweetAlert2 popup
+            Swal.fire({
+                title: `${project_title}  Selected`,
+                icon: 'success',
+                confirmButtonText: 'OK'
             });
         }
 

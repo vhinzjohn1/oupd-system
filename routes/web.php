@@ -90,7 +90,7 @@ Route::middleware('auth')->group(function () {
     })->name('particular');
 
     // Routes for Project Particular
-    Route::get('project-particular', function () {
+    Route::get('project_particular', function () {
         return view('pages.project_particular.project_particular');
     })->name('project_particular');
 

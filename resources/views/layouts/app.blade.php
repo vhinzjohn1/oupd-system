@@ -77,6 +77,12 @@
                 </li>
             </ul>
 
+            <div class="mx-auto d-none d-sm-block">
+                <input type="hidden" id="setprojectID">
+                <h4 id="setprojectTitle"></h4>
+            </div>
+
+
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
@@ -147,6 +153,22 @@
     @vite('resources/js/app.js')
     <!-- AdminLTE App -->
     <script src="{{ asset('js/adminlte.min.js') }}"></script>
+
+    <script>
+        // Check if there is a selected project in localStorage on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedProjectId = localStorage.getItem('selectedProjectID');
+            const selectedProjectTitle = localStorage.getItem('selectedProjectTitle');
+
+            console.log("selected id: " + selectedProjectId)
+
+            // If a selected project is found, display its title in the navbar
+            if (selectedProjectId && selectedProjectTitle) {
+                document.getElementById('setprojectID').innerText = selectedProjectId;
+                document.getElementById('setprojectTitle').innerText = selectedProjectTitle;
+            }
+        });
+    </script>
 
     @yield('scripts')
 </body>

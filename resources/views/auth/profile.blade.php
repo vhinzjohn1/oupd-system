@@ -132,7 +132,8 @@
                                     <div class="input-group mb-3">
                                         <input type="password" name="password_confirmation"
                                             class="form-control @error('password_confirmation') is-invalid @enderror"
-                                            placeholder="{{ __('New password confirmation') }}" autocomplete="new-password">
+                                            placeholder="{{ __('New password confirmation') }}"
+                                            autocomplete="new-password">
                                         <div class="input-group-append">
                                             <div class="input-group-text">
                                                 <span class="fas fa-lock"></span>
@@ -142,8 +143,10 @@
 
                                 </div>
 
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
+                                <div class="d-flex justify-content-center">
+                                    <div class="col-6 mb-4">
+                                        <button type="submit" class="btn btn-primary btn-block">{{ __('Submit') }}</button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
