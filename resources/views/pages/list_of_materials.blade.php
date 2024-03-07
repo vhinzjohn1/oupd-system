@@ -23,8 +23,7 @@
                         <div class="card-body table-responsive">
                             <table id="materialTable" class="table table-bordered table-striped col-12">
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
-                                        data-target="#addModal">
+                                    <button type="button" class="btn btn-success" id="addMaterialButton">
                                         Add Material
                                     </button>
                                 </div>
@@ -45,12 +44,6 @@
                                     @include('modals.edit_materials_modal')
                                 </tbody>
                             </table>
-                            {{-- <h3>Material Category</h3>
-                        <h2>{{ $material_category = App\Models\MaterialCategory::where('material_category_id', 3)->first()->material_category_name }}
-                            <h2>{{ $material = App\Models\Material::where('material_id', 2)->first()->material_name }}
-                            </h2>
-                        </h2> --}}
-                            {{-- <h2>{{ $material->price->price_id }}</h2> --}}
                         </div>
                     </div>
                 </div>
@@ -77,6 +70,11 @@
 
             // Call the function to fetch and populate data in the table
             refreshMaterialsTable();
+
+            // Trigger to open MaterialModal Manually
+            document.getElementById('addMaterialButton').addEventListener('click', function() {
+                $('#addMaterialModal').modal('show');
+            });
 
             // Attach the click handler to the table itself (or a closer static parent)
             // $('#materialTable').on('click', '.btn-edit-material', function() {
@@ -107,36 +105,24 @@
             }
         });
 
-        function openEditMaterialModal(material_id) {
+        function openEditMaterialModal(material_id, price_id, price, quarter, year, material_name, material_category_name,
+            unit) {
+            console.log("Material ID: " + material_id + ", Price ID: " + price_id + ", Price: " + price + ", Quarter: " +
+                quarter + ", Year: " + year);
             // Call a function to fetch material data by material_id
-            fetchMaterialData(material_id);
+            $('#edit_material_id').val(material_id);
+            $('#edit_material_category_name').val(material_category_name);
+            $('#edit_material_name').val(material_name);
+            $('#edit_unit').val(unit);
+            // Assuming prices is always an array, even if empty
+            $('#edit_price').val(price);
+            $('#edit_quarter').val(quarter);
+            $('#edit_year').val(year);
             $('#editMaterialModal').modal('show');
         }
-        // Function to fetch material data by material_id
-        function fetchMaterialData(material_id) {
-            $.ajax({
-                url: "{{ route('materials.index') }}/" +
-                    material_id, // Adjust the route to fetch individual material data
-                type: 'GET',
-                dataType: 'json',
-                success: function(material) {
-                    // Populate the form fields with the fetched material data
-                    $('#edit_material_id').val(material.material_id);
-                    $('#edit_material_category_name').val(material.category.material_category_name);
-                    $('#edit_material_name').val(material.material_name);
-                    $('#edit_unit').val(material.unit);
 
-                    // Assuming prices is always an array, even if empty
-                    const priceData = material.prices[0] || {};
-                    $('#edit_price').val(priceData.price);
-                    $('#edit_quarter').val(priceData.quarter);
-                    $('#edit_year').val(priceData.year);
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
-        }
+
+
 
 
 
@@ -151,24 +137,25 @@
                     console.log(data);
 
                     data.forEach(function(material, index) {
-                        // Assuming prices is always an array, even if empty
-                        const priceData = material.prices[0] || {}; // Get price data or an empty object
-
+                        console.log(material.price_id);
+                        console.log(material.price);
+                        // Assuming each material has a single price associated with it
                         var newRow = table.row.add([
-                            // material.material_id,
                             material.material_name,
-                            material.category.material_category_name,
+                            material.material_category_name,
                             material.unit,
-                            priceData.price,
-                            priceData.quarter,
-                            priceData.year,
+                            material.price,
+                            material.quarter,
+                            material.year,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2" data-id="${material.material_id}" onclick="openEditMaterialModal(${material.material_id})" > Edit </button>` +
+                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2"
+                                data-material-id="${material.material_id}" data-price-id="${material.price_id}"
+                                onclick="openEditMaterialModal(${material.material_id}, ${material.price_id},
+                                '${material.price}', '${material.quarter}', '${material.year}',
+                                '${material.material_name}', '${material.material_category_name}', '${material.unit}')"> Edit </button>` +
                             `<button type="button" class="btn btn-danger" data-id="${material.material_id}"> Delete </button>` +
-                            // ... (add your delete button logic here) +
                             '</div>'
                         ]).node();
-
                     });
 
                     table.draw();
@@ -178,6 +165,7 @@
                 }
             });
         }
+
 
 
         $(document).ready(function() {
@@ -212,14 +200,14 @@
                     success: function(response) {
                         toastr.options.progressBar = true;
                         toastr.success('Material Added Successfully!');
-                        console.log(response); // Log response for debugging
+                        $('#addMaterialModal').modal('hide');
+                        $('#addMaterialForm')[0].reset();
+                        $('.modal-backdrop').remove();
                         refreshMaterialsTable();
 
                         if (response) {
-                            $('#addMaterialForm')[0].reset();
-                            // $('#addModal').modal('hide');
+                            e.preventDefault();
                             console.log('successfully added');
-
                         } else {
                             // Show error message if material addition fails
                             alert('Failed to add material: ' + response.message);
@@ -271,7 +259,7 @@
                     success: function(response) {
                         toastr.options.progressBar = true;
                         toastr.success('Material Updated Successfully!');
-                        // $('#editMaterialModal').modal('hide');
+                        $('#editMaterialModal').modal('hide');
                         $('#editMaterialForm')[0].reset();
                         refreshMaterialsTable();
 

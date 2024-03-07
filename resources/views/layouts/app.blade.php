@@ -16,12 +16,12 @@
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/customStyle.css') }}">
 
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
-    <!-- DataTables -->
-    {{-- <link rel="stylesheet" href="../../../public/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
-    <link rel="stylesheet" href="../../../public/admin/plugins/datatables-responsive/css/responsive.bootstrap4.css">
-    <link rel="stylesheet" href="../../../public/admin/plugins/datatables-buttons/css/buttons.bootstrap4.css"> --}}
 
+    <!-- SweetAlert2 -->
+    <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
 
 
     <!-- jQuery -->
@@ -41,15 +41,6 @@
     <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-
-    {{-- Jquery and data table script --}}
-    {{-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.dataTables.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script> --}}
 
 
     {{-- script for number format --}}

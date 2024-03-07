@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Particular extends Model
 {
-    use HasFactory;
+    protected $primaryKey = 'particular_id';
+    protected $fillable = ['particular_name', 'description'];
 }

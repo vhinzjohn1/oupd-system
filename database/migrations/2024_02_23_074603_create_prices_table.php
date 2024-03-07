@@ -13,15 +13,16 @@ class CreatePricesTable extends Migration
         Schema::create('prices', function (Blueprint $table) {
             $table->id('price_id');
             $table->decimal('price', 10, 2);
-            $table->string('status');
+            $table->boolean('is_active')->default(true);
             $table->string('quarter');
             $table->string('year');
-            $table->unsignedBigInteger('material_id'); // Foreign Key
+            $table->unsignedBigInteger('material_id');
             $table->foreign('material_id')
                 ->references('material_id')
                 ->on('materials');
             $table->timestamps();
         });
+
     }
 
     public function down()
