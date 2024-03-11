@@ -143,6 +143,7 @@ class MaterialController extends Controller
             $newPrice->year = $validatedData['edit_year'];
             $newPrice->material_id = $material->material_id; // Associate with the material
 
+            $material->save();   // Save changes to the material
             // Save the new price
             $newPrice->save();
 

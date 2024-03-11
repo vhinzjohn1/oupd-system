@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class EquipmentRate extends Model
 {
-    protected $primaryKey = 'eq_rate_id';
+    protected $primaryKey = 'equipment_rate_id';
     protected $fillable = [
         'rate',
         'equipment_id',
         'is_active',
         'date_effective',
     ];
-    
+
     protected $dates = ['date_effective'];
 
     public function Equipment()

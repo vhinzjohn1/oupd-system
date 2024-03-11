@@ -17,9 +17,14 @@ class EquipmentController extends Controller
      */
     public function index()
     {
-        // $materials = Material::with('category', 'prices')->get();
-        // return view('pages.list_of_materials', compact('materials'));
-        $equipments = Equipment::with('category', 'prices')->get();
+        // Select equipments with their associated active rates and categories
+        $equipments = DB::table('equipments')
+            ->join('equipment_rates', 'equipments.equipment_id', '=', 'equipment_rates.equipment_id')
+            ->join('equipment_categories', 'equipments.equipment_category_id', '=', 'equipment_categories.equipment_category_id')
+            ->select('equipments.*', 'equipment_rates.equipment_rate_id', 'equipment_rates.rate', 'equipment_rates.date_effective', 'equipment_categories.equipment_category_name')
+            ->where('equipment_rates.is_active', true)
+            ->get();
+
         if (request()->ajax()) {
             return response()->json($equipments);
         } else {
@@ -43,11 +48,11 @@ class EquipmentController extends Controller
         // Validate incoming request data
         $validatedData = $request->validate([
             'equipment_name' => 'required|string',
-            'eq_cat_category' => 'required|string',
+            'equipment_category' => 'required|string',
             'equipment_model' => 'required|string',
             'equipment_capacity' => 'required|string',
-            'equipment_rate' => 'required|numeric',
-            'eq_cat_desc' => 'required|string',
+            'rate' => 'required|numeric',
+            // 'equipment_category_desc' => 'required|string',
         ]);
 
         try {
@@ -56,29 +61,33 @@ class EquipmentController extends Controller
             DB::beginTransaction();
 
             // Retrieve or create equipment category
-            $equipmentCategory = EquipmentCategory::frstOrCreate(['material_category_name' => $validatedData['material_category']]);
+            $equipmentCategory = EquipmentCategory::firstOrCreate(['equipment_category_name' => $validatedData['equipment_category']]);
 
+            // Check if equipment with the same name exists
+            $equipment = Equipment::where('equipment_name', $validatedData['equipment_name'])->first();
 
-            // Associate the category (assuming a belongsTo relationship called 'category')
-            $equipment = new Equipment([
-                'equipment_name' => $validatedData['equipment_name'],
-                'equipment_model' => $validatedData['equipment_model'],
-                'equipment_capacity' => $validatedData['equipment_capacity'],
-            ]);
+            if (!$equipment) {
+                // If equipment does not exist, create a new one
+                $equipment = new Equipment([
+                    'equipment_name' => $validatedData['equipment_name'],
+                    'equipment_model' => $validatedData['equipment_model'],
+                    'equipment_capacity' => $validatedData['equipment_capacity'],
+                ]);
 
-            $equipment->category()->associate($equipmentCategory);
-            $equipment->save();
+                $equipment->category()->associate($equipmentCategory);
+                $equipment->save();
+            }
 
+            DB::table('equipment_rates')
+                ->where('equipment_id', $equipment->equipment_id)
+                ->update(['is_active' => false]);
 
-
-            // Create a new equipment instance and assign IDs
+            // Create a new rate instance
             $rate = new EquipmentRate();
             $rate->rate = $validatedData['rate'];
             $rate->equipment_id = $equipment->equipment_id;
-            $rate->is_active = 1;
-            $rate->date_effective = Carbon::now(); // Capture the current timestamp
 
-            // // Save the equipment
+            // Save the rate
             $rate->save();
 
             // Commit the transaction
@@ -122,20 +131,18 @@ class EquipmentController extends Controller
     {
         // Validate incoming request data
         $validatedData = $request->validate([
-            'equipment_name' => 'required|string',
-            'eq_cat_category' => 'required|string',
-            'equipment_model' => 'required|string',
-            'equipment_capacity' => 'required|string',
-            'equipment_rate' => 'required|numeric',
-            'eq_cat_desc' => 'required|string',
-        ]);
+            'edit_equipment_name' => 'required|string',
+            'edit_equipment_category_name' => 'required|string',
+            'edit_equipment_model' => 'required|string',
+            'edit_equipment_capacity' => 'required|string',
+            'edit_rate' => 'required|numeric',
+        ]);        
 
         try {
             DB::beginTransaction();
 
             // Find the equipment based on ID
             $equipment = Equipment::findOrFail($id);
-
             // Update equipment details
             $equipment->equipment_name = $validatedData['edit_equipment_name'];
             $equipment->equipment_model = $validatedData['edit_equipment_model'];
@@ -143,27 +150,31 @@ class EquipmentController extends Controller
 
             // Update equipment category (retrieve if exists or create if new)
             $equipmentCategory = EquipmentCategory::firstOrCreate([
-                'eq_cat_name' => $validatedData['edit_eq_cat_name'],
+                'equipment_category_name' => $validatedData['edit_equipment_category_name'],
             ]);
             $equipment->category()->associate($equipmentCategory);
 
-            // Retrieve existing rate record
-            $rate = $equipment->rates()->where([
-                'equipment_id' => $equipment->equipment_id,
-            ])->firstOrFail();
+            // Deactivate existing rates with the same equipment_id the equipment
+            DB::table('equipment_rates')
+                ->where('equipment_id', $equipment->equipment_id)
+                ->update(['is_active' => false]);
 
-            // Update rate attributes
-            $rate->rate = $validatedData['edit_rate'];
+            // Create a new rate instance
+            $newRate = new EquipmentRate();
+            $newRate->rate = $validatedData['edit_rate'];
+            $newRate->equipment_id = $equipment->equipment_id; // Associate with the equipment
 
-            // Save changes
-            $equipment->save();
-            $rate->save();
+
+            $equipment->save();  // Save changes to equipment table
+            // Save the new rate
+            $newRate->save();
+
             DB::commit();
 
             return response()->json(['success' => true, 'message' => 'Equipment updated successfully!']);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update Equipment: ' . $e->getMessage());
+            Log::error('Failed to update equipment: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Equipment update failed. Check logs for details.']);
         }
     }

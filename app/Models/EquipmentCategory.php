@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class EquipmentCategory extends Model
 {
-    protected $primaryKey = 'eq_cat_id';
+    protected $primaryKey = 'equipment_category_id';
     protected $fillable = [
-        'eq_cat_name',
-        'eq_cat_desc'
+        'equipment_category_name',
+        // 'equipment_category_desc'
     ];
 
     public function Equipments()

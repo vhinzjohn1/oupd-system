@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('equipment_categories', function (Blueprint $table) {
-            $table->id('eq_cat_id');
-            $table->string('eq_cat_name');
-            $table->string('eq_cat_desc');
+            $table->id('equipment_category_id'); // Make sure 'equipment_category_id' is the primary key
+            $table->string('equipment_category_name');
+            // $table->string('equipment_category_desc');
             $table->timestamps();
         });
     }
