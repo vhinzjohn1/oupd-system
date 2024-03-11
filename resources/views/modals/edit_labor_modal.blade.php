@@ -8,9 +8,9 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="editLaborForm">
-                    @csrf
+            <form id="editLaborForm">
+                @csrf
+                <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <input type="hidden" id="edit_labor_id" name="edit_labor_id">
@@ -29,19 +29,12 @@
                             <label for="edit_rate">Rate</label>
                             <input type="number" class="form-control" id="edit_rate" name="edit_rate" required>
                         </div>
-                        {{-- <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="edit_date_effective">Date Effective</label>
-                                <input type="datetime" class="form-control" id="edit_date_effective" name="edit_date_effective" required>
-                            </div>
-                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
 </div>

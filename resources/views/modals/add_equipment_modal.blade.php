@@ -15,7 +15,7 @@
                     <!-- Add form fields for adding a new Equipment -->
                     <div class="row">
                         <div class="col-6">
-                            
+
                             <div class="form-group">
                                 <label for="add_equipment_name">Equipment Name</label>
                                 <input type="text" class="form-control" id="add_equipment_name"
@@ -29,16 +29,14 @@
 
                             <div class="form-group">
                                 <label for="add_model">Model</label>
-                                <input type="text" class="form-control" id="add_equipment_model" name="add_model" required>
+                                <input type="text" class="form-control" id="add_equipment_model" name="add_model"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="add_capacity">Capacity</label>
-                                <input type="text" class="form-control" id="add_equipment_capacity" name="add_capacity" required>
+                                <input type="text" class="form-control" id="add_equipment_capacity"
+                                    name="add_capacity" required>
                             </div>
-                            {{-- <div class="form-group">
-                                <label for="add_description">Description</label>
-                                <input type="text" class="form-control" id="add_description" name="add_description" required>
-                            </div> --}}
                         </div>
                         <div class="col-6">
                             <div class="form-group">

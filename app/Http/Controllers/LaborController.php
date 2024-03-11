@@ -16,12 +16,25 @@ class LaborController extends Controller
      */
     public function index()
     {
-        $labors = Labor::with('rates')->get();
+        // Select labors with their associated active rates and categories
+        $labors = DB::table('labors')
+            ->join('labor_rates', 'labors.labor_id', '=', 'labor_rates.labor_id')
+            ->select('labors.*', 'labor_rates.labor_rate_id', 'labor_rates.rate', 'labor_rates.date_effective')
+            ->where('labor_rates.is_active', true)
+            ->get();
+
         if (request()->ajax()) {
             return response()->json($labors);
         } else {
             return view('pages.list_of_labors');
         }
+
+        // $labors = Labor::with('rates')->get();
+        // if (request()->ajax()) {
+        //     return response()->json($labors);
+        // } else {
+        //     return view('pages.list_of_labors');
+        // }
     }
 
     /**
@@ -42,7 +55,7 @@ class LaborController extends Controller
             'labor_name' => 'required|string',
             'location' => 'required|string',
             'rate' => 'required|numeric',
-            
+
         ]);
 
         try {
@@ -50,27 +63,28 @@ class LaborController extends Controller
             // Start a database transaction
             DB::beginTransaction();
 
-            // Associate the category (assuming a belongsTo relationship called 'category')
-            $labor = new Labor([
-                'labor_name' => $validatedData['labor_name'],
-                'location' => $validatedData['location'],
-                // 'rate' => $validatedData['rate'],
-            ]);
+            // Check if labor with the same name exists
+            $labor = Labor::where('labor_name', $validatedData['labor_name'])->first();
 
-            // $labor->category()->associate($laborCategory);
-            $labor->save();
+            if (!$labor) {
+                // If labor does not exist, create a new one
+                $labor = new Labor([
+                    'labor_name' => $validatedData['labor_name'],
+                    'location' => $validatedData['location'],
+                ]);
+                $labor->save();
+            }
 
+            DB::table('labor_rates')
+                ->where('labor_id', $labor->labor_id)
+                ->update(['is_active' => false]);
 
-
-            // Create a new labor instance and assign IDs
+            // Create a new rate instance
             $rate = new LaborRate();
             $rate->rate = $validatedData['rate'];
             $rate->labor_id = $labor->labor_id;
-            $rate->is_active = 1;
-            $rate->date_effective = Carbon::now(); // Capture the current timestamp
-            
 
-            // // Save the material
+            // Save the rate
             $rate->save();
 
             // Commit the transaction
@@ -82,8 +96,8 @@ class LaborController extends Controller
             // Rollback the transaction if an exception occurs
             DB::rollBack();
 
-            // // Log detailed error message
-            // Log::error('Failed to add labor: ' . $e->getMessage());
+            // Log detailed error message
+            Log::error('Failed to add labor: ' . $e->getMessage());
 
             // Return error response
             return response()->json(['success' => false, 'message' => 'Failed to add labor. Please check the logs for details.']);
@@ -129,24 +143,28 @@ class LaborController extends Controller
             $labor->labor_name = $validatedData['edit_labor_name'];
             $labor->location = $validatedData['edit_location'];
 
-            // Retrieve existing price record
-            $rate = $labor->rates()->where([
-                'labor_id' => $labor->labor_id,
-            ])->firstOrFail();
+            // Deactivate existing rates with the same labor_id the labor
+            DB::table('labor_rates')
+                ->where('labor_id', $labor->labor_id)
+                ->update(['is_active' => false]);
 
-            // Update price attributes
-            $rate->rate = $validatedData['edit_rate'];
+            // Create a new rate instance
+            $newRate = new LaborRate();
+            $newRate->rate = $validatedData['edit_rate'];
+            $newRate->labor_id = $labor->labor_id; // Associate with the labor
 
-            // Save changes
-            $labor->save();
-            $rate->save();
+
+            $labor->save();  // Save changes to labor table
+            // Save the new rate
+            $newRate->save();
+
             DB::commit();
 
-            return response()->json(['success' => true, 'message' => 'Material updated successfully!']);
+            return response()->json(['success' => true, 'message' => 'Labor updated successfully!']);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to update labor: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Material update failed. Check logs for details.']);
+            return response()->json(['success' => false, 'message' => 'Labor update failed. Check logs for details.']);
         }
     }
 

@@ -22,8 +22,7 @@
                         <div class="card-body table-responsive">
                             <table id="laborTable" class="table table-bordered table-striped col-12">
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
-                                        data-target="#addModal">
+                                    <button type="button" class="btn btn-success" id="addLaborButton">
                                         Add Labor Rate
                                     </button>
                                 </div>
@@ -42,12 +41,6 @@
                                     @include('modals.edit_labor_modal')
                                 </tbody>
                             </table>
-                            {{-- <h3>Material Category</h3>
-                        <h2>{{ $material_category = App\Models\MaterialCategory::where('material_category_id', 3)->first()->material_category_name }}
-                            <h2>{{ $material = App\Models\Material::where('material_id', 2)->first()->material_name }}
-                            </h2>
-                        </h2> --}}
-                            {{-- <h2>{{ $material->price->price_id }}</h2> --}}
                         </div>
                     </div>
                 </div>
@@ -74,6 +67,11 @@
 
             // Call the function to fetch and populate data in the table
             refreshLaborsTable();
+
+            // Trigger to open LaborModal Manually
+            document.getElementById('addLaborButton').addEventListener('click', function() {
+                $('#addLaborModal').modal('show');
+            });
 
             // Attach the click handler to the table itself (or a closer static parent)
             // $('#materialTable').on('click', '.btn-edit-material', function() {
@@ -105,17 +103,17 @@
         //     }
         // });
 
-        function openEditLaborModal(labor_id, labor_name, location, rate) {
-            // Populate the form fields with the fetched labor data
+        function openEditLaborModal(labor_id, labor_rate_id, rate, labor_name, location) {
+            console.log("Labor ID: " + labor_id + ", Rate ID: " + labor_rate_id + ", Location: " +
+                location + ", rate: " + rate);
+            // Call a function to fetch labor data by labor_id
             $('#edit_labor_id').val(labor_id);
             $('#edit_labor_name').val(labor_name);
-            // $('#edit_material_category_name').val(material.category.material_category_name);
             $('#edit_location').val(location);
+            // Assuming rates is always an array, even if empty
             $('#edit_rate').val(rate);
             $('#editLaborModal').modal('show');
         }
-
-
 
         function refreshLaborsTable() {
             $.ajax({
@@ -128,22 +126,24 @@
                     console.log(data);
 
                     data.forEach(function(labor, index) {
-                        // Assuming rates is always an array, even if empty
-                        const rateData = labor.rates[0] || {}; // Get rate data or an empty object
+                        console.log(labor.labor_rate_id);
+                        console.log(labor.rate);
 
+                        // Assuming each labor has a single rate associated with it
                         var newRow = table.row.add([
-                            // labor.labor_id,
                             labor.labor_name,
                             labor.location,
-                            rateData.rate,
-                            rateData.date_effective, // Add the date_effective here
+                            labor.rate,
+                            labor.date_effective,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${rateData.rate}')" > Edit </button>` +
+                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2"
+                            data-labor-id="${labor.labor_id}" data-rate-id="${labor.labor_rate_id}"
+                            onclick="openEditLaborModal('${labor.labor_id}', '${labor.labor_rate_id}',
+                            '${labor.rate}', '${labor.labor_name}', '${labor.location}')"> Edit </button>` +
                             `<button type="button" class="btn btn-danger" data-id="${labor.labor_id}"> Delete </button>` +
-                            // ... (add your delete button logic here) +
                             '</div>'
-                        ]).node();
 
+                        ]).node();
                     });
 
                     table.draw();
@@ -286,16 +286,17 @@
                     success: function(response) {
                         toastr.options.progressBar = true;
                         toastr.success('Labor Added Successfully!');
-                        console.log(response); // Log response for debugging
+                        $('#addLaborModal').modal('hide');
+                        $('#addLaborForm')[0].reset();
+                        $('.modal-backdrop').remove();
                         refreshLaborsTable();
 
-                        if (response.success) {
-                            $('#addLaborForm')[0].reset();
-                            $('#addModal').modal('hide');
+                        if (response) {
+                            e.preventDefault();
                             console.log('successfully added');
                         } else {
-                            // // Show error message if labor addition fails
-                            // alert('Failed to add labor: ' + response.message);
+                            // Show error message if Labor addition fails
+                            alert('Failed to add Labor: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {

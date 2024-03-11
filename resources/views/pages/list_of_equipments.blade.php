@@ -149,10 +149,10 @@
                             equipment.date_effective,
                             '<div class="text-center d-flex">' +
                             `<button type="button" id="editButton" class="btn btn-primary btn-edit-equipment mr-2"
-        data-equipment-id="${equipment.equipment_id}" data-rate-id="${equipment.equipment_rate_id}"
-        onclick="openEditEquipmentModal('${equipment.equipment_id}', '${equipment.equipment_rate_id}',
-        '${equipment.rate}', '${equipment.equipment_name}', '${equipment.equipment_category_name}', 
-        '${equipment.equipment_model}', '${equipment.equipment_capacity}')"> Edit </button>` +
+                            data-equipment-id="${equipment.equipment_id}" data-rate-id="${equipment.equipment_rate_id}"
+                            onclick="openEditEquipmentModal('${equipment.equipment_id}', '${equipment.equipment_rate_id}',
+                            '${equipment.rate}', '${equipment.equipment_name}', '${equipment.equipment_category_name}', 
+                            '${equipment.equipment_model}', '${equipment.equipment_capacity}')"> Edit </button>` +
                             `<button type="button" class="btn btn-danger" data-id="${equipment.equipment_id}"> Delete </button>` +
                             '</div>'
 
