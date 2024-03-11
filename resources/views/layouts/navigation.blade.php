@@ -12,7 +12,7 @@
                     {{ Auth::user()->last_name }}</a>
 
             </li>
-
+            x
             <hr style="background-color: white;">
             <li class="nav-item">
                 <a href="{{ route('home') }}" class="nav-link">
@@ -34,52 +34,54 @@
             </li>
 
 
-            {{-- List of Material Sidebar Navigation --}}
-            <li class="nav-item">
-                <a href="{{ route('list_of_materials') }}" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        {{ __('List Of Materials') }}
-                    </p>
-                </a>
-            </li>
 
-            <li class="nav-item">
-                <a href="{{ route('list_of_labors') }}" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        {{ __('Labor Rates') }}
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('list_of_equipments') }}" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        {{ __('Equipment Rates') }}
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('particular') }}" class="nav-link">
-                    <i class="nav-icon far fa-address-card"></i>
-                    <p>
-                        {{ __('Particular') }}
-                    </p>
-                </a>
-            </li>
 
             <li class="nav-item">
                 <a href="" class="nav-link">
                     <i class="nav-icon fas fa-circle nav-icon"></i>
                     <p>
-                        Project Particulars
+                        Master List
                         <i class="fas fa-angle-left right"></i>
                     </p>
                 </a>
                 <ul class="nav nav-treeview" style="display: none;">
 
+                    {{-- List of Material Sidebar Navigation --}}
                     <li class="nav-item">
+                        <a href="{{ route('particular') }}" class="nav-link">
+                            <i class="nav-icon far fa-address-card"></i>
+                            <p>
+                                {{ __('List of Particular') }}
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('list_of_materials') }}" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                {{ __('List of Materials') }}
+                            </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('list_of_labors') }}" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                {{ __('List of Labor Rates') }}
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('list_of_equipments') }}" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                {{ __('List of Equipments') }}
+                            </p>
+                        </a>
+                    </li>
+
+                    {{-- <li class="nav-item">
                         <a href="{{ route('project_particular') }}" class="nav-link">
                             <i class="nav-icon far fa-address-card"></i>
                             <p>
@@ -104,7 +106,7 @@
                             <i class="far fa-circle nav-icon"></i>
                             <p>Particulal Equipment</p>
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
             </li>
         </ul>
