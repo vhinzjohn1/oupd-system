@@ -80,7 +80,7 @@
                 <a href="" class="nav-link">
                     <i class="nav-icon fas fa-circle nav-icon"></i>
                     <p>
-                        Project Particulars
+                        {{ __('Project Particular') }}
                         <i class="fas fa-angle-left right"></i>
                     </p>
                 </a>
@@ -89,26 +89,26 @@
                         <a href="{{ route('project_particular') }}" class="nav-link">
                             <i class="nav-icon far fa-address-card"></i>
                             <p>
-                                {{ __('Project Particular') }}
+                                {{ __('Particular Particular') }}
                             </p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Particular Material </p>
+                            <p>{{ __('Particular Material') }}</p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Particular Labor</p>
+                            <p>{{ __('Particular Labor') }}</p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Particular Equipment</p>
+                            <p>{{ __('Particular Equipment') }}</p>
                         </a>
                     </li>
                 </ul>
@@ -159,3 +159,8 @@
     <!-- /.sidebar-menu -->
 </div>
 <!-- /.sidebar -->
+
+
+<script>
+    
+</script>

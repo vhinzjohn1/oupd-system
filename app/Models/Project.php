@@ -20,4 +20,9 @@ class Project extends Model
         'project_source_of_fund',
         'project_mode_of_implementation',
     ];
+
+    public function projectParticulars()
+    {
+        return $this->hasMany(ProjectParticular::class);
+    }
 }

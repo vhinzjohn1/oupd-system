@@ -3,9 +3,14 @@
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-between">
                     <h1 class="m-0">{{ __('Projects') }}</h1>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addProjectModal">
+                            Add Projects
+                        </button>
+                    </div>
 
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -16,34 +21,84 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body table-responsive">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body table-responsive">
+                        <table class="table col-12" id="projectTable">
+                            <thead>
+                                <tr>
+                                    <th>Project Title</th>
+                                    <th>Project Owner</th>
+                                    <th>Project Location</th>
+                                    <th>Actions</th>
+                                    <!-- Add other table headers here -->
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                            <table class="table col-12" id="projectTable">
-                                <div class="text-right">
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
-                                        data-target="#addProjectModal">
-                                        Add Projects
-                                    </button>
-                                </div>
-                                <thead>
-                                    <tr>
-                                        <th>Project Title</th>
-                                        <th>Project Owner</th>
-                                        <th>Project Location</th>
-                                        <th>Actions</th>
-                                        <!-- Add other table headers here -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            </div>
+        </div><!-- /.container-fluid -->
+
+
+        {{-- Container for Project Particular Table --}}
+        <div class="container-fluid">
+            <div class="text-right">
+                <button type="button" class="btn btn-success">Add Particular</button>
+            </div>
+            <div class="col-lg-12 d-flex m-1">
+                <table id="projectParticularTable" class="table" border="2">
+                    <thead>
+                        {{-- <tr class="bg-navy">
+                            <th class="text-center col-12" colspan="3">COE Building </th>
+                        </tr>
+
+                        <tr class="bg-gray-dark">
+                            <th class="text-center col-12" colspan="3">Embankment</th>
+                        </tr>
+
+                        <tr>
+                            <td class="bg-olive">Materials</td>
+                            <td class="bg-olive">Labor</td>
+                            <td class="bg-olive">Equipment</td>
+                        </tr>
+                        <tr>
+                            <td>Washed Sand</td>
+                            <td>Foreman</td>
+                            <td>Excavators</td>
+                        </tr>
+
+                        <tr>
+                            <td>Gravel</td>
+                            <td>Panday</td>
+                            <td>Truck</td>
+                        </tr>
+
+                        <tr class="bg-gray-dark">
+                            <th class="text-center col-12" colspan="3">Pavements</th>
+                        </tr>
+                        <tr>
+                            <td class="bg-olive">Materials</td>
+                            <td class="bg-olive">Labor</td>
+                            <td class="bg-olive">Equipment</td>
+                        </tr>
+                        <tr>
+                            <td>Washed Sand</td>
+                            <td>Foreman</td>
+                            <td>Excavators</td>
+                        </tr>
+
+                        <tr>
+                            <td>Gravel</td>
+                            <td>Panday</td>
+                            <td>Truck</td>
+                        </tr> --}}
+
+                    </thead>
+                </table>
             </div>
         </div><!-- /.container-fluid -->
     </div>
@@ -62,14 +117,161 @@
                 "searching": true,
                 "ordering": true,
                 "paging": true,
+            }).buttons().container().appendTo('#projectTable_wrapper .col-md-6:eq(0)');
 
-            }).buttons().container().appendTo('#projectTable_wrapper .col-12');
+
 
             // Call the function to fetch and populate data in the table
             refreshProjectsTable();
 
 
+            // Refresh Project Particular Table
+            refreshProjectParticularTable();
+            refreshProjectParticularTable1();
         });
+
+        // function refreshProjectParticularTable() {
+        //     $.ajax({
+        //         url: '{{ route('projectParticulars.index') }}', // Update this with the actual URL of your route
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(data) {
+        //             console.log(data)
+        //             // Check if there is a selected project in localStorage
+        //             const selectedProjectId = localStorage.getItem('selectedProjectID');
+
+        //             // Setting the variable name for the Project Particular Table
+        //             var table = $('#projectParticularTable');
+        //             table.empty();
+
+        //             var project = data[selectedProjectId];
+
+        //             var projectHeaderRow = $(
+        //                 '<tr class="bg-navy"><th class="text-center col-12" colspan="3">' +
+        //                 project.project_title +
+        //                 '</th></tr>'
+        //             );
+        //             table.append(projectHeaderRow);
+
+
+        //             $.each(project.project_particulars, function(index, particular) {
+        //                 var projectHeaderRow = $(
+        //                     '<tr class="bg-gray-dark"><th class="text-center col-12" colspan="3">' +
+        //                     particular.particular_name +
+        //                     '</th></tr>'
+        //                 );
+        //                 table.append(projectHeaderRow);
+
+        //                 // Add headers for Materials, Labor, and Equipment
+        //                 var headerRow = $('<tr class="bg-olive"></tr>');
+        //                 headerRow.append('<th>Materials</th>');
+        //                 headerRow.append('<th>Labor</th>');
+        //                 headerRow.append('<th>Equipment</th>');
+        //                 table.append(headerRow);
+
+        //             });
+
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(error); // Log any errors to the console
+        //         }
+        //     });
+        // }
+
+        function refreshProjectParticularTable1() {
+            $.ajax({
+                url: '{{ route('projectParticulars.index') }}', // Update this with the actual URL of your route
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data)
+
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(error); // Log any errors to the console
+                }
+            });
+        }
+
+        function refreshProjectParticularTable() {
+            var jsonData = {
+                "projects": [{
+                    "title": "COE Building",
+                    "particulars": [{
+                            "name": "Embankment",
+                            "details": {
+                                "Materials": ["Washed Sand", "Gravel"],
+                                "Labor": ["Foreman", "Panday"],
+                                "Equipment": ["Excavators", "Truck"]
+                            }
+                        },
+                        {
+                            "name": "Pavements",
+                            "details": {
+                                "Materials": ["Washed Sand", "Gravel"],
+                                "Labor": ["Foreman", "Panday"],
+                                "Equipment": ["Excavators", "Truck"]
+                            }
+                        },
+                        {
+                            "name": "Concrete Pavers",
+                            "details": {
+                                "Materials": ["Washed Sand", "Gravel"],
+                                "Labor": ["Foreman", "Panday"],
+                                "Equipment": ["Excavators", "Truck"]
+                            }
+                        }
+                    ]
+                }]
+            };
+
+            // Clear the existing table content
+            var table = $('#projectParticularTable');
+            table.empty();
+
+
+
+            // Loop through the JSON data and populate the table
+            jsonData.projects.forEach(function(project) {
+                var projectHeaderRow = $('<tr class="bg-navy"><th class="text-center col-12" colspan="3">' + project
+                    .title + '</th></tr>');
+                table.append(projectHeaderRow);
+
+                project.particulars.forEach(function(particular) {
+                    var particularHeaderRow = $(
+                        '<tr class="bg-gray-dark"><th class="text-center col-12" colspan="3">' +
+                        particular.name + '</th></tr>');
+                    table.append(particularHeaderRow);
+
+                    // Create header row for Materials, Labor, and Equipment
+                    var headerRow = $('<tr class="bg-olive"></tr>');
+                    headerRow.append('<th>Materials</th>');
+                    headerRow.append('<th>Labor</th>');
+                    headerRow.append('<th>Equipment</th>');
+                    table.append(headerRow);
+
+                    // Iterate over details and add rows for each value
+                    var maxValues = Math.max(particular.details.Materials.length, particular.details.Labor
+                        .length, particular.details.Equipment.length);
+                    for (var i = 0; i < maxValues; i++) {
+                        var detailRow = $('<tr></tr>');
+                        detailRow.append('<td>' + (particular.details.Materials[i] || '') + '</td>');
+                        detailRow.append('<td>' + (particular.details.Labor[i] || '') + '</td>');
+                        detailRow.append('<td>' + (particular.details.Equipment[i] || '') + '</td>');
+                        table.append(detailRow);
+                    }
+                });
+            });
+        }
+
+
+
+
+
+
+
+
 
 
         function refreshProjectsTable() {
@@ -108,12 +310,8 @@
 
         function selectProject(project_id, project_title) {
             // Save the selected project_id and project_title in localStorage
-            localStorage.setItem('selectedProjectID', project_id);
-            localStorage.setItem('selectedProjectTitle', project_title);
-
-            // Display the project_title and project_id in the center of the navbar
-            document.getElementById('setprojectID').innerText = project_id;
-            document.getElementById('setprojectTitle').innerText = project_title;
+            // localStorage.setItem('selectedProjectID', project_id);
+            // localStorage.setItem('selectedProjectTitle', project_title);
 
             // Show SweetAlert2 popup
             Swal.fire({
@@ -190,7 +388,7 @@
 
                         if (response) {
                             $('#addProjectForm')[0].reset();
-                            // $('#addProjectModal').modal('hide');
+                            $('#addProjectModal').modal('hide');
 
                             // //setting callback function for 'hidden.bs.modal' event
                             // $('#addProjectModal').on('hidden.bs.modal', function() {
@@ -200,7 +398,7 @@
 
                             console.log('successfully added');
 
-                            refreshMaterialsTable();
+                            refreshProjectsTable();
 
                         } else {
                             // Show error message if material addition fails
@@ -254,14 +452,14 @@
                     success: function(response) {
                         toastr.options.progressBar = true;
                         toastr.success('Project Updated Successfully!');
-                        console.log(response); // Log response for debugging
+                        $('#viewProjectForm')[0].reset();
+                        $('#viewProjectModal').modal('hide');
 
                         if (response) {
                             // Optionally, you can reset the form and close the modal here
-                            // $('#editProjectForm')[0].reset();
-                            // $('#editProjectModal').modal('hide');
 
-                            refreshMaterialsTable(); // Update the materials table
+
+                            refreshProjectsTable(); // Update the materials table
                         } else {
                             // Show error message if project update fails
                             alert('Failed to update project: ' + response.message);
