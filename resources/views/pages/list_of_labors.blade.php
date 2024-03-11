@@ -114,6 +114,32 @@
             $('#edit_rate').val(rate);
             $('#editLaborModal').modal('show');
         }
+        // Function to fetch labor data by labor_id
+        function fetchLaborData(labor_id) {
+            $.ajax({
+                url: "{{ route('labor.index') }}/" +
+                    labor_id, // Adjust the route to fetch individual labor data
+                type: 'GET',
+                dataType: 'json',
+                success: function(labor) {
+                    // Populate the form fields with the fetched labor data
+                    $('#edit_labor_id').val(labor.labor_id);
+                    // $('#edit_material_category_name').val(material.category.material_category_name);
+                    $('#edit_location').val(labor.location);
+                    $('#edit_labor_name').val(labor.labor_name);
+                    // $('#edit_rate').val(labor.rate);
+
+                    // Assuming prices is always an array, even if empty
+                    const rateData = labor.rates[0] || {};
+                    $('#edit_rate').val(rateData.rate);
+                    // $('#edit_quarter').val(rateData.quarter);
+                    // $('#edit_year').val(rateData.year);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
 
 
 

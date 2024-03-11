@@ -15927,27 +15927,29 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 }
 
 [class*="sidebar-light-"] .nav-treeview > .nav-item > .nav-link {
-    color: #777;
+    color: white;
 }
 
 [class*="sidebar-light-"] .nav-treeview > .nav-item > .nav-link:focus,
 [class*="sidebar-light-"] .nav-treeview > .nav-item > .nav-link:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: #000;
+    background-color: #ffc001;
+    color: black;
 }
 
 [class*="sidebar-light-"] .nav-treeview > .nav-item > .nav-link.active,
 [class*="sidebar-light-"] .nav-treeview > .nav-item > .nav-link.active:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: #212529;
+    background-color: #ffc001;
+    color: black;
 }
 
 [class*="sidebar-light-"] .nav-treeview > .nav-item > .nav-link:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #ffc001;
+    color: black;
 }
 
 [class*="sidebar-light-"] .nav-flat .nav-item .nav-treeview .nav-treeview {
-    border-color: rgba(0, 0, 0, 0.1);
+    border-color: #ffc001;
+    color: black;
 }
 
 [class*="sidebar-light-"]

@@ -29,6 +29,7 @@
     <!-- Bootstrap 4 -->
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- DataTables  & Plugins -->
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css"> --}}
     <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -46,20 +47,28 @@
     {{-- script for number format --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 
-
-
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-    </script>
+
 
     {{-- Toastr Alert cdn --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
+    <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
 
+    <!-- Select2 Styles -->
 
+    <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap-5-theme.min.css') }}">
+
+    <!-- Select2 Scripts -->
+    <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
+
+    <style>
+        .mx-auto {
+            margin-right: 0 !important;
+        }
+    </style>
 
     @yield('styles')
 </head>
@@ -76,6 +85,26 @@
                             class="fas fa-bars"></i></a>
                 </li>
             </ul>
+
+            {{-- <div class="mx-auto d-none d-sm-block">
+                <input type="hidden" id="setprojectID">
+                <h4 id="setprojectTitle"></h4>
+            </div> --}}
+
+            <div class="navbar-nav mx-auto"> <!-- Centered section -->
+                <div class="position-relative" style="width: 300px;">
+                    <select class="form-control select2" id="selectedProject" name="selectedProject[]" required>
+                        <!-- Options will be dynamically populated here -->
+                    </select>
+                </div>
+            </div>
+
+            {{-- <div class="form-group col-3">
+                <select class="form-control" id="selectedProject" name="selectedProject[]" multiple required>
+                    <!-- Options will be dynamically populated here -->
+                </select>
+            </div> --}}
+
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
@@ -147,6 +176,75 @@
     @vite('resources/js/app.js')
     <!-- AdminLTE App -->
     <script src="{{ asset('js/adminlte.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            const select = $('#selectedProject');
+
+            // Function to save the selected project to localStorage
+            function saveSelectedProjectToLocalStorage(projectId, projectTitle) {
+                localStorage.setItem('selectedProjectID', projectId);
+                localStorage.setItem('selectedProjectTitle', projectTitle);
+            }
+
+            // Check if there is a selected project in localStorage
+            const selectedProjectId = localStorage.getItem('selectedProjectID');
+            const selectedProjectTitle = localStorage.getItem('selectedProjectTitle');
+
+            // Fetch project data via AJAX and populate Select2 dropdown
+            $.ajax({
+                url: "{{ route('project.index') }}",
+                method: "GET",
+                success: function(response) {
+                    // console.log(response)
+                    // Populate Select2 dropdown with project data
+                    $.each(response, function(index, project) {
+                        select.append('<option value="' + project.project_id + '">' + project
+                            .project_title + '</option>');
+                    });
+
+                    // Trigger Select2 initialization after options are added
+                    select.select2({
+                        theme: 'bootstrap-5',
+                        placeholder: 'Select Project', // Optional placeholder text
+                        // allowClear: true, // Allow clearing the selection
+                    });
+
+
+
+                    // If a selected project is found in localStorage, set it as the default value
+                    if (selectedProjectId && selectedProjectTitle) {
+                        select.val(selectedProjectId).trigger('change'); // Set the selected value
+                        saveSelectedProjectToLocalStorage(selectedProjectId, selectedProjectTitle);
+                    }
+
+                    // Listen for changes in the select box and update localStorage accordingly
+                    select.on('change', function() {
+                        const selectedOption = $(this).find('option:selected');
+                        const projectId = selectedOption.val();
+                        const projectTitle = selectedOption.text();
+                        saveSelectedProjectToLocalStorage(projectId, projectTitle);
+                        // Log the projectId and projectTitle
+                        console.log('Selected Project ID:', projectId);
+                        console.log('Selected Project Title:', projectTitle);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+
+            // Initialize Select2
+            $('#selectedProject').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Select Project', // Optional placeholder text
+                // allowClear: true, // Allow clearing the selection
+            });
+
+
+        });
+    </script>
 
     @yield('scripts')
 </body>

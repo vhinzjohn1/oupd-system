@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectParticularController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MaterialCategory;
@@ -26,6 +27,8 @@ Route::resource('materials', MaterialController::class);
 
 Route::resource('labor', LaborController::class);
 Route::resource('particulars', ParticularController::class);
+
+Route::resource('projectParticulars', ProjectParticularController::class);
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -111,9 +114,12 @@ Route::middleware('auth')->group(function () {
     })->name('particular');
 
     // Routes for Project Particular
-    Route::get('project-particular', function () {
+    Route::get('project_particular', function () {
         return view('pages.project_particular.project_particular');
     })->name('project_particular');
+    // Project Particular Delete Routes
+    Route::delete('/project_particular/{project_particular_id}', [ProjectParticularController::class, 'destroy'])->name('project_particular.destroy');
+
 
     // Particular Update Routes
     Route::put('/particulars/{id}', [ParticularController::class, 'update'])->name('particulars.update');

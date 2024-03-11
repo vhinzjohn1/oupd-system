@@ -146,6 +146,7 @@ class MaterialController extends Controller
             $material->save();   // Save changes to the material
             // Save the new price
             $newPrice->save();
+            $material->save();
 
             DB::commit();
 
