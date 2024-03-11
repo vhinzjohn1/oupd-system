@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('equipment', function (Blueprint $table) {
+        Schema::create('equipments', function (Blueprint $table) {
             $table->id('equipment_id');
             $table->string('equipment_name');
-            $table->foreign('eq_cat_id')
-                ->references('eq_cat_id')
+            $table->unsignedBigInteger('equipment_category_id'); // Foreign Key
+            $table->foreign('equipment_category_id')
+                ->references('equipment_category_id')
                 ->on('equipment_categories');
             $table->string('equipment_model');
             $table->string('equipment_capacity');

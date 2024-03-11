@@ -139,7 +139,7 @@
                         success: function(response) {
                             toastr.options.progressBar = true;
                             toastr.success('Particular Deleted Successfully!');
-                            refreshMaterialsTable();
+                            refreshParticularTable();
                         },
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText); // Log error response for debugging
@@ -189,7 +189,7 @@
 
                             console.log('successfully added');
 
-                            refreshMaterialsTable();
+                            refreshParticularTable();
 
                         } else {
                             // Show error message if material addition fails
@@ -234,7 +234,7 @@
                             $('#editParticularForm')[0].reset();
                             $('#editParticularModal').modal('hide');
 
-                            refreshMaterialsTable(); // Update the materials table
+                            refreshParticularTable(); // Update the materials table
                         } else {
                             // Show error message if project update fails
                             alert('Failed to update project: ' + response.message);

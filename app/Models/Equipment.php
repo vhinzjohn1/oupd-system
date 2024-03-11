@@ -10,20 +10,21 @@ class Equipment extends Model
     protected $primaryKey = 'equipment_id';
     protected $fillable = [
         'equipment_name',
-        'eq_cat_id',
+        'equipment_category_id',
         'equipment_model',
         'equipment_capacity'
     ];
 
+    protected $table = 'equipments';
+
     // In your Equipment model
     public function category()
     {
-        return $this->belongsTo(EquipmentCategory::class, 'eq_cat_id'); // Specify the existing column name
+        return $this->belongsTo(EquipmentCategory::class, 'equipment_category_id'); // Specify the existing column name
     }
 
     public function rates()
     {
-        return $this->hasMany(EquipmentRate::class, 'eq_rate_id');
+        return $this->hasMany(EquipmentRate::class, 'equipment_rate_id');
     }
-
 }
