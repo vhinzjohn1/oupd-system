@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\MaterialCategory;
 use App\Models\Project;
 use App\Http\Controllers\LaborController;
-
+use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\ParticularController;
+use App\Models\EquipmentCategory;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,6 +34,10 @@ Route::resource('projectParticulars', ProjectParticularController::class);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/material-categories', function () {
     $categories = MaterialCategory::all()->pluck('material_category_name');
+    return response()->json($categories);
+});
+Route::get('/equipment-categories', function () {
+    $categories = EquipmentCategory::all()->pluck('equipment_category_name');
     return response()->json($categories);
 });
 
@@ -73,6 +78,22 @@ Route::middleware('auth')->group(function () {
 
     // Route to get the update function in the Material Controller
     Route::put('/materials/{id}', [MaterialController::class, 'update'])->name('materials.update');
+
+    // Routes for equipments
+    Route::get('/pages/list_of_equipments', function () {
+        return view('pages.list_of_equipments');
+    })->name('list_of_equipments');
+    
+    // Route for the index page of equipments
+    Route::get('/equipments', [EquipmentController::class, 'index'])->name('equipments.index');
+
+    // Route to get the Store function in the equipment Controller
+    Route::post('/equipments', [EquipmentController::class, 'store'])->name('equipments.store');
+
+    // Route to get the update function in the equipment Controller
+    Route::put('/equipments/{id}', [EquipmentController::class, 'update'])->name('equipments.update');
+
+    Route::view('/pages/list_of_equipments', 'pages.list_of_equipments')->name('list_of_equipments');
 
 
 

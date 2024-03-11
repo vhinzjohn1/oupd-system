@@ -105,9 +105,13 @@
         //     }
         // });
 
-        function openEditLaborModal(labor_id) {
-            // Call a function to fetch labor data by labor_id
-            fetchLaborData(labor_id);
+        function openEditLaborModal(labor_id, labor_name, location, rate) {
+            // Populate the form fields with the fetched labor data
+            $('#edit_labor_id').val(labor_id);
+            $('#edit_labor_name').val(labor_name);
+            // $('#edit_material_category_name').val(material.category.material_category_name);
+            $('#edit_location').val(location);
+            $('#edit_rate').val(rate);
             $('#editLaborModal').modal('show');
         }
         // Function to fetch labor data by labor_id
@@ -154,13 +158,13 @@
                         const rateData = labor.rates[0] || {}; // Get rate data or an empty object
 
                         var newRow = table.row.add([
-                            // material.labor_id,
+                            // labor.labor_id,
                             labor.labor_name,
                             labor.location,
                             rateData.rate,
                             rateData.date_effective, // Add the date_effective here
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id})" > Edit </button>` +
+                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${rateData.rate}')" > Edit </button>` +
                             `<button type="button" class="btn btn-danger" data-id="${labor.labor_id}"> Delete </button>` +
                             // ... (add your delete button logic here) +
                             '</div>'
@@ -175,6 +179,72 @@
                 }
             });
         }
+
+        // // Function to fetch labor data by labor_id
+        // function fetchLaborData(labor_id) {
+        //     $.ajax({
+        //         url: "{{ route('labors.index') }}/" +
+        //             labor_id, // Adjust the route to fetch individual labor data
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(labor) {
+        //             // Populate the form fields with the fetched labor data
+        //             $('#edit_labor_id').val(labor.labor_id);
+        //             // $('#edit_material_category_name').val(material.category.material_category_name);
+        //             $('#edit_location').val(labor.location);
+        //             $('#edit_labor_name').val(labor.labor_name);
+        //             // $('#edit_rate').val(labor.rate);
+
+        //             // Assuming prices is always an array, even if empty
+        //             const rateData = labor.rates[0] || {};
+        //             $('#edit_rate').val(rateData.rate);
+        //             // $('#edit_quarter').val(rateData.quarter);
+        //             // $('#edit_year').val(rateData.year);
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(xhr.responseText);
+        //         }
+        //     });
+        // }
+
+
+
+        // function refreshLaborsTable() {
+        //     $.ajax({
+        //         url: "{{ route('labors.index') }}",
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(data) {
+        //             var table = $('#laborTable').DataTable();
+        //             var existingRows = table.rows().remove().draw(false);
+        //             console.log(data);
+
+        //             data.forEach(function(labor, index) {
+        //                 // Assuming rates is always an array, even if empty
+        //                 const rateData = labor.rates[0] || {}; // Get rate data or an empty object
+
+        //                 var newRow = table.row.add([
+        //                     labor.labor_name,
+        //                     labor.location,
+        //                     rateData.rate,
+        //                     rateData.date_effective, // Add the date_effective here
+        //                     '<div class="text-center d-flex">' +
+        //                     `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id},${labor.labor_rate_id},'${rateData.location}','${rateData.rate}'" onclick="openEditLaborModal(${labor.labor_id}, ${labor.labor_rate_id}, '${rateData.location}', '${rateData.rate}')"> Edit </button>` +
+        //                     `<button type="button" class="btn btn-danger" data-id="${labor.labor_id}"> Delete </button>` +
+        //                     // ... (add your delete button logic here) +
+        //                     '</div>'
+        //                 ]).node();
+
+
+        //             });
+
+        //             table.draw();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(xhr.responseText);
+        //         }
+        //     });
+        // }
 
 
 
