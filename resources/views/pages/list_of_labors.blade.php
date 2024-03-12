@@ -22,8 +22,7 @@
                         <div class="card-body table-responsive">
                             <table id="laborTable" class="table table-bordered table-striped col-12">
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
-                                        data-target="#addModal">
+                                    <button type="button" class="btn btn-success" data-toggle="modal" id="addLaborButton">
                                         Add Labor Rate
                                     </button>
                                 </div>
@@ -39,7 +38,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @include('modals.edit_labor_modal')
+                                    @include('modals.labor.edit_labor_modal')
                                 </tbody>
                             </table>
                             {{-- <h3>Material Category</h3>
@@ -56,7 +55,7 @@
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    @include('modals.add_labor_modal')
+    @include('modals.labor.add_labor_modal')
 
     <script>
         $(document).ready(function() {
@@ -75,35 +74,10 @@
             // Call the function to fetch and populate data in the table
             refreshLaborsTable();
 
-            // Attach the click handler to the table itself (or a closer static parent)
-            // $('#materialTable').on('click', '.btn-edit-material', function() {
-            //     console.log("Edit button clicked!");
-
-            // });
+            $('#addLaborButton').click(function() {
+                $('#addLaborModal').modal('show');
+            });
         });
-
-        // Fetch categories Samples
-        // No categories available for labor
-        // $.ajax({
-        //     url: '/material-categories', // Your Laravel route
-        //     type: 'GET',
-        //     dataType: 'json',
-        //     success: function(categories) {
-        //         console.log(categories)
-        //         const select = $('#add_material_category_menu');
-
-        //         // Clear any existing options before populating (optional)
-        //         select.empty();
-
-        //         $.each(categories, function(id, name) {
-        //             select.append($('<a></a>').val(id).text(name));
-        //         });
-        //     },
-        //     error: function(xhr, status, error) {
-        //         console.error('Error fetching categories:', error);
-        //         // Optionally display an error message to the user
-        //     }
-        // });
 
         function openEditLaborModal(labor_id, labor_name, location, rate) {
             // Populate the form fields with the fetched labor data
@@ -180,113 +154,6 @@
             });
         }
 
-        // // Function to fetch labor data by labor_id
-        // function fetchLaborData(labor_id) {
-        //     $.ajax({
-        //         url: "{{ route('labors.index') }}/" +
-        //             labor_id, // Adjust the route to fetch individual labor data
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         success: function(labor) {
-        //             // Populate the form fields with the fetched labor data
-        //             $('#edit_labor_id').val(labor.labor_id);
-        //             // $('#edit_material_category_name').val(material.category.material_category_name);
-        //             $('#edit_location').val(labor.location);
-        //             $('#edit_labor_name').val(labor.labor_name);
-        //             // $('#edit_rate').val(labor.rate);
-
-        //             // Assuming prices is always an array, even if empty
-        //             const rateData = labor.rates[0] || {};
-        //             $('#edit_rate').val(rateData.rate);
-        //             // $('#edit_quarter').val(rateData.quarter);
-        //             // $('#edit_year').val(rateData.year);
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText);
-        //         }
-        //     });
-        // }
-
-
-
-        // function refreshLaborsTable() {
-        //     $.ajax({
-        //         url: "{{ route('labors.index') }}",
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         success: function(data) {
-        //             var table = $('#laborTable').DataTable();
-        //             var existingRows = table.rows().remove().draw(false);
-        //             console.log(data);
-
-        //             data.forEach(function(labor, index) {
-        //                 // Assuming rates is always an array, even if empty
-        //                 const rateData = labor.rates[0] || {}; // Get rate data or an empty object
-
-        //                 var newRow = table.row.add([
-        //                     labor.labor_name,
-        //                     labor.location,
-        //                     rateData.rate,
-        //                     rateData.date_effective, // Add the date_effective here
-        //                     '<div class="text-center d-flex">' +
-        //                     `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id},${labor.labor_rate_id},'${rateData.location}','${rateData.rate}'" onclick="openEditLaborModal(${labor.labor_id}, ${labor.labor_rate_id}, '${rateData.location}', '${rateData.rate}')"> Edit </button>` +
-        //                     `<button type="button" class="btn btn-danger" data-id="${labor.labor_id}"> Delete </button>` +
-        //                     // ... (add your delete button logic here) +
-        //                     '</div>'
-        //                 ]).node();
-
-
-        //             });
-
-        //             table.draw();
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText);
-        //         }
-        //     });
-        // }
-
-
-
-
-        // function refreshMaterialsTable() {
-        //     $.ajax({
-        //         url: "{{ route('materials.index') }}",
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         success: function(data) {
-        //             var table = $('#materialTable').DataTable();
-        //             var existingRows = table.rows().remove().draw(false);
-        //             console.log(data);
-
-        //             data.forEach(function(material) {
-        //                 // Assuming prices is always an array, even if empty
-        //                 const priceData = material.prices[0] || {}; // Get price data or an empty object
-
-        //                 table.row.add([
-        //                     // material.material_id,
-        //                     material.material_name,
-        //                     material.category.material_category_name,
-        //                     material.unit,
-        //                     priceData.price,
-        //                     priceData.quarter,
-        //                     priceData.year,
-        //                     '<div class="text-center d-flex">' +
-        //                     `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2" data-id="${material.material_id}" onclick="openEditMaterialModal(${material.material_id})" > Edit </button>` +
-        //                     `<button type="button" class="btn btn-danger" data-id="${material.material_id}"> Delete </button>` +
-        //                     // ... (add your delete button logic here) +
-        //                     '</div>'
-        //                 ]);
-        //             });
-
-        //             table.draw();
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText);
-        //         }
-        //     });
-        // }
-
         $(document).ready(function() {
 
             // Handle form submission via AJAX
@@ -310,14 +177,16 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
+
+                        $('#addLaborForm')[0].reset();
+                        $('#addLaborModal').modal('hide');
                         toastr.options.progressBar = true;
                         toastr.success('Labor Added Successfully!');
-                        console.log(response); // Log response for debugging
                         refreshLaborsTable();
 
+
+
                         if (response.success) {
-                            $('#addLaborForm')[0].reset();
-                            $('#addModal').modal('hide');
                             console.log('successfully added');
                         } else {
                             // // Show error message if labor addition fails

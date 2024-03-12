@@ -7,7 +7,7 @@
                 <div class="col-12 d-flex justify-content-between">
                     <h1 class="m-0">{{ __('Projects') }}</h1>
                     <div class="text-right">
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addProjectModal">
+                        <button type="button" class="btn btn-success" data-toggle="modal" id="addProjectButton">
                             Add Projects
                         </button>
                     </div>
@@ -22,7 +22,7 @@
     <div class="content">
         <div class="container-fluid">
             <div class="col-lg-12">
-                <div class="card">
+                <div class="card vh-75">
                     <div class="card-body table-responsive">
                         <table class="table col-12" id="projectTable">
                             <thead>
@@ -35,7 +35,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-
                             </tbody>
                         </table>
                     </div>
@@ -46,64 +45,22 @@
 
         {{-- Container for Project Particular Table --}}
         <div class="container-fluid">
-            <div class="text-right">
-                <button type="button" class="btn btn-success">Add Particular</button>
-            </div>
-            <div class="col-lg-12 d-flex m-1">
-                <table id="projectParticularTable" class="table" border="2">
-                    <thead>
-                        {{-- <tr class="bg-navy">
-                            <th class="text-center col-12" colspan="3">COE Building </th>
-                        </tr>
-
-                        <tr class="bg-gray-dark">
-                            <th class="text-center col-12" colspan="3">Embankment</th>
-                        </tr>
-
-                        <tr>
-                            <td class="bg-olive">Materials</td>
-                            <td class="bg-olive">Labor</td>
-                            <td class="bg-olive">Equipment</td>
-                        </tr>
-                        <tr>
-                            <td>Washed Sand</td>
-                            <td>Foreman</td>
-                            <td>Excavators</td>
-                        </tr>
-
-                        <tr>
-                            <td>Gravel</td>
-                            <td>Panday</td>
-                            <td>Truck</td>
-                        </tr>
-
-                        <tr class="bg-gray-dark">
-                            <th class="text-center col-12" colspan="3">Pavements</th>
-                        </tr>
-                        <tr>
-                            <td class="bg-olive">Materials</td>
-                            <td class="bg-olive">Labor</td>
-                            <td class="bg-olive">Equipment</td>
-                        </tr>
-                        <tr>
-                            <td>Washed Sand</td>
-                            <td>Foreman</td>
-                            <td>Excavators</td>
-                        </tr>
-
-                        <tr>
-                            <td>Gravel</td>
-                            <td>Panday</td>
-                            <td>Truck</td>
-                        </tr> --}}
-
-                    </thead>
-                </table>
+            <div class="card" style="box-shadow: 0px 0px 10px 1px grey">
+                <div class="text-right p-3">
+                    <button type="button" class="btn btn-success" id="addParticularBtn">Add Particular</button>
+                </div>
+                <div class="col-lg-12 d-flex m-1">
+                    <table id="projectParticularTable" class="table" border="2">
+                        <thead>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div><!-- /.container-fluid -->
     </div>
     @include('modals.project.add_projects_modal')
     @include('modals.project.view_project_modal')
+    @include('modals.project_particular.add_project_particular_modal')
     <!-- /.content -->
 
 
@@ -128,6 +85,76 @@
             // Refresh Project Particular Table
             refreshProjectParticularTable();
             refreshProjectParticularTable1();
+
+            // Initialize Select2
+            $('#add_project_particular_name').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Select Particular Names', // Optional placeholder text
+                // allowClear: true, // Allow clearing the selection
+            });
+
+            $('#addProjectButton').click(function() {
+                $('#addProjectModal').modal('show');
+            });
+
+            $('#addParticularBtn').click(function() {
+                // Populate the Modal
+                openAddParticularModal();
+
+                // Show the modal here
+
+                $('#addProjectParticularModal').modal('show');
+
+                function openAddParticularModal() {
+                    // Retrieve project_id and project_title from local storage
+                    const projectID = localStorage.getItem('projectID');
+                    const projectTitle = localStorage.getItem('projectTitle');
+
+                    // Populate the modal values Project Title and Project Id
+                    $('#projectParticularTitle').text(projectTitle);
+                    $('#projectParticularID').val(projectID);
+
+
+
+                    // Populate the Modal Particular Name
+                    $.ajax({
+                        url: "{{ route('particulars.index') }}",
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            var selectParticular = $('#add_project_particular_name');
+                            selectParticular.empty(); // Clear existing options
+
+                            // Sort data by particular_name alphabetically
+                            data.sort((a, b) => (a.particular_name > b.particular_name) ? 1 : -
+                                1);
+
+                            // Loop through the sorted array of objects
+                            data.forEach(function(particular) {
+                                // Extract particular_id and particular_name from each object
+                                var particularId = particular.particular_id;
+                                var particularName = particular.particular_name;
+                                // Create option element and append to selectParticular
+                                var option = $('<option>').val(particularId).text(
+                                    particularName);
+                                selectParticular.append(option);
+                            });
+
+                            // After populating options, open the modal
+                            $('#addProjectParticularModal').modal('show');
+
+                            // Trigger the change event on selectParticular
+                            selectParticular.trigger('change');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+
+
+                }
+            });
+
         });
 
         // function refreshProjectParticularTable() {
@@ -185,8 +212,6 @@
                 dataType: 'json',
                 success: function(data) {
                     console.log(data)
-
-
                 },
                 error: function(xhr, status, error) {
                     console.error(error); // Log any errors to the console
@@ -201,25 +226,79 @@
                     "particulars": [{
                             "name": "Embankment",
                             "details": {
-                                "Materials": ["Washed Sand", "Gravel"],
-                                "Labor": ["Foreman", "Panday"],
-                                "Equipment": ["Excavators", "Truck"]
+                                "Materials": [{
+                                    "name": "Washed Sand",
+                                    "quantity": 100
+                                }, {
+                                    "name": "Gravel",
+                                    "quantity": 200
+                                }],
+                                "Labor": [{
+                                    "name": "Foreman",
+                                    "hours": 8
+                                }, {
+                                    "name": "Panday",
+                                    "hours": 8
+                                }],
+                                "Equipment": [{
+                                    "name": "Excavators",
+                                    "hours": 8
+                                }, {
+                                    "name": "Truck",
+                                    "hours": 8
+                                }]
                             }
                         },
                         {
                             "name": "Pavements",
                             "details": {
-                                "Materials": ["Washed Sand", "Gravel"],
-                                "Labor": ["Foreman", "Panday"],
-                                "Equipment": ["Excavators", "Truck"]
+                                "Materials": [{
+                                    "name": "Washed Sand",
+                                    "quantity": 150
+                                }, {
+                                    "name": "Gravel",
+                                    "quantity": 250
+                                }],
+                                "Labor": [{
+                                    "name": "Foreman",
+                                    "hours": 8
+                                }, {
+                                    "name": "Panday",
+                                    "hours": 8
+                                }],
+                                "Equipment": [{
+                                    "name": "Excavators",
+                                    "hours": 8
+                                }, {
+                                    "name": "Truck",
+                                    "hours": 8
+                                }]
                             }
                         },
                         {
                             "name": "Concrete Pavers",
                             "details": {
-                                "Materials": ["Washed Sand", "Gravel"],
-                                "Labor": ["Foreman", "Panday"],
-                                "Equipment": ["Excavators", "Truck"]
+                                "Materials": [{
+                                    "name": "Washed Sand",
+                                    "quantity": 120
+                                }, {
+                                    "name": "Gravel",
+                                    "quantity": 220
+                                }],
+                                "Labor": [{
+                                    "name": "Foreman",
+                                    "hours": 8
+                                }, {
+                                    "name": "Panday",
+                                    "hours": 8
+                                }],
+                                "Equipment": [{
+                                    "name": "Excavators",
+                                    "hours": 8
+                                }, {
+                                    "name": "Truck",
+                                    "hours": 8
+                                }]
                             }
                         }
                     ]
@@ -229,8 +308,6 @@
             // Clear the existing table content
             var table = $('#projectParticularTable');
             table.empty();
-
-
 
             // Loop through the JSON data and populate the table
             jsonData.projects.forEach(function(project) {
@@ -245,10 +322,16 @@
                     table.append(particularHeaderRow);
 
                     // Create header row for Materials, Labor, and Equipment
-                    var headerRow = $('<tr class="bg-olive"></tr>');
-                    headerRow.append('<th>Materials</th>');
-                    headerRow.append('<th>Labor</th>');
-                    headerRow.append('<th>Equipment</th>');
+                    var headerRow = $('<tr></tr>');
+                    headerRow.append(
+                        '<td class="bg-olive"><div class="d-flex justify-content-between"><span>Materials</span><span>Qty</span></div></td>'
+                    );
+                    headerRow.append(
+                        '<td class="bg-olive"><div class="d-flex justify-content-between"><span>Labor</span><span>Hrs</span></div></td>'
+                    );
+                    headerRow.append(
+                        '<td class="bg-olive"><div class="d-flex justify-content-between"><span>Equipment</span><span>Hrs</span></div></td>'
+                    );
                     table.append(headerRow);
 
                     // Iterate over details and add rows for each value
@@ -256,20 +339,35 @@
                         .length, particular.details.Equipment.length);
                     for (var i = 0; i < maxValues; i++) {
                         var detailRow = $('<tr></tr>');
-                        detailRow.append('<td>' + (particular.details.Materials[i] || '') + '</td>');
-                        detailRow.append('<td>' + (particular.details.Labor[i] || '') + '</td>');
-                        detailRow.append('<td>' + (particular.details.Equipment[i] || '') + '</td>');
+                        var materialsSpan = '<span>' + ((particular.details.Materials[i] && particular
+                            .details.Materials[i].name) || '') + '</span>';
+                        var laborSpan = '<span>' + ((particular.details.Labor[i] && particular.details
+                            .Labor[i].name) || '') + '</span>';
+                        var equipmentSpan = '<span>' + ((particular.details.Equipment[i] && particular
+                            .details.Equipment[i].name) || '') + '</span>';
+                        var materialsQtySpan = '<span>' + ((particular.details.Materials[i] && particular
+                            .details.Materials[i].quantity) || '') + '</span>';
+                        var laborHrsSpan = '<span>' + ((particular.details.Labor[i] && particular.details
+                            .Labor[i].hours) || '') + '</span>';
+                        var equipmentHrsSpan = '<span>' + ((particular.details.Equipment[i] && particular
+                            .details.Equipment[i].hours) || '') + '</span>';
+
+                        var materialsDiv = '<div class="d-flex justify-content-between">' + materialsSpan +
+                            materialsQtySpan + '</div>';
+                        var laborDiv = '<div class="d-flex justify-content-between">' + laborSpan +
+                            laborHrsSpan + '</div>';
+                        var equipmentDiv = '<div class="d-flex justify-content-between">' + equipmentSpan +
+                            equipmentHrsSpan + '</div>';
+
+                        detailRow.append('<td>' + materialsDiv + '</td>');
+                        detailRow.append('<td>' + laborDiv + '</td>');
+                        detailRow.append('<td>' + equipmentDiv + '</td>');
                         table.append(detailRow);
                     }
+
                 });
             });
         }
-
-
-
-
-
-
 
 
 
@@ -310,8 +408,10 @@
 
         function selectProject(project_id, project_title) {
             // Save the selected project_id and project_title in localStorage
-            // localStorage.setItem('selectedProjectID', project_id);
-            // localStorage.setItem('selectedProjectTitle', project_title);
+            // Save project_id and project_title to local storage
+            localStorage.setItem('projectID', project_id);
+            localStorage.setItem('projectTitle', project_title);
+
 
             // Show SweetAlert2 popup
             Swal.fire({

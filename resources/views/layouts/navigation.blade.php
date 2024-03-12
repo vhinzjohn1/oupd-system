@@ -58,30 +58,6 @@
                     </a>
                 </li>
 
-            <li class="nav-item">
-                <a href="{{ route('list_of_labors') }}" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        {{ __('Labor Rates') }}
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('list_of_equipments') }}" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        {{ __('Equipment Rates') }}
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('particular') }}" class="nav-link">
-                    <i class="nav-icon far fa-address-card"></i>
-                    <p>
-                        {{ __('Particular') }}
-                    </p>
-                </a>
-            </li>
                 <li class="nav-item">
                     <a href="{{ route('list_of_labors') }}" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
@@ -90,6 +66,15 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('list_of_equipments') }}" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            {{ __('Equipment Rates') }}
+                        </p>
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a href="{{ route('particular') }}" class="nav-link">
                         <i class="nav-icon far fa-address-card"></i>
@@ -185,6 +170,4 @@
 <!-- /.sidebar -->
 
 
-<script>
-
-</script>
+<script></script>

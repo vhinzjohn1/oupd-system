@@ -16,79 +16,84 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-            <div class="text-right">
-                <button type="button" class="btn btn-success">Add Particular</button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProjectParticularModalLabel">Add Project Particular</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="addProjectParticularForm">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-center">
+                            <h4 class="text" id="projectParticularTitle">Project Title</h4>
+                            <input type="hidden" id="projectParticularID" />
+                        </div>
+
+                        <div class="d-flex justify-content-center col-12">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="add_project_particular_name">Particular Name</label>
+                                    <select class="form-control" id="add_project_particular_name"
+                                        name="add_project_particular_name[]" required>
+                                        <!-- Options will be dynamically populated here -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Materials</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="add_project_particular_materials">Material Name</label>
+                                            <input type="text" class="form-control" id="add_project_particular_materials"
+                                                name="add_project_particular_materials">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Labor</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="add_project_particular_labor">Labor Name</label>
+                                            <input type="text" class="form-control" id="add_project_particular_labor"
+                                                name="add_project_particular_labor">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Equipment</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="add_project_particular_equipment">Equipment Name</label>
+                                            <input type="text" class="form-control" id="add_project_particular_equipment"
+                                                name="add_project_particular_equipment">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="col-lg-12 d-flex m-1">
-                <table id="projectParticularTable" class="table" border="2">
-                    <thead>
-                        <tr class="bg-navy">
-                            <th class="text-center col-12" colspan="3">COE Building </th>
-                        </tr>
-
-                        <tr class="bg-gray-dark">
-                            <th class="text-center col-12" colspan="3">Embankment</th>
-                        </tr>
-
-                        <tr>
-                            <td class="bg-olive">Materials</td>
-                            <td class="bg-olive">Labor</td>
-                            <td class="bg-olive">Equipment</td>
-                        </tr>
-                        <tr>
-                            <td>Washed Sand</td>
-                            <td>Foreman</td>
-                            <td>Excavators</td>
-                        </tr>
-
-                        <tr>
-                            <td>Gravel</td>
-                            <td>Panday</td>
-                            <td>Truck</td>
-                        </tr>
-
-                        <tr class="bg-gray-dark">
-                            <th class="text-center col-12" colspan="3">Pavements</th>
-                        </tr>
-                        <tr>
-                            <td class="bg-olive">Materials</td>
-                            <td class="bg-olive">Labor</td>
-                            <td class="bg-olive">Equipment</td>
-                        </tr>
-                        <tr>
-                            {{-- Value of Materials --}}
-                            <td>Washed Sand</td>
-                            {{-- End of value of Materials --}}
-
-
-                            {{-- Value of Labor --}}
-                            <td>Foreman</td>
-                            {{-- End of Value Labor --}}
-
-                            {{-- Value of Equipment --}}
-                            <td>Excavators</td>
-                            {{-- End of Value Equipemtn --}}
-                        </tr>
-
-                        <tr>
-                            {{-- Value of Materials --}}
-                            <td>Gravel</td>
-                            {{-- End of value of Materials --}}
-
-
-                            {{-- Value of Labor --}}
-                            <td>Panday</td>
-                            {{-- End of Value Labor --}}
-
-                            {{-- Value of Equipment --}}
-                            <td>Truck</td>
-                            {{-- End of Value Equipemtn --}}
-                        </tr>
-
-                    </thead>
-                </table>
-            </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </div>
     <!-- /.content -->
 
