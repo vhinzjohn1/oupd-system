@@ -120,11 +120,6 @@
             $('#editEquipmentModal').modal('show');
         }
 
-
-
-
-
-
         function refreshEquipmentsTable() {
             $.ajax({
                 url: "{{ route('equipments.index') }}",
@@ -153,9 +148,11 @@
                             onclick="openEditEquipmentModal('${equipment.equipment_id}', '${equipment.equipment_rate_id}',
                             '${equipment.rate}', '${equipment.equipment_name}', '${equipment.equipment_category_name}', 
                             '${equipment.equipment_model}', '${equipment.equipment_capacity}')"> Edit </button>` +
-                            `<button type="button" class="btn btn-danger" data-id="${equipment.equipment_id}"> Delete </button>` +
+                            `<button class="btn btn-danger delete-btn" onclick="deleteEquipment(' +
+                                equipment.equipment_id + ')">Delete</button>` +
                             '</div>'
 
+                            // <button type="button" class="btn btn-danger" data-id="${equipment.equipment_id}"> Delete </button>
                         ]).node();
                     });
 
@@ -166,6 +163,40 @@
                 }
             });
         }
+
+        function deleteEquipment(equipment_id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this equipment!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('equipments') }}/" + equipment_id,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            toastr.options.progressBar = true;
+                            toastr.success('Equipment Deleted Successfully!');
+                            refreshEquipmentsTable(); // Corrected function name
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                            toastr.error(
+                                'Error occurred while deleting equipment. Please check console for details.'
+                                );
+                        }
+                    });
+                }
+            });
+        }
+
 
 
 

@@ -63,8 +63,10 @@ class LaborController extends Controller
             // Start a database transaction
             DB::beginTransaction();
 
-            // Check if labor with the same name exists
-            $labor = Labor::where('labor_name', $validatedData['labor_name'])->first();
+            // Check if labor with the same name and location exists
+            $labor = Labor::where('labor_name', $validatedData['labor_name'])
+                ->where('location', $validatedData['location'])
+                ->first();
 
             if (!$labor) {
                 // If labor does not exist, create a new one

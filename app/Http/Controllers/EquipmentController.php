@@ -136,7 +136,7 @@ class EquipmentController extends Controller
             'edit_equipment_model' => 'required|string',
             'edit_equipment_capacity' => 'required|string',
             'edit_rate' => 'required|numeric',
-        ]);        
+        ]);
 
         try {
             DB::beginTransaction();
@@ -182,8 +182,20 @@ class EquipmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(equipment $equipment)
+    public function destroy($id)
     {
-        //
+        try {
+            // Find the equipment by ID and delete it
+            Equipment::findOrFail($id)->delete();
+
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'Equipment deleted successfully']);
+        } catch (\Exception $e) {
+            // Log detailed error message
+            Log::error('Failed to delete equipment: ' . $e->getMessage());
+
+            // Return error response
+            return response()->json(['success' => false, 'message' => 'Failed to delete equipment. Please check the logs for details.']);
+        }
     }
 }
