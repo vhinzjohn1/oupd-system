@@ -76,6 +76,12 @@
                 $('#addEquipmentModal').modal('show');
             });
 
+            // Handle delete button click
+            $('#equipmentTable').on('click', '.btn-delete-equipment', function() {
+                var equipmentId = $(this).data('id');
+                deleteEquipment(equipmentId);
+            });
+
             // Attach the click handler to the table itself (or a closer static parent)
             // $('#materialTable').on('click', '.btn-edit-material', function() {
             //     console.log("Edit button clicked!");
@@ -148,8 +154,8 @@
                             onclick="openEditEquipmentModal('${equipment.equipment_id}', '${equipment.equipment_rate_id}',
                             '${equipment.rate}', '${equipment.equipment_name}', '${equipment.equipment_category_name}', 
                             '${equipment.equipment_model}', '${equipment.equipment_capacity}')"> Edit </button>` +
-                            `<button class="btn btn-danger delete-btn" onclick="deleteEquipment(' +
-                                equipment.equipment_id + ')">Delete</button>` +
+                            '<button type="button" class="btn btn-danger btn-delete-equipment" data-id="' +
+                            equipment.equipment_id + '"> Delete </button>' +
                             '</div>'
 
                             // <button type="button" class="btn btn-danger" data-id="${equipment.equipment_id}"> Delete </button>
@@ -164,10 +170,12 @@
             });
         }
 
-        function deleteEquipment(equipment_id) {
+        function deleteEquipment(equipmentId) {
+            console.log('Deleting equipment with ID:', equipmentId);
+
             Swal.fire({
                 title: 'Are you sure?',
-                text: 'You will not be able to recover this equipment!',
+                text: 'You will not be able to recover this Equipment Entry!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -176,7 +184,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "{{ url('equipments') }}/" + equipment_id,
+                        url: "{{ url('equipments') }}/" + equipmentId,
                         type: 'DELETE',
                         data: {
                             _token: "{{ csrf_token() }}"
@@ -184,21 +192,16 @@
                         success: function(response) {
                             toastr.options.progressBar = true;
                             toastr.success('Equipment Deleted Successfully!');
-                            refreshEquipmentsTable(); // Corrected function name
+                            refreshEquipmentsTable();
                         },
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText);
-                            toastr.error(
-                                'Error occurred while deleting equipment. Please check console for details.'
-                                );
+                            alert('Failed to delete equipment: ' + xhr.responseText);
                         }
                     });
                 }
             });
         }
-
-
-
 
         $(document).ready(function() {
 
@@ -286,20 +289,19 @@
                     },
                     success: function(response) {
                         toastr.options.progressBar = true;
-                        toastr.success('Equipment Updated Successfully!');
-                        $('#editEquipmentModal').modal('hide');
-                        $('#editEquipmentForm')[0].reset();
-                        refreshEquipmentsTable();
 
                         if (response.success) {
-                            e.preventDefault();
+                            toastr.success('Equipment Updated Successfully!');
+                            $('#editEquipmentModal').modal('hide');
+                            $('#editEquipmentForm')[0].reset();
+                            refreshEquipmentsTable();
                             console.log('successfully updated');
-
                         } else {
                             // Show error message if equipment update fails
-                            alert('Failed to update equipment: ' + response.message);
+                            toastr.error('Failed to update equipment: ' + response.message);
                         }
                     },
+
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText); // Log error response for debugging
                         alert('Error occurred. Check console for details.');
