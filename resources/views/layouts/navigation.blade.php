@@ -1,173 +1,102 @@
 <!-- Sidebar -->
 <div class="sidebar">
-
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
+            <!-- User Profile -->
+            <li class="nav-item dashboard">
+                <a href="{{ route('profile.show') }}" class="nav-link">
+                    <i class="nav-icon fa fa-address-book"></i>
+                    <p>
+                        {{ Auth::user()->first_name }}
+                        {{ Auth::user()->last_name }}
+                    </p>
 
-            <li class="nav-item">
-                <a href="{{ route('profile.show') }}" class="nav-link"><i
-                        class="nav-icon fa fa-user"></i>{{ Auth::user()->first_name }}
-                    {{ Auth::user()->last_name }}</a>
-
+                </a>
             </li>
-
-            @if (Auth::user()->roles === 'admin')
-                <li class="nav-item">
-                    <a href="{{ route('register') }}" class="nav-link"><i class="nav-icon fa fa-users"></i>Add
-                        User</a>
-
-                </li>
-            @endif
-
-
 
             <hr style="background-color: white;">
 
+            <!-- Dashboard -->
+            <li class="nav-item dashboard">
+                <a href="{{ route('home') }}" class="nav-link" id="dashboard">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>{{ __('Dashboard') }}</p>
+                </a>
+            </li>
 
-            @unless (Auth::user()->roles === 'admin')
-                <li class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            {{ __('Dashboard') }}
-                        </p>
-                    </a>
-                </li>
+            <!-- Projects -->
+            <li class="nav-item projects">
+                <a href="{{ route('projects') }}" class="nav-link" id="projects">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>{{ __('Projects') }}</p>
+                </a>
+            </li>
 
-
-                <li class="nav-item">
-                    <a href="{{ route('projects') }}" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            {{ __('Projects') }}
-                        </p>
-                    </a>
-                </li>
-
-
-                {{-- List of Material Sidebar Navigation --}}
-                <li class="nav-item">
-                    <a href="{{ route('list_of_materials') }}" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            {{ __('List Of Materials') }}
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('list_of_labors') }}" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            {{ __('Labor Rates') }}
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('list_of_equipments') }}" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            {{ __('Equipment Rates') }}
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('particular') }}" class="nav-link">
-                        <i class="nav-icon far fa-address-card"></i>
-                        <p>
-                            {{ __('Particular') }}
-                        </p>
-                    </a>
-                </li>
-            @endunless
-
-            <li class="nav-item">
-                <a href="" class="nav-link">
+            <!-- Master List -->
+            <li class="nav-item has-treeview" id="masterList">
+                <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-circle nav-icon"></i>
-                    <p>
-                        {{ __('Project Particular') }}
-                        <i class="fas fa-angle-left right"></i>
-                    </p>
+                    <p>Master List <i class="fas fa-angle-left right"></i></p>
                 </a>
                 <ul class="nav nav-treeview" style="display: none;">
+                    <!-- List of Particular -->
                     <li class="nav-item">
-                        <a href="{{ route('project_particular') }}" class="nav-link">
+                        <a href="{{ route('particular') }}" class="nav-link">
                             <i class="nav-icon far fa-address-card"></i>
-                            <p>
-                                {{ __('Particular Particular') }}
-                            </p>
+                            <p>{{ __('List of Particular') }}</p>
                         </a>
                     </li>
+                    <!-- List of Materials -->
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>{{ __('Particular Material') }}</p>
+                        <a href="{{ route('list_of_materials') }}" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>{{ __('List of Materials') }}</p>
                         </a>
                     </li>
+                    <!-- List of Labor Rates -->
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>{{ __('Particular Labor') }}</p>
+                        <a href="{{ route('list_of_labors') }}" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>{{ __('List of Labor Rates') }}</p>
                         </a>
                     </li>
+                    <!-- List of Equipments -->
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>{{ __('Particular Equipment') }}</p>
+                        <a href="{{ route('list_of_equipments') }}" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>{{ __('List of Equipments') }}</p>
                         </a>
                     </li>
                 </ul>
             </li>
-
-
-
-            {{-- <li class="nav-item">
-                <a href="" class="nav-link">
-                    <i class="nav-icon fas fa-circle nav-icon"></i>
-                    <p>
-                        Project Particulars
-                        <i class="fas fa-angle-left right"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview" style="display: none;">
-
-                    <li class="nav-item">
-                        <a href="{{ route('project_particular') }}" class="nav-link">
-                            <i class="nav-icon far fa-address-card"></i>
-                            <p>
-                                {{ __('Project Particular') }}
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Particulal Material </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Particulal Labor</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Particulal Equipment</p>
-                        </a>
-                    </li>
-                </ul>
-            </li> --}}
         </ul>
     </nav>
     <!-- /.sidebar-menu -->
 </div>
 <!-- /.sidebar -->
+<script>
+    $(document).ready(function() {
+        // Add 'active' class to 'Dashboard', 'Projects', and 'Master List' sections if any of their children are active
+        var path = window.location.href;
+        $('ul.nav-sidebar a').each(function() {
+            if (this.href === path) {
+                $(this).addClass('active');
+                $(this).parents('li').addClass('menu-open');
+                $(this).closest('ul').css('display', 'block');
 
+            }
+        });
 
-<script></script>
+        // Change background color and text color of dashboard and projects if they are active
+        if ($('#dashboard').hasClass('active')) {
+            $('#dashboard').css('background-color', '#ffc001');
+            $('#dashboard').css('color', 'black');
+        }
+        if ($('#projects').hasClass('active')) {
+            $('#projects').css('background-color', '#ffc001');
+            $('#projects').css('color', 'black');
+        }
+    });
+</script>

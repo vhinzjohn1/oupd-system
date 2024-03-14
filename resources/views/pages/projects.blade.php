@@ -81,17 +81,18 @@
             // Call the function to fetch and populate data in the table
             refreshProjectsTable();
 
-
             // Refresh Project Particular Table
             refreshProjectParticularTable();
-            refreshProjectParticularTable1();
+            refreshProjectParticularMLE();
 
             // Initialize Select2
             $('#add_project_particular_name').select2({
                 theme: 'bootstrap-5',
-                placeholder: 'Select Particular Names', // Optional placeholder text
-                // allowClear: true, // Allow clearing the selection
+                dropdownParent: $('#addProjectParticularModal'),
+                tags: true,
+
             });
+
 
             $('#addProjectButton').click(function() {
                 $('#addProjectModal').modal('show');
@@ -101,10 +102,6 @@
                 // Populate the Modal
                 openAddParticularModal();
 
-                // Show the modal here
-
-                $('#addProjectParticularModal').modal('show');
-
                 function openAddParticularModal() {
                     // Retrieve project_id and project_title from local storage
                     const projectID = localStorage.getItem('projectID');
@@ -113,7 +110,6 @@
                     // Populate the modal values Project Title and Project Id
                     $('#projectParticularTitle').text(projectTitle);
                     $('#projectParticularID').val(projectID);
-
 
 
                     // Populate the Modal Particular Name
@@ -155,63 +151,59 @@
                 }
             });
 
+
+            // Format Select Value to only numbers
+            const materialQuantityContainer = document.getElementById('add_project_particular_material_quantity')
+                .parentNode;
+
+            materialQuantityContainer.addEventListener('keydown', function(event) {
+                const key = event.keyCode || event.charCode;
+                const input = event.target;
+
+                if (!(
+                        key === 8 || key === 46 || // backspace, delete
+                        (key >= 37 && key <= 40) || // arrow keys
+                        (key >= 48 && key <= 57) || (key >= 96 && key <= 105) || // numbers
+                        key === 9 // tab
+                    ) || (key !== 8 && !/^\d*$/.test(input.value + String.fromCharCode(key)))) {
+                    event.preventDefault();
+                }
+            });
+
         });
 
-        // function refreshProjectParticularTable() {
-        //     $.ajax({
-        //         url: '{{ route('projectParticulars.index') }}', // Update this with the actual URL of your route
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         success: function(data) {
-        //             console.log(data)
-        //             // Check if there is a selected project in localStorage
-        //             const selectedProjectId = localStorage.getItem('selectedProjectID');
 
-        //             // Setting the variable name for the Project Particular Table
-        //             var table = $('#projectParticularTable');
-        //             table.empty();
-
-        //             var project = data[selectedProjectId];
-
-        //             var projectHeaderRow = $(
-        //                 '<tr class="bg-navy"><th class="text-center col-12" colspan="3">' +
-        //                 project.project_title +
-        //                 '</th></tr>'
-        //             );
-        //             table.append(projectHeaderRow);
-
-
-        //             $.each(project.project_particulars, function(index, particular) {
-        //                 var projectHeaderRow = $(
-        //                     '<tr class="bg-gray-dark"><th class="text-center col-12" colspan="3">' +
-        //                     particular.particular_name +
-        //                     '</th></tr>'
-        //                 );
-        //                 table.append(projectHeaderRow);
-
-        //                 // Add headers for Materials, Labor, and Equipment
-        //                 var headerRow = $('<tr class="bg-olive"></tr>');
-        //                 headerRow.append('<th>Materials</th>');
-        //                 headerRow.append('<th>Labor</th>');
-        //                 headerRow.append('<th>Equipment</th>');
-        //                 table.append(headerRow);
-
-        //             });
-
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(error); // Log any errors to the console
-        //         }
-        //     });
-        // }
-
-        function refreshProjectParticularTable1() {
+        function refreshProjectParticularMLE() {
             $.ajax({
-                url: '{{ route('projectParticulars.index') }}', // Update this with the actual URL of your route
+                url: '{{ route('mle.index') }}', // Update this with the actual URL of your route
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
                     console.log(data)
+
+                    // Populate the dropdown for materials
+                    const materialsDropdown = $('#add_project_particular_material_name');
+                    const materialsData = data.materials.map(material => ({
+                        value: material.material_id,
+                        text: material.material_name
+                    }));
+                    materialSelect.addOption(materialsData);
+
+                    // Populate the dropdown for labors
+                    const laborsDropdown = $('#add_project_particular_labor_name');
+                    const laborsData = data.labors.map(labor => ({
+                        value: labor.labor_id,
+                        text: labor.labor_name + " (" + labor.location + ") "
+                    }));
+                    laborSelect.addOption(laborsData);
+
+                    // Populate the dropdown for Equipments
+                    const equipmentsDropdown = $('#add_project_particular_equipment_name');
+                    const equipmentsData = data.equipments.map(equipment => ({
+                        value: equipment.equipment_id,
+                        text: equipment.equipment_name
+                    }));
+                    equipmentSelect.addOption(equipmentsData);
                 },
                 error: function(xhr, status, error) {
                     console.error(error); // Log any errors to the console
@@ -324,13 +316,13 @@
                     // Create header row for Materials, Labor, and Equipment
                     var headerRow = $('<tr></tr>');
                     headerRow.append(
-                        '<td class="bg-olive"><div class="d-flex justify-content-between"><span>Materials</span><span>Qty</span></div></td>'
+                        '<td class="bg-olive"><div class="d-flex justify-content-between bg-olive"><span>Materials</span><span>Qty</span></div></td>'
                     );
                     headerRow.append(
-                        '<td class="bg-olive"><div class="d-flex justify-content-between"><span>Labor</span><span>Hrs</span></div></td>'
+                        '<td class="bg-olive"><div class="d-flex justify-content-between bg-olive"><span>Labor</span><span>Hrs</span></div></td>'
                     );
                     headerRow.append(
-                        '<td class="bg-olive"><div class="d-flex justify-content-between"><span>Equipment</span><span>Hrs</span></div></td>'
+                        '<td class="bg-olive"><div class="d-flex justify-content-between bg-olive"><span>Equipment</span><span>Hrs</span></div></td>'
                     );
                     table.append(headerRow);
 
@@ -369,9 +361,7 @@
             });
         }
 
-
-
-
+        // Refresh Function for Projects Table
         function refreshProjectsTable() {
             $.ajax({
                 url: "{{ route('project.index') }}",
@@ -572,6 +562,303 @@
                 });
             });
 
+        });
+
+
+        // Initialized Tom Select To Materials
+        const materialSelect = new TomSelect('#add_project_particular_material_name', {
+            plugins: ['clear_button'],
+            create: true,
+            duplicates: true,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            render: {
+                item: function(data, escape) {
+                    return `<div><span class="material-item-index"></span><span class="item-text"> : ${escape(data.text)}</span> </div>`;
+                }
+            }
+        });
+
+        const materialQuantitySelect = new TomSelect('#add_project_particular_material_quantity', {
+            plugins: ['clear_button'],
+            create: true,
+            duplicates: true,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            render: {
+                item: function(data, escape) {
+                    return `<div><span class="material-quantity-item-index"></span><span class="item-text">  : ${escape(data.text)} </span></div>`;
+                }
+            },
+
+        });
+        // End Initialized Tom Select To Materials
+
+
+        // Initialized Tom Select To labors
+        const laborSelect = new TomSelect('#add_project_particular_labor_name', {
+            plugins: ['clear_button'],
+            create: true,
+            duplicates: true,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            render: {
+                item: function(data, escape) {
+                    return `<div><span class="labor-item-index"></span> <span class="item-text">  : ${escape(data.text)}</span> </div>`;
+                }
+            }
+        });
+
+        const laborNopSelect = new TomSelect('#add_project_particular_labor_no_of_person', {
+            plugins: ['clear_button'],
+            create: true,
+            duplicates: true,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            render: {
+                item: function(data, escape) {
+                    return `<div><span class="labor-nop-item-index"></span> <span class="item-text">  : ${escape(data.text)}</span></div>`;
+                }
+            }
+        });
+
+        const laborWorkDaysSelect = new TomSelect('#add_project_particular_labor_work_days', {
+            plugins: ['clear_button'],
+            create: true,
+            duplicates: true,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            render: {
+                item: function(data, escape) {
+                    return `<div><span class="labor-workDays-item-index"></span> <span class="item-text"> : ${escape(data.text)}</span> </div>`;
+                }
+            }
+        });
+        // End of Labor Initialized Tom Select
+
+
+        // Initialized Equipment Tom Select
+        const equipmentSelect = new TomSelect('#add_project_particular_equipment_name', {
+            plugins: ['clear_button'],
+            create: true,
+            duplicates: true,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            render: {
+                item: function(data, escape) {
+                    return `<div><span class="equipment-item-index"></span><span class="item-text"> : ${escape(data.text)}</span> </div>`;
+                }
+            }
+        });
+
+        const equipmentNoUSelect = new TomSelect('#add_project_particular_equipment_no_of_units', {
+            plugins: ['clear_button'],
+            create: true,
+            duplicates: true,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            render: {
+                item: function(data, escape) {
+                    return `<div><span class="equipment-Nou-item-index"></span><span class="item-text"> : ${escape(data.text)}</span> </div>`;
+                }
+            }
+        });
+
+        const equipmentWorkDaysSelect = new TomSelect('#add_project_particular_equipment_work_days', {
+            plugins: ['clear_button'],
+            create: true,
+            duplicates: true,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            render: {
+                item: function(data, escape) {
+                    return `<div><span class="equipment-workDays-item-index"></span><span class="item-text"> : ${escape(data.text)}</span> </div>`;
+                }
+            }
+        });
+
+        // Function to Dynamically Change Index Material
+        function updateMaterialItemIndices() {
+            const itemElements = document.querySelectorAll('.material-item-index');
+            itemElements.forEach((itemElement, index) => {
+                itemElement.textContent = `Item ${index + 1} : `;
+            });
+        }
+
+        function updateMaterialQuantityItemIndices() {
+            const itemElements = document.querySelectorAll('.material-quantity-item-index');
+            itemElements.forEach((itemElement, index) => {
+                itemElement.textContent = `Item ${index + 1} :  `;
+            });
+        }
+        // End Function to Dynamically Change Index Material
+
+
+        // Function to Dynamically Change Index Labor
+        function updateLaborItemIndices() {
+            const itemElements = document.querySelectorAll('.labor-item-index');
+            itemElements.forEach((itemElement, index) => {
+                itemElement.textContent = `Item ${index + 1} : `;
+            });
+        }
+
+        function updateLaborNopItemIndices() {
+            const itemElements = document.querySelectorAll('.labor-nop-item-index');
+            itemElements.forEach((itemElement, index) => {
+                itemElement.textContent = `Item ${index + 1} : `;
+            });
+        }
+
+        function updateLaborWorkDaysItemIndices() {
+            const itemElements = document.querySelectorAll('.labor-workDays-item-index');
+            itemElements.forEach((itemElement, index) => {
+                itemElement.textContent = `Item ${index + 1} : `;
+            });
+        }
+        // End Function to Dynamically Change Index Labor
+
+        // Function to Dynamimcaly Change Index Equipments
+        function updateEquipmentItemIndices() {
+            const itemElements = document.querySelectorAll('.equipment-item-index');
+            itemElements.forEach((itemElement, index) => {
+                itemElement.textContent = `Item ${index + 1} : `;
+            });
+        }
+
+        function updateEquipmentNouItemIndices() {
+            const itemElements = document.querySelectorAll('.equipment-Nou-item-index');
+            itemElements.forEach((itemElement, index) => {
+                itemElement.textContent = `Item ${index + 1} : `;
+            });
+        }
+
+        function updateEquipmentWorkDaysItemIndices() {
+            const itemElements = document.querySelectorAll('.equipment-workDays-item-index');
+            itemElements.forEach((itemElement, index) => {
+                itemElement.textContent = `Item ${index + 1} : `;
+            });
+        }
+
+        // Material Select Event listener
+        materialSelect.on('item_add', updateMaterialItemIndices);
+        materialSelect.on('item_remove', updateMaterialItemIndices);
+
+        materialQuantitySelect.on('item_add', updateMaterialQuantityItemIndices);
+        materialQuantitySelect.on('item_remove', updateMaterialQuantityItemIndices);
+        // End of Material Select Event Listener
+
+        //  Labor Select Event Listener
+        laborSelect.on('item_add', updateLaborItemIndices);
+        laborSelect.on('item_remove', updateLaborItemIndices);
+
+        laborNopSelect.on('item_add', updateLaborNopItemIndices);
+        laborNopSelect.on('item_remove', updateLaborNopItemIndices);
+
+        laborWorkDaysSelect.on('item_add', updateLaborWorkDaysItemIndices);
+        laborWorkDaysSelect.on('item_remove', updateLaborWorkDaysItemIndices);
+        // End of Labor Select Event Listener
+
+
+        // Equipment Select Event Listener
+        equipmentSelect.on('item_add', updateEquipmentItemIndices);
+        equipmentSelect.on('item_remove', updateEquipmentItemIndices);
+
+        equipmentNoUSelect.on('item_add', updateEquipmentNouItemIndices);
+        equipmentNoUSelect.on('item_remove', updateEquipmentNouItemIndices);
+
+        equipmentWorkDaysSelect.on('item_add', updateEquipmentWorkDaysItemIndices);
+        equipmentWorkDaysSelect.on('item_remove', updateEquipmentWorkDaysItemIndices);
+
+
+
+        // Event listener for the submit button
+        document.getElementById('CheckMaterial').addEventListener('click', function() {
+            const selectedValues = materialSelect.getValue(); // Get the selected values
+            const selectedMaterials = selectedValues.map((value, index) => {
+                const item = materialSelect.options[value];
+                const quantityValue = materialQuantitySelect.getValue()[
+                    index]; // Get the quantity value based on index
+                return {
+                    material_id: item.value,
+                    material_name: item.text,
+                    quantity: quantityValue ? quantityValue :
+                        null // Include quantity in the selected material object
+                };
+            });
+
+            const materials = {
+                materials: selectedMaterials
+            }; // Wrap the selected materials array inside the "materials" object
+
+            console.log(materials); // Log the object containing the selected materials
+        });
+
+
+
+        // Event listener for the "Check Labor" button
+        document.getElementById('CheckLabor').addEventListener('click', function() {
+            const selectedLaborValues = laborSelect.getValue(); // Get the selected labor values
+            const selectedLabor = selectedLaborValues.map((value, index) => {
+                const item = laborSelect.options[value];
+                const nopValue = laborNopSelect.getValue()[
+                    index]; // Get the number of persons value based on index
+                const workDaysValue = laborWorkDaysSelect.getValue()[
+                    index]; // Get the work days value based on index
+                return {
+                    labor_id: item.value,
+                    labor_name: item.text,
+                    number_of_persons: nopValue ? nopValue : null,
+                    work_days: workDaysValue ? workDaysValue : null
+                };
+            });
+
+            const labors = {
+                labors: selectedLabor
+            }
+            console.log(
+                labors
+            ); // Log the array containing ID, text, number of persons, and work days for each selected labor
+        });
+
+        // Event listener for the "Check Equipment" button
+        document.getElementById('CheckEquipment').addEventListener('click', function() {
+            const selectedEquipmentValues = equipmentSelect.getValue(); // Get the selected equipment values
+            const selectedEquipment = selectedEquipmentValues.map((value, index) => {
+                const item = equipmentSelect.options[value];
+                const nouValue = equipmentNoUSelect.getValue()[
+                    index]; // Get the number of units value based on index
+                const workDaysValue = equipmentWorkDaysSelect.getValue()[
+                    index]; // Get the work days value based on index
+                return {
+                    equipment_id: item.value,
+                    equipment_name: item.text,
+                    number_of_units: nouValue ? nouValue : null,
+                    work_days: workDaysValue ? workDaysValue : null
+                };
+            });
+
+            const equipments = {
+                equipments: selectedEquipment
+            }
+            console.log(
+                equipments
+            ); // Log the array containing ID, text, number of units, and work days for each selected equipment
         });
     </script>
 @endsection

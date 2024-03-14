@@ -85,6 +85,5 @@
 
 
 <script>
-
     // add the function to hide modal after submit
 </script>

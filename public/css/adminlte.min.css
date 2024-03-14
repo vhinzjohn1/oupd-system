@@ -17,7 +17,6 @@ ang sa navbar sa ibabaw gamita lang ug navbar bg-yellow nga line. */
 /* sidebar-light-primary */
 
 :root {
-    --blue: #007bff;
     --indigo: #6610f2;
     --purple: #6f42c1;
     --pink: #e83e8c;
@@ -31,7 +30,7 @@ ang sa navbar sa ibabaw gamita lang ug navbar bg-yellow nga line. */
     --white: #fff;
     --gray: #6c757d;
     --gray-dark: #343a40;
-    --primary: #007bff;
+    --primary: #02681e;
     --secondary: #6c757d;
     --success: #02681e;
     --info: #17a2b8;
@@ -3435,7 +3434,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-light:not(:disabled):not(.disabled).active:focus,
-.btn-light:not(:disabled):not(.disabled):active:focus,
+.btn-light:not(:disabled):not(.disabled):focus,
 .show > .btn-light.dropdown-toggle:focus {
     box-shadow: 0 0 0 0 rgba(215, 218, 222, 0.5);
 }
@@ -5068,7 +5067,7 @@ input[type="submit"].btn-block {
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
     color: #fff;
-    background-color: #007bff;
+    background-color: #ffc001;
 }
 
 .nav-fill .nav-item,
@@ -15725,6 +15724,7 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
     margin-bottom: 0.2rem;
 }
 
+
 .nav-sidebar .nav-item > .nav-link .right {
     transition: -webkit-transform ease-in-out 0.3s;
     transition: transform ease-in-out 0.3s;
@@ -15905,6 +15905,7 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 }
 
 [class*="sidebar-light-"] .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: #ffc001;
     color: #000;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }

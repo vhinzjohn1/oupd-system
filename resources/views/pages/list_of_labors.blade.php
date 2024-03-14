@@ -129,16 +129,15 @@
 
                     data.forEach(function(labor, index) {
                         // Assuming rates is always an array, even if empty
-                        const rateData = labor.rates[0] || {}; // Get rate data or an empty object
 
                         var newRow = table.row.add([
                             // labor.labor_id,
                             labor.labor_name,
                             labor.location,
-                            rateData.rate,
-                            rateData.date_effective, // Add the date_effective here
+                            labor.rate,
+                            labor.date_effective,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${rateData.rate}')" > Edit </button>` +
+                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${labor.rate}')" > Edit </button>` +
                             `<button type="button" class="btn btn-danger" data-id="${labor.labor_id}"> Delete </button>` +
                             // ... (add your delete button logic here) +
                             '</div>'
