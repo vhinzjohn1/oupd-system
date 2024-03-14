@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\MLEController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectParticularController;
 use Illuminate\Support\Facades\Route;
@@ -18,11 +19,12 @@ Route::get('/', function () {
 
 Auth::routes();
 
+// Route to Controller Material Labor Equipment Resource
+Route::resource('mle', MLEController::class);
+
 // Materials Routes and Controller
-
-
-Route::resource('project', ProjectController::class);
 Route::resource('materials', MaterialController::class);
+Route::resource('project', ProjectController::class);
 
 
 Route::resource('labor', LaborController::class);
@@ -46,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/pages/projects', function () {
         return view('pages.projects');
     })->name('projects');
+
+    Route::get('/formatted-data', [ProjectController::class, 'getProjectData']);
 
     // Project Update Routes
     Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('project.update');
@@ -83,7 +87,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/pages/list_of_equipments', function () {
         return view('pages.list_of_equipments');
     })->name('list_of_equipments');
-    
+
     // Route for the index page of equipments
     Route::get('/equipments', [EquipmentController::class, 'index'])->name('equipments.index');
 
