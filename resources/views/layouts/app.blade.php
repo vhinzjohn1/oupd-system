@@ -29,7 +29,6 @@
     <!-- Bootstrap 4 -->
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- DataTables  & Plugins -->
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css"> --}}
     <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -57,12 +56,23 @@
     <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
 
     <!-- Select2 Styles -->
-
     <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap-5-theme.min.css') }}">
 
     <!-- Select2 Scripts -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
+
+
+    {{-- Tom select Plugins --}}
+    <link rel="stylesheet" href="{{ asset('plugins/tom-select/tomcss.css') }}">
+    <script src="{{ asset('plugins/tom-select/tomjs.js') }}"></script>
+
+    {{-- Latest Bootstrap 5.3 CSS --}}
+    <link rel="stylesheet" href="{{ asset('plugins/tom-select/bootstrap.min.css') }}">
+
+
+
+
 
     <style>
         .mx-auto {
@@ -91,13 +101,13 @@
                 <h4 id="setprojectTitle"></h4>
             </div> --}}
 
-            <div class="navbar-nav mx-auto"> <!-- Centered section -->
+            {{-- <div class="navbar-nav mx-auto"> <!-- Centered section -->
                 <div class="position-relative" style="width: 300px;">
                     <select class="form-control select2" id="selectedProject" name="selectedProject[]" required>
                         <!-- Options will be dynamically populated here -->
                     </select>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- <div class="form-group col-3">
                 <select class="form-control" id="selectedProject" name="selectedProject[]" multiple required>
@@ -109,7 +119,7 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" aria-expanded="false">
                         {{ Auth::user()->first_name }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" style="left: inherit; right: 0px;">
@@ -128,6 +138,7 @@
                         </form>
                     </div>
                 </li>
+
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -135,7 +146,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-light-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="/" class="brand-link text-center text-light">
+            <a href="/" class="brand-link text-center text-light text-decoration-none">
                 <span class="brand-text">OUPD System</span>
             </a>
 
@@ -180,6 +191,24 @@
     <script>
         $(document).ready(function() {
 
+            // Close dropdown when clicking outside of it
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.dropdown').length) {
+                    $('.dropdown-menu').removeClass('show');
+                }
+            });
+
+            // Close dropdown when clicking the dropdown toggle again
+            $('.dropdown-toggle').on('click', function(e) {
+                var $dropdownMenu = $(this).next('.dropdown-menu');
+                var isVisible = $dropdownMenu.hasClass('show');
+                if (isVisible) {
+                    $dropdownMenu.removeClass('show');
+                } else {
+                    $('.dropdown-menu').removeClass('show');
+                    $dropdownMenu.addClass('show');
+                }
+            });
             const select = $('#selectedProject');
 
             // Function to save the selected project to localStorage

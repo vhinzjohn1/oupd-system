@@ -49,6 +49,8 @@
 
 
 
+
+
         });
 
 
@@ -192,7 +194,7 @@
 
                 // Get form data
                 let projectID = $('#projectParticularID').val();
-                let particularID = selectedParticularId; // Access the variable here
+                let particularID = selectedParticularId; // Acces the variable here
 
                 $.ajax({
                     url: "{{ route('projectParticulars.store') }}",

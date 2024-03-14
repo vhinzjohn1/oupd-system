@@ -63,17 +63,15 @@ class LaborController extends Controller
             // Start a database transaction
             DB::beginTransaction();
 
-            // Check if labor with the same name exists
-            $labor = Labor::where('labor_name', $validatedData['labor_name'])->first();
+            // Associate the category (assuming a belongsTo relationship called 'category')
+            $labor = new Labor([
+                'labor_name' => $validatedData['labor_name'],
+                'location' => $validatedData['location'],
+                // 'rate' => $validatedData['rate'],
+            ]);
 
-            if (!$labor) {
-                // If labor does not exist, create a new one
-                $labor = new Labor([
-                    'labor_name' => $validatedData['labor_name'],
-                    'location' => $validatedData['location'],
-                ]);
-                $labor->save();
-            }
+            // $labor->category()->associate($laborCategory);
+            $labor->save();
 
             DB::table('labor_rates')
                 ->where('labor_id', $labor->labor_id)
@@ -103,7 +101,6 @@ class LaborController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to add labor. Please check the logs for details.']);
         }
     }
-
     /**
      * Display the specified resource.
      */
