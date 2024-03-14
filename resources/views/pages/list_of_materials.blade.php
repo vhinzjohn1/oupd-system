@@ -65,7 +65,7 @@
                 "ordering": true,
                 "paging": true,
                 "info": true,
-                "buttons": ["copy", "excel", "pdf", "print"]
+                // "buttons": ["copy", "excel", "pdf", "print"]
             }).buttons().container().appendTo('#materialTable_wrapper .col-md-6:eq(0)');
 
             // Call the function to fetch and populate data in the table
@@ -74,6 +74,12 @@
             // Trigger to open MaterialModal Manually
             document.getElementById('addMaterialButton').addEventListener('click', function() {
                 $('#addMaterialModal').modal('show');
+            });
+
+            // Handle delete button click
+            $('#materialTable').on('click', '.btn-delete-material', function() {
+                var materialId = $(this).data('id');
+                deleteMaterial(materialId);
             });
 
             // Attach the click handler to the table itself (or a closer static parent)
@@ -153,7 +159,8 @@
                                 onclick="openEditMaterialModal(${material.material_id}, ${material.price_id},
                                 '${material.price}', '${material.quarter}', '${material.year}',
                                 '${material.material_name}', '${material.material_category_name}', '${material.unit}')"> Edit </button>` +
-                            `<button type="button" class="btn btn-danger" data-id="${material.material_id}"> Delete </button>` +
+                            '<button type="button" class="btn btn-danger btn-delete-material" data-id="' +
+                            material.material_id + '"> Delete </button>' +
                             '</div>'
                         ]).node();
                     });
@@ -166,7 +173,38 @@
             });
         }
 
+        function deleteMaterial(materialId) {
+            console.log('Deleting material with ID:', materialId);
 
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this Material Entry!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('materials') }}/" + materialId,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            toastr.options.progressBar = true;
+                            toastr.success('Material Deleted Successfully!');
+                            refreshMaterialsTable();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                            alert('Failed to delete Material: ' + xhr.responseText);
+                        }
+                    });
+                }
+            });
+        }
 
         $(document).ready(function() {
 
@@ -258,18 +296,16 @@
                     },
                     success: function(response) {
                         toastr.options.progressBar = true;
-                        toastr.success('Material Updated Successfully!');
-                        $('#editMaterialModal').modal('hide');
-                        $('#editMaterialForm')[0].reset();
-                        refreshMaterialsTable();
 
                         if (response.success) {
-                            e.preventDefault();
+                            toastr.success('Material Updated Successfully!');
+                            $('#editMaterialModal').modal('hide');
+                            $('#editMaterialForm')[0].reset();
+                            refreshMaterialsTable();
                             console.log('successfully updated');
-
                         } else {
-                            // Show error message if material update fails
-                            alert('Failed to update material: ' + response.message);
+                            // Show error message if Material update fails
+                            toastr.error('Failed to update Material: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
