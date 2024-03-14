@@ -15,6 +15,6 @@ class Labor extends Model
 
     public function rates()
     {
-        return $this->hasMany(LaborRate::class, 'labor_rate_id');
+        return $this->hasMany(LaborRate::class, 'labor_id');
     }
 }
