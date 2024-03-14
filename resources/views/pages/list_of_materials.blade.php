@@ -41,7 +41,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @include('modals.edit_materials_modal')
+                                    @include('modals.materials.edit_materials_modal')
                                 </tbody>
                             </table>
                         </div>
@@ -52,7 +52,7 @@
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    @include('modals.add_materials_modal')
+    @include('modals.materials.add_materials_modal')
 
     <script>
         $(document).ready(function() {

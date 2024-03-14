@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,7 +14,7 @@ return new class extends Migration
             $table->bigIncrements('project_particular_material_id');
             $table->unsignedBigInteger('project_particular_id');
             $table->unsignedBigInteger('material_id');
-            $table->decimal('quantity', 10, 4);
+            $table->integer('quantity');
             $table->timestamp('timestamp')->useCurrent();
             // Foreign keys
             $table->foreign('project_particular_id')->references('project_particular_id')->on('project_particulars')->onDelete('cascade');

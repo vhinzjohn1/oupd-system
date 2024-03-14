@@ -21,6 +21,123 @@ class ProjectController extends Controller
         }
     }
 
+    public function getProjectData()
+    {
+        // Raw SQL query to fetch data
+        $projects = DB::select("
+        SELECT
+            p.project_id,
+            p.project_title,
+            prt.particular_name, -- Added particular_name
+            m.material_name,
+            pm.quantity AS material_quantity,
+            e.equipment_name,
+            ppe.work_days AS equipment_work_days,
+            lr.rate AS labor_rate,
+            ppl.work_days AS labor_work_days,
+            ppl.labor_id,
+            l.labor_name
+        FROM
+            projects p
+        LEFT JOIN
+            project_particulars pp ON p.project_id = pp.project_id
+        LEFT JOIN
+            particulars prt ON pp.particular_id = prt.particular_id -- Added join to particulars table
+        LEFT JOIN
+            project_particular_materials pm ON pp.project_particular_id = pm.project_particular_id
+        LEFT JOIN
+            materials m ON pm.material_id = m.material_id
+        LEFT JOIN
+            project_particular_equipments ppe ON pp.project_particular_id = ppe.project_particular_id
+        LEFT JOIN
+            equipments e ON ppe.equipment_id = e.equipment_id
+        LEFT JOIN
+            project_particular_labors ppl ON pp.project_particular_id = ppl.project_particular_id
+        LEFT JOIN
+            labor_rates lr ON ppl.labor_id = lr.labor_id
+        LEFT JOIN
+            labors l ON ppl.labor_id = l.labor_id
+    ");
+
+        $formattedData = [];
+
+        foreach ($projects as $project) {
+            // Extract data from the query result
+            $projectId = $project->project_id;
+            $title = $project->project_title;
+            $particularName = $project->particular_name; // Updated
+
+            // Group data by project title
+            if (!isset($formattedData[$title])) {
+                $formattedData[$title] = [
+                    'title' => $title,
+                    'particulars' => [],
+                ];
+            }
+
+            // Initialize the details array for the particular if not already set
+            if (!isset($formattedData[$title]['particulars'][$particularName])) {
+                $formattedData[$title]['particulars'][$particularName] = [
+                    'name' => $particularName,
+                    'details' => [
+                        'Materials' => [],
+                        'Equipment' => [],
+                        'Labor' => [],
+                    ],
+                ];
+            }
+
+            // Add details to the formatted result
+            if (!empty($project->material_name)) {
+                $formattedData[$title]['particulars'][$particularName]['details']['Materials'][] = [
+                    'name' => $project->material_name,
+                    'quantity' => $project->material_quantity,
+                ];
+            }
+
+            // Add equipment details if not already added
+            if (
+                !empty($project->equipment_name) &&
+                !in_array(
+                    ['name' => $project->equipment_name, 'work_days' => $project->equipment_work_days],
+                    $formattedData[$title]['particulars'][$particularName]['details']['Equipment'],
+                    true
+                )
+            ) {
+                $formattedData[$title]['particulars'][$particularName]['details']['Equipment'][] = [
+                    'name' => $project->equipment_name,
+                    'work_days' => $project->equipment_work_days,
+                ];
+            }
+
+            // Add labor details if not already added
+            if (
+                !empty($project->labor_name) &&
+                !in_array(
+                    ['name' => $project->labor_name, 'work_days' => $project->labor_work_days],
+                    $formattedData[$title]['particulars'][$particularName]['details']['Labor'],
+                    true
+                )
+            ) {
+                $formattedData[$title]['particulars'][$particularName]['details']['Labor'][] = [
+                    'name' => $project->labor_name,
+                    'work_days' => $project->labor_work_days,
+                ];
+            }
+        }
+
+        // Convert the particulars from associative array to indexed array
+        foreach ($formattedData as &$project) {
+            $project['particulars'] = array_values($project['particulars']);
+        }
+
+        return response()->json(['projects' => array_values($formattedData)]);
+    }
+
+
+
+
+
     public function store(Request $request)
     {
         // Validate incoming request data
