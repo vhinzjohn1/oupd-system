@@ -26,6 +26,7 @@
                                         id="addParticularButton">
                                         Add Particular
                                     </button>
+
                                 </div>
                                 @include('modals.particular.add_particular_modal');
 

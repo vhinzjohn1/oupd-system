@@ -73,6 +73,9 @@ Route::middleware('auth')->group(function () {
 
     Route::view('/pages/list_of_labors', 'pages.list_of_labors')->name('list_of_labors');
 
+    Route::delete('/labors/{id}', [LaborController::class, 'destroy'])->name('labors.destroy');
+
+
     // Routes for Materials
     Route::get('/pages/list_of_materials', function () {
         return view('pages.list_of_materials');
@@ -99,6 +102,7 @@ Route::middleware('auth')->group(function () {
 
     Route::view('/pages/list_of_equipments', 'pages.list_of_equipments')->name('list_of_equipments');
 
+    Route::delete('/equipments/{id}', [EquipmentController::class, 'destroy'])->name('equipments.destroy');
 
 
     // Users Routes

@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('labor_rates', function (Blueprint $table) {
             $table->id('labor_rate_id');
             $table->decimal('rate', 10, 2);
-            $table->unsignedBigInteger('labor_id'); // Foreign Key
+            $table->unsignedBigInteger('labor_id')->nullable(); // Foreign Key
             $table->foreign('labor_id')
                 ->references('labor_id')
                 ->on('labors');
