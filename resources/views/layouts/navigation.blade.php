@@ -22,19 +22,6 @@
                 </a>
             </li>
 
-            <hr style="background-color: white;">
-
-            <!-- Dashboard -->
-            <li class="nav-item dashboard">
-                <a href="{{ route('home') }}" class="nav-link" id="dashboard">
-                    <i class="nav-icon fas fa-th"></i>
-                    <p>{{ __('Dashboard') }}</p>
-                </a>
-            </li>
-
-
-
-
             <li class="nav-item">
                 <a href="" class="nav-link">
                     <i class="nav-icon fas fa-circle nav-icon"></i>
@@ -79,34 +66,6 @@
                             </p>
                         </a>
                     </li>
-
-                    {{-- <li class="nav-item">
-                        <a href="{{ route('project_particular') }}" class="nav-link">
-                            <i class="nav-icon far fa-address-card"></i>
-                            <p>{{ __('List of Particular') }}</p>
-                        </a>
-                    </li>
-                    <!-- List of Materials -->
-                    <li class="nav-item">
-                        <a href="{{ route('list_of_materials') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>{{ __('List of Materials') }}</p>
-                        </a>
-                    </li>
-                    <!-- List of Labor Rates -->
-                    <li class="nav-item">
-                        <a href="{{ route('list_of_labors') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>{{ __('List of Labor Rates') }}</p>
-                        </a>
-                    </li>
-                    <!-- List of Equipments -->
-                    <li class="nav-item">
-                        <a href="{{ route('list_of_equipments') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>{{ __('List of Equipments') }}</p>
-                        </a>
-                    </li> --}}
                 </ul>
             </li>
         </ul>
