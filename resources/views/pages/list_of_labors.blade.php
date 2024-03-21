@@ -4,10 +4,15 @@
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Labor Rates') }}</h1>
                 </div><!-- /.col -->
+                <div class="text-right col-sm-6">
+                    <button type="button" class="btn btn-success" data-toggle="modal" id="addLaborButton">
+                        Add Labor Rate
+                    </button>
+                </div>
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -21,11 +26,6 @@
                     <div class="card">
                         <div class="card-body table-responsive">
                             <table id="laborTable" class="table table-bordered table-striped col-12">
-                                <div class="text-right">
-                                    <button type="button" class="btn btn-success" data-toggle="modal" id="addLaborButton">
-                                        Add Labor Rate
-                                    </button>
-                                </div>
                                 <thead>
                                     <tr>
 
@@ -137,8 +137,8 @@
                             labor.rate,
                             labor.date_effective,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${labor.rate}')" > Edit </button>` +
-                            `<button type="button" class="btn btn-danger" data-id="${labor.labor_id}"> Delete </button>` +
+                            `<button type="button" id="editButton" class="btn bg-gradient-success mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${labor.rate}')" ><i class="fas fa-edit"></i></button>` +
+                            `<button type="button" class="btn bg-gradient-danger" data-id="${labor.labor_id}"><i class="fas fa-trash-alt"></i></button>` +
                             // ... (add your delete button logic here) +
                             '</div>'
                         ]).node();

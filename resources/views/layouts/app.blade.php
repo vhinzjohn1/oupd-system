@@ -10,6 +10,7 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('css/fontawesome.min.css') }}">
     <!-- Theme style -->
@@ -26,8 +27,8 @@
 
     <!-- jQuery -->
     <script src="../../plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
     <!-- DataTables  & Plugins -->
     <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -44,7 +45,8 @@
 
 
     {{-- script for number format --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+    <script src="{{ asset('js/autonumeric.js') }}"></script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
@@ -62,16 +64,21 @@
     <!-- Select2 Scripts -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
 
-
     {{-- Tom select Plugins --}}
     <link rel="stylesheet" href="{{ asset('plugins/tom-select/tomcss.css') }}">
     <script src="{{ asset('plugins/tom-select/tomjs.js') }}"></script>
+
+    <!-- Bootstrap 4 -->
+    <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    {{-- <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script> --}}
 
     {{-- Latest Bootstrap 5.3 CSS --}}
     <link rel="stylesheet" href="{{ asset('plugins/tom-select/bootstrap.min.css') }}">
 
 
 
+    <!----- ag Grid For Tables Assets ---->
+    {{-- <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script> --}}
 
 
     <style>
@@ -184,7 +191,7 @@
 
     <!-- ./wrapper -->
 
-    @vite('resources/js/app.js')
+    {{-- @vite('resources/js/app.js') --}}
     <!-- AdminLTE App -->
     <script src="{{ asset('js/adminlte.min.js') }}"></script>
 

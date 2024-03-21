@@ -10,6 +10,7 @@ use App\Models\MaterialCategory;
 use App\Models\Project;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\GetAllDataController;
 use App\Http\Controllers\ParticularController;
 use App\Models\EquipmentCategory;
 
@@ -33,7 +34,11 @@ Route::resource('particulars', ParticularController::class);
 Route::resource('projectParticulars', ProjectParticularController::class);
 
 
+Route::resource('getAllData', GetAllDataController::class);
+
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home_test', [App\Http\Controllers\HomeController::class, 'index'])->name('home_test');
 Route::get('/material-categories', function () {
     $categories = MaterialCategory::all()->pluck('material_category_name');
     return response()->json($categories);
@@ -48,6 +53,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/pages/projects', function () {
         return view('pages.projects');
     })->name('projects');
+
+    Route::get('/pages/projects', [ProjectController::class, 'getProjectData'])->name('projects');
 
     Route::get('/formatted-data', [ProjectController::class, 'getProjectData']);
 
@@ -129,6 +136,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/particulars/{id}', [ParticularController::class, 'update'])->name('particulars.update');
     // Particular Delete Routes
     Route::put('/particulars/{particular_id}', [ParticularController::class, 'destroy'])->name('particulars.destroy');
-
+    Route::resource('particulars', ParticularController::class);
 
 });
+
+
+// Project Particular Routes:
+Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');
+

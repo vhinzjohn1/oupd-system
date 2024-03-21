@@ -11,6 +11,7 @@ class HomeController extends Controller
      *
      * @return void
      */
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -23,6 +24,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $items = [
+            ['title' => 'Material', 'id' => '1', 'particular' => 'Compaction'],
+            ['title' => 'Labor', 'id' => '2', 'particular' => 'Earthworks'],
+            ['title' => 'Equipment', 'id' => '3', 'particular' => 'GroundWorks'],
+        ];
+        return view('home', ['items' => $items]);
     }
 }

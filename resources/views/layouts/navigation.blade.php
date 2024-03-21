@@ -21,7 +21,7 @@
             <!-- Dashboard -->
             <li class="nav-item dashboard">
                 <a href="{{ route('home') }}" class="nav-link" id="dashboard">
-                    <i class="nav-icon fas fa-th"></i>
+                    <i class="nav-icon fas fa-home"></i>
                     <p>{{ __('Dashboard') }}</p>
                 </a>
             </li>
@@ -37,7 +37,7 @@
             <!-- Master List -->
             <li class="nav-item has-treeview" id="masterList">
                 <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-circle nav-icon"></i>
+                    <i class="nav-icon fas fa-list"></i>
                     <p>Master List <i class="fas fa-angle-left right"></i></p>
                 </a>
                 <ul class="nav nav-treeview" style="display: none;">
@@ -51,21 +51,21 @@
                     <!-- List of Materials -->
                     <li class="nav-item">
                         <a href="{{ route('list_of_materials') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
+                            <i class="nav-icon fas fa-tools"></i>
                             <p>{{ __('List of Materials') }}</p>
                         </a>
                     </li>
                     <!-- List of Labor Rates -->
                     <li class="nav-item">
                         <a href="{{ route('list_of_labors') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
+                            <i class="nav-icon fas fa-hard-hat"></i>
                             <p>{{ __('List of Labor Rates') }}</p>
                         </a>
                     </li>
                     <!-- List of Equipments -->
                     <li class="nav-item">
                         <a href="{{ route('list_of_equipments') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
+                            <i class="nav-icon fas fa-snowplow"></i>
                             <p>{{ __('List of Equipments') }}</p>
                         </a>
                     </li>

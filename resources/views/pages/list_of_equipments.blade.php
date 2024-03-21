@@ -6,8 +6,12 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Equipment List') }}</h1>
-
                 </div><!-- /.col -->
+                <div class="text-right col-sm-6">
+                    <button type="button" class="btn btn-success" id="addEquipmentButton">
+                        Add Equipment
+                    </button>
+                </div>
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -22,11 +26,6 @@
                     <div class="card">
                         <div class="card-body table-responsive">
                             <table id="equipmentTable" class="table table-bordered table-striped col-12">
-                                <div class="text-right">
-                                    <button type="button" class="btn btn-success" id="addEquipmentButton">
-                                        Add Equipment
-                                    </button>
-                                </div>
                                 <thead>
                                     <tr>
 
@@ -121,10 +120,6 @@
         }
 
 
-
-
-
-
         function refreshEquipmentsTable() {
             $.ajax({
                 url: "{{ route('equipments.index') }}",
@@ -148,12 +143,12 @@
                             equipment.rate,
                             equipment.date_effective,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-equipment mr-2"
-        data-equipment-id="${equipment.equipment_id}" data-rate-id="${equipment.equipment_rate_id}"
-        onclick="openEditEquipmentModal('${equipment.equipment_id}', '${equipment.equipment_rate_id}',
-        '${equipment.rate}', '${equipment.equipment_name}', '${equipment.equipment_category_name}',
-        '${equipment.equipment_model}', '${equipment.equipment_capacity}')"> Edit </button>` +
-                            `<button type="button" class="btn btn-danger" data-id="${equipment.equipment_id}"> Delete </button>` +
+                            `<button type="button" id="editButton" class="btn bg-gradient-success mr-2"
+                            data-equipment-id="${equipment.equipment_id}" data-rate-id="${equipment.equipment_rate_id}"
+                            onclick="openEditEquipmentModal('${equipment.equipment_id}', '${equipment.equipment_rate_id}',
+                            '${equipment.rate}', '${equipment.equipment_name}', '${equipment.equipment_category_name}',
+                            '${equipment.equipment_model}', '${equipment.equipment_capacity}')"><i class="fas fa-edit"></i></button>` +
+                            `<button type="button" class="btn bg-gradient-danger" data-id="${equipment.equipment_id}"><i class="fas fa-trash-alt"></i></button>` +
                             '</div>'
 
                         ]).node();

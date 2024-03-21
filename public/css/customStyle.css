@@ -22,3 +22,65 @@
     width: 100% !important;
     overflow-x: auto !important;
 }
+
+.header-column {
+    height: 35px;
+    margin: -5px;
+}
+
+.td-width {
+    width: 33%;
+}
+
+.dark-gray {
+    background-color: darkslategrey;
+    color: white;
+}
+.bg-gradient-success {
+    color: white;
+}
+.page-item.active .page-link {
+    background-color: #00491e;
+    border-color: #00491e;
+    color: white; /* Optional: change the text color to white for better contrast */
+}
+.nav-link.active {
+    color: black !important;
+    background-color: #ffc107 !important; /* Change this to your desired color */
+}
+.dataTables_filter {
+    text-align: right !important;
+}
+
+.custom-right {
+    position: absolute;
+    right: 4px;
+    padding: 5px;
+}
+.modal-header {
+    background-color: #e5e5e5 !important;
+}
+.a-href {
+    text-decoration: none;
+}
+.card-flex {
+    display: flex;
+}
+
+.dropdown-item:active:focus {
+    background-color: #00491e !important;
+}
+.swal2-confirm {
+    background-color: #00491e !important;
+}
+
+.header-hover:hover {
+    cursor: pointer;
+}
+.btn-header {
+    padding: 3px 10px !important; /* Adjust the values as needed */
+}
+
+.padding-header {
+    padding: 1px 10px !important; /* Adjust the values as needed */
+}

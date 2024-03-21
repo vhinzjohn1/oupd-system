@@ -28,4 +28,20 @@ class ProjectParticular extends Model
     {
         return $this->belongsTo(Particular::class);
     }
+
+    public function materials()
+    {
+        return $this->hasMany(ProjectParticularMaterial::class, 'project_particular_id');
+    }
+
+    // Define the relationship with labors
+    public function labors()
+    {
+        return $this->hasMany(ProjectParticularLabor::class, 'project_particular_id');
+    }
+
+    public function equipments()
+    {
+        return $this->hasMany(ProjectParticularEquipment::class, 'project_particular_id');
+    }
 }

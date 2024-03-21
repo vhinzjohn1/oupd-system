@@ -122,10 +122,10 @@
 
 
                     <div class="modal-footer">
-                        <div class="btn btn-success" id="CombineValuesButton">Combine</div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <div class="btn bg-success" id="CombineValuesButton">Save Changes</div>
                     </div>
+                </div>
             </form>
         </div>
     </div>
