@@ -25,6 +25,6 @@ class Equipment extends Model
 
     public function rates()
     {
-        return $this->hasMany(EquipmentRate::class, 'equipment_rate_id');
+        return $this->hasMany(EquipmentRate::class, 'equipment_id');
     }
 }
