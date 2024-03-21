@@ -45237,10 +45237,11 @@ a.disabled.mailbox-attachment-close {
 
 .login-card-body,
 .register-card-body {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, .85);
     border-top: 0;
     color: #666;
     padding: 20px;
+    border-radius: 10px;
 }
 
 .login-card-body .input-group .form-control,
