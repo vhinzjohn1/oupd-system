@@ -158,6 +158,29 @@ class MaterialController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        try {
+            // Find the material based on ID
+            $material = Material::findOrFail($id);
+
+            // Deactivate existing prices related to the material
+            $material->prices()->update(['is_active' => false]);
+
+            // Update foreign key references to null in related material_prices records
+            Price::where('material_id', $material->material_id)->update(['material_id' => null]);
+
+            // You can choose to delete the material if needed
+            // Comment if you only want to delete it in the table not in the database
+            $material->delete();
+
+            return response()->json(['success' => true, 'message' => 'Material details deleted successfully!']);
+        } catch (\Exception $e) {
+            Log::error('Failed to delete material details: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to delete material details. Check logs for details.']);
+        }
+    }
+
 
 
     // Other controller methods (create, edit, update, destroy) go here
