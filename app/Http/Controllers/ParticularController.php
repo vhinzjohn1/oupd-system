@@ -36,8 +36,6 @@ class ParticularController extends Controller
                 'description' => $validatedData['description'],
             ]);
 
-
-
             // Commit the transaction
             DB::commit();
 

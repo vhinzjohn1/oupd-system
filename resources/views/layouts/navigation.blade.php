@@ -12,23 +12,38 @@
             </li>
 
             <hr style="background-color: white;">
-            <li class="nav-item">
-                <a href="{{ route('home') }}" class="nav-link">
-                    <i class="nav-icon fas fa-th"></i>
-                    <p>
-                        {{ __('Dashboard') }}
-                    </p>
 
+            <!-- Dashboard -->
+            <li class="nav-item dashboard">
+                <a href="{{ route('home') }}" class="nav-link" id="dashboard">
+                    <i class="nav-icon fas fa-home"></i>
+                    <p>{{ __('Dashboard') }}</p>
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a href="" class="nav-link">
-                    <i class="nav-icon fas fa-circle nav-icon"></i>
-                    <p>
-                        Master List
-                        <i class="fas fa-angle-left right"></i>
-                    </p>
+            <!-- Transactionals -->
+            <li class="nav-item transaction">
+                <a href="{{ route('transaction') }}" class="nav-link" id="transaction">
+                    <i class="nav-icon fas fa-pencil-ruler"></i>
+                    <p>{{ __('Transaction') }}</p>
+                </a>
+            </li>
+
+
+
+            <!-- Projects -->
+            <li class="nav-item projects">
+                <a href="{{ route('projects') }}" class="nav-link" id="projects">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>{{ __('Projects') }}</p>
+                </a>
+            </li>
+
+            <!-- Master List -->
+            <li class="nav-item has-treeview" id="masterList">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-list"></i>
+                    <p>Master List <i class="fas fa-angle-left right"></i></p>
                 </a>
                 <ul class="nav nav-treeview" style="display: none;">
 
@@ -43,30 +58,32 @@
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('list_of_materials') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>
-                                {{ __('List of Materials') }}
-                            </p>
+                            <i class="nav-icon fas fa-tools"></i>
+                            <p>{{ __('List of Materials') }}</p>
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a href="{{ route('list_of_labors') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>
-                                {{ __('List of Labor Rates') }}
-                            </p>
+                            <i class="nav-icon fas fa-hard-hat"></i>
+                            <p>{{ __('List of Labor Rates') }}</p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('list_of_equipments') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>
-                                {{ __('List of Equipments') }}
-                            </p>
+                            <i class="nav-icon fas fa-snowplow"></i>
+                            <p>{{ __('List of Equipments') }}</p>
                         </a>
                     </li>
                 </ul>
+            </li>
+
+            <!-- Transactionals -->
+            <li class="nav-item printables">
+                <a href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">
+                    <i class="nav-icon fas fa-pencil-ruler"></i>
+                    <p>{{ __('Generate PDF') }}</p>
+                </a>
             </li>
         </ul>
     </nav>

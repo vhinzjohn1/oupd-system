@@ -14,7 +14,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <input type="hidden" id="edit_equipment_id" name="edit_equipment_id">
-                            
+
                             <div class="form-group">
                                 <label for="edit_equipment_name">Equipment Name</label>
                                 <input type="text" class="form-control" id="edit_equipment_name"
@@ -28,11 +28,13 @@
 
                             <div class="form-group">
                                 <label for="edit_equipment_model">Model</label>
-                                <input type="text" class="form-control" id="edit_equipment_model" name="edit_equipment_model" required>
+                                <input type="text" class="form-control" id="edit_equipment_model"
+                                    name="edit_equipment_model" required>
                             </div>
                             <div class="form-group">
                                 <label for="edit_equipment_capacity">Capacity</label>
-                                <input type="text" class="form-control" id="edit_equipment_capacity" name="edit_equipment_capacity" required>
+                                <input type="text" class="form-control" id="edit_equipment_capacity"
+                                    name="edit_equipment_capacity" required>
                             </div>
                             {{-- <div class="form-group">
                                 <label for="edit_description">Description</label>
@@ -49,7 +51,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn bg-success">Save changes</button>
                     </div>
             </form>
         </div>

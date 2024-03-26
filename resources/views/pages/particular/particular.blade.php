@@ -4,10 +4,15 @@
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Particulars') }}</h1>
                 </div><!-- /.col -->
+                <div class="col-sm-6 text-right">
+                    <button type="button" class="btn btn-success" data-toggle="modal" id="addParticularButton">
+                        Add Particular
+                    </button>
+                </div>
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -26,10 +31,8 @@
                                         id="addParticularButton">
                                         Add Particular
                                     </button>
-
                                 </div>
                                 @include('modals.particular.add_particular_modal');
-
                                 <thead>
                                     <tr>
                                         <th>Particular Name</th>
@@ -38,7 +41,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                 </tbody>
                             </table>
                         </div>
@@ -48,11 +50,6 @@
         </div><!-- /.container-fluid -->
     </div>
     @include('modals.particular.edit_particular_modal');
-
-
-
-
-
     <script>
         $(document).ready(function() {
             // Initialize DataTable
@@ -63,7 +60,6 @@
                 "searching": true,
                 "ordering": true,
                 "paging": true,
-
             }).buttons().container().appendTo('#particularTable_wrapper .col-12');
 
             // Call the function to fetch and populate data in the table
@@ -77,6 +73,7 @@
 
         });
 
+        // Populate the Table and Refresh at the same time
         function refreshParticularTable() {
             $.ajax({
                 url: "{{ route('particulars.index') }}",
@@ -92,9 +89,8 @@
                             particular.particular_name,
                             particular.description,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editParticularButton" class="btn btn-primary mr-2" data-id="${particular.particular_id}" onclick="openParticularModal(${particular.particular_id}, '${particular.particular_name}', '${particular.description}')"> Edit </button>` +
-                            `<button type="button" id="deleteParticularButton" class="btn btn-danger" data-id="${particular.particular_id}" onclick="deleteParticular(${particular.particular_id})"> Delete </button>` +
-                            // ... (add your delete button logic here) +
+                            `<button type="button" id="editParticularButton" class="btn bg-gradient-success mr-2" data-id="${particular.particular_id}" onclick="openParticularModal(${particular.particular_id}, '${particular.particular_name}', '${particular.description}')"><i class="fas fa-edit"></i></button>` +
+                            `<button type="button" id="deleteParticularButton" class="btn bg-gradient-danger" data-id="${particular.particular_id}" onclick="deleteParticular(${particular.particular_id})"><i class="fas fa-trash-alt"></i></button>` +
                             '</div>'
                         ]).node();
 
@@ -108,6 +104,8 @@
             });
         }
 
+
+        // Manually Open Particular Modal
         function openParticularModal(particular_id, particular_name, description) {
             console.log(particular_id);
             // Populate modal fields with passed values
@@ -120,6 +118,8 @@
 
         }
 
+
+        // Delete Function for Particular
         function deleteParticular(particular_id) {
             Swal.fire({
                 title: 'Are you sure?',
@@ -152,7 +152,6 @@
                 }
             });
         }
-
 
 
 

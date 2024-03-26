@@ -10,8 +10,11 @@ use App\Models\MaterialCategory;
 use App\Models\Project;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\GetAllDataController;
 use App\Http\Controllers\ParticularController;
+use App\Http\Controllers\PDFController;
 use App\Models\EquipmentCategory;
+use Dompdf\Adapter\PDFLib;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,7 +36,16 @@ Route::resource('particulars', ParticularController::class);
 Route::resource('projectParticulars', ProjectParticularController::class);
 
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::resource('getAllData', GetAllDataController::class)->except(['show']);
+
+// Define the route for the masterList function
+Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']);
+
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', function () {
+    return view('home');
+})->name('home');
+Route::get('/home_test', [App\Http\Controllers\HomeController::class, 'index'])->name('home_test');
 Route::get('/material-categories', function () {
     $categories = MaterialCategory::all()->pluck('material_category_name');
     return response()->json($categories);
@@ -48,6 +60,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/pages/projects', function () {
         return view('pages.projects');
     })->name('projects');
+
+    Route::get('/transaction', function () {
+        return view('transactions');
+    })->name('transaction');
+
+    Route::get('/printables/generate-pdf', function () {
+        return view('printables.print_project_particular');
+    })->name('generate-pdf');
+
+    Route::get('/pages/projects', [ProjectController::class, 'getProjectData'])->name('projects');
 
     Route::get('/formatted-data', [ProjectController::class, 'getProjectData']);
 
@@ -74,7 +96,6 @@ Route::middleware('auth')->group(function () {
     Route::view('/pages/list_of_labors', 'pages.list_of_labors')->name('list_of_labors');
 
     Route::delete('/labors/{id}', [LaborController::class, 'destroy'])->name('labors.destroy');
-
 
     // Routes for Materials
     Route::get('/pages/list_of_materials', function () {
@@ -104,7 +125,6 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/equipments/{id}', [EquipmentController::class, 'destroy'])->name('equipments.destroy');
 
-
     // Users Routes
     Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
     Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
@@ -133,6 +153,20 @@ Route::middleware('auth')->group(function () {
     Route::put('/particulars/{id}', [ParticularController::class, 'update'])->name('particulars.update');
     // Particular Delete Routes
     Route::put('/particulars/{particular_id}', [ParticularController::class, 'destroy'])->name('particulars.destroy');
+    Route::resource('particulars', ParticularController::class);
+
 
 
 });
+
+// Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
+Route::get('/generate-pdf', function () {
+    return view('printables.print_project_particular');
+});
+Route::resource('generatePDF', PDFController::class);
+
+
+// Project Particular Routes:
+Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');
+Route::post('/submit-details', [GetAllDataController::class, 'submitDetails'])->name('submit.details');
+

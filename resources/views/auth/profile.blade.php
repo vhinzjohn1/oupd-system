@@ -145,7 +145,8 @@
 
                                 <div class="d-flex justify-content-center">
                                     <div class="col-6 mb-4">
-                                        <button type="submit" class="btn btn-primary btn-block">{{ __('Submit') }}</button>
+                                        <button type="submit"
+                                            class="btn btn-success btn-block">{{ __('Submit') }}</button>
                                     </div>
                                 </div>
                             </form>
