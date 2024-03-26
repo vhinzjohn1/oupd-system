@@ -26,6 +26,16 @@
                 </a>
             </li>
 
+            <!-- Transactionals -->
+            <li class="nav-item transaction">
+                <a href="{{ route('transaction') }}" class="nav-link" id="transaction">
+                    <i class="nav-icon fas fa-pencil-ruler"></i>
+                    <p>{{ __('Transaction') }}</p>
+                </a>
+            </li>
+
+
+
             <!-- Projects -->
             <li class="nav-item projects">
                 <a href="{{ route('projects') }}" class="nav-link" id="projects">
@@ -70,6 +80,14 @@
                         </a>
                     </li>
                 </ul>
+            </li>
+
+            <!-- Transactionals -->
+            <li class="nav-item printables">
+                <a href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">
+                    <i class="nav-icon fas fa-pencil-ruler"></i>
+                    <p>{{ __('Generate PDF') }}</p>
+                </a>
             </li>
         </ul>
     </nav>

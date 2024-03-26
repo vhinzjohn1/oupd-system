@@ -260,7 +260,7 @@
             }).then((result) => {
                 // Redirect to the home page after the user clicks "OK"
                 if (result.isConfirmed) {
-                    window.location.href = '/home';
+                    window.location.href = '/transaction';
                 }
             });
         }

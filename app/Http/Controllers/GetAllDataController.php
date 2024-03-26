@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Project;
+use App\Models\ProjectParticular;
 
 class GetAllDataController extends Controller
 {
@@ -180,4 +181,83 @@ class GetAllDataController extends Controller
         }
         return response()->json(['projects' => array_values($formattedData)]);
     }
+
+
+    public function masterList()
+    {
+        // Raw SQL query to fetch data
+        $materials = DB::select("
+        SELECT
+            m.material_id,
+            m.material_name,
+            m.unit AS material_unit,
+            mc.material_category_id,
+            mc.material_category_name,
+            pr.price AS material_price,
+            pr.`quarter` AS material_quarter,
+            pr.`year` AS material_year,
+            pr.price_id AS material_price_id
+        FROM
+            materials m
+        LEFT JOIN
+            material_categories mc ON m.material_category_id = mc.material_category_id
+        LEFT JOIN
+            prices pr ON m.material_id = pr.material_id
+            AND pr.is_active = 1
+    ");
+
+        $labors = DB::select("
+        SELECT
+            l.labor_id,
+            l.labor_name,
+            lr.rate AS labor_rate,
+            l.location AS labor_location
+        FROM
+            labors l
+        LEFT JOIN
+            labor_rates lr ON l.labor_id = lr.labor_id
+    ");
+
+        $equipments = DB::select("
+        SELECT
+            e.equipment_id,
+            e.equipment_name,
+            er.rate AS equipment_rate
+        FROM
+            equipments e
+        LEFT JOIN
+            equipment_rates er ON e.equipment_id = er.equipment_id
+    ");
+
+        // Format the fetched data
+        $getAllData = [
+            'materials' => $materials,
+            'labors' => $labors,
+            'equipments' => $equipments,
+        ];
+
+        return response()->json($getAllData);
+    }
+
+    public function submitDetails(Request $request)
+    {
+        // Create or find project particular
+        $projectParticular = ProjectParticular::firstOrCreate([
+            'project_id' => $request->projectId, // Change 'project_id' to 'projectId'
+            'particular_id' => $request->particularId, // Change 'particular_id' to 'particularId'
+        ]);
+
+        // Insert materials into the project_particular_materials table if provided
+        if (!empty ($request->materialId)) { // Change 'materials' to 'materialId'
+            // Update or create a record in the project_particular_materials table
+            $projectParticular->materials()->updateOrCreate([
+                'material_id' => $request->materialId,
+            ], [
+                'quantity' => $request->materialQuantity, // Change 'quantity' to 'materialQuantity'
+            ]);
+        }
+        return response()->json(['message' => 'Data submitted successfully']);
+
+    }
+
 }

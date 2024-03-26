@@ -12,7 +12,9 @@ use App\Http\Controllers\LaborController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\GetAllDataController;
 use App\Http\Controllers\ParticularController;
+use App\Http\Controllers\PDFController;
 use App\Models\EquipmentCategory;
+use Dompdf\Adapter\PDFLib;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,10 +36,15 @@ Route::resource('particulars', ParticularController::class);
 Route::resource('projectParticulars', ProjectParticularController::class);
 
 
-Route::resource('getAllData', GetAllDataController::class);
+Route::resource('getAllData', GetAllDataController::class)->except(['show']);
 
+// Define the route for the masterList function
+Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', function () {
+    return view('home');
+})->name('home');
 Route::get('/home_test', [App\Http\Controllers\HomeController::class, 'index'])->name('home_test');
 Route::get('/material-categories', function () {
     $categories = MaterialCategory::all()->pluck('material_category_name');
@@ -53,6 +60,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/pages/projects', function () {
         return view('pages.projects');
     })->name('projects');
+
+    Route::get('/transaction', function () {
+        return view('transactions');
+    })->name('transaction');
+
+    Route::get('/printables/generate-pdf', function () {
+        return view('printables.print_project_particular');
+    })->name('generate-pdf');
 
     Route::get('/pages/projects', [ProjectController::class, 'getProjectData'])->name('projects');
 
@@ -138,9 +153,18 @@ Route::middleware('auth')->group(function () {
     Route::put('/particulars/{particular_id}', [ParticularController::class, 'destroy'])->name('particulars.destroy');
     Route::resource('particulars', ParticularController::class);
 
+
+
 });
+
+// Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
+Route::get('/generate-pdf', function () {
+    return view('printables.print_project_particular');
+});
+Route::resource('generatePDF', PDFController::class);
 
 
 // Project Particular Routes:
 Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');
+Route::post('/submit-details', [GetAllDataController::class, 'submitDetails'])->name('submit.details');
 
