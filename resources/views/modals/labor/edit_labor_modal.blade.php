@@ -27,14 +27,9 @@
                         </div>
                         <div class="form-group">
                             <label for="edit_rate">Rate</label>
-                            <input type="number" class="form-control" id="edit_rate" name="edit_rate" required>
+                            <input type="number" class="form-control" step="any" id="edit_rate" name="edit_rate"
+                                required>
                         </div>
-                        {{-- <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="edit_date_effective">Date Effective</label>
-                                <input type="datetime" class="form-control" id="edit_date_effective" name="edit_date_effective" required>
-                            </div>
-                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

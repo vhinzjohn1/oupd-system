@@ -34,7 +34,8 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="add_price">Price</label>
-                                <input type="number" class="form-control" id="add_price" name="add_price" required>
+                                <input type="number" class="form-control" id="add_price" name="add_price"
+                                    step=".01" required>
                             </div>
                             <div class="form-group">
                                 <label for="add_quarter">Quarter</label>
@@ -42,7 +43,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="add_year">Year</label>
-                                <input type="text" class="form-control" id="add_year" name="add_year" required>
+                                <input type="number" class="form-control" min="1900" max="2099" id="add_year"
+                                    name="add_year" required>
                             </div>
                         </div>
                     </div>
@@ -55,3 +57,14 @@
         </div>
     </div>
 </div>
+<script>
+    var yearInput = document.getElementById('add_year');
+    yearInput.addEventListener('input', function(event) {
+        var year = parseInt(event.target.value);
+        if (year < 1900 || year > 2199 || isNaN(year)) {
+            event.target.setCustomValidity('Invalid year');
+        } else {
+            event.target.setCustomValidity('');
+        }
+    });
+</script>

@@ -1,6 +1,5 @@
 @extends('layouts.guest')
 
-
 @section('content')
     <title>
         Login

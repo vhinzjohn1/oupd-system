@@ -37,15 +37,12 @@
                                 <input type="text" class="form-control" id="add_equipment_capacity"
                                     name="add_capacity" required>
                             </div>
-                            {{-- <div class="form-group">
-                                <label for="add_description">Description</label>
-                                <input type="text" class="form-control" id="add_description" name="add_description" required>
-                            </div> --}}
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="add_rate">Rate</label>
-                                <input type="number" class="form-control" id="add_rate" name="add_rate" required>
+                                <input type="number" class="form-control" step="any" id="add_rate" name="add_rate"
+                                    required>
                             </div>
                         </div>
                     </div>

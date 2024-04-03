@@ -1,51 +1,51 @@
-<div class="modal fade preview-modal" id="addParticularMaterial" tabindex="-1" role="dialog"
-    aria-labelledby="addParticularMaterialLabel" aria-hidden="true">
+<div class="modal fade preview-modal" id="editParticularMaterialModal" tabindex="-1" role="dialog"
+    aria-labelledby="editParticularMaterialModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered" role="document" style="max-height: 75vh;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addParticularMaterialLabel">Add Material</h5>
+                <h5 class="modal-title" id="editParticularMaterialModalLabel">Edit Material</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="addProjectPartMaterialForm">
+            <form id="editProjectPartMaterialForm">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="add_particular_material">Material Name</label>
-                                <select type="text" class="form-control" id="add_particular_material"
-                                    name="add_particular_material" required>
+                                <label for="edit_particular_material">Material Name</label>
+                                <select type="text" class="form-control" id="edit_particular_material"
+                                    name="edit_particular_material" required>
                                     <option value=""></option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="add_particular_materialQuantity">Quantity</label>
-                                <input type="number" class="form-control" id="add_particular_materialQuantity"
-                                    name="add_particular_materialQuantity" required>
+                                <label for="edit_particular_materialQuantity">Quantity</label>
+                                <input type="number" class="form-control" id="edit_particular_materialQuantity"
+                                    name="edit_particular_materialQuantity" required>
                             </div>
                             <div class="form-group">
-                                <label for="add_particular_category">Category Name</label>
-                                <input type="text" class="form-control" id="add_particular_category"
-                                    name="add_particular_category" readonly required>
+                                <label for="edit_particular_category">Category Name</label>
+                                <input type="text" class="form-control" id="edit_particular_category"
+                                    name="edit_particular_category" readonly required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="add_particular_materialUnit">Unit</label>
-                                <input type="text" class="form-control" id="add_particular_materialUnit"
-                                    name="add_particular_materialUnit" readonly required>
+                                <label for="edit_particular_materialUnit">Unit</label>
+                                <input type="text" class="form-control" id="edit_particular_materialUnit"
+                                    name="edit_particular_materialUnit" readonly required>
                             </div>
                             <div class="form-group">
-                                <label for="add_particular_materialPrice">Price</label>
-                                <input type="text" class="form-control" id="add_particular_materialPrice"
-                                    name="add_particular_materialPrice" readonly>
+                                <label for="edit_particular_materialPrice">Price</label>
+                                <input type="text" class="form-control" id="edit_particular_materialPrice"
+                                    name="edit_particular_materialPrice" readonly>
                             </div>
                             <div class="form-group">
-                                <label for="add_particular_materialAmount">Amount</label>
-                                <input type="text" class="form-control" id="add_particular_materialAmount"
-                                    name="add_particular_materialAmount" readonly>
+                                <label for="edit_particular_materialAmount">Amount</label>
+                                <input type="text" class="form-control" id="edit_particular_materialAmount"
+                                    name="edit_particular_materialAmount" readonly>
                             </div>
                         </div>
                     </div>

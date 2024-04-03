@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Projects')
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -60,7 +61,7 @@
         </div><!-- /.container-fluid -->
 
 
-        {{-- Container for Project Particular Table --}}
+        {{-- Container for Project Particular Table
         <div class="container-fluid">
             <div class="card" style="box-shadow: 0px 0px 10px 1px grey">
                 <div class="card-header col-12 d-flex justify-content-between mb-2">
@@ -75,7 +76,7 @@
                     </table>
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div><!-- /.container-fluid --> --}}
     </div>
     @include('modals.project.add_projects_modal')
     @include('modals.project.view_project_modal')
@@ -260,7 +261,7 @@
             }).then((result) => {
                 // Redirect to the home page after the user clicks "OK"
                 if (result.isConfirmed) {
-                    window.location.href = '/transaction';
+                    window.location.href = '/transactions';
                 }
             });
         }
@@ -462,7 +463,6 @@
                 let sourceOfFund = $('#add_project_source_of_fund').val();
                 let modeOfImplementation = $('#add_project_mode_of_implementation').val();
 
-
                 // Make AJAX request to add new material
                 $.ajax({
                     url: "{{ route('project.store') }}",
@@ -489,14 +489,6 @@
                         if (response) {
                             $('#addProjectForm')[0].reset();
                             $('#addProjectModal').modal('hide');
-
-                            // //setting callback function for 'hidden.bs.modal' event
-                            // $('#addProjectModal').on('hidden.bs.modal', function() {
-                            //     //remove the backdrop
-                            //     $('.modal-backdrop').remove();
-                            // })
-
-                            console.log('successfully added');
 
                             refreshProjectsTable();
 

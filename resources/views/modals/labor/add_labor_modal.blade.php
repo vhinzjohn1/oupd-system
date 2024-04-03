@@ -8,7 +8,8 @@
     }
 </style>
 <!-- Add Material Modal -->
-<div class="modal fade" id="addLaborModal" tabindex="-1" role="dialog" aria-labelledby="addLaborModalLabel" aria-hidden="true">
+<div class="modal fade" id="addLaborModal" tabindex="-1" role="dialog" aria-labelledby="addLaborModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -48,30 +49,21 @@
                                 <label for="add_location">Location</label>
                                 <input type="text" class="form-control" id="add_location" name="add_location"
                                     required>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="add_rate">Rate</label>
-                                <input type="text" class="form-control" id="add_rate" name="add_rate" required>
                             </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="add_rate">Rate</label>
+                                    <input type="number" class="form-control" id="add_rate" step="any"
+                                        name="add_rate" required>
+                                </div>
 
-                            {{-- <div class="form-group">
-                                <label for="date_effective">Date Effective</label>
-                                <input type="datetime-local" class="form-control" id="date_effective" name="date_effective" required>
-                            </div> --}}
-
-                            {{-- <div class="form-group">
-                                <label for="add_price">Price</label>
-                                <input type="number" class="form-control" id="add_price" name="add_price" required>
-                            </div> --}}
-
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn bg-success">Save changes</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn bg-success">Save changes</button>
+                    </div>
             </form>
         </div>
     </div>

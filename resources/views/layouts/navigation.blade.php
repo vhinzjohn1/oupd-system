@@ -28,7 +28,7 @@
 
             <!-- Transactionals -->
             <li class="nav-item transaction">
-                <a href="{{ route('transaction') }}" class="nav-link" id="transaction">
+                <a href="{{ route('transactions') }}" class="nav-link" id="transaction">
                     <i class="nav-icon fas fa-pencil-ruler"></i>
                     <p>{{ __('Transaction') }}</p>
                 </a>

@@ -45,7 +45,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="edit_rate">Rate</label>
-                                <input type="number" class="form-control" id="edit_rate" name="edit_rate" required>
+                                <input type="number" class="form-control" step="any" id="edit_rate"
+                                    name="edit_rate" required>
                             </div>
                         </div>
                     </div>

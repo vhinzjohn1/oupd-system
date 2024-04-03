@@ -29,12 +29,10 @@ Route::resource('mle', MLEController::class);
 Route::resource('materials', MaterialController::class);
 Route::resource('project', ProjectController::class);
 
-
 Route::resource('labor', LaborController::class);
 Route::resource('particulars', ParticularController::class);
 
 Route::resource('projectParticulars', ProjectParticularController::class);
-
 
 Route::resource('getAllData', GetAllDataController::class)->except(['show']);
 
@@ -42,9 +40,7 @@ Route::resource('getAllData', GetAllDataController::class)->except(['show']);
 Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']);
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
+
 Route::get('/home_test', [App\Http\Controllers\HomeController::class, 'index'])->name('home_test');
 Route::get('/material-categories', function () {
     $categories = MaterialCategory::all()->pluck('material_category_name');
@@ -57,13 +53,22 @@ Route::get('/equipment-categories', function () {
 
 Route::middleware('auth')->group(function () {
 
+    Route::get('/home', function () {
+        return view('home');
+    })->name('home');
+
+    // Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
+    Route::get('/generate-pdf', function () {
+        return view('printables.print_project_particular');
+    });
+
     Route::get('/pages/projects', function () {
         return view('pages.projects');
     })->name('projects');
 
-    Route::get('/transaction', function () {
+    Route::get('/transactions', function () {
         return view('transactions');
-    })->name('transaction');
+    })->name('transactions');
 
     Route::get('/printables/generate-pdf', function () {
         return view('printables.print_project_particular');
@@ -131,11 +136,8 @@ Route::middleware('auth')->group(function () {
     Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 });
 
-
-
 // Routes for Particulars and Project Particular
 Route::middleware('auth')->group(function () {
-
     // Routes for Particular
     Route::get('particular', function () {
         return view('pages.particular.particular');
@@ -159,14 +161,11 @@ Route::middleware('auth')->group(function () {
 
 });
 
-// Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
-Route::get('/generate-pdf', function () {
-    return view('printables.print_project_particular');
-});
 Route::resource('generatePDF', PDFController::class);
-
 
 // Project Particular Routes:
 Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');
 Route::post('/submit-details', [GetAllDataController::class, 'submitDetails'])->name('submit.details');
 
+// Route for deleting project particular material
+Route::delete('/delete-datails', [GetAllDataController::class, 'destroy'])->name('project_particular_material.destroy');
