@@ -19,7 +19,7 @@
 <body class="hold-transition login-page">
     <div class="backstretch"
         style="left: 0px; top: 0px; overflow: hidden; margin: 0px; padding: 0px; height: 100%; width: 100%; z-index: -999999; position: fixed;">
-        <img src="https://isms.cmu.edu.ph/general/getThemePhoto?tid=1&field=login_bg"
+        <img src="{{ asset('img/backgroundCmu.jpg') }}"
             style="position: absolute; margin: 0px; padding: 0px; border: none; width: 110%; height: 100%; max-height: none; max-width: none; z-index: -999999; left: -79.7671px; top: 0px;">
     </div>
     {{-- <span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span> --}}

@@ -12,16 +12,11 @@
                 <form id="editLaborForm">
                     @csrf
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <input type="hidden" id="edit_labor_id" name="edit_labor_id">
                             <div class="form-group">
                                 <label for="edit_labor_name">Labor Name</label>
                                 <input type="text" class="form-control" id="edit_labor_name" name="edit_labor_name"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label for="edit_location">Location</label>
-                                <input type="text" class="form-control" id="edit_location" name="edit_location"
                                     required>
                             </div>
                         </div>

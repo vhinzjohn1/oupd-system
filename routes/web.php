@@ -14,6 +14,7 @@ use App\Http\Controllers\GetAllDataController;
 use App\Http\Controllers\ParticularController;
 use App\Http\Controllers\PDFController;
 use App\Models\EquipmentCategory;
+use App\Models\Particular;
 use Dompdf\Adapter\PDFLib;
 
 Route::get('/', function () {
@@ -169,3 +170,5 @@ Route::post('/submit-details', [GetAllDataController::class, 'submitDetails'])->
 
 // Route for deleting project particular material
 Route::delete('/delete-datails', [GetAllDataController::class, 'destroy'])->name('project_particular_material.destroy');
+
+Route::get('/get-project-particulars', [ParticularController::class, 'getProjectParticular'])->name('getParticulars');

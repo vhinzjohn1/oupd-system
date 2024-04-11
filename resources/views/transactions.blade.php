@@ -73,10 +73,6 @@
                                             <input type="text" class="form-control" id="add_project_owner" required>
                                         </div>
                                         <div class="form-group margin-top">
-                                            <label for="add_unit_office">Unit Office</label>
-                                            <input type="text" class="form-control" id="add_unit_office" required>
-                                        </div>
-                                        <div class="form-group margin-top">
                                             <label for="add_project_description">Project Description</label>
                                             <input type="text" class="form-control" id="add_project_description"
                                                 required>
@@ -104,7 +100,6 @@
                                                 <option value="Special Trust Fund">Special Trust Fund</option>
                                                 <option value="RGMO">RGMO</option>
                                             </select>
-
                                         </div>
                                         <div class="form-group margin-top mt-2">
                                             <label for="add_project_date_prepared">Project Date Prepared</label>
@@ -112,17 +107,16 @@
                                                 name="add_project_date_prepared">
                                         </div>
                                         <div class="form-group margin-top">
-                                            <label for="add_project_target_start_date">Project Target Start Date</label>
-                                            <input type="date" class="form-control" id="add_project_target_start_date"
-                                                name="add_project_target_start_date">
-                                        </div>
-                                        <div class="form-group margin-top">
-                                            <label for="add_project_mode_of_implementation">Project Mode of
+                                            <label for="add_project_mode_of_implementation">Project Mode Of
                                                 Implementation</label>
-                                            <input type="text" class="form-control"
+                                            <select type="text" class="form-control"
                                                 id="add_project_mode_of_implementation"
-                                                name="add_project_mode_of_implementation" required>
-
+                                                name="add_project_mode_of_implementation"
+                                                placeholder="Project Source of Fund" required>
+                                                <option value=""></option>
+                                                <option value="By Admin">By Admin</option>
+                                                <option value="By Contract">By Contract</option>
+                                            </select>
                                         </div>
                                         <div class="modal-footer col-12">
                                             <button type="submit" class="btn btn-success col-12">Save Changes</button>
@@ -143,7 +137,7 @@
 
             {{-- For testing purposess --}}
             <div class="container-fluid mt-3" id="dynamicContent">
-                <h4>Project Particular</h4>
+                <h4>Project Item</h4>
                 <div id="projectParticularContent" class="container-fluid col-12 d-flex flex-column"></div>
             </div>
 
@@ -302,11 +296,6 @@
                                     rowDrag: true,
                                     flex: 1,
                                     minWidth: 145,
-                                },
-                                {
-                                    field: "labor_location",
-                                    headerName: "Location",
-                                    flex: 1,
                                 },
                                 {
                                     field: "labor_no_of_persons",
@@ -486,7 +475,7 @@
                         // Iterate through each filtered project item
                         sortedProjects.forEach(function(project) {
                             // Iterate through each particular item
-                            project.particulars.forEach(function(particular) {
+                            project.particulars.forEach(function(particular, index) {
                                 // Create a new main card for each particular
                                 var mainCard = $(
                                     '<div class="card" id="mainCardProjectParticular">'
@@ -503,13 +492,14 @@
                                 var cardBody = $('<div class="card-body col-12">');
                                 var row = $('<div class="row">');
                                 var col1 = $('<div class="col-1">');
-                                var col11 = $('<div class="col-11">');
+                                var col11 = $('<div class="col-12">');
 
                                 // Set up the card header
                                 var headerContent = $(
                                     '<div class="d-flex justify-content-between">'
                                 );
-                                var title = $("<h5>").text(particular.particular_name);
+                                var title = $("<h5>").text(intToRoman(index + 1) + ". " + particular
+                                    .particular_name);
                                 var cardTools = $('<div class="card-tools">');
                                 var collapseButton = $(
                                     '<button type="button" class="btn btn-tool">'
@@ -628,7 +618,7 @@
                                 col11.append(materialCard, laborCard, equipmentCard);
 
                                 // Append col1 and col11 to the row
-                                row.append(col1, col11);
+                                row.append(col11);
 
                                 // Append row to the card body
                                 cardBody.append(row);
@@ -902,7 +892,6 @@
                                 $("#add_project_title").val(project.project_title);
                                 $("#add_project_location").val(project.project_location);
                                 $("#add_project_owner").val(project.project_owner);
-                                $("#add_unit_office").val(project.unit_office);
                                 $("#add_project_description").val(
                                     project.project_description
                                 );
@@ -918,9 +907,6 @@
                                 $("#add_project_date_prepared").val(
                                     project.project_date_prepared
                                 );
-                                $("#add_project_target_start_date").val(
-                                    project.project_target_start_date
-                                );
                                 $("#add_project_mode_of_implementation").val(
                                     project.project_mode_of_implementation
                                 );
@@ -928,6 +914,11 @@
                             $("#add_project_source_of_fund").select2({
                                 theme: "bootstrap-5",
                                 placeholder: "Select Project Source of Fund", // Optional placeholder text
+                                // allowClear: true, // Allow clearing the selection
+                            });
+                            $("#add_project_mode_of_implementation").select2({
+                                theme: "bootstrap-5",
+                                placeholder: "Select Project Mode of Implementation", // Optional placeholder text
                                 // allowClear: true, // Allow clearing the selection
                             });
                         });
@@ -1096,11 +1087,6 @@
                                     rowDrag: true,
                                     flex: 1,
                                     minWidth: 145,
-                                },
-                                {
-                                    field: "labor_location",
-                                    headerName: "Location",
-                                    flex: 1,
                                 },
                                 {
                                     field: "labor_no_of_persons",
@@ -1469,19 +1455,7 @@
                     },
                 });
             }
-            // Add event listener to refreshTransaction on click
-            $(document).on("click", "#addParticularBtn", function() {});
 
-            $("#add_project_source_of_fund").select2({
-                theme: "bootstrap-5",
-                placeholder: "Select Project Source of Fund", // Optional placeholder text
-                // allowClear: true, // Allow clearing the selection
-            });
-            $("#add_project_particular").select2({
-                theme: "bootstrap-5",
-                placeholder: "Select Project Particular", // Optional placeholder text
-                // allowClear: true, // Allow clearing the selection
-            });
 
             function editDetail(detailType, partID) {
                 console.log(detailType);
@@ -1687,10 +1661,7 @@
                                 labors.map(function(labor) {
                                     return $("<option>", {
                                         value: labor.labor_id,
-                                        text: labor.labor_name +
-                                            " (" +
-                                            labor.labor_location +
-                                            ")",
+                                        text: labor.labor_name,
                                     });
                                 })
                             );
@@ -1915,37 +1886,117 @@
             }
             refreshParticularTable();
 
+            // Function to convert integer to Roman numeral
+            function intToRoman(num) {
+                const romanNumerals = [{
+                        value: 10,
+                        numeral: "X"
+                    },
+                    {
+                        value: 9,
+                        numeral: "IX"
+                    },
+                    {
+                        value: 5,
+                        numeral: "V"
+                    },
+                    {
+                        value: 4,
+                        numeral: "IV"
+                    },
+                    {
+                        value: 1,
+                        numeral: "I"
+                    }
+                ];
+                let result = '';
+                romanNumerals.forEach(({
+                    value,
+                    numeral
+                }) => {
+                    while (num >= value) {
+                        result += numeral;
+                        num -= value;
+                    }
+                });
+                return result;
+            }
+
             // Populate the Table and Refresh at the same time
             function refreshParticularTable() {
                 $.ajax({
-                    url: "{{ route('particulars.index') }}",
+                    url: "{{ route('getParticulars') }}",
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
                         console.log(data);
+                        // Get the selected project ID from localStorage
+                        var selectedProjectID = localStorage.getItem("projectID");
 
                         var dropdownMenu = $("#addPartMenu .dropdown-menu");
 
                         // Clear existing dropdown items
                         dropdownMenu.empty();
 
-                        // Loop through the data to populate dropdown options
-                        data.forEach(function(particular) {
-                            var dropdownItem = $(
-                                '<a class="dropdown-item" href="#" data-particular-id="' +
-                                particular.particular_id +
-                                '">' +
-                                particular.particular_name +
-                                "</a>"
-                            );
-                            dropdownMenu.append(dropdownItem);
+                        // Loop through the data to find particulars for the selected project ID
+                        data.forEach(function(project) {
+                            if (project.project_id == selectedProjectID) {
+                                // Sort the particulars for this project
+                                project.particulars_available.forEach(function(particular) {
+                                    var dropdownItem = $(
+                                        '<a class="dropdown-item" href="#" data-particular-id="' +
+                                        particular.particular_id +
+                                        '">' +
+                                        particular.particular_name +
+                                        "</a>"
+                                    );
+
+                                    // Add onchange event handler to each dropdown item
+                                    dropdownItem.on('click', function() {
+                                        var particularId = $(this).data('particular-id');
+
+                                        // Prepare data for AJAX request
+                                        var requestData = {
+                                            project_id: selectedProjectID,
+                                            particular_id: particularId,
+                                            _token: "{{ csrf_token() }}",
+                                        };
+
+                                        // Send AJAX request to store the project particular
+                                        $.ajax({
+                                            url: "{{ route('projectParticulars.store') }}",
+                                            type: "POST",
+                                            dataType: "json",
+                                            data: requestData,
+                                            success: function(response) {
+                                                // Handle success response
+                                                console.log(
+                                                    "Project particular successfully stored:",
+                                                    response);
+                                                // Reload the current page
+                                                location.reload();
+                                            },
+                                            error: function(xhr, status, error) {
+                                                // Handle error response
+                                                console.error(
+                                                    "Error storing project particular:",
+                                                    xhr.responseText);
+                                            }
+                                        });
+                                    });
+
+                                    dropdownMenu.append(dropdownItem);
+                                });
+                            }
                         });
+
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);
                     },
                 });
             }
+
 
             $("#projectDetailsForm").submit(function(event) {
                 // Prevent default form submission
@@ -1956,13 +2007,11 @@
                 let projectTitle = $("#add_project_title").val();
                 let projectLocation = $("#add_project_location").val();
                 let projectOwner = $("#add_project_owner").val();
-                let unitOffice = $("#add_unit_office").val();
                 let projectDescription = $("#add_project_description").val();
                 let contactDuration = $("#add_project_contract_duration").val();
                 let appropriation = $("#add_project_appropriation").val();
                 let sourceOfFund = $("#add_project_source_of_fund").val();
                 let datePrepared = $("#add_project_date_prepared").val();
-                let targetStartData = $("#add_project_target_start_date").val();
                 let modeOfImplementation = $("#add_project_mode_of_implementation").val();
 
                 // Send Ajax request
@@ -1974,13 +2023,11 @@
                         add_project_title: projectTitle,
                         add_project_location: projectLocation,
                         add_project_owner: projectOwner,
-                        add_unit_office: unitOffice,
                         add_project_description: projectDescription,
                         add_project_contract_duration: contactDuration,
                         add_project_appropriation: appropriation,
                         add_project_source_of_fund: sourceOfFund,
                         add_project_date_prepared: datePrepared,
-                        add_project_target_start_date: targetStartData,
                         add_project_mode_of_implementation: modeOfImplementation,
                         _token: "{{ csrf_token() }}",
                     },

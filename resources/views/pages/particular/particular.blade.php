@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title', 'List of Particular')
+@section('title', 'List of Item')
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ __('Particulars') }}</h1>
+                    <h1 class="m-0">{{ __('Items') }}</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6 text-right">
                     <button type="button" class="btn btn-success" data-toggle="modal" id="addParticularButton">
-                        Add Particular
+                        Add Item
                     </button>
                 </div>
             </div><!-- /.row -->
@@ -29,8 +29,9 @@
                                 @include('modals.particular.add_particular_modal');
                                 <thead>
                                     <tr>
-                                        <th>Particular Name</th>
-                                        <th>Description</th>
+                                        <th>Item Name</th>
+                                        <th>Pay Item Code</th>
+                                        {{-- <th>Modified By</th> --}}
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -81,9 +82,9 @@
                     data.forEach(function(particular, index) {
                         var newRow = table.row.add([
                             particular.particular_name,
-                            particular.description,
+                            particular.pay_item,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editParticularButton" class="btn bg-gradient-success mr-2" data-id="${particular.particular_id}" onclick="openParticularModal(${particular.particular_id}, '${particular.particular_name}', '${particular.description}')"><i class="fas fa-edit"></i></button>` +
+                            `<button type="button" id="editParticularButton" class="btn bg-gradient-success mr-2" data-id="${particular.particular_id}" onclick="openParticularModal(${particular.particular_id}, '${particular.particular_name}', '${particular.pay_item}')"><i class="fas fa-edit"></i></button>` +
                             `<button type="button" id="deleteParticularButton" class="btn bg-gradient-danger" data-id="${particular.particular_id}" onclick="deleteParticular(${particular.particular_id})"><i class="fas fa-trash-alt"></i></button>` +
                             '</div>'
                         ]).node();
@@ -100,12 +101,12 @@
 
 
         // Manually Open Particular Modal
-        function openParticularModal(particular_id, particular_name, description) {
+        function openParticularModal(particular_id, particular_name, pay_item) {
             console.log(particular_id);
             // Populate modal fields with passed values
             $('#edit_particular_id').val(particular_id);
             $('#edit_particular_name').val(particular_name);
-            $('#edit_description').val(description);
+            $('#edit_description').val(pay_item);
 
             // Show the modal
             $('#editParticularModal').modal('show');
@@ -154,13 +155,10 @@
             $('#addParticularForm').submit(function(e) {
                 e.preventDefault();
                 let descriptionInput = document.getElementById('add_description');
-                if (descriptionInput.value.trim() === '') {
-                    descriptionInput.value = 'Not specified';
-                }
 
                 // Get form data
                 let particularName = $('#add_particular_name').val();
-                let description = $('#add_description').val();
+                let pay_item = $('#add_description').val();
 
 
                 // Make AJAX request to add new paticular
@@ -169,7 +167,7 @@
                     type: "POST",
                     data: {
                         particular_name: particularName,
-                        description: description,
+                        pay_item: pay_item,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {

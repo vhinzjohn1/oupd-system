@@ -15,11 +15,9 @@ return new class extends Migration {
             $table->string('project_title');
             $table->string('project_location');
             $table->string('project_owner');
-            $table->string('unit_office');
             $table->text('project_description');
             $table->string('project_contract_duration');
             $table->date('project_date_prepared');
-            $table->date('project_target_start_date');
             $table->decimal('project_appropriation', 10, 2);
             $table->string('project_source_of_fund');
             $table->string('project_mode_of_implementation');

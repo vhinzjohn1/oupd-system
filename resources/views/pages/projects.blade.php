@@ -46,7 +46,6 @@
                                     <th>Project Title</th>
                                     <th>Project Owner</th>
                                     <th>Project Location</th>
-                                    <th>Target Start Date</th>
                                     <th>Contract Duration</th>
                                     <th>Actions</th>
                                     <!-- Add other table headers here -->
@@ -61,7 +60,7 @@
         </div><!-- /.container-fluid -->
 
 
-        {{-- Container for Project Particular Table
+        {{-- Container for Project Particular Table --}}
         <div class="container-fluid">
             <div class="card" style="box-shadow: 0px 0px 10px 1px grey">
                 <div class="card-header col-12 d-flex justify-content-between mb-2">
@@ -76,7 +75,7 @@
                     </table>
                 </div>
             </div>
-        </div><!-- /.container-fluid --> --}}
+        </div><!-- /.container-fluid -->
     </div>
     @include('modals.project.add_projects_modal')
     @include('modals.project.view_project_modal')
@@ -403,10 +402,9 @@
                             '</a>',
                             project.project_owner,
                             project.project_location,
-                            project.project_target_start_date,
                             project.project_contract_duration,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editProjectButton" class="btn bg-gradient-success mr-2" data-id="${project.project_id}" onclick="viewProjectModal(${project.project_id}, '${project.project_title}', '${project.project_location}', '${project.project_owner}', '${project.unit_office}', '${project.project_description}', '${project.project_contract_duration}', '${project.project_date_prepared}', '${project.project_target_start_date}', '${project.project_appropriation}', '${project.project_source_of_fund}', '${project.project_mode_of_implementation}')"><i class="fa fa-eye" aria-hidden="true"></i></button>` +
+                            `<button type="button" id="editProjectButton" class="btn bg-gradient-success mr-2" data-id="${project.project_id}" onclick="viewProjectModal(${project.project_id}, '${project.project_title}', '${project.project_location}', '${project.project_owner}', '${project.project_description}', '${project.project_contract_duration}', '${project.project_date_prepared}', '${project.project_target_start_date}', '${project.project_appropriation}', '${project.project_source_of_fund}', '${project.project_mode_of_implementation}')"><i class="fa fa-eye" aria-hidden="true"></i></button>` +
                             `<button type="button" id="selectProjectButton" class="btn btn-success mr-2" data-id="${project.project_id}" onclick="selectProject(${project.project_id}, '${project.project_title}')" > Select </button>` +
                             // ... (add your delete button logic here) +
                             '</div>'
@@ -422,7 +420,7 @@
             });
         }
 
-        function viewProjectModal(project_id, projectTitle, projectLocation, projectOwner, unitOffice,
+        function viewProjectModal(project_id, projectTitle, projectLocation, projectOwner,
             projectDescription,
             projectContractDuration, projectDatePrepared, projectTargetStartDate, projectAppropriation, projectSourceOfFund,
             projectModeOfImplementation) {
@@ -432,15 +430,23 @@
             $('#view_project_title').val(projectTitle);
             $('#view_project_location').val(projectLocation);
             $('#view_project_owner').val(projectOwner);
-            $('#view_unit_office').val(unitOffice);
             $('#view_project_description').val(projectDescription);
             $('#view_project_contract_duration').val(projectContractDuration);
             $('#view_project_date_prepared').val(projectDatePrepared);
-            $('#view_project_target_start_date').val(projectTargetStartDate);
             $('#view_project_appropriation').val(projectAppropriation);
             $('#view_project_source_of_fund').val(projectSourceOfFund);
             $('#view_project_mode_of_implementation').val(projectModeOfImplementation);
 
+            $("#view_project_source_of_fund").select2({
+                theme: "bootstrap-5",
+                placeholder: "Select Project Source of Fund",
+                dropdownParent: $('#viewProjectModal'),
+            });
+            $("#view_project_mode_of_implementation").select2({
+                theme: "bootstrap-5",
+                placeholder: "Select Project Mode of Implementation",
+                dropdownParent: $('#viewProjectModal'),
+            });
             // Show the modal
             $('#viewProjectModal').modal('show');
         }
@@ -454,11 +460,9 @@
                 let title = $('#add_project_title').val();
                 let location = $('#add_project_location').val();
                 let owner = $('#add_project_owner').val();
-                let office = $('#add_unit_office').val();
                 let description = $('#add_project_description').val();
                 let contractDuration = $('#add_project_contract_duration').val();
                 let datePrepared = $('#add_project_date_prepared').val();
-                let targetStartDate = $('#add_project_target_start_date').val();
                 let appropriation = $('#add_project_appropriation').val();
                 let sourceOfFund = $('#add_project_source_of_fund').val();
                 let modeOfImplementation = $('#add_project_mode_of_implementation').val();
@@ -471,11 +475,9 @@
                         project_title: title,
                         project_location: location,
                         project_owner: owner,
-                        unit_office: office,
                         project_description: description,
                         project_contract_duration: contractDuration,
                         project_date_prepared: datePrepared,
-                        project_target_start_date: targetStartDate,
                         project_appropriation: appropriation,
                         project_source_of_fund: sourceOfFund,
                         project_mode_of_implementation: modeOfImplementation,
@@ -513,11 +515,9 @@
                 let title = $('#view_project_title').val();
                 let location = $('#view_project_location').val();
                 let owner = $('#view_project_owner').val();
-                let office = $('#view_unit_office').val();
                 let description = $('#view_project_description').val();
                 let contractDuration = $('#view_project_contract_duration').val();
                 let datePrepared = $('#view_project_date_prepared').val();
-                let targetStartDate = $('#view_project_target_start_date').val();
                 let appropriation = $('#view_project_appropriation').val();
                 let sourceOfFund = $('#view_project_source_of_fund').val();
                 let modeOfImplementation = $('#view_project_mode_of_implementation').val();
@@ -531,11 +531,9 @@
                         project_title: title,
                         project_location: location,
                         project_owner: owner,
-                        unit_office: office,
                         project_description: description,
                         project_contract_duration: contractDuration,
                         project_date_prepared: datePrepared,
-                        project_target_start_date: targetStartDate,
                         project_appropriation: appropriation,
                         project_source_of_fund: sourceOfFund,
                         project_mode_of_implementation: modeOfImplementation,

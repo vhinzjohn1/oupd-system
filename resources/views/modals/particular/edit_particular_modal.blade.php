@@ -20,9 +20,9 @@
                                     name="edit_particular_name" required>
                             </div>
                             <div class="form-group">
-                                <label for="edit_description">Description</label>
-                                <input type="text" class="form-control" id="edit_description" name="edit_description"
-                                    required>
+                                <label for="edit_description">Pay Item Code</label>
+                                <input type="text" class="form-control" id="edit_description"
+                                    name="edit_description">
                             </div>
                         </div>
                     </div>

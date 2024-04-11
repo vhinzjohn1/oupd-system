@@ -58,46 +58,41 @@ class ProjectParticularController extends Controller
     }
 
 
-
     public function store(Request $request)
     {
         // Validate the incoming request data
         $validatedData = $request->validate([
             'project_id' => 'required',
-            'particular_id' => 'required|array', // Change to array
-            // 'description' => 'nullable|string',
-            // 'remark' => 'nullable|string',
-            // 'total' => 'nullable|numeric',
+            'particular_id' => 'required', // Remove array validation
         ]);
 
         try {
-
             // Start a database transaction
             DB::beginTransaction();
 
-            // Loop through each particular_id and create or find a ProjectParticular record for each
-            foreach ($validatedData['particular_id'] as $particularId) {
-                // Find existing ProjectParticular record or create a new one
-                $projectParticular = ProjectParticular::firstOrCreate([
+            // Find existing ProjectParticular record or create a new one
+            $projectParticular = ProjectParticular::updateOrCreate(
+                [
                     'project_id' => $validatedData['project_id'],
-                    'particular_id' => $particularId,
-                ]);
-            }
+                    'particular_id' => $validatedData['particular_id'],
+                ],
+                $request->all()
+            );
 
             // Commit the transaction
             DB::commit();
 
             // Return success response
-            return response()->json(['success' => true, 'message' => 'Project particulars added successfully.']);
+            return response()->json(['success' => true, 'message' => 'Project particular added/updated successfully.']);
         } catch (\Exception $e) {
             // Rollback the transaction if an exception occurs
             DB::rollBack();
 
             // Log detailed error message
-            Log::error('Failed to add project particulars: ' . $e->getMessage());
+            Log::error('Failed to add/update project particular: ' . $e->getMessage());
 
             // Return error response
-            return response()->json(['success' => false, 'message' => 'Failed to add project particulars. Please check the logs for details.']);
+            return response()->json(['success' => false, 'message' => 'Failed to add/update project particular. Please check the logs for details.']);
         }
     }
 
@@ -121,7 +116,7 @@ class ProjectParticularController extends Controller
         }
     }
 
-    
+
 
 
 

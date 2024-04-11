@@ -213,11 +213,9 @@ class GetAllDataController extends Controller
                     'project_title' => $requestData['add_project_title'],
                     'project_location' => $requestData['add_project_location'],
                     'project_owner' => $requestData['add_project_owner'],
-                    'unit_office' => $requestData['add_unit_office'],
                     'project_description' => $requestData['add_project_description'],
                     'project_contract_duration' => $requestData['add_project_contract_duration'],
                     'project_date_prepared' => $requestData['add_project_date_prepared'],
-                    'project_target_start_date' => $requestData['add_project_target_start_date'],
                     'project_appropriation' => floatval(str_replace(',', '', $requestData['add_project_appropriation'])),
                     'project_source_of_fund' => $requestData['add_project_source_of_fund'],
                     'project_mode_of_implementation' => $requestData['add_project_mode_of_implementation'],
@@ -257,7 +255,9 @@ class GetAllDataController extends Controller
         INNER JOIN
             prices pr ON m.material_id = pr.material_id
         WHERE
-            pr.is_active = 1;
+            pr.is_active = 1
+        ORDER BY
+            m.material_name ASC;
     ");
 
         $labors = DB::select("
@@ -272,7 +272,9 @@ class GetAllDataController extends Controller
             labor_rates lr ON l.labor_id = lr.labor_id
         WHERE
             lr.is_active = 1
-            AND lr.rate IS NOT NULL;
+            AND lr.rate IS NOT NULL
+        ORDER BY
+            l.labor_name ASC;
     ");
 
         $equipments = DB::select("
@@ -286,7 +288,9 @@ class GetAllDataController extends Controller
             equipment_rates er ON e.equipment_id = er.equipment_id
         WHERE
             er.is_active = 1
-            AND er.rate IS NOT NULL;
+            AND er.rate IS NOT NULL
+        ORDER BY
+            e.equipment_name ASC;
 
     ");
 

@@ -53,12 +53,6 @@
                 margin-right: 10px;
                 /* Add margin for spacing if needed */
             }
-
-            .cmuLogo {
-                position: absolute;
-                border-radius: 50%;
-                width: 150px;
-            }
         </style>
     </head>
 
@@ -68,12 +62,6 @@
 
         <!-- Project Details -->
         <div class="container text-center">
-            <!-- CMU Logo -->
-            <div class="cmuLogoContainer">
-                <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
-            </div>
-
-
 
             <div id="projectDetails">
                 <p><strong>PROJECT TITLE:</strong> <span id="projectTitle" style="font-size: 20px;"></span></p>
