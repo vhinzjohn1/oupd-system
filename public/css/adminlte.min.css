@@ -25,6 +25,7 @@ ang sa navbar sa ibabaw gamita lang ug navbar bg-yellow nga line. */
     --yellow: #ffc600;
     --darkgreen: #00491e;
     --green: #02681e;
+    --lighgreen: #919f02;
     --teal: #20c997;
     --cyan: #17a2b8;
     --white: #fff;
@@ -45336,6 +45337,9 @@ a.disabled.mailbox-attachment-close {
 .login-box-msg,
 .register-box-msg {
     margin: 0;
+    color: black;
+    font-weight: bold;
+    font-size: 20px;
     padding: 0 20px 20px;
     text-align: center;
 }

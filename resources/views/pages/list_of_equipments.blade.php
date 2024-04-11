@@ -8,11 +8,11 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Equipment List') }}</h1>
                 </div><!-- /.col -->
-                <div class="text-right col-sm-6">
+                {{-- <div class="text-right col-sm-6">
                     <button type="button" class="btn btn-success" id="addEquipmentButton">
                         Add Equipment
                     </button>
-                </div>
+                </div> --}}
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -27,9 +27,13 @@
                     <div class="card">
                         <div class="card-body table-responsive">
                             <table id="equipmentTable" class="table table-bordered table-striped col-12">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-success" id="addEquipmentButton">
+                                        Add Equipment
+                                    </button>
+                                </div>
                                 <thead>
                                     <tr>
-
                                         {{-- <th>Equipment Id</th> --}}
                                         <th>Equipment Name</th>
                                         <th>Equipment Category</th>
@@ -157,7 +161,6 @@
                             `<button type="button" class="btn bg-gradient-danger btn-delete-equipment" data-id="${equipment.equipment_id}"><i class="fas fa-trash-alt"></i></button>` +
                             '</div>'
 
-                            // <button type="button" class="btn btn-danger" data-id="${equipment.equipment_id}"> Delete </button>
                         ]).node();
                     });
 

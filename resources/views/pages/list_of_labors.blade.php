@@ -9,11 +9,11 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Labor Rates') }}</h1>
                 </div><!-- /.col -->
-                <div class="text-right col-sm-6">
+                {{-- <div class="text-right col-sm-6">
                     <button type="button" class="btn btn-success" data-toggle="modal" id="addLaborButton">
                         Add Labor Rate
                     </button>
-                </div>
+                </div> --}}
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -27,6 +27,11 @@
                     <div class="card">
                         <div class="card-body table-responsive">
                             <table id="laborTable" class="table table-bordered table-striped col-12">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-success" data-toggle="modal" id="addLaborButton">
+                                        Add Labor Rate
+                                    </button>
+                                </div>
                                 <thead>
                                     <tr>
 
@@ -72,16 +77,12 @@
             document.getElementById('addLaborButton').addEventListener('click', function() {
                 $('#addLaborModal').modal('show');
             });
-
-            // Handle delete button click
-            $('#laborTable').on('click', '.btn-delete-labor', function() {
-                var laborId = $(this).data('id');
-                deleteLabor(laborId);
-            });
         });
 
-        function openEditLaborModal(labor_id, labor_name, location, rate) {
-            // Populate the form fields with the fetched labor data
+        function openEditLaborModal(labor_id, labor_rate_id, rate, labor_name, location) {
+            console.log("Labor ID: " + labor_id + ", Rate ID: " + labor_rate_id + ", Location: " +
+                location + ", rate: " + rate);
+            // Call a function to fetch labor data by labor_id
             $('#edit_labor_id').val(labor_id);
             $('#edit_labor_name').val(labor_name);
             // $('#edit_material_category_name').val(material.category.material_category_name);
@@ -89,6 +90,32 @@
             $('#edit_rate').val(rate);
             $('#editLaborModal').modal('show');
         }
+        // // Function to fetch labor data by labor_id
+        // function fetchLaborData(labor_id) {
+        //     $.ajax({
+        //         url: "{{ route('labor.index') }}/" +
+        //             labor_id, // Adjust the route to fetch individual labor data
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(labor) {
+        //             // Populate the form fields with the fetched labor data
+        //             $('#edit_labor_id').val(labor.labor_id);
+        //             // $('#edit_material_category_name').val(material.category.material_category_name);
+        //             $('#edit_location').val(labor.location);
+        //             $('#edit_labor_name').val(labor.labor_name);
+        //             // $('#edit_rate').val(labor.rate);
+
+        //             // Assuming prices is always an array, even if empty
+        //             const rateData = labor.rates[0] || {};
+        //             $('#edit_rate').val(rateData.rate);
+        //             // $('#edit_quarter').val(rateData.quarter);
+        //             // $('#edit_year').val(rateData.year);
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(xhr.responseText);
+        //         }
+        //     });
+        // }
 
         function refreshLaborsTable() {
             $.ajax({
@@ -101,11 +128,13 @@
                     console.log(data);
 
                     data.forEach(function(labor, index) {
-                        // Assuming rates is always an array, even if empty
+                        console.log(labor.labor_rate_id);
+                        console.log(labor.rate);
 
                         // Assuming each labor has a single rate associated with it
                         var newRow = table.row.add([
                             labor.labor_name,
+                            labor.location,
                             labor.rate,
                             labor.date_effective,
                             '<div class="text-center d-flex">' +
@@ -137,7 +166,7 @@
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
-                if (result.isConfirmed) {
+                if  (result.isConfirmed) {
                     $.ajax({
                         url: "{{ url('labors') }}/" + laborId,
                         type: 'DELETE',

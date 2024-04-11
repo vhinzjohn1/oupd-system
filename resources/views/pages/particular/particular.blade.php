@@ -8,11 +8,11 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Items') }}</h1>
                 </div><!-- /.col -->
-                <div class="col-sm-6 text-right">
+                {{-- <div class="col-sm-6 text-right">
                     <button type="button" class="btn btn-success" data-toggle="modal" id="addParticularButton">
                         Add Item
                     </button>
-                </div>
+                </div> --}}
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -26,12 +26,17 @@
                     <div class="card">
                         <div class="card-body table-responsive">
                             <table class="table col-12" id="particularTable">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                        id="addParticularButton">
+                                        Add Particular
+                                    </button>
+                                </div>
                                 @include('modals.particular.add_particular_modal');
                                 <thead>
                                     <tr>
-                                        <th>Item Name</th>
-                                        <th>Pay Item Code</th>
-                                        {{-- <th>Modified By</th> --}}
+                                        <th>Particular Name</th>
+                                        <th>Pay Item (Number)</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
