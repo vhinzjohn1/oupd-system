@@ -101,7 +101,7 @@ class ProjectParticularController extends Controller
     public function destroy($projectParticularId)
     {
         try {
-            // Find the ProjectParticular record by its ID and delete it
+            // Find the ProjectParticular record by project_particular_id and delete it
             $projectParticular = ProjectParticular::findOrFail($projectParticularId);
             $projectParticular->delete();
 
@@ -115,6 +115,8 @@ class ProjectParticularController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to delete project particular. Please check the logs for details.']);
         }
     }
+
+
 
 
 

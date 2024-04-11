@@ -80,7 +80,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" name="user_name"
                                             class="form-control @error('user_name') is-invalid @enderror"
-                                            placeholder="{{ __('Middle Name') }}"
+                                            placeholder="{{ __('User Name') }}"
                                             value="{{ old('user_name', auth()->user()->user_name) }}" required>
                                         <div class="input-group-append">
                                             <div class="input-group-text">
@@ -93,8 +93,6 @@
                                             </span>
                                         @enderror
                                     </div>
-
-
 
                                     <div class="input-group mb-3">
                                         <input type="email" name="email"
