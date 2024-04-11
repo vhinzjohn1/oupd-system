@@ -1,13 +1,18 @@
 @extends('layouts.app')
+@section('title', 'List of Material')
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Material List') }}</h1>
-
                 </div><!-- /.col -->
+                <div class="text-right col-sm-6">
+                    <button type="button" class="btn btn-success" id="addMaterialButton">
+                        Add Material
+                    </button>
+                </div>
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -22,14 +27,8 @@
                     <div class="card">
                         <div class="card-body table-responsive">
                             <table id="materialTable" class="table table-bordered table-striped col-12">
-                                <div class="text-right">
-                                    <button type="button" class="btn btn-success" id="addMaterialButton">
-                                        Add Material
-                                    </button>
-                                </div>
                                 <thead>
                                     <tr>
-
                                         {{-- <th>Material Id</th> --}}
                                         <th>Material Name</th>
                                         <th>Material Category</th>
@@ -41,7 +40,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @include('modals.edit_materials_modal')
+                                    @include('modals.materials.edit_materials_modal')
                                 </tbody>
                             </table>
                         </div>
@@ -52,7 +51,7 @@
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    @include('modals.add_materials_modal')
+    @include('modals.materials.add_materials_modal')
 
     <script>
         $(document).ready(function() {
@@ -127,11 +126,7 @@
             $('#editMaterialModal').modal('show');
         }
 
-
-
-
-
-
+        // Refresh Material Function
         function refreshMaterialsTable() {
             $.ajax({
                 url: "{{ route('materials.index') }}",
@@ -154,13 +149,12 @@
                             material.quarter,
                             material.year,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2"
+                            `<button type="button" id="editButton" class="btn bg-gradient-success mr-2"
                                 data-material-id="${material.material_id}" data-price-id="${material.price_id}"
                                 onclick="openEditMaterialModal(${material.material_id}, ${material.price_id},
                                 '${material.price}', '${material.quarter}', '${material.year}',
-                                '${material.material_name}', '${material.material_category_name}', '${material.unit}')"> Edit </button>` +
-                            '<button type="button" class="btn btn-danger btn-delete-material" data-id="' +
-                            material.material_id + '"> Delete </button>' +
+                                '${material.material_name}', '${material.material_category_name}', '${material.unit}')"><i class="fas fa-edit"></i></button>` +
+                            `<button type="button" class="btn btn-danger btn-delete-material" data-id="${material.material_id}"><i class="fas fa-trash-alt"></i></button>` +
                             '</div>'
                         ]).node();
                     });

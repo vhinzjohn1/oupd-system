@@ -41,14 +41,15 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="add_rate">Rate</label>
-                                <input type="number" class="form-control" id="add_rate" name="add_rate" required>
+                                <input type="number" class="form-control" step="any" id="add_rate" name="add_rate"
+                                    required>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn bg-success">Save changes</button>
                 </div>
             </form>
         </div>

@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-height: 75vh;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="viewProjectModalLabel">View Project</h5>
+                <h5 class="modal-title" id="viewProjectModalLabel">View Project Detail</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -30,11 +30,6 @@
                                     name="view_project_owner" required>
                             </div>
                             <div class="form-group">
-                                <label for="view_unit_office">Unit Office</label>
-                                <input type="text" class="form-control" id="view_unit_office" name="view_unit_office"
-                                    required>
-                            </div>
-                            <div class="form-group">
                                 <label for="view_project_description">Project Description</label>
                                 <input type="text" class="form-control" id="view_project_description"
                                     name="view_project_description" required>
@@ -52,31 +47,36 @@
                                     name="view_project_date_prepared">
                             </div>
                             <div class="form-group">
-                                <label for="view_project_target_start_date">Project Target Start Date</label>
-                                <input type="date" class="form-control" id="view_project_target_start_date"
-                                    name="view_project_target_start_date">
-                            </div>
-                            <div class="form-group">
                                 <label for="view_project_appropriation">Project Appropriation</label>
                                 <input type="number" class="form-control" id="view_project_appropriation"
                                     name="view_project_appropriation" required>
                             </div>
-                            <div class="form-group">
-                                <label for="view_project_source_of_fund">Project Source of Fund</label>
-                                <input type="text" class="form-control" id="view_project_source_of_fund"
-                                    name="view_project_source_of_fund" required>
+                            <div class="form-group margin-top">
+                                <label for="view_project_source_of_fund">Project Source Of Fund</label>
+                                <select type="text" class="form-control" id="view_project_source_of_fund"
+                                    name="view_project_source_of_fund" placeholder="Project Source of Fund" required>
+                                    <option value=""></option>
+                                    <option value="General Fund">General Fund</option>
+                                    <option value="Trust Fund">Trust Fund</option>
+                                    <option value="Special Trust Fund">Special Trust Fund</option>
+                                    <option value="RGMO">RGMO</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="view_project_mode_of_implementation">Project Mode of Implementation</label>
-                                <input type="text" class="form-control" id="view_project_mode_of_implementation"
+                                <select type="text" class="form-control" id="view_project_mode_of_implementation"
                                     name="view_project_mode_of_implementation" required>
+                                    <option disabled selected></option>
+                                    <option value="By Admin">By Admin</option>
+                                    <option value="By Contract">By Contract</option>
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn bg-success">Save changes</button>
                 </div>
             </form>
         </div>

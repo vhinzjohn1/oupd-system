@@ -205,10 +205,10 @@ class EquipmentController extends Controller
             // Find the equipment based on ID
             $equipment = Equipment::findOrFail($id);
 
-            // Update only the specified fields to null or an empty value
-            $equipment->equipment_name = null;
-            $equipment->equipment_model = null;
-            $equipment->equipment_capacity = null;
+            // // Update only the specified fields to null or an empty value
+            // $equipment->equipment_name = null;
+            // $equipment->equipment_model = null;
+            // $equipment->equipment_capacity = null;
 
             // // Save the changes, it will retain the categories and rate in the table
             // $equipment->save();

@@ -1,13 +1,19 @@
 @extends('layouts.app')
+@section('title', 'List of Labor')
 
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Labor Rates') }}</h1>
                 </div><!-- /.col -->
+                <div class="text-right col-sm-6">
+                    <button type="button" class="btn btn-success" data-toggle="modal" id="addLaborButton">
+                        Add Labor Rate
+                    </button>
+                </div>
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -21,24 +27,18 @@
                     <div class="card">
                         <div class="card-body table-responsive">
                             <table id="laborTable" class="table table-bordered table-striped col-12">
-                                <div class="text-right">
-                                    <button type="button" class="btn btn-success" id="addLaborButton">
-                                        Add Labor Rate
-                                    </button>
-                                </div>
                                 <thead>
                                     <tr>
 
                                         {{-- <th>Labor Id</th> --}}
                                         <th>Labor Name</th>
-                                        <th>Location</th>
                                         <th>Rate</th>
                                         <th>Date Effective</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @include('modals.edit_labor_modal')
+                                    @include('modals.labor.edit_labor_modal')
                                 </tbody>
                             </table>
                         </div>
@@ -49,7 +49,7 @@
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    @include('modals.add_labor_modal')
+    @include('modals.labor.add_labor_modal')
 
     <script>
         $(document).ready(function() {
@@ -78,17 +78,14 @@
                 var laborId = $(this).data('id');
                 deleteLabor(laborId);
             });
-
         });
 
-        function openEditLaborModal(labor_id, labor_rate_id, rate, labor_name, location) {
-            console.log("Labor ID: " + labor_id + ", Rate ID: " + labor_rate_id + ", Location: " +
-                location + ", rate: " + rate);
-            // Call a function to fetch labor data by labor_id
+        function openEditLaborModal(labor_id, labor_name, location, rate) {
+            // Populate the form fields with the fetched labor data
             $('#edit_labor_id').val(labor_id);
             $('#edit_labor_name').val(labor_name);
-            $('#edit_location').val(location);
-            // Assuming rates is always an array, even if empty
+            // $('#edit_material_category_name').val(material.category.material_category_name);
+            $('#edit_location').val('maramag');
             $('#edit_rate').val(rate);
             $('#editLaborModal').modal('show');
         }
@@ -104,25 +101,17 @@
                     console.log(data);
 
                     data.forEach(function(labor, index) {
-                        console.log(labor.labor_rate_id);
-                        console.log(labor.rate);
+                        // Assuming rates is always an array, even if empty
 
                         // Assuming each labor has a single rate associated with it
                         var newRow = table.row.add([
                             labor.labor_name,
-                            labor.location,
                             labor.rate,
                             labor.date_effective,
                             '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-labor mr-2"
-                            data-labor-id="${labor.labor_id}" data-rate-id="${labor.labor_rate_id}"
-                            onclick="openEditLaborModal('${labor.labor_id}', '${labor.labor_rate_id}',
-                            '${labor.rate}', '${labor.labor_name}', '${labor.location}')"> Edit </button>` +
-                            // ...
-                            '<button type="button" class="btn btn-danger btn-delete-labor" data-id="' +
-                            labor.labor_id + '"> Delete </button>' +
-                            // ...
-
+                            `<button type="button" id="editButton" class="btn bg-gradient-success mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${labor.rate}')" ><i class="fas fa-edit"></i></button>` +
+                            `<button type="button" class="btn bg-gradient-danger btn-delete-labor" data-id="${labor.labor_id}"><i class="fas fa-trash-alt"></i></button>` +
+                            // ... (add your delete button logic here) +
                             '</div>'
 
                         ]).node();
@@ -148,7 +137,7 @@
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
-                if  (result.isConfirmed) {
+                if (result.isConfirmed) {
                     $.ajax({
                         url: "{{ url('labors') }}/" + laborId,
                         type: 'DELETE',
@@ -178,7 +167,7 @@
 
                 // Get form data
                 let laborName = $('#add_labor_name').val();
-                let location = $('#add_location').val();
+                let location = 'maramag';
                 let rate = $('#add_rate').val();
 
 
@@ -223,7 +212,7 @@
                 // Get form data
                 let edit_laborId = $('#edit_labor_id').val();
                 let edit_laborName = $('#edit_labor_name').val();
-                let edit_location = $('#edit_location').val();
+                let edit_location = 'maramag';
                 let edit_rate = $('#edit_rate').val();
 
                 $.ajax({

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Particular;
+use App\Models\Project;
+use App\Models\ProjectParticular;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -18,25 +20,56 @@ class ParticularController extends Controller
             return view('particular');
         }
     }
+    public function getProjectParticular()
+    {
+        // Get all projects
+        $projects = Project::all();
+
+        // Initialize array to hold project particulars data
+        $projectParticularsData = [];
+
+        // Iterate over each project
+        foreach ($projects as $project) {
+            // Get all Particulars associated with ProjectParticular for this project
+            $particularIdsInProjectParticular = ProjectParticular::where('project_id', $project->project_id)->pluck('particular_id')->all();
+
+            // Filter out Particulars that are not associated with ProjectParticular for this project
+            $availableParticulars = Particular::whereNotIn('particular_id', $particularIdsInProjectParticular)->get();
+
+            // Build project particulars data array
+            $projectParticularsData[] = [
+                'project_id' => $project->project_id,
+                'project_title' => $project->project_title,
+                'particulars_available' => $availableParticulars
+            ];
+        }
+
+        return response()->json($projectParticularsData);
+    }
 
     public function store(Request $request)
     {
         // Validate incoming request data
         $validatedData = $request->validate([
             'particular_name' => 'required|string',
-            'description' => 'required|string',
+            'pay_item' => 'nullable|string',
         ]);
-        try {
 
+        try {
             // Start a database transaction
             DB::beginTransaction();
 
-            // Retrieve or create project
-            $particular = Particular::firstOrCreate(['particular_name' => $validatedData['particular_name']], [
-                'description' => $validatedData['description'],
-            ]);
+            // Check if particular with the same name exists
+            $particular = Particular::where('particular_name', $validatedData['particular_name'])->where('pay_item', $validatedData['pay_item'])->first();
 
-
+            if (!$particular || $particular->pay_item != $validatedData['pay_item']) {
+                // If particular does not exist or pay_item is different, create a new one
+                $particular = new Particular([
+                    'particular_name' => $validatedData['particular_name'],
+                    'pay_item' => $validatedData['pay_item'],
+                ]);
+                $particular->save();
+            }
 
             // Commit the transaction
             DB::commit();
@@ -55,12 +88,15 @@ class ParticularController extends Controller
         }
     }
 
+
+
+
     public function update(Request $request, $particular_id)
     {
         // Validate incoming request data
         $validatedData = $request->validate([
             'particular_name' => 'required|string',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
         ]);
 
         try {
@@ -73,8 +109,18 @@ class ParticularController extends Controller
             // Update project details
             $particular->update([
                 'particular_name' => $validatedData['particular_name'],
-                'description' => $validatedData['description'],
+                'pay_item' => $validatedData['description'],
             ]);
+
+            $existingparticular = Particular::where('particular_name', $validatedData['particular_name'])
+                ->where('pay_item', $validatedData['description'])
+                ->where('particular_id', '!=', $particular->particular_id)
+                ->first();
+
+            if ($existingparticular) {
+                DB::rollBack();
+                return response()->json(['success' => false, 'message' => 'Failed to delete particular']);
+            }
 
             // Commit the transaction
             DB::commit();

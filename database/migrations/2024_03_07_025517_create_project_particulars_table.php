@@ -15,8 +15,12 @@ return new class extends Migration {
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('particular_id');
             $table->text('description')->nullable();
-            $table->text('remark')->nullable();
-            $table->decimal('total', 10, 4)->nullable(); // Assuming a decimal type with precision 10 and scale 2
+            $table->integer('quantity')->nullable();
+            $table->string('unit')->nullable();
+            $table->integer('odc')->nullable();
+            $table->integer('edc')->nullable();
+            $table->integer('vat')->nullable();
+            $table->decimal('total', 10, 5)->nullable(); // Assuming a decimal type with precision 10 and scale 2
             $table->timestamps();
 
             // Foreign key constraints

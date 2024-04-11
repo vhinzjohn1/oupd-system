@@ -1,12 +1,18 @@
 @extends('layouts.app')
-
+@section('title', 'Dashboard')
 @section('content')
+
+    <head>
+
+        <script src="{{ asset('js/ag-grid.js') }}"></script>
+
+    </head>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">{{ __('Dashboard') }}</h1>
+            <div class="row">
+                <div class="col-12 d-flex justify-content-between">
+                    <h1 class="">{{ __('Dashboard') }}</h1>
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -16,24 +22,23 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-            <div class="col-lg-12 d-flex m-3">
-
-                {{-- Small Box Cards --}}
-                {{-- <div class="small-box bg-info col-3 mr-3">
-                    <div class="inner">
-                        <h3>1</h3>
-                        <p>New Projects</p>
+            <!-- Card -->
+            <div class="card">
+                <!-- Card Header (Clickable) -->
+                <div class="card-header" data-toggle="collapse" data-target="#collapseExample">
+                    Click to Collapse
+                </div>
+                <!-- Card Body (Collapsed by default) -->
+                <div id="collapseExample" class="collapse">
+                    <div class="card-body">
+                        This is the content of the collapsible card body. You can put any content here.
                     </div>
-                    <div class="icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">
-                        More info <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div> --}}
-
+                </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div> <!-- ./ Project Card  --->
+        <!-- Your Blade view with JavaScript -->
     </div>
+
+
     <!-- /.content -->
 @endsection

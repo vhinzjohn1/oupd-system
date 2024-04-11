@@ -98,7 +98,6 @@ class LaborController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to add labor. Please check the logs for details.']);
         }
     }
-
     /**
      * Display the specified resource.
      */

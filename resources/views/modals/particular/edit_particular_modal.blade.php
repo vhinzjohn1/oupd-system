@@ -20,15 +20,15 @@
                                     name="edit_particular_name" required>
                             </div>
                             <div class="form-group">
-                                <label for="edit_description">Description</label>
-                                <input type="text" class="form-control" id="edit_description" name="edit_description"
-                                    required>
+                                <label for="edit_description">Pay Item Code</label>
+                                <input type="text" class="form-control" id="edit_description"
+                                    name="edit_description">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn bg-success">Save changes</button>
                     </div>
             </form>
         </div>
