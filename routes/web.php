@@ -159,24 +159,19 @@ Route::middleware('auth')->group(function () {
     Route::resource('particulars', ParticularController::class);
 });
 
+// Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
+Route::get('/generate-pdf', function () {
+    return view('printables.print_project_particular');
+});
 Route::resource('generatePDF', PDFController::class);
-
-// Route::get('/generate-dupa_summary', function () {
-//     return view('printables.dupa_summary');
-// });
-// Route::resource('generateDupaSummary', PDFController::class);
-
 // Routes
 Route::get('/printables/dupa', function () {
     return view('printables.dupa');
 })->name('dupa');
-
 // Routes
 Route::get('/printables/dupa_summary', function () {
     return view('printables.dupa_summary');
 })->name('dupa_summary');
-// Route for the index page
-Route::get('/dupa_summary', [LaborController::class, 'index'])->name('dupa_summary.index');
 // Routes
 Route::get('/printables/abc', function () {
     return view('printables.abc');
@@ -193,3 +188,7 @@ Route::get('/printables/boq', function () {
 // Project Particular Routes:
 Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');
 Route::post('/submit-details', [GetAllDataController::class, 'submitDetails'])->name('submit.details');
+// Route for deleting project particular material
+Route::delete('/delete-datails', [GetAllDataController::class, 'destroy'])->name('project_particular_material.destroy');
+
+Route::get('/get-project-particulars', [ParticularController::class, 'getProjectParticular'])->name('getParticulars');

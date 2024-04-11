@@ -25,6 +25,7 @@ class PDFController extends Controller
          p.project_contract_duration,
          p.project_mode_of_implementation,
          p.project_description,
+         pm.project_particular_material_id,
          prt.particular_id,
          prt.particular_name,
          m.material_id,

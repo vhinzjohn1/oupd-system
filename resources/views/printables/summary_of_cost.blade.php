@@ -102,79 +102,7 @@
         </div>
 
         <div class="container">
-
             <div class="container">
-                {{-- <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th colspan="6" class="text-center">SUMMARY</th>
-                        </tr>
-                        <tr>
-                            <th class="text-center">ITEM #</th>
-                            <th class="text-center">DESCRIPTION</th>
-                            <th class="text-center">MATERIALS</th>
-                            <th class="text-center">LABOR</th>
-                            <th class="text-center">EQPT.RENTAL</th>
-                            <th class="text-center">TOTAL</th>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-content-center">I</td>
-                            <td class="text-center">MOVING-IN</td>
-                            <td class="text-center align-content-center"></td>
-                            <td class="text-center align-content-center"></td>
-                            <td class="text-end align-content-center"></td>
-                            <td class="text-center">6,805.29</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-content-center">II</td>
-                            <td class="text-center">EARTHWORKS</td>
-                            <td class="text-center align-content-center">375,750.00</td>
-                            <td class="text-center align-content-center">17,554.08</td>
-                            <td class="text-end align-content-center">29,5O4.00</td>
-                            <td class="text-center">422,808.08</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-content-center">III</td>
-                            <td class="text-center">COMPACTION</td>
-                            <td class="text-center align-content-center"></td>
-                            <td class="text-center align-content-center">23,611.68</td>
-                            <td class="text-end align-content-center">33,600.00</td>
-                            <td class="text-center">57,211.68</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-content-center">IV</td>
-                            <td class="text-center">CONCRETE PAVER</td>
-                            <td class="text-center align-content-center">727,668.00</td>
-                            <td class="text-center align-content-center">137,876.16</td>
-                            <td class="text-end align-content-center"></td>
-                            <td class="text-center">865,544.16</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-content-center">V</td>
-                            <td class="text-center">P.P.E</td>
-                            <td class="text-center align-content-center">15,494.00</td>
-                            <td class="text-center align-content-center"></td>
-                            <td class="text-end align-content-center"></td>
-                            <td class="text-center">15,494.00</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-content-center">VI</td>
-                            <td class="text-center">MOVING OUT</td>
-                            <td class="text-center align-content-center"></td>
-                            <td class="text-center align-content-center"></td>
-                            <td class="text-end align-content-center"></td>
-                            <td class="text-center">6,805.29</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center align-content-center"></td>
-                            <td class="text-center"></td>
-                            <td class="text-center align-content-center">1,118,912.00</td>
-                            <td class="text-center align-content-center">179,041.92</td>
-                            <td class="text-end align-content-center">63,104.00</td>
-                            <td class="text-center">1,374,668.50</td>
-                        </tr>
-                    </tbody>
-                </table> --}}
                 <div class="container">
                     <div class="row">
                         <div class="col">
@@ -355,22 +283,23 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                var amount = parseFloat(particular.particular_quantity) *
+                                var materialTotal = 0;
+                                var materialAmount = parseFloat(particular.particular_quantity) *
                                     parseFloat(particular.particular_unit_cost);
-
+                                    materialTotal += materialAmount;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' +  +
+                                    '<td class="text-center">' + "materialTotal" +
                                     '</td>' +
-                                    '<td class="text-center">' +  +
+                                    '<td class="text-center">' + "laborTotal" +
                                     '</td>' +
-                                    '<td class="text-center">' +  +
+                                    '<td class="text-center">' + "equipmentTotal" +
                                     '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(amount.toFixed(
+                                    '<td class="text-center">' + numberWithCommas(materialTotal.toFixed(
                                     2)) + '</td>' +
                                     '</tr>';
                             });

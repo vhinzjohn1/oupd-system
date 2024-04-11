@@ -134,7 +134,7 @@
                         // Assuming each labor has a single rate associated with it
                         var newRow = table.row.add([
                             labor.labor_name,
-                            labor.location,
+                            // labor.location,
                             labor.rate,
                             labor.date_effective,
                             '<div class="text-center d-flex">' +
