@@ -8,11 +8,11 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Particulars') }}</h1>
                 </div><!-- /.col -->
-                <div class="col-sm-6 text-right">
+                {{-- <div class="col-sm-6 text-right">
                     <button type="button" class="btn btn-success" data-toggle="modal" id="addParticularButton">
                         Add Particular
                     </button>
-                </div>
+                </div> --}}
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -36,7 +36,7 @@
                                 <thead>
                                     <tr>
                                         <th>Particular Name</th>
-                                        <th>Description</th>
+                                        <th>Pay Item (Number)</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>

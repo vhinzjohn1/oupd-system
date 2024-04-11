@@ -19,6 +19,12 @@ class PDFController extends Controller
          p.project_title,
          p.project_location,
          p.project_owner,
+         p.project_date_prepared,
+         p.project_appropriation,
+         p.project_source_of_fund,
+         p.project_contract_duration,
+         p.project_mode_of_implementation,
+         p.project_description,
          prt.particular_id,
          prt.particular_name,
          m.material_id,
@@ -36,10 +42,13 @@ class PDFController extends Controller
          e.equipment_name,
          er.rate AS equipment_rate,
          ppe.work_days AS equipment_work_days,
+         ppe.no_of_units AS equipment_no_of_units,
          l.labor_id,
          l.labor_name,
          lr.rate AS labor_rate,
-         l.location AS labor_location
+         l.location AS labor_location,
+         ppl.no_of_persons AS labor_no_of_persons
+
      FROM
          projects p
      LEFT JOIN
@@ -81,20 +90,32 @@ class PDFController extends Controller
             $location = $project->project_location;
             $owner = $project->project_owner;
             $particularName = $project->particular_name;
+            $datePrepared = $project->project_date_prepared;
+            $appropriation = $project->project_appropriation;
+            $sourceOfFund = $project->project_source_of_fund;
+            $contractDuration = $project->project_contract_duration;
+            $modeOfImplementation = $project->project_mode_of_implementation;
+            $description = $project->project_description;
 
             // Group data by project title
-            if (!isset ($formattedData[$title])) {
+            if (!isset($formattedData[$title])) {
                 $formattedData[$title] = [
                     'project_id' => $projectId, // Add projectId here
                     'project_title' => $title,
                     'project_location' => $location,
                     'project_owner' => $owner,
                     'particulars' => [],
+                    'project_date_prepared' => $datePrepared,
+                    'project_appropriation' => $appropriation,
+                    'project_source_of_fund' => $sourceOfFund,
+                    'project_contract_duration' => $contractDuration,
+                    'project_mode_of_implementation' => $modeOfImplementation,
+                    'project_description' => $description,
                 ];
             }
 
             // Initialize the details array for the particular if not already set
-            if (!isset ($formattedData[$title]['particulars'][$particularName])) {
+            if (!isset($formattedData[$title]['particulars'][$particularName])) {
                 $formattedData[$title]['particulars'][$particularName] = [
                     'particular_id' => $project->particular_id,
                     'particular_name' => $particularName,
@@ -107,7 +128,7 @@ class PDFController extends Controller
             }
 
             // Add details to the formatted result for materials, equipment, and labor
-            if (!empty ($project->material_id)) {
+            if (!empty($project->material_id)) {
                 // Check if the material is already added
                 $existingMaterial = collect($formattedData[$title]['particulars'][$particularName]['details']['Materials'])
                     ->firstWhere('material_id', $project->material_id);
@@ -131,9 +152,9 @@ class PDFController extends Controller
 
             // Add equipment details if not already added
             if (
-                !empty ($project->equipment_id) &&
+                !empty($project->equipment_id) &&
                 !in_array(
-                    ['equipment_id' => $project->equipment_id, 'equipment_name' => $project->equipment_name, 'equipment_work_days' => $project->equipment_work_days, 'equipment_rate' => $project->equipment_rate],
+                    ['equipment_id' => $project->equipment_id, 'equipment_name' => $project->equipment_name, 'equipment_no_of_units' => $project->equipment_no_of_units, 'equipment_work_days' => $project->equipment_work_days, 'equipment_rate' => $project->equipment_rate],
                     array_column($formattedData[$title]['particulars'][$particularName]['details']['Equipment'], 'equipment_id'),
                     true
                 )
@@ -147,6 +168,7 @@ class PDFController extends Controller
                     $formattedData[$title]['particulars'][$particularName]['details']['Equipment'][] = [
                         'equipment_id' => $project->equipment_id,
                         'equipment_name' => $project->equipment_name,
+                        'equipment_no_of_units' => $project->equipment_no_of_units,
                         'equipment_work_days' => $project->equipment_work_days,
                         'equipment_rate' => $project->equipment_rate,
                     ];
@@ -156,9 +178,9 @@ class PDFController extends Controller
 
             // Add labor details if not already added
             if (
-                !empty ($project->labor_id) &&
+                !empty($project->labor_id) &&
                 !in_array(
-                    ['labor_id' => $project->labor_id, 'labor_name' => $project->labor_name, 'labor_location' => $project->labor_location, 'labor_work_days' => $project->labor_work_days],
+                    ['labor_id' => $project->labor_id, 'labor_name' => $project->labor_name, 'labor_no_of_persons' => $project->labor_no_of_persons, 'labor_work_days' => $project->labor_work_days],
                     array_column($formattedData[$title]['particulars'][$particularName]['details']['Labor'], 'labor_id'),
                     true
                 )
@@ -172,8 +194,8 @@ class PDFController extends Controller
                     $formattedData[$title]['particulars'][$particularName]['details']['Labor'][] = [
                         'labor_id' => $project->labor_id,
                         'labor_name' => $project->labor_name,
+                        'labor_no_of_persons' => $project->labor_no_of_persons,
                         'labor_work_days' => $project->labor_work_days,
-                        'labor_location' => $project->labor_location,
                         'labor_rate' => $project->labor_rate,
                     ];
                 }

@@ -7,11 +7,11 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Material List') }}</h1>
                 </div><!-- /.col -->
-                <div class="text-right col-sm-6">
+                {{-- <div class="text-right col-sm-6">
                     <button type="button" class="btn btn-success" id="addMaterialButton">
                         Add Material
                     </button>
-                </div>
+                </div> --}}
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -26,6 +26,11 @@
                     <div class="card">
                         <div class="card-body table-responsive">
                             <table id="materialTable" class="table table-bordered table-striped col-12">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-success" id="addMaterialButton">
+                                        Add Material
+                                    </button>
+                                </div>
                                 <thead>
                                     <tr>
                                         {{-- <th>Material Id</th> --}}

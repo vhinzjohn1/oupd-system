@@ -19,7 +19,7 @@
                                     name="add_particular_name" required>
                             </div>
                             <div class="form-group">
-                                <label for="add_description">Description</label>
+                                <label for="add_description">Pay Item (Number)</label>
                                 <input type="text" class="form-control" id="add_description" name="add_description">
                             </div>
                         </div>

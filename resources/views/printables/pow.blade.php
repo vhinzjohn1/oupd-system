@@ -201,7 +201,7 @@
                                         laborTotalAmount += amount;
                                         divHTML += '<tr>' +
                                             '<td>' + lab.labor_name + '</td>' +
-                                            '<td>' + lab.labor_no_of_persons + '</td>' +
+                                            '<td>' + lab.labor_location + '</td>' +
                                             '<td>' + lab.labor_work_days + '</td>' +
                                             '<td>' + numberWithCommas(newRate.toFixed(2)) +
                                             '</td>' +
@@ -228,7 +228,7 @@
                                         '<table class="table table-sm text-center table-bordered">' +
                                         '<thead>' +
                                         '<tr>' +
-                                        '<th colspan="5">Equipment</th>' +
+                                        '<th colspan="4">Equipment</th>' +
                                         '</tr>' +
                                         '<tr>' +
                                         '<th>Particulars</th>' +
@@ -248,7 +248,6 @@
                                         equipmentTotalAmount += amount;
                                         divHTML += '<tr>' +
                                             '<td>' + equip.equipment_name + '</td>' +
-                                            '<td>' + equip.equipment_no_of_units + '</td>' +
                                             '<td>' + equip.equipment_work_days + '</td>' +
                                             '<td>' + numberWithCommas(newRate.toFixed(2)) +
                                             '</td>' +
@@ -260,7 +259,7 @@
                                     divHTML += '</tbody>' +
                                         '<tfoot>' +
                                         '<tr>' +
-                                        '<td colspan="4" class="text-right"><strong>Total</strong></td>' +
+                                        '<td colspan="3" class="text-right"><strong>Total</strong></td>' +
                                         '<td>' + numberWithCommas(equipmentTotalAmount.toFixed(2)) +
                                         '</td>' +
                                         '</tr>' +

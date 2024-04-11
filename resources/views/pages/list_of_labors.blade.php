@@ -8,11 +8,11 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Labor Rates') }}</h1>
                 </div><!-- /.col -->
-                <div class="text-right col-sm-6">
+                {{-- <div class="text-right col-sm-6">
                     <button type="button" class="btn btn-success" data-toggle="modal" id="addLaborButton">
                         Add Labor Rate
                     </button>
-                </div>
+                </div> --}}
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>

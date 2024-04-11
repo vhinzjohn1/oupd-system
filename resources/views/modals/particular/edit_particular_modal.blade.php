@@ -15,12 +15,12 @@
                         <div class="col-12">
                             <input type="hidden" id="edit_particular_id" name="edit_particular_id">
                             <div class="form-group">
-                                <label for="edit_particular_name">Particular Name</label>
+                                <label for="edit_particular_name">Item Name</label>
                                 <input type="text" class="form-control" id="edit_particular_name"
                                     name="edit_particular_name" required>
                             </div>
                             <div class="form-group">
-                                <label for="edit_description">Description</label>
+                                <label for="edit_description">Pay Item (Number)</label>
                                 <input type="text" class="form-control" id="edit_description" name="edit_description"
                                     required>
                             </div>
