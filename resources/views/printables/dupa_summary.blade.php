@@ -158,7 +158,8 @@
                                 '<th class="text-center">Item Description</th>' +
                                 '<th class="text-center">Unit</th>' +
                                 '<th class="text-center">Quantity</th>' +
-                                '<th class="text-center">Amount</th>' +
+                                '<th class="text-center">Total Cost of Item</th>' +
+                                '<th class="text-center">Unit Cost</th>' +
                                 '</tr>' +
                                 '</thead>' +
                                 '<tbody>';
@@ -176,8 +177,11 @@
                                     '</td>' +
                                     '<td class="text-right">' + particular.particular_quantity +
                                     '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(amount.toFixed(
-                                        2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(totalAmount
+                                        .toFixed(
+                                            2)) + '</td>' +
+                                    '<td class="text-right">' + particular.particular_unit_cost +
+                                    '</td>' +
                                     '</tr>';
                             });
                             // Close the table and container
