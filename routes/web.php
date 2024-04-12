@@ -157,12 +157,33 @@ Route::middleware('auth')->group(function () {
     // Particular Delete Routes
     Route::put('/particulars/{particular_id}', [ParticularController::class, 'destroy'])->name('particulars.destroy');
     Route::resource('particulars', ParticularController::class);
-
-
-
 });
 
+// Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
+Route::get('/generate-pdf', function () {
+    return view('printables.print_project_particular');
+});
 Route::resource('generatePDF', PDFController::class);
+// Routes
+Route::get('/printables/dupa', function () {
+    return view('printables.dupa');
+})->name('dupa');
+// Routes
+Route::get('/printables/dupa_summary', function () {
+    return view('printables.dupa_summary');
+})->name('dupa_summary');
+// Routes
+Route::get('/printables/abc', function () {
+    return view('printables.abc');
+})->name('abc');
+// Routes
+Route::get('/printables/summary_of_cost', function () {
+    return view('printables.summary_of_cost');
+})->name('summary_of_cost');
+// Routes
+Route::get('/printables/boq', function () {
+    return view('printables.boq');
+})->name('boq');
 
 // Project Particular Routes:
 Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');

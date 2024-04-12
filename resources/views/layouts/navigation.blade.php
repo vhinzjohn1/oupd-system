@@ -81,13 +81,60 @@
                     </li>
                 </ul>
             </li>
-
+{{-- 
             <!-- Transactionals -->
             <li class="nav-item printables">
                 <a href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">
                     <i class="nav-icon fas fa-pencil-ruler"></i>
                     <p>{{ __('Generate PDF') }}</p>
                 </a>
+            </li> --}}
+            <!-- ESTIMATES -->
+            <li class="nav-item has-treeview" id="masterList">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-list"></i>
+                    <p>Estimates <i class="fas fa-angle-left right"></i></p>
+                </a>
+                <ul class="nav nav-treeview" style="display: none;">
+
+                    {{-- List of Material Sidebar Navigation --}}
+                    <li class="nav-item printables">
+                        <a href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate POW') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a href="{{ route('dupa') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate DUPA') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a href="{{ route('dupa_summary') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate DUPA SUMMARY') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a href="{{ route('summary_of_cost') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate SUMMARY OF COST') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a href="{{ route('abc') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate ABC') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a href="{{ route('boq') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate BOQ') }}</p>
+                        </a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </nav>
