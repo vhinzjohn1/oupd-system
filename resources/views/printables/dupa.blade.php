@@ -99,36 +99,6 @@
                 <!-- Particular tables will be appended here -->
             </div>
         </div>
-        <div class="container">
-            <div class="row mt-4">
-                <div class="col-6">
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="d-flex flex-column align-items-start">
-                            <div>
-                                Re-evaluated by: <br><br>
-                                <div style="text-align: center;">
-                                    <u><b>FRITZ MILDRED N. PUABEN</b> </u> <br>
-                                    Draftsman I, OUPD
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="d-flexflex-column align-items-center">
-                        <div class="d-flex flex-column align-items-start">
-                            <div>
-                                Checked by: <br><br>
-                                <div style="text-align: center;">
-                                    <u><b>MARIA EILANI N. NON</b></u> <br>
-                                    Engineer II, OUPD
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <script>
             // Add an event listener to the button
@@ -154,10 +124,15 @@
                         var projectId = 1; // Change this value to the desired project_id
                         var project = response.projects.find(p => p.project_id === projectId);
                         if (project) {
+                            var directCostTotalAmount = 0;
                             project.particulars.forEach(function(particular, index) {
-                                var materials = particular.details.Materials;
-                                var equipment = particular.details.Equipment;
-                                var labor = particular.details.Labor;
+                                var materials = particular.details.Materials || [];
+                                var equipment = particular.details.Equipment || [];
+                                var labor = particular.details.Labor || [];
+
+                                var materialTotalAmount = 0;
+                                var equipmentTotalAmount = 0;
+                                var laborTotalAmount = 0;
 
                                 // Create a new div for each particular name
                                 var divHTML =
@@ -179,14 +154,14 @@
                                     '<td>' + +'</td>' +
                                     '<td>' + +'</td>' +
                                     '<td>' + +'</td>' +
-                                    '</tr>' +
-                                    '<tr>' +
-                                    '<th colspan="5" class="text-center">Materials</th>' +
                                     '</tr>';
                                 // Create materials table
                                 if (materials.length > 0) {
                                     var materialTotalAmount = 0;
                                     divHTML +=
+                                        '<tr>' +
+                                        '<th colspan="5" class="text-center">Materials</th>' +
+                                        '</tr>' +
                                         '<tr>' +
                                         '<th>NAME & SPECIFICATION</th>' +
                                         '<th>QUANTITY</th>' +
@@ -219,182 +194,314 @@
                                         '<th>' + numberWithCommas(materialTotalAmount
                                             .toFixed(2)) + '</th>' + //nakabold dapat ni
                                         '</tr>';
-                                    // Create equipment table
-                                    if (equipment.length > 0) {
-                                        var equipmentTotalAmount = 0;
-                                        divHTML +=
-                                            '<tr>' +
-                                            '<th class="text-center" colspan="5">Equipment</th>' +
-                                            '</tr>' +
-                                            '<tr>' +
-                                            '<th>NAME & CAPACITY</th>' +
-                                            '<th>NO. OF UNITS</th>' +
-                                            '<th>NO. OF DAYS</th>' +
-                                            '<th>DAILY RATE</th>' +
-                                            '<th>COST</th>' +
-                                            '</tr>';
-                                        // Append equipment to the table
-                                        equipment.forEach(function(equip) {
-                                            var newRate = parseFloat(equip.equipment_rate) *
-                                                8; // Convert rate to per day
-                                            var amount = parseFloat(equip
-                                                    .equipment_work_days) *
-                                                newRate;
-                                            equipmentTotalAmount += amount;
-                                            divHTML += '<tr>' +
-                                                '<td>' + equip.equipment_name + '</td>' +
-                                                '<td>' + equip.equipment_no_of_units +
-                                                '</td>' +
-                                                '<td>' + equip.equipment_work_days +
-                                                '</td>' +
-                                                '<td>' + numberWithCommas(newRate.toFixed(
-                                                    2)) +
-                                                '</td>' +
-                                                '<td>' + numberWithCommas(amount.toFixed(
-                                                    2)) +
-                                                '</td>' +
-                                                '</tr>';
-                                        });
-                                        // Close equipment table
-                                        divHTML +=
-                                            '<tr>' +
-                                            '<th colspan="4" class="text-start">B. TOTAL FOR EQUIPMENT</th>' +
-                                            '<th>' + numberWithCommas(equipmentTotalAmount.toFixed(
-                                                2)) + //nakabold dapat ni
-                                            '</th>' +
-                                            '</tr>';
+                                } else {
+                                    // No Materials available
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th class="text-center" colspan="5">Materials</th>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<th>DESIGNATION</th>' +
+                                        '<th>NO. OF PERSONS</th>' +
+                                        '<th>NO. OF DAYS</th>' +
+                                        '<th>DAILY RATE</th>' +
+                                        '<th>COST</th>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<td style="height: 40px;"></td>' +
+                                        '<td></td>' +
+                                        '<td></td>' +
+                                        '<td></td>' +
+                                        '<td></td>' +
+                                        '</tr>';
 
-                                        // Create labor table
-                                        if (labor.length > 0) {
-                                            var laborTotalAmount = 0;
-                                            divHTML +=
-                                                '<tr>' +
-                                                '<th class="text-center" colspan="5">Labor</th>' +
-                                                '</tr>' +
-                                                '<tr>' +
-                                                '<th>DESIGNATION</th>' +
-                                                '<th>NO. OF PERSONS</th>' +
-                                                '<th>NO. OF DAYS</th>' +
-                                                '<th>DAILY RATE</th>' +
-                                                '<th>COST</th>' +
-                                                '</tr>';
-                                            // Append labor to the table
-                                            labor.forEach(function(lab) {
-                                                var newRate = parseFloat(lab
-                                                        .labor_rate) *
-                                                    8; // Convert rate to per day
-                                                var amount = parseFloat(lab
-                                                        .labor_work_days) *
-                                                    newRate;
-                                                laborTotalAmount += amount;
-                                                divHTML += '<tr>' +
-                                                    '<td>' + lab.labor_name + '</td>' +
-                                                    '<td>' + lab.labor_no_of_persons +
-                                                    '</td>' +
-                                                    '<td>' + lab.labor_work_days +
-                                                    '</td>' +
-                                                    '<td>' + numberWithCommas(newRate
-                                                        .toFixed(
-                                                            2)) +
-                                                    '</td>' +
-                                                    '<td>' + numberWithCommas(amount
-                                                        .toFixed(
-                                                            2)) +
-                                                    '</td>' +
-                                                    '</tr>';
-                                            });
-                                            divHTML +=
-                                                '<tr>' +
-                                                '<th colspan="4" class="text-start">C. TOTAL FOR LABOR</th>' +
-                                                '<th>' + numberWithCommas(laborTotalAmount
-                                                    .toFixed(2)) + //nakabold dapat ni
-                                                '</th>' +
-                                                '</tr>';
-                                            var directCostTotalAmount = 0;
-                                            var totalAmount = materialTotalAmount +
-                                                laborTotalAmount + equipmentTotalAmount;
-                                            directCostTotalAmount += totalAmount;
-                                            divHTML +=
-                                                '<tr>' +
-                                                '<th colspan="4" class="text-start">D. ESTIMATED DIRECT COST (A+B+C)</th>' +
-                                                '<th>' + numberWithCommas(directCostTotalAmount
-                                                    .toFixed(2)) + //nakabold dapat ni
-                                                '</th>' +
-                                                '</tr>' +
-                                                '<tr>' +
-                                                //         var indirectCostTotalAmount = 0;
-                                                // var totalAmount = OCM + CP;
-                                                // indirectCostTotalAmount += totalAmount;
-                                                // divHTML +=
-                                                '<th colspan="4" class="text-start">E. INDIRECT COST (MARK-UPS)</th>' +
-                                                '<th>' + numberWithCommas(laborTotalAmount
-                                                    .toFixed(2)) + //nakabold dapat ni
-                                                '</th>' +
-                                                '</tr>' +
-                                            //     var ocmTotalAmount = 0;
-                                            // var totalAmount = directCostTotalAmount * 15%;
-                                            // ocmTotalAmount += totalAmount;
-                                            // divHTML +=
-                                                '<tr>' +
-                                                '<td class="text-start"></td>' +
-                                                '<td colspan="2" class="text-start">1. OVERHEAD, CONTINGENCY & MISCELLANEOUS (15% of ODC)</td>' +
-                                                '<td class="text-start">15%</td>' +
-                                                '<td>' + numberWithCommas(laborTotalAmount
-                                                    .toFixed(2)) +
-                                                '</td>' +
-                                                '</tr>' +
-                                            //     var cpTotalAmount = 0;
-                                            // var totalAmount = directCostTotalAmount * 10%;
-                                            // cpTotalAmount += totalAmount;
-                                            // divHTML +=
-                                                '<tr>' +
-                                                '<td class="text-start"></td>' +
-                                                '<td colspan="2" class="text-start">2. CONTRACTORS PROFIT (10% of EDC)</td>' +
-                                                '<td class="text-start">10%</td>' +
-                                                '<td>' + numberWithCommas(laborTotalAmount
-                                                    .toFixed(2)) +
-                                                '</td>' +
-                                                '</tr>' +
-                                                //     var vatTotalAmount = 0;
-                                                // var totalAmount = (directCostTotalAmount +
-                                                //     indirectCostTotalAmount) * 5%;
-                                                // vatTotalAmount += totalAmount;
-                                                // divHTML +=
-                                                '<tr>' +
-                                                '<th colspan="4" class="text-start">F. VAT (5% of EDC+OCM+CP)</th>' +
-                                                '<th>' + numberWithCommas(laborTotalAmount
-                                                    .toFixed(2)) + //nakabold dapat ni
-                                                '</th>' +
-                                                '</tr>' +
-                                                //         var itemCostTotalAmount = 0;
-                                                // var totalAmount = directCostTotalAmount +
-                                                //     indirectCostTotalAmount + vatTotalAmount;
-                                                // itemCostTotalAmount += totalAmount;
-                                                // divHTML +=
-                                                '<tr>' +
-                                                '<th colspan="4" class="text-start">G. TOTAL COST ITEM (D+E+F)</th>' +
-                                                '<th>' + numberWithCommas(laborTotalAmount
-                                                    .toFixed(2)) + //nakabold dapat ni
-                                                '</th>' +
-                                                '</tr>' +
-                                            //     var unitCostTotalAmount = 0;
-                                            // var totalAmount = itemCostTotalAmount / quantity;
-                                            // unitCostTotalAmount += totalAmount;
-                                            // divHTML +=
-                                                '<tr>' +
-                                                '<th colspan="4" class="text-start">H. UNIT COST (TOTAL COST OF ITEM/QUANTITY)</th>' +
-                                                '<th>' + numberWithCommas(laborTotalAmount
-                                                    .toFixed(2)) + //nakabold dapat ni
-                                                '</th>' +
-                                                '</tr>' +
-                                                '</tbody>' +
-                                                '</table>';
-                                        }
+                                    // Explicitly set materialTotalAmount to 0
+                                    var materialTotalAmount = 0;
 
-                                    }
+                                    // Calculate total for this particular (including material total as 0)
+                                    var totalAmount = materialTotalAmount + equipmentTotalAmount +
+                                        laborTotalAmount;
+                                    directCostTotalAmount += totalAmount;
+
+                                    // Display material total as dash (-) instead of 0.00 in the table
+                                    var materialCostDisplay = '-'; // Use dash as placeholder
+
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th colspan="4" class="text-start">A. TOTAL FOR MATERIALS</th>' +
+                                        '<th class="text-end">' + materialCostDisplay + '</th>' +
+                                        '</tr>';
                                 }
 
+                                // Create equipment table
+                                if (equipment.length > 0) {
+                                    var equipmentTotalAmount = 0;
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th class="text-center" colspan="5">Equipment</th>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<th>NAME & CAPACITY</th>' +
+                                        '<th>NO. OF UNITS</th>' +
+                                        '<th>NO. OF DAYS</th>' +
+                                        '<th>DAILY RATE</th>' +
+                                        '<th>COST</th>' +
+                                        '</tr>';
+                                    // Append equipment to the table
+                                    equipment.forEach(function(equip) {
+                                        var newRate = parseFloat(equip.equipment_rate) *
+                                            8; // Convert rate to per day
+                                        var amount = parseFloat(equip
+                                                .equipment_work_days) *
+                                            newRate;
+                                        equipmentTotalAmount += amount;
+                                        divHTML += '<tr>' +
+                                            '<td>' + equip.equipment_name + '</td>' +
+                                            '<td>' + equip.equipment_no_of_units +
+                                            '</td>' +
+                                            '<td>' + equip.equipment_work_days +
+                                            '</td>' +
+                                            '<td>' + numberWithCommas(newRate.toFixed(
+                                                2)) +
+                                            '</td>' +
+                                            '<td>' + numberWithCommas(amount.toFixed(
+                                                2)) +
+                                            '</td>' +
+                                            '</tr>';
+                                    });
+                                    // Close equipment table
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th colspan="4" class="text-start">B. TOTAL FOR EQUIPMENT</th>' +
+                                        '<th>' + numberWithCommas(equipmentTotalAmount.toFixed(
+                                            2)) + //nakabold dapat ni
+                                        '</th>' +
+                                        '</tr>';
+                                } else {
+                                    // No Equipment available
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th class="text-center" colspan="5">Equipment</th>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<th>DESIGNATION</th>' +
+                                        '<th>NO. OF PERSONS</th>' +
+                                        '<th>NO. OF DAYS</th>' +
+                                        '<th>DAILY RATE</th>' +
+                                        '<th>COST</th>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<td style="height: 40px;"></td>' +
+                                        '<td></td>' +
+                                        '<td></td>' +
+                                        '<td></td>' +
+                                        '<td></td>' +
+                                        '</tr>';
 
+                                    // Explicitly set equipmentTotalAmount to 0
+                                    var equipmentTotalAmount = 0;
+
+                                    // Calculate total for this particular (including equipment total as 0)
+                                    var totalAmount = materialTotalAmount + equipmentTotalAmount +
+                                        laborTotalAmount;
+                                    directCostTotalAmount += totalAmount;
+
+                                    // Display equipment total as dash (-) instead of 0.00 in the table
+                                    var equipmentCostDisplay = '-'; // Use dash as placeholder
+
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th colspan="4" class="text-start">B. TOTAL FOR EQUIPMENT</th>' +
+                                        '<th class="text-end">' + equipmentCostDisplay + '</th>' +
+                                        '</tr>';
+                                }
+
+                                // Create labor table
+                                if (labor.length > 0) {
+                                    var laborTotalAmount = 0;
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th class="text-center" colspan="5">Labor</th>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<th>DESIGNATION</th>' +
+                                        '<th>NO. OF PERSONS</th>' +
+                                        '<th>NO. OF DAYS</th>' +
+                                        '<th>DAILY RATE</th>' +
+                                        '<th>COST</th>' +
+                                        '</tr>';
+                                    // Append labor to the table
+                                    labor.forEach(function(lab) {
+                                        var newRate = parseFloat(lab
+                                                .labor_rate) *
+                                            8; // Convert rate to per day
+                                        var amount = 
+                                            parseFloat(lab.labor_no_of_persons) *
+                                            newRate;
+                                        laborTotalAmount += amount;
+                                        divHTML += '<tr>' +
+                                            '<td>' + lab.labor_name + '</td>' +
+                                            '<td>' + lab.labor_no_of_persons +
+                                            '</td>' +
+                                            '<td>' + lab.labor_work_days +
+                                            '</td>' +
+                                            '<td>' + numberWithCommas(newRate
+                                                .toFixed(
+                                                    2)) +
+                                            '</td>' +
+                                            '<td>' + numberWithCommas(amount
+                                                .toFixed(
+                                                    2)) +
+                                            '</td>' +
+                                            '</tr>';
+                                    });
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th colspan="4" class="text-start">C. TOTAL FOR LABOR</th>' +
+                                        '<th>' + numberWithCommas(laborTotalAmount.toFixed(2)) +
+                                        //nakabold dapat ni
+                                        '</th>' +
+                                        '</tr>';
+                                } else {
+                                    // No labor available
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th class="text-center" colspan="5">Labor</th>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<th>DESIGNATION</th>' +
+                                        '<th>NO. OF PERSONS</th>' +
+                                        '<th>NO. OF DAYS</th>' +
+                                        '<th>DAILY RATE</th>' +
+                                        '<th>COST</th>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<td style="height: 40px;"></td>' +
+                                        '<td></td>' +
+                                        '<td></td>' +
+                                        '<td></td>' +
+                                        '<td></td>' +
+                                        '</tr>';
+
+                                    // Explicitly set laborTotalAmount to 0
+                                    var laborTotalAmount = 0;
+
+                                    // Calculate total for this particular (including labor total as 0)
+                                    var totalAmount = materialTotalAmount + equipmentTotalAmount +
+                                        laborTotalAmount;
+                                    directCostTotalAmount += totalAmount;
+
+                                    // Display labor total as dash (-) instead of 0.00 in the table
+                                    var laborCostDisplay = '-'; // Use dash as placeholder
+
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<th colspan="4" class="text-start">C. TOTAL FOR LABOR</th>' +
+                                        '<th class="text-end">' + laborCostDisplay + '</th>' +
+                                        '</tr>';
+                                }
+                                var totalAmount = materialTotalAmount +
+                                    laborTotalAmount + equipmentTotalAmount;
+                                directCostTotalAmount += totalAmount;
+                                divHTML +=
+                                    '<tr>' +
+                                    '<th colspan="4" class="text-start">D. ESTIMATED DIRECT COST (A+B+C)</th>' +
+                                    '<th>' + numberWithCommas(directCostTotalAmount
+                                        .toFixed(2)) + //nakabold dapat ni
+                                    '</th>' +
+                                    '</tr>' +
+                                    //         var indirectCostTotalAmount = 0;
+                                    // var totalAmount = OCM + CP;
+                                    // indirectCostTotalAmount += totalAmount;
+                                    // divHTML +=
+                                    '<tr>' +
+                                    '<th colspan="4" class="text-start">E. INDIRECT COST (MARK-UPS)</th>' +
+                                    '<th>' + + //nakabold dapat ni
+                                    '</th>' +
+                                    '</tr>' +
+                                    //     var ocmTotalAmount = 0;
+                                    // var totalAmount = directCostTotalAmount * 15%;
+                                    // ocmTotalAmount += totalAmount;
+                                    // divHTML +=
+                                    '<tr>' +
+                                    '<td class="text-start"></td>' +
+                                    '<td colspan="2" class="text-start">1. OVERHEAD, CONTINGENCY & MISCELLANEOUS (15% of ODC)</td>' +
+                                    '<td class="text-start">15%</td>' +
+                                    '<td>' + +
+                                    '</td>' +
+                                    '</tr>' +
+                                    //     var cpTotalAmount = 0;
+                                    // var totalAmount = directCostTotalAmount * 10%;
+                                    // cpTotalAmount += totalAmount;
+                                    // divHTML +=
+                                    '<tr>' +
+                                    '<td class="text-start"></td>' +
+                                    '<td colspan="2" class="text-start">2. CONTRACTORS PROFIT (10% of EDC)</td>' +
+                                    '<td class="text-start">10%</td>' +
+                                    '<td>' + +
+                                    '</td>' +
+                                    '</tr>' +
+                                    //     var vatTotalAmount = 0;
+                                    // var totalAmount = (directCostTotalAmount +
+                                    //     indirectCostTotalAmount) * 5%;
+                                    // vatTotalAmount += totalAmount;
+                                    // divHTML +=
+                                    '<tr>' +
+                                    '<th colspan="4" class="text-start">F. VAT (5% of EDC+OCM+CP)</th>' +
+                                    '<th>' + + //nakabold dapat ni
+                                    '</th>' +
+                                    '</tr>' +
+                                    //         var itemCostTotalAmount = 0;
+                                    // var totalAmount = directCostTotalAmount +
+                                    //     indirectCostTotalAmount + vatTotalAmount;
+                                    // itemCostTotalAmount += totalAmount;
+                                    // divHTML +=
+                                    '<tr>' +
+                                    '<th colspan="4" class="text-start">G. TOTAL COST ITEM (D+E+F)</th>' +
+                                    '<th>' + + //nakabold dapat ni
+                                    '</th>' +
+                                    '</tr>' +
+                                    //     var unitCostTotalAmount = 0;
+                                    // var totalAmount = itemCostTotalAmount / quantity;
+                                    // unitCostTotalAmount += totalAmount;
+                                    // divHTML +=
+                                    '<tr>' +
+                                    '<th colspan="4" class="text-start">H. UNIT COST (TOTAL COST OF ITEM/QUANTITY)</th>' +
+                                    '<th>' + + //nakabold dapat ni
+                                    '</th>' +
+                                    '</tr>' +
+                                    '</tbody>' +
+                                    '</table>' +
+                                    '<div class="container">' +
+                                    '<div class="row mt-4">' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Re-evaluated by: <br><br>' +
+                                    '<div style="text-align: center;">' +
+                                    '<u><b>FRITZ MILDRED N. PUABEN</b></u> <br>' +
+                                    'Draftsman I, OUPD' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Checked by: <br><br>' +
+                                    '<div style="text-align: center;">' +
+                                    '<u><b>MARIA EILANI N. NON</b></u> <br>' +
+                                    'Engineer II, OUPD' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div> <br>' +
+                                    '</div>';
                                 // Close div
                                 divHTML += '</div>';
 
