@@ -1,3 +1,11 @@
+{{-- <style>
+    /* Media Query for Tablets Ipads portrait mode */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .add_project_title {
+            font-size: 0.8rem;
+        }
+    }
+</style> --}}
 <div class="modal fade preview-modal" id="addProjectModal" tabindex="-1" role="dialog"
     aria-labelledby="addProjectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-height: 75vh;">
@@ -12,9 +20,9 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="add_project_title">Project Title</label>
+                                <label for="add_project_title" class="add_project_title">Project Title</label>
                                 <input type="text" class="form-control" id="add_project_title"
                                     name="add_project_title" required>
                             </div>
@@ -33,13 +41,13 @@
                                 <input type="text" class="form-control" id="add_project_description"
                                     name="add_project_description" required>
                             </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="add_project_contract_duration">Contract Duration</label>
                                 <input type="text" class="form-control" id="add_project_contract_duration"
                                     name="add_project_contract_duration" required>
                             </div>
+                        </div>
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="add_project_date_prepared">Project Date Prepared</label>
                                 <input type="date" class="form-control" id="add_project_date_prepared"

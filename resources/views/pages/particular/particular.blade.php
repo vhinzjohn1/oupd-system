@@ -55,7 +55,7 @@
                 "searching": true,
                 "ordering": true,
                 "paging": true,
-            }).buttons().container().appendTo('#particularTable_wrapper .col-12');
+            });
 
             // Call the function to fetch and populate data in the table
             refreshParticularTable();
@@ -70,28 +70,23 @@
 
         // Populate the Table and Refresh at the same time
         function refreshParticularTable() {
+            // Check if data is already cached in localStorage
+            var cachedData = localStorage.getItem('particularsData');
+
+            if (cachedData) {
+                // If cached data exists, parse and use it
+                displayParticulars(JSON.parse(cachedData));
+            }
+            // If no cached data, fetch new data via AJAX
             $.ajax({
                 url: "{{ route('particulars.index') }}",
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    var table = $('#particularTable').DataTable();
-                    var existingRows = table.rows().remove().draw(false);
-                    console.log(data);
-
-                    data.forEach(function(particular, index) {
-                        var newRow = table.row.add([
-                            particular.particular_name,
-                            particular.pay_item,
-                            '<div class="text-center d-flex">' +
-                            `<button type="button" id="editParticularButton" class="btn bg-gradient-success mr-2" data-id="${particular.particular_id}" onclick="openParticularModal(${particular.particular_id}, '${particular.particular_name}', '${particular.pay_item}')"><i class="fas fa-edit"></i></button>` +
-                            `<button type="button" id="deleteParticularButton" class="btn bg-gradient-danger" data-id="${particular.particular_id}" onclick="deleteParticular(${particular.particular_id})"><i class="fas fa-trash-alt"></i></button>` +
-                            '</div>'
-                        ]).node();
-
-                    });
-
-                    table.draw();
+                    // Store fetched data in localStorage for future use
+                    localStorage.setItem('particularsData', JSON.stringify(data));
+                    // Display the fetched data
+                    displayParticulars(data);
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -99,10 +94,31 @@
             });
         }
 
+        // Function to display particular data in the DataTable
+        function displayParticulars(data) {
+            var table = $('#particularTable').DataTable();
+            var existingRows = table.rows().remove().draw(false);
+
+            data.forEach(function(particular, index) {
+                var newRow = table.row.add([
+                    particular.particular_name,
+                    particular.pay_item,
+                    '<div class="text-center d-flex">' +
+                    `<button type="button" id="editParticularButton" class="btn bg-success mr-2" data-id="${particular.particular_id}" onclick="openParticularModal(${particular.particular_id}, '${particular.particular_name}', '${particular.pay_item}')"><i class="fas fa-edit"></i></button>` +
+                    `<button type="button" id="deleteParticularButton" class="btn bg-danger" data-id="${particular.particular_id}" onclick="deleteParticular(${particular.particular_id})"><i class="fas fa-trash-alt"></i></button>` +
+                    '</div>'
+                ]).node();
+            });
+
+            table.draw();
+        }
+
 
         // Manually Open Particular Modal
         function openParticularModal(particular_id, particular_name, pay_item) {
-            console.log(particular_id);
+            if (pay_item === "null") {
+                pay_item = "";
+            }
             // Populate modal fields with passed values
             $('#edit_particular_id').val(particular_id);
             $('#edit_particular_name').val(particular_name);

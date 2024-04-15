@@ -69,7 +69,7 @@
                 "paging": true,
                 "info": true,
                 // "buttons": ["copy", "excel", "pdf", "print"]
-            }).buttons().container().appendTo('#laborTable_wrapper .col-md-6:eq(0)');
+            });
 
             // Call the function to fetch and populate data in the table
             refreshLaborsTable();
@@ -97,38 +97,51 @@
         }
 
         function refreshLaborsTable() {
+            // Check if data is already cached in localStorage
+            var cachedData = localStorage.getItem('laborsData');
+
+            if (cachedData) {
+                // If cached data exists, parse and use it
+                displayLabors(JSON.parse(cachedData));
+            }
+            // If no cached data, fetch new data via AJAX
             $.ajax({
                 url: "{{ route('labors.index') }}",
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    var table = $('#laborTable').DataTable();
-                    var existingRows = table.rows().remove().draw(false);
-                    console.log(data);
-
-                    data.forEach(function(labor, index) {
-                        // Assuming rates is always an array, even if empty
-
-                        var newRow = table.row.add([
-                            // labor.labor_id,
-                            labor.labor_name,
-                            labor.rate,
-                            labor.date_effective,
-                            '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn bg-gradient-success mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${labor.rate}')" ><i class="fas fa-edit"></i></button>` +
-                            `<button type="button" class="btn bg-gradient-danger btn-delete-labor" data-id="${labor.labor_id}"><i class="fas fa-trash-alt"></i></button>` +
-                            // ... (add your delete button logic here) +
-                            '</div>'
-                        ]).node();
-
-                    });
-
-                    table.draw();
+                    // Store fetched data in localStorage for future use
+                    localStorage.setItem('laborsData', JSON.stringify(data));
+                    // Display the fetched data
+                    displayLabors(data);
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
                 }
             });
+        }
+
+        function displayLabors(data) {
+            var table = $('#laborTable').DataTable();
+            var existingRows = table.rows().remove().draw(false);
+            console.log(data);
+
+            data.forEach(function(labor, index) {
+                // Assuming rates is always an array, even if empty
+                var newRow = table.row.add([
+                    // labor.labor_id,
+                    labor.labor_name,
+                    labor.rate,
+                    labor.date_effective,
+                    '<div class="text-center d-flex">' +
+                    `<button type="button" id="editButton" class="btn bg-gradient-success mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${labor.rate}')" ><i class="fas fa-edit"></i></button>` +
+                    `<button type="button" class="btn bg-gradient-danger btn-delete-labor" data-id="${labor.labor_id}"><i class="fas fa-trash-alt"></i></button>` +
+                    // ... (add your delete button logic here) +
+                    '</div>'
+                ]).node();
+            });
+
+            table.draw();
         }
 
         function deleteLabor(laborId) {

@@ -42,7 +42,6 @@ Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/home_test', [App\Http\Controllers\HomeController::class, 'index'])->name('home_test');
 Route::get('/material-categories', function () {
     $categories = MaterialCategory::all()->pluck('material_category_name');
     return response()->json($categories);
