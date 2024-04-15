@@ -19,6 +19,7 @@ class GetAllDataController extends Controller
             p.project_id,
             p.project_title,
             pm.project_particular_material_id,
+            pp.project_particular_id,
             prt.particular_id,
             prt.particular_name,
             pm.quantity AS material_quantity,
@@ -80,6 +81,7 @@ class GetAllDataController extends Controller
             $title = $project->project_title;
             $particularName = $project->particular_name;
             $particularId = $project->particular_id;
+            $projectParticularId = $project->project_particular_id;
 
             // Group data by project title
             if (!isset($formattedData[$title])) {
@@ -99,6 +101,7 @@ class GetAllDataController extends Controller
                 // Initialize the details array for the particular if not already set
                 if (!isset($formattedData[$title]['particulars'][$particularName])) {
                     $formattedData[$title]['particulars'][$particularName] = [
+                        'project_particular_id' => $projectParticularId,
                         'particular_id' => $particularId,
                         'particular_name' => $particularName,
                         'details' => [

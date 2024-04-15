@@ -77,7 +77,7 @@
                     </li>
                 </ul>
             </li>
-
+{{-- 
             <!-- Transactionals -->
             {{-- <li class="nav-item printables">
                 <a href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">

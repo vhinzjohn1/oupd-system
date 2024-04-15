@@ -491,7 +491,6 @@
                                 );
                                 var cardBody = $('<div class="card-body col-12">');
                                 var row = $('<div class="row">');
-                                var col1 = $('<div class="col-1">');
                                 var col11 = $('<div class="col-12">');
 
                                 // Set up the card header
@@ -505,33 +504,31 @@
                                     '<button type="button" class="btn btn-tool">'
                                 ).html('<i class="fas fa-minus"></i>');
 
+                                var dangerButton = $(
+                                    '<button type="button" class="btn btn-danger" data-project-particular-id="' +
+                                    particular.project_particular_id +
+                                    '"><i class="fas fa-trash-alt"></i></button>');
+                                dangerButton.click(function(event) {
+                                    event.stopPropagation();
+                                    var projectParticularId = $(this).data(
+                                        'project-particular-id');
+
+                                    // Call deleteParticular function with projectParticularId
+                                    deleteParticular(projectParticularId);
+                                });
+
+
+
+
                                 // Append elements to the header
                                 headerContent.append(
                                     title,
-                                    cardTools.append(collapseButton)
+                                    cardTools.append(dangerButton, collapseButton)
                                 );
                                 cardHeader.append(headerContent);
 
-                                // Set up the dropdown for adding details
-                                var dropdownButton = $(
-                                    '<button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-toggle="dropdown">'
-                                ).html(
-                                    '<i class="fa fa-plus"></i><span class="sr-only">Toggle Dropdown</span>'
-                                );
-                                var dropdownMenu = $(
-                                    '<div class="dropdown-menu" role="menu">'
-                                );
-
                                 // Create dropdown options
                                 var detailTypes = ["Material", "Labor", "Equipment"];
-                                detailTypes.forEach(function(detail) {
-                                    var dropdownItem = $(
-                                        '<a class="dropdown-item select-details" href="#" data-details="' +
-                                        detail +
-                                        '">'
-                                    ).text(detail);
-                                    dropdownMenu.append(dropdownItem);
-                                });
 
                                 // Filter out details that should not be displayed in the grid
                                 const rowDataMaterial = Object.values(
@@ -604,14 +601,6 @@
                                     particular.particular_name,
                                     particular,
                                     totalEquipmentAmount
-                                );
-
-                                // Append dropdown to the card
-                                col1.append(
-                                    $('<div class="btn-group">').append(
-                                        dropdownButton,
-                                        dropdownMenu
-                                    )
                                 );
 
                                 // Append cards to the col11 container
@@ -1494,7 +1483,7 @@
                                 toastr.options.progressBar = true;
                                 setTimeout(function() {
                                     toastr.success("Material Deleted Successfully!");
-                                }, 1000); // Delay of 1000 milliseconds (2 seconds)
+                                }, 1000);
 
                                 // Handle success response
                             },
@@ -2049,6 +2038,41 @@
                     },
                 });
             });
+
+            function deleteParticular(projectParticularId) {
+                // Display confirmation dialog
+                Swal.fire({
+                    title: 'Confirm Project Item Deletion',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If user confirms, proceed with deletion
+                        $.ajax({
+                            url: "{{ url('projectParticulars') }}/" + projectParticularId,
+                            type: 'DELETE',
+                            data: {
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(response) {
+                                // Refresh the page
+                                window.location.reload();
+
+                                // Show toastr notification for successful deletion
+                                toastr.success('Project particular deleted successfully.');
+                            },
+                            error: function(xhr, status, error) {
+                                // Handle error response
+                                alert("Error: " + error);
+                            }
+                        });
+                    }
+                });
+            }
         </script>
         <!-- /.content -->
     @endsection

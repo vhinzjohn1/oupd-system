@@ -249,10 +249,11 @@
                                         '</tr>';
                                     // Append equipment to the table
                                     equipment.forEach(function(equip) {
-                                        var newRate = parseFloat(equip.equipment_rate) *
+                                        var newRate = equip.equipment_rate *
                                             8; // Convert rate to per day
-                                        var amount = parseFloat(equip
-                                                .equipment_work_days) *
+                                        var amount = equip
+                                            .equipment_work_days * equip
+                                            .equipment_no_of_units *
                                             newRate;
                                         equipmentTotalAmount += amount;
                                         divHTML += '<tr>' +
@@ -332,11 +333,11 @@
                                         '</tr>';
                                     // Append labor to the table
                                     labor.forEach(function(lab) {
-                                        var newRate = parseFloat(lab
-                                                .labor_rate) *
+                                        var newRate = lab
+                                            .labor_rate *
                                             8; // Convert rate to per day
-                                        var amount = 
-                                            parseFloat(lab.labor_no_of_persons) *
+                                        var amount = lab.labor_no_of_persons * lab
+                                            .labor_work_days *
                                             newRate;
                                         laborTotalAmount += amount;
                                         divHTML += '<tr>' +
@@ -402,7 +403,7 @@
                                 }
                                 var totalAmount = materialTotalAmount +
                                     laborTotalAmount + equipmentTotalAmount;
-                                directCostTotalAmount += totalAmount;
+                                directCostTotalAmount = totalAmount;
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">D. ESTIMATED DIRECT COST (A+B+C)</th>' +

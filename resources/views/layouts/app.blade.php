@@ -126,10 +126,11 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ Auth::user()->first_name }}
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right" style="left: inherit; right: 0px;">
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a href="{{ route('profile.show') }}" class="dropdown-item">
                             <i class="mr-2 fas fa-file"></i>
                             {{ __('My profile') }}
@@ -145,8 +146,8 @@
                         </form>
                     </div>
                 </li>
-
             </ul>
+
         </nav>
         <!-- /.navbar -->
 
