@@ -25,24 +25,24 @@
                                 <input type="text" class="form-control" id="edit_equipment_category_name"
                                     name="edit_equipment_category_name" required>
                             </div>
-
+                            {{-- <div class="form-group">
+                                <label for="edit_description">Description</label>
+                                <input type="text" class="form-control" id="edit_description" name="edit_description" required>
+                            </div> --}}
                             <div class="form-group">
                                 <label for="edit_equipment_model">Model</label>
                                 <input type="text" class="form-control" id="edit_equipment_model"
                                     name="edit_equipment_model" required>
                             </div>
+
+                        </div>
+                        <div class="col-md-6">
+
                             <div class="form-group">
                                 <label for="edit_equipment_capacity">Capacity</label>
                                 <input type="text" class="form-control" id="edit_equipment_capacity"
                                     name="edit_equipment_capacity" required>
                             </div>
-                            {{-- <div class="form-group">
-                                <label for="edit_description">Description</label>
-                                <input type="text" class="form-control" id="edit_description" name="edit_description" required>
-                            </div> --}}
-
-                        </div>
-                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="edit_rate">Rate</label>
                                 <input type="number" class="form-control" step="any" id="edit_rate"

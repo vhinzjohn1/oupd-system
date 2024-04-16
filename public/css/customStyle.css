@@ -51,6 +51,9 @@
 .dataTables_filter {
     text-align: right !important;
 }
+.form-top {
+    margin-top: -5px !important;
+}
 
 .custom-right {
     position: absolute;

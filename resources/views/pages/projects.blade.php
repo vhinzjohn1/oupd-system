@@ -61,7 +61,7 @@
 
 
         {{-- Container for Project Particular Table --}}
-        <div class="container-fluid">
+        {{-- <div class="container-fluid">
             <div class="card" style="box-shadow: 0px 0px 10px 1px grey">
                 <div class="card-header col-12 d-flex justify-content-between mb-2">
                     <h5>Project Particular Table</h5>
@@ -75,7 +75,7 @@
                     </table>
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div><!-- /.container-fluid --> --}}
     </div>
     @include('modals.project.add_projects_modal')
     @include('modals.project.view_project_modal')
@@ -108,17 +108,14 @@
                     ordering: true,
                     searching: true,
                     // buttons: ["copy", "csv", "excel", "pdf", "print"],
-                })
-                .buttons()
-                .container()
-                .appendTo("#projectTable_wrapper .col-md-6:eq(0)");
+                });
 
             // Call the function to fetch and populate data in the table
             refreshProjectsTable();
 
             // Refresh Project Particular Table
-            refreshProjectParticularTable();
-            refreshProjectParticularMLE();
+            // refreshProjectParticularTable();
+            // refreshProjectParticularMLE();
 
             // Initialize Select2
             $('#add_project_particular_name').select2({
@@ -382,43 +379,58 @@
 
         // Refresh Function for Projects Table
         function refreshProjectsTable() {
+            // Check if data is already cached in localStorage
+            var cachedData = localStorage.getItem('projectsData');
+
+            if (cachedData) {
+                // If cached data exists, parse and use it
+                displayProjects(JSON.parse(cachedData));
+            }
+            // If no cached data, fetch new data via AJAX
             $.ajax({
                 url: "{{ route('project.index') }}",
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    var table = $('#projectTable').DataTable();
-                    var existingRows = table.rows().remove().draw(false);
-                    console.log(data);
-
-                    data.forEach(function(project, index) {
-                        // Assuming prices is always an array, even if empty
-                        var newRow = table.row.add([
-                            // material.material_id,
-                            '<a href="#" class="link-dark" style="text-decoration: none;" onclick="selectProject(' +
-                            project
-                            .project_id +
-                            ', \'' + project.project_title + '\')">' + project.project_title +
-                            '</a>',
-                            project.project_owner,
-                            project.project_location,
-                            project.project_contract_duration,
-                            '<div class="text-center d-flex">' +
-                            `<button type="button" id="editProjectButton" class="btn bg-gradient-success mr-2" data-id="${project.project_id}" onclick="viewProjectModal(${project.project_id}, '${project.project_title}', '${project.project_location}', '${project.project_owner}', '${project.project_description}', '${project.project_contract_duration}', '${project.project_date_prepared}', '${project.project_target_start_date}', '${project.project_appropriation}', '${project.project_source_of_fund}', '${project.project_mode_of_implementation}')"><i class="fa fa-eye" aria-hidden="true"></i></button>` +
-                            `<button type="button" id="selectProjectButton" class="btn btn-success mr-2" data-id="${project.project_id}" onclick="selectProject(${project.project_id}, '${project.project_title}')" > Select </button>` +
-                            // ... (add your delete button logic here) +
-                            '</div>'
-                        ]).node();
-
-                    });
-
-                    table.draw();
+                    // Store fetched data in localStorage for future use
+                    localStorage.setItem('projectsData', JSON.stringify(data));
+                    // Display the fetched data
+                    displayProjects(data);
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
                 }
             });
         }
+
+        function displayProjects(data) {
+            var table = $('#projectTable').DataTable();
+            var existingRows = table.rows().remove().draw(false);
+            console.log(data);
+
+            data.forEach(function(project, index) {
+                // Assuming prices is always an array, even if empty
+                var newRow = table.row.add([
+                    // material.material_id,
+                    '<a href="#" class="link-dark" style="text-decoration: none;" onclick="selectProject(' +
+                    project
+                    .project_id +
+                    ', \'' + project.project_title + '\')">' + project.project_title +
+                    '</a>',
+                    project.project_owner,
+                    project.project_location,
+                    project.project_contract_duration,
+                    '<div class="text-center d-flex">' +
+                    `<button type="button" id="editProjectButton" class="btn bg-success mr-2" data-id="${project.project_id}" onclick="viewProjectModal(${project.project_id}, '${project.project_title}', '${project.project_location}', '${project.project_owner}', '${project.project_description}', '${project.project_contract_duration}', '${project.project_date_prepared}', '${project.project_target_start_date}', '${project.project_appropriation}', '${project.project_source_of_fund}', '${project.project_mode_of_implementation}')"><i class="fas fa-edit" aria-hidden="true"></i></button>` +
+                    `<button type="button" id="selectProjectButton" class="btn btn-success mr-2" data-id="${project.project_id}" onclick="selectProject(${project.project_id}, '${project.project_title}')" > Select </button>` +
+                    // ... (add your delete button logic here) +
+                    '</div>'
+                ]).node();
+            });
+
+            table.draw();
+        }
+
 
         function viewProjectModal(project_id, projectTitle, projectLocation, projectOwner,
             projectDescription,

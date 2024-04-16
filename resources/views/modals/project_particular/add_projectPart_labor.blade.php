@@ -1,6 +1,6 @@
 <div class="modal fade preview-modal" id="addPartLaborModal" tabindex="-1" role="dialog"
     aria-labelledby="addPartLaborModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered" role="document" style="max-height: 75vh;">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-height: 75vh;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addPartLaborModalLabel">Add Labor</h5>
@@ -12,8 +12,9 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-sm-6">
                             <div class="form-group">
+                                <input type="hidden" id="add_particular_laborID">
                                 <label for="add_particular_laborName">Labor Name</label>
                                 <select type="text" class="form-control" id="add_particular_laborName"
                                     name="add_particular_laborName" required>
@@ -34,7 +35,7 @@
                             </div>
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="add_particular_laborRate">Rate (per hrs)</label>
                                 <input type="text" class="form-control" id="add_particular_laborRate"
@@ -78,9 +79,8 @@
         }
 
         // Event listener for quantity input change
-        $('#add_particular_laborWorkDays').on('input', function() {
-            calculateAmount();
-        });
+        $('#add_particular_laborWorkDays, #add_particular_laborRate, #add_particular_noOfPerson').on('input',
+            calculateAmount);
 
     });
 </script>

@@ -2,6 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Equipment;
+use App\Models\EquipmentCategory;
+use App\Models\EquipmentRate;
+use App\Models\Labor;
+use App\Models\LaborRate;
+use App\Models\Material;
+use App\Models\MaterialCategory;
+use App\Models\Price;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -121,6 +129,7 @@ class GetAllDataController extends Controller
                     if (!$existingMaterial) {
                         $formattedData[$title]['particulars'][$particularName]['details']['Materials'][] = [
                             'particular_id' => $project->particular_id,
+                            'project_particular_id' => $projectParticularId,
                             'project_particular_material_id' => $project->project_particular_material_id,
                             'material_id' => $project->material_id,
                             'material_name' => $project->material_name,
@@ -234,9 +243,6 @@ class GetAllDataController extends Controller
     }
 
 
-
-
-
     public function masterList()
     {
         // Raw SQL query to fetch data
@@ -284,16 +290,23 @@ class GetAllDataController extends Controller
         SELECT
             e.equipment_id,
             e.equipment_name,
+            e.equipment_model,
+            e.equipment_capacity,
+            e.equipment_category_id,
+            ec.equipment_category_name,
             er.rate AS equipment_rate
         FROM
             equipments e
         LEFT JOIN
             equipment_rates er ON e.equipment_id = er.equipment_id
+        LEFT JOIN
+            equipment_categories ec ON e.equipment_category_id = ec.equipment_category_id
         WHERE
             er.is_active = 1
             AND er.rate IS NOT NULL
         ORDER BY
             e.equipment_name ASC;
+
 
     ");
 
@@ -309,48 +322,224 @@ class GetAllDataController extends Controller
 
     public function submitDetails(Request $request)
     {
-        // Create or find project particular
-        $projectParticular = ProjectParticular::firstOrCreate([
-            'project_id' => $request->projectId, // Change 'project_id' to 'projectId'
-            'particular_id' => $request->particularId, // Change 'particular_id' to 'particularId'
-        ]);
-
-        // Insert materials into the project_particular_materials table if provided
-        if (!empty($request->materialId)) { // Change 'materials' to 'materialId'
-            // Update or create a record in the project_particular_materials table
-            $projectParticular->materials()->updateOrCreate([
-                'material_id' => $request->materialId,
-            ], [
-                'quantity' => $request->materialQuantity, // Change 'quantity' to 'materialQuantity'
+        try {
+            // Create or find project particular
+            $projectParticular = ProjectParticular::firstOrCreate([
+                'project_id' => $request->projectId, // Change 'project_id' to 'projectId'
+                'particular_id' => $request->particularId, // Change 'particular_id' to 'particularId'
             ]);
+
+            if ($request->has('materialId') && $request->materialId !== "empty") {
+                // Update or create a record in the project_particular_materials table
+                $projectParticular->materials()->updateOrCreate([
+                    'material_id' => $request->materialId,
+                ], [
+                    'quantity' => $request->materialQuantity,
+                ]);
+            } elseif ($request->materialId === "empty") {
+                try {
+                    // Start a database transaction
+                    DB::beginTransaction();
+
+                    // Retrieve or create material category
+                    $materialCategory = MaterialCategory::firstOrCreate(['material_category_name' => $request->materialCategory]);
+
+                    // Check if material with the same name exists
+                    $material = Material::where('material_name', $request->materialName)->first();
+
+                    if (!$material) {
+                        // If material does not exist, create a new one
+                        $material = new Material([
+                            'material_name' => $request->materialName,
+                            'unit' => $request->materialUnit,
+                        ]);
+
+                        $material->category()->associate($materialCategory);
+                        $material->save();
+                    }
+
+                    // Add the newly created material to the ProjectParticular
+                    $projectParticular = ProjectParticular::firstOrCreate([
+                        'project_id' => $request->projectId,
+                        'particular_id' => $request->particularId,
+                    ]);
+
+                    $projectParticular->materials()->updateOrCreate([
+                        'material_id' => $material->material_id,
+                    ], [
+                        'quantity' => $request->materialQuantity,
+                    ]);
+
+                    DB::table('prices')
+                        ->where('material_id', $material->material_id)
+                        ->update(['is_active' => false]);
+
+                    // Create a new price instance
+                    $price = new Price();
+                    $price->price = $request->materialPrice;
+                    $price->quarter = $request->materialQuarter;
+                    $price->year = $request->materialYear;
+                    $price->material_id = $material->material_id;
+
+                    // Save the price
+                    $price->save();
+
+                    // Commit the transaction
+                    DB::commit();
+
+                    // Return success response
+                    return response()->json($material);
+                } catch (\Exception $e) {
+                    // Rollback the transaction if an exception occurs
+                    DB::rollBack();
+
+                    // Log detailed error message
+                    Log::error('Failed to add material: ' . $e->getMessage());
+
+                    // Return error response
+                    return response()->json(['success' => false, 'message' => 'Failed to add material. Please check the logs for details.']);
+                }
+            }
+
+            // Insert labor into the project_particular_labors table if provided
+            if ($request->has('laborId') && $request->laborId !== "empty") {
+                // Update or create a record in the project_particular_labors table
+                $projectParticular->labors()->updateOrCreate([
+                    'labor_id' => $request->laborId,
+                ], [
+                    'no_of_persons' => $request->noOfPerson,
+                    'work_days' => $request->workDays,
+                ]);
+            } else if ($request->laborId === "empty") {
+                try {
+                    // Start a database transaction
+                    DB::beginTransaction();
+
+                    // Create a new labor
+                    $labor = Labor::firstOrCreate(['labor_name' => $request->laborName, 'location' => $request->laborLocation]);
+
+                    // Add the newly created labor to the ProjectParticular
+                    $projectParticular = ProjectParticular::firstOrCreate([
+                        'project_id' => $request->projectId,
+                        'particular_id' => $request->particularId,
+                    ]);
+
+                    // Update or create a record in the project_particular_labors table
+                    $projectParticular->labors()->updateOrCreate([
+                        'labor_id' => $labor->labor_id, // Use the newly created labor's ID
+                    ], [
+                        'no_of_persons' => $request->noOfPerson,
+                        'work_days' => $request->workDays,
+                    ]);
+
+                    // Create a new labor rate instance
+                    $rate = new LaborRate();
+                    $rate->rate = $request->laborRate;
+                    $rate->labor_id = $labor->labor_id; // Use the newly created labor's ID
+                    $rate->save();
+
+                    // Commit the transaction
+                    DB::commit();
+
+                    // Return success response
+                    return response()->json($labor);
+                } catch (\Exception $e) {
+                    // Rollback the transaction if an exception occurs
+                    DB::rollBack();
+
+                    // Log detailed error message
+                    Log::error('Failed to add labor: ' . $e->getMessage());
+
+                    // Return error response
+                    return response()->json(['success' => false, 'message' => 'Failed to add labor. Please check the logs for details.']);
+                }
+
+            }
+            // Insert equipment into the project_particular_equipments table if provided
+            if ($request->has('equipmentId') && $request->equipmentId !== "empty") {
+                // Update or create a record in the project_particular_equipments table
+                $projectParticular->equipments()->updateOrCreate([
+                    'equipment_id' => $request->equipmentId,
+                ], [
+                    'work_days' => $request->equipmentWorkDays,
+                    'no_of_units' => $request->noOfUnit,
+                ]);
+            } else if ($request->equipmentId === "empty") {
+                try {
+                    // Start a database transaction
+                    DB::beginTransaction();
+
+                    // Retrieve or create equipment category
+                    $equipmentCategory = EquipmentCategory::firstOrCreate(['equipment_category_name' => $request->equipmentCategory]);
+
+                    // Check if equipment with the same name exists
+                    $equipment = Equipment::where('equipment_name', $request->equipmentName)->first();
+
+                    if (!$equipment) {
+                        // If equipment does not exist, create a new one
+                        $equipment = new Equipment([
+                            'equipment_name' => $request->equipmentName,
+                            'equipment_model' => $request->equipmentModel,
+                            'equipment_capacity' => $request->equipmentCapacity,
+                        ]);
+
+                        $equipment->category()->associate($equipmentCategory);
+                        $equipment->save();
+                    }
+
+                    // Add the newly created material to the ProjectParticular
+                    $projectParticular = ProjectParticular::firstOrCreate([
+                        'project_id' => $request->projectId,
+                        'particular_id' => $request->particularId,
+                    ]);
+
+                    $projectParticular->equipments()->updateOrCreate([
+                        'equipment_id' => $equipment->equipment_id,
+                    ], [
+                        'work_days' => $request->equipmentWorkDays,
+                        'no_of_units' => $request->noOfUnit,
+                    ]);
+
+                    DB::table('equipment_rates')
+                        ->where('equipment_id', $equipment->equipment_id)
+                        ->update(['is_active' => false]);
+
+                    // Create a new rate instance
+                    $rate = new EquipmentRate();
+                    $rate->rate = $request->equipmentRate;
+                    $rate->equipment_id = $equipment->equipment_id;
+
+                    // Save the rate
+                    $rate->save();
+
+                    // Commit the transaction
+                    DB::commit();
+
+                    // Return success response
+                    return response()->json($equipment);
+                } catch (\Exception $e) {
+                    // Rollback the transaction if an exception occurs
+                    DB::rollBack();
+
+                    // Log detailed error message
+                    Log::error('Failed to add equipment: ' . $e->getMessage());
+
+                    // Return error response
+                    return response()->json(['success' => false, 'message' => 'Failed to add equipment. Please check the logs for details.']);
+                }
+
+            }
+
+            return response()->json(['message' => 'Data submitted successfully']);
+        } catch (\Exception $e) {
+            // Log detailed error message
+            Log::error('Failed to submit details: ' . $e->getMessage());
+
+            // Return error response
+            return response()->json(['error' => 'Failed to submit details. Please check the logs for details.'], 500);
         }
-        // Insert labor into the project_particular_labors table if provided
-        if (!empty($request->laborId)) { // Change 'materials' to 'laborId'
-            // Update or create a record in the project_particular_labors table
-            $projectParticular->labors()->updateOrCreate([
-                'labor_id' => $request->laborId,
-            ], [
-                'no_of_persons' => $request->noOfPerson,
-                'work_days' => $request->workDays,
-            ]);
-        }
-
-        // Insert equipment into the project_particular_equipments table if provided
-        if (!empty($request->equipmentId)) { // Change 'materials' to 'equipmentId'
-            // Update or create a record in the project_particular_equipments table
-            $projectParticular->equipments()->updateOrCreate([
-                'equipment_id' => $request->equipmentId,
-            ], [
-                'work_days' => $request->equipmentWorkDays,
-                'no_of_units' => $request->noOfUnit,
-            ]);
-        }
-
-
-
-        return response()->json(['message' => 'Data submitted successfully']);
-
     }
+
     public function destroy(Request $request)
     {
         try {

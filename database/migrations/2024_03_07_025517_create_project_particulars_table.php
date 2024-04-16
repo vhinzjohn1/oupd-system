@@ -14,12 +14,9 @@ return new class extends Migration {
             $table->id('project_particular_id');
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('particular_id');
-            $table->text('description')->nullable();
             $table->integer('quantity')->nullable();
             $table->string('unit')->nullable();
-            $table->integer('odc')->nullable();
-            $table->integer('edc')->nullable();
-            $table->integer('vat')->nullable();
+            $table->decimal('unit_cost', 10, 5)->nullable();
             $table->decimal('total', 10, 5)->nullable(); // Assuming a decimal type with precision 10 and scale 2
             $table->timestamps();
 
