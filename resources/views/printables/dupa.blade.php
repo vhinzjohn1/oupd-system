@@ -404,11 +404,13 @@
                                 var totalAmount = materialTotalAmount +
                                     laborTotalAmount + equipmentTotalAmount;
                                 directCostTotalAmount = totalAmount;
+                                var totalInWords = convertNumberToWords(Math.round(
+                                    directCostTotalAmount));
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">D. ESTIMATED DIRECT COST (A+B+C)</th>' +
-                                    '<th>' + numberWithCommas(directCostTotalAmount
-                                        .toFixed(2)) + //nakabold dapat ni
+                                    '<th>' + numberWithCommas(directCostTotalAmount.toFixed(2)) +
+                                    //nakabold dapat 
                                     '</th>' +
                                     '</tr>' +
                                     //         var indirectCostTotalAmount = 0;

@@ -72,42 +72,103 @@
             <div class="cmuLogoContainer">
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
-        <div class="container text-center" id="projectDetails">
-            <div class="row mt-4">
-                <div class="col-6">
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="d-flex flex-column align-items-start">
-                            <div>Name of the Project: <span id="projectTitle" style="font-size: 20px;"></span></div>
-                            <div>Date Prepared: <span id="projectDate" style="font-size: 20px;"></span></div>
-                            <div>Appropriation: <span id="projectAppropriation" style="font-size: 20px;"></span></div>
-                            <div>Owner: <span id="projectOwner" style="font-size: 20px;"></span></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="d-flex flex-column align-items-start">
-                            <div>Source of Fund: <span id="projectSOF" style="font-size: 20px;"></span></div>
-                            <div>Location: <span id="projectLocation" style="font-size: 20px;"></span></div>
-                            <div>Contract Duration: <span id="projectDuration" style="font-size: 20px;"></span></div>
-                            <div>Mode of Implementation: <span id="projectImplementation" style="font-size: 20px;"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <h5>DETAILED UNIT PRICE ANALYSIS (DUPA) SUMMARY</h5> <!-- Default -->
-            </div>
-
-        </div>
+        <table class="table table-borderless" id="projectDetails">
+            <tr>
+                <td>Name of tde Project     :</td>
+                <td><span id="projectTitle"></span></td>
+                <td>Source of Fund :</td>
+                <td><span id="projectSOF"></span></td>
+            </tr>
+            <tr>
+                <td>Date Prepared :</td>
+                <td><span id="projectDate"></span></td>
+                <td>Location :</td>
+                <td><span id="projectLocation"></span></td>
+            </tr>
+            <tr>
+                <td>Appropriation :</td>
+                <td><span id="projectAppropriation"></span></td>
+                <td>Contract Duration :</td>
+                <td><span id="projectDuration"></span></td>
+            </tr>
+            <tr>
+                <td>Owner :</td>
+                <td><span id="projectOwner"></span></td>
+                <td>Mode of Implementation :</td>
+                <td><span id="projectImplementation"></span></td>
+            </tr>
+        </table>
 
         <!-- Project Particulars -->
         <div class="container-fluid">
             <!-- Loop through each particular -->
             <div class="row justify-content-center" id="particularsContainer"> <!-- Center horizontally -->
                 <!-- Particular tables will be appended here -->
+            </div>
+        </div>
+        <div class="container">
+            <div class="row mt-4">
+                <div class="col-6">
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="d-flex flex-column align-items-start">
+                            <div>
+                                Prepared: <br><br>
+                                <div style="text-align: center;">
+                                    <b><u>FRITZ MILDRED N. PUABEN</u></b> <br>
+                                    Draftsman I, OUPD
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                Reviewed: <br><br>
+                                <div style="text-align: center;">
+                                    <b><u>REYNALDO B. MABELIN</u></b> <br>
+                                    Architect II, OUPD
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                Conformed: <br><br>
+                                <div style="text-align: center;">
+                                    <b><u>JOHN D. TAJONES</u></b> <br>
+                                    Dean/End-User
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                Recommending Approval: <br><br>
+                                <div style="text-align: center;">
+                                    <b><u>HERMIE P. PAVA</u></b> <br>
+                                    VP for Administration
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flexflex-column align-items-center">
+                        <div class="d-flex flex-column align-items-start">
+                            <div>
+                                Checked: <br><br>
+                                <div style="text-align: center;">
+                                    <b><u>MARIA EILANI N. NON</u></b> <br>
+                                    Engineer II, OUPD
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                Submitted: <br><br>
+                                <div style="text-align: center;">
+                                    <b><u>RICHARD J. AQUINO</u></b> <br>
+                                    Director, OUPD
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                Approved: <br><br>
+                                <div style="text-align: center;">
+                                    <b><u>ROLITO G. EBALLE, Ph.D.</u></b> <br>
+                                    University President
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -153,6 +214,11 @@
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
+                                '<tr>' +
+                                '<th colspan="6" class="text-center">' +
+                                '<h5>DETAILED UNIT PRICE ANALYSIS (DUPA) SUMMARY</h5>' +
+                                '</th>' +
+                                '</tr>' +
                                 '<tr>' +
                                 '<th class="text-center">Item No.</th>' +
                                 '<th class="text-center">Item Description</th>' +
@@ -243,141 +309,7 @@
             }
         </script>
 
-        {{-- <div class="container">
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Item No.</th>
-                        <th scope="col">Item Description</th>
-                        <th scope="col">Unit</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Total cost of the Item</th>
-                        <th scope="col">Unit Cost</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row" class="item-number">I</th>
-                        <td>MOVING IN</td>
-                        <td>Is</td>
-                        <td>1</td>
-                        <td>6,805.28</td>
-                        <td>6,805.28</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="item-number">II</th>
-                        <td>EARTHWORKS</td>
-                        <td>cu.m</td>
-                        <td>550</td>
-                        <td>1,008.97</td>
-                        <td>554,935.61</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="item-number">III</th>
-                        <td>COMPACTION</td>
-                        <td>cu.m</td>
-                        <td>576</td>
-                        <td>130.37</td>
-                        <td>75,090.33</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="item-number">IV</th>
-                        <td>CONCRETE PAVERS</td>
-                        <td>sqm</td>
-                        <td>403</td>
-                        <td>2,818.92</td>
-                        <td>1,136,026.71</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="item-number">V</th>
-                        <td>Personal Protective Equipment (PPE)</td>
-                        <td>Is</td>
-                        <td>1</td>
-                        <td>20,335.88</td>
-                        <td>20,335.88</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="item-number">VI</th>
-                        <td>MOVING OUT</td>
-                        <td>Is</td>
-                        <td>1</td>
-                        <td>6,805.28</td>
-                        <td>6,805.28</td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="item-number"></th>
-                        <td>Total</td>
-                        <td></td>
-                        <td></td>
-                        <td>1,799,999.08</td>
-                        <td> </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="row mt-4">
-                <div class="col-6">
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="d-flex flex-column align-items-start">
-                            <div>
-                                Prepared: <br><br>
-                                <div style="text-align: center;">
-                                    <u>FRITZ MILDRED N. PUABEN</u> <br>
-                                    Draftsman I, OUPD
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Reviewed: <br><br>
-                                <div style="text-align: center;">
-                                    <u>REYNALDO B. MABELIN</u> <br>
-                                    Architect II, OUPD
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Conformed: <br><br>
-                                <div style="text-align: center;">
-                                    <u>JOHN D. TAJONES</u> <br>
-                                    Dean/End-User
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Recommending Approval: <br><br>
-                                <div style="text-align: center;">
-                                    <u>HERMIE P. PAVA</u> <br>
-                                    VP for Administration
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="d-flexflex-column align-items-center">
-                        <div class="d-flex flex-column align-items-start">
-                            <div>
-                                Checked: <br><br>
-                                <div style="text-align: center;">
-                                    <u>MARIA EILANI N. NON</u> <br>
-                                    Engineer II, OUPD
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Submitted: <br><br>
-                                <div style="text-align: center;">
-                                    <u>RICHARD J. AQUINO</u> <br>
-                                    Director, OUPD
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Approved: <br><br>
-                                <div style="text-align: center;">
-                                    <u>ROLITO G. EBALLE, Ph.D.</u> <br>
-                                    University President
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
+
     </body>
 
     </html>

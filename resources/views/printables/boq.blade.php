@@ -87,6 +87,55 @@
                 <!-- Particular tables will be appended here -->
             </div>
         </div>
+        <div class="container">
+            <div class="container">
+                <div class="row mt-4 align-items-center">
+                    <div class="col d-inline-block me-1">
+                        <div class="">
+                            <div class="">
+                                <div class="text-center" style="white-space: nowrap;">
+                                    Prepared by: <br><br>
+                                    <u><b>FRITZ MILDRED N. PUABEN</b> </u> <br>
+                                    Draftsman I, OUPD
+                                </div> <br>
+                                <div class="text-center" style="white-space: nowrap;">
+                                    Submitted by: <br><br>
+                                    <u><b>RICHARD J. AQUINO</b> </u> <br>
+                                    Director, OUPD
+                                </div> <br>
+                                <div class="text-center" style="white-space: nowrap;">
+                                    Conformed by: <br><br>
+                                    <u><b>JOHN D. TAJONES</b> </u> <br>
+                                    DEAN, CISC
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col d-inline-block me-1">
+                        <div class="">
+                            <div class="">
+                                <div class="text-center" style="white-space: nowrap;">
+                                    Checked by: <br><br>
+                                    <u><b>MARIA EILANI N. NON</b> </u> <br>
+                                    Engineer II, OUPD
+                                </div> <br>
+                                <div class="text-center" style="white-space: nowrap;">
+                                    Recommending Approval: <br><br>
+                                    <u><b>HERMIE P. PAVA</b> </u> <br>
+                                    VP-Administration
+                                </div> <br>
+                                <div class="text-center" style="white-space: nowrap;">
+                                    Approved: <br><br>
+                                    <u><b>ROLITO G. EBALLE, PH.D</b> </u> <br>
+                                    University President
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Repeat the structure for other elements as needed -->
+                </div>
+            </div>
+        </div>
 
         <script>
             // Add an event listener to the button

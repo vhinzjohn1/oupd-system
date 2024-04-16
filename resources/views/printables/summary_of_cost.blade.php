@@ -78,12 +78,12 @@
                 <div class="row mt-4">
                     <div class="row mt-2">
                         <div class="d-flex flex-column align-items-start">
-                            <div><strong>PROJECT TITLE:</strong> <span id="projectTitle" style="font-size: 20px;"></span>
+                            <div><strong>PROJECT TITLE : </strong> <span id="projectTitle" style="font-size: 20px;"></span>
                             </div>
-                            <div><strong>LOCATION:</strong> <span id="projectLocation" style="font-size: 20px;"></span>
+                            <div><strong>LOCATION : </strong> <span id="projectLocation" style="font-size: 20px;"></span>
                             </div>
-                            <div><strong>OWNER:</strong> <span id="projectOwner" style="font-size: 20px;"></span></div>
-                            <div><strong>SUBJECT:</strong> <span id="projectSubject" style="font-size: 20px;">Summary of
+                            <div><strong>OWNER : </strong> <span id="projectOwner" style="font-size: 20px;"></span></div>
+                            <div><strong>SUBJECT : </strong> <span id="projectSubject" style="font-size: 20px;">Summary of
                                     Cost</span></div> <br>
                         </div>
                     </div>
@@ -103,87 +103,7 @@
 
         <div class="container">
             <div class="container">
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            <h5 class="mt-3">I- Direct Cost</h5>
-                            <div class="row">
-                                <div class="col-3">Materials</div>
-                                <div class="col">₱1,118,912.00</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3">Labor</div>
-                                <div class="col">₱179,041.92</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3">Equipment Rental</div>
-                                <div class="col">₱63,104.00</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3 text-end">Total:</div>
-                                <div class="col">₱1,361,057.92</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h5 class="mt-3">II- Indirect Cost</h5>
-                            <div class="row">
-                                <div class="col-3">OCM (15% of Direct Cost)</div>
-                                <div class="col">₱204,158.69</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3">CP (10% of Direct Cost)</div>
-                                <div class="col">₱136,105.79</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3">VAT (5% of Total above Cost)</div>
-                                <div class="col">₱85,066.12</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3 text-end">Total:</div>
-                                <div class="col">₱425,330.60</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h5 class="mt-3">III- Mobilization Cost</h5>
-                            <div class="row">
-                                <div class="col-3">Moving-in</div>
-                                <div class="col">₱6,805.29</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3">Moving-out</div>
-                                <div class="col">₱6,805.29</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3 text-end">Total:</div>
-                                <div class="col">₱13,610.58</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h5 class="mt-3"></h5>
-                            <div class="row">
-                                <div class="col-3">TOTAL PROJECT COST</div>
-                                <div class="col">₱1,799,999.10</div>
-                            </div>
-                        </div>
-                    </div> <br>
-                </div>
-                {{-- <div class="d-flex flex-column align-items-center">
-                    <div class="text-center">
-                        <h5>SAY: TOTAL ESTIMATED COST IS ONE MILLION EIGHT HUNDED THOUSAND PESOS ONLY</h5>
-                        <h5>(Php 1,800,000.00)</h5>
-                    </div>
-                </div>
-
                 <div class="row mt-4 align-items-center">
-                    <div class="d-flex flex-column align-items-center">
-
-                    </div>
                     <div class="col d-inline-block me-1">
                         <div class="">
                             <div class="">
@@ -227,11 +147,8 @@
                         </div>
                     </div>
                     <!-- Repeat the structure for other elements as needed -->
-                </div> --}}
-
-
+                </div>
             </div>
-
         </div>
         <script>
             // Add an event listener to the button
@@ -286,7 +203,7 @@
                                 var materialTotal = 0;
                                 var materialAmount = parseFloat(particular.particular_quantity) *
                                     parseFloat(particular.particular_unit_cost);
-                                    materialTotal += materialAmount;
+                                materialTotal += materialAmount;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
@@ -299,8 +216,9 @@
                                     '</td>' +
                                     '<td class="text-center">' + "equipmentTotal" +
                                     '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(materialTotal.toFixed(
-                                    2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(materialTotal
+                                        .toFixed(
+                                            2)) + '</td>' +
                                     '</tr>';
                             });
                             // Close the table and container
@@ -316,6 +234,102 @@
                                 '<td class="text-center">' + +'</td>' +
                                 '</tr>' +
                                 '</tfoot>' +
+                                '</table>' +
+                                '<table class="table">' +
+                                '<tr>' +
+                                '<td class="text-left">I. Direct Cost</td>' +
+                                '<td class="text-right"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Materials</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Labor</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Equipment Rental</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center">=</td>' +
+                                '<td class="text-center">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-left">II. Indirect Cost</td>' +
+                                '<td class="text-right"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">OCM (15% of Direct Cost)</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">CP (10% of Direct Cost)</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">VAT (5% of Total above Cost)</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center">=</td>' +
+                                '<td class="text-center">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-left">III. Mobilization Cost</td>' +
+                                '<td class="text-right"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Moving-in</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Moving-out</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center">=</td>' +
+                                '<td class="text-center">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td colspan="5" class="text-center">SAY: TOTAL ESTIMATED COST IS ONE MILLION EIGHT HUNDED THOUSAND PESOS ONLY</td>' +
+                                '</tr>' + // totalInWords
+                                '<tr>' +
+                                '<td colspan="5" class="text-center">(Php 1,800,000.00)</td>' +
+                                '</tr>' + // Total cost Item
                                 '</table>' +
                                 '</div>';
                             // Append the complete table to the container
@@ -360,6 +374,54 @@
                     }
                 }
                 return result;
+            }
+            // Function to convert a number to its English word representation with all letters capitalized
+            function convertNumberToWords(number) {
+                const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+                const teens = [
+                    'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen',
+                    'Nineteen'
+                ];
+                const tens = [
+                    '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'
+                ];
+
+                function capitalizeWord(word) {
+                    return word.split('').map(char => char.toUpperCase()).join('');
+                }
+
+                function convertLessThanOneThousand(num) {
+                    if (num === 0) {
+                        return '';
+                    } else if (num < 10) {
+                        return capitalizeWord(ones[num]);
+                    } else if (num < 20) {
+                        return capitalizeWord(teens[num - 10]);
+                    } else if (num < 100) {
+                        return capitalizeWord(tens[Math.floor(num / 10)]) + ' ' + capitalizeWord(ones[num % 10]);
+                    } else {
+                        return capitalizeWord(ones[Math.floor(num / 100)]) + ' Hundred ' + convertLessThanOneThousand(num %
+                            100);
+                    }
+                }
+
+                if (number === 0) {
+                    return 'ZERO';
+                }
+
+                const groups = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
+                let groupIndex = 0;
+                let words = '';
+
+                while (number > 0) {
+                    if (number % 1000 !== 0) {
+                        words = convertLessThanOneThousand(number % 1000) + ' ' + groups[groupIndex] + ' ' + words;
+                    }
+                    number = Math.floor(number / 1000);
+                    groupIndex++;
+                }
+
+                return capitalizeWord(words.trim());
             }
         </script>
 
