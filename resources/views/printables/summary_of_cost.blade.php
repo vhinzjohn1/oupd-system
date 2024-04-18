@@ -200,23 +200,30 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                var materialTotal = 0;
-                                var materialAmount = parseFloat(particular.particular_quantity) *
-                                    parseFloat(particular.particular_unit_cost);
-                                materialTotal += materialAmount;
+                                // Retrieve stored values from localStorage
+                                var materialTotalAmount = parseFloat(localStorage.getItem(
+                                    'materialTotalAmount')) || 0;
+                                var equipmentTotalAmount = parseFloat(localStorage.getItem(
+                                    'equipmentTotalAmount')) || 0;
+                                var laborTotalAmount = parseFloat(localStorage.getItem(
+                                        'laborTotalAmount')) ||
+                                    0;
+                                // var materialTotal = 0;
+                                // var materialAmount = parseFloat(particular.particular_quantity) *
+                                //     parseFloat(particular.particular_unit_cost);
+                                // materialTotal += materialAmount;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + "materialTotal" +
-                                    '</td>' +
-                                    '<td class="text-center">' + "laborTotal" +
-                                    '</td>' +
-                                    '<td class="text-center">' + "equipmentTotal" +
-                                    '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(materialTotal
+                                    '<td class="text-center">' + numberWithCommas(
+                                        materialTotalAmount.toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(
+                                        equipmentTotalAmount.toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' +  + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(laborTotalAmount
                                         .toFixed(
                                             2)) + '</td>' +
                                     '</tr>';
@@ -235,7 +242,7 @@
                                 '</tr>' +
                                 '</tfoot>' +
                                 '</table>' +
-                                '<table class="table">' +
+                                '<table class="table table-borderless">' +
                                 '<tr>' +
                                 '<td class="text-left">I. Direct Cost</td>' +
                                 '<td class="text-right"></td>' +

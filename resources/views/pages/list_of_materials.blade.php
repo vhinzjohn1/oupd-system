@@ -141,7 +141,7 @@
                     material.quarter,
                     material.year,
                     '<div class="text-center d-flex">' +
-                    `<button type="button" id="editButton" class="btn bg-gradient-success mr-2"
+                    `<button type="button" id="editButton" class="btn bg-success mr-2"
                 data-material-id="${material.material_id}" data-price-id="${material.price_id}"
                 onclick="openEditMaterialModal(${material.material_id}, ${material.price_id},
                 '${material.price}', '${material.quarter}', '${material.year}',

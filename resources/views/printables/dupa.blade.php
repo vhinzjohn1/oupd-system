@@ -125,7 +125,10 @@
                         var project = response.projects.find(p => p.project_id === projectId);
                         if (project) {
                             var directCostTotalAmount = 0;
-                            project.particulars.forEach(function(particular, index) {
+                            var materialTotalAmount = 0;
+                            var laborTotalAmount = 0;
+                            var equipmentTotalAmount = 0;
+                            project.particulars.forEach(function(particular, index, project_particular) {
                                 var materials = particular.details.Materials || [];
                                 var equipment = particular.details.Equipment || [];
                                 var labor = particular.details.Labor || [];
@@ -151,9 +154,9 @@
                                     //nakabold dapat ni
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
+                                    '<td>' + particular.quantity + '</td>' +
+                                    '<td>' + particular.unit + '</td>' +
+                                    '<td>' + particular.unit_cost + '</td>' +
                                     '</tr>';
                                 // Create materials table
                                 if (materials.length > 0) {
@@ -404,8 +407,6 @@
                                 var totalAmount = materialTotalAmount +
                                     laborTotalAmount + equipmentTotalAmount;
                                 directCostTotalAmount = totalAmount;
-                                var totalInWords = convertNumberToWords(Math.round(
-                                    directCostTotalAmount));
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">D. ESTIMATED DIRECT COST (A+B+C)</th>' +
@@ -515,7 +516,12 @@
                                     _, text) {
                                     return text.toUpperCase();
                                 });
+                                
                             });
+                            // Store total amounts in localStorage
+                            localStorage.setItem('materialTotalAmount', materialTotalAmount.toFixed(2));
+                            localStorage.setItem('equipmentTotalAmount', equipmentTotalAmount.toFixed(2));
+                            localStorage.setItem('laborTotalAmount', laborTotalAmount.toFixed(2));
                         }
                     },
                     error: function(xhr, status, error) {

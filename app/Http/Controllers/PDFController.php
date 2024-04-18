@@ -50,7 +50,11 @@ class PDFController extends Controller
             l.labor_id,
             l.labor_name,
             lr.rate AS labor_rate,
-            l.location AS labor_location
+            l.location AS labor_location,
+            pp.quantity,
+            pp.unit,
+            pp.unit_cost,
+            pp.total
         FROM
             projects p
         LEFT JOIN
@@ -96,6 +100,10 @@ class PDFController extends Controller
             $contractDuration = $project->project_contract_duration;
             $modeOfImplementation = $project->project_mode_of_implementation;
             $description = $project->project_description;
+            $quantity = $project->quantity;
+            $unit = $project->unit;
+            $unitCost = $project->unit_cost;
+            $total = $project->total;
 
             // Group data by project title
             if (!isset($formattedData[$title])) {
@@ -125,6 +133,10 @@ class PDFController extends Controller
                     $formattedData[$title]['particulars'][$particularName] = [
                         'particular_id' => $particularId,
                         'particular_name' => $particularName,
+                        'quantity' => $quantity,
+                        'unit' => $unit,
+                        'unit_cost' => $unitCost,
+                        'total' => $total,
                         'details' => [
                             'Materials' => [],
                             'Equipment' => [],

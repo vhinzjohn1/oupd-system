@@ -221,6 +221,7 @@
                         var project = response.projects.find(p => p.project_id === projectId);
 
                         if (project) {
+                            var totalAmount = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -280,54 +281,59 @@
                                 '</tr>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                var amount = parseFloat(particular.particular_quantity) *
-                                    parseFloat(particular.particular_unit_cost);
-
+                                var amount = parseFloat(particular.quantity) *
+                                    parseFloat(particular.unit_cost);
+                                totalAmount += amount;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td>' + particular.particular_unit + '</td>' +
-                                    '<td>' + particular.particular_quantity + '</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + numberWithCommas(amount.toFixed(2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(parseFloat(
+                                        particular.quantity).toFixed(2)) + '</td>' +
+                                    '<td>' + particular.unit + '</td>' +
+                                    '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-right">' + numberWithCommas(amount.toFixed(
+                                        2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(parseFloat(
+                                        particular.unit_cost).toFixed(2)) + '</td>' +
                                     '</tr>';
                             });
                             // Close the table and container
+                            var amountInWords = convertNumberToWords(totalAmount);
                             divHTML +=
                                 '</tbody>' +
                                 '<tfoot>' +
                                 '<tr>' +
                                 '<td></td>' +
                                 '<td class="text-center"><strong>Total</strong></td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
-                                '<td>' + +'</td>' +
+                                '<td></td>' +
+                                '<td></td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td></td>' +
+                                '<td></td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td></td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-right">' + numberWithCommas(totalAmount.toFixed(2)) +
+                                '</td>' +
+                                '<td></td>' +
                                 '</tr>' +
                                 '</tfoot>' +
                                 '</table>' +
                                 '<div class="text-center">' +
-                                '<h5>TOTAL ESTIMATED COST IS ONE MILLION EIGHT HUNDED THOUSAND PESOS ONLY</h5>' +
-                                '<h5>(Php 1,800,000.00)</h5>' +
+                                '<h5>TOTAL ESTIMATED COST IS ' + amountInWords + '</h5>' +
+                                '<h5>' + numberWithCommas(totalAmount.toFixed(2)) + '</h5>' +
                                 '</div>' +
                                 '</div>';
                             // Append the complete table to the container
@@ -341,6 +347,78 @@
                     }
                 });
             });
+
+            // Function to convert a number to its English word representation with all letters capitalized
+            function convertNumberToWords(number) {
+                const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+                const teens = [
+                    'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen',
+                    'Nineteen'
+                ];
+                const tens = [
+                    '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'
+                ];
+
+                // Function to capitalize all letters in a word
+                function capitalizeWord(word) {
+                    if (typeof word !== 'string') {
+                        return '';
+                    }
+                    return word.split('').map(char => char.toUpperCase()).join('');
+                }
+
+                // Function to convert a number less than one thousand to words
+                function convertLessThanOneThousand(num) {
+                    if (num === 0) {
+                        return '';
+                    } else if (num < 10) {
+                        return capitalizeWord(ones[num]);
+                    } else if (num < 20) {
+                        return capitalizeWord(teens[num - 10]);
+                    } else if (num < 100) {
+                        return capitalizeWord(tens[Math.floor(num / 10)]) + ' ' + capitalizeWord(ones[num % 10]);
+                    } else {
+                        return capitalizeWord(ones[Math.floor(num / 100)]) + ' Hundred ' + convertLessThanOneThousand(num %
+                        100);
+                    }
+                }
+
+                // Main function logic
+                if (number === 0) {
+                    return 'Zero Dollars';
+                }
+
+                // Separate the integer and decimal parts of the number
+                const [integerPart, decimalPart] = number.toString().split('.');
+                let words = '';
+
+                // Convert the integer part to words
+                let integerWords = '';
+                let integerNum = parseInt(integerPart, 10);
+                let groupIndex = 0;
+
+                while (integerNum > 0) {
+                    if (integerNum % 1000 !== 0) {
+                        integerWords = convertLessThanOneThousand(integerNum % 1000) + ' ' + ['', 'Thousand', 'Million',
+                            'Billion', 'Trillion'
+                        ][groupIndex] + ' ' + integerWords;
+                    }
+                    integerNum = Math.floor(integerNum / 1000);
+                    groupIndex++;
+                }
+
+                words = capitalizeWord(integerWords.trim());
+
+                // Convert the decimal part to words
+                if (decimalPart) {
+                    words += ' Point';
+                    for (let digit of decimalPart) {
+                        words += ' ' + capitalizeWord(ones[parseInt(digit, 10)]);
+                    }
+                }
+
+                return words.trim() + ' PESOS ONLY';
+            }
 
             // Function to add commas to thousands
             function numberWithCommas(x) {

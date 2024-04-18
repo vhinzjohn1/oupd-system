@@ -261,9 +261,9 @@
                                     '<td>' + particular.particular_name + '</td>' +
                                     '<td class="text-center">' + +
                                     '</td>' +
-                                    '<td class="text-center">' + +
+                                    '<td class="text-center">' + particular.quantity +
                                     '</td>' +
-                                    '<td class="text-center">' + +
+                                    '<td class="text-center">' + particular.unit +
                                     '</td>' +
                                     '<td class="text-center">' + +
                                     '</td>' +
@@ -279,10 +279,10 @@
                                 '<td class="text-center"></td>' +
                                 '<td class="text-right"><strong>Total</strong></td>' +
                                 '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center">' + "-" +'</td>' +
+                                '<td class="text-center"></td>' +
                                 '</tr>' +
                                 '</tfoot>' +
                                 '</table>' +

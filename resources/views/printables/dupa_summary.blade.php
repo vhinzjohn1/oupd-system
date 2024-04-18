@@ -74,7 +74,7 @@
             </div> --}}
         <table class="table table-borderless" id="projectDetails">
             <tr>
-                <td>Name of tde Project     :</td>
+                <td>Name of tde Project :</td>
                 <td><span id="projectTitle"></span></td>
                 <td>Source of Fund :</td>
                 <td><span id="projectSOF"></span></td>
@@ -231,22 +231,21 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                var amount = parseFloat(particular.particular_quantity) *
-                                    parseFloat(particular.particular_unit_cost);
+                                var amount = parseFloat(particular.quantity) *
+                                    parseFloat(particular.unit_cost);
                                 totalAmount += amount;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
                                     '<td>' + getRomanNumeral(index + 1) + '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + particular.particular_unit +
+                                    '<td class="text-center">' + particular.unit +
                                     '</td>' +
-                                    '<td class="text-right">' + particular.particular_quantity +
+                                    '<td class="text-right">' + numberWithCommas(parseFloat(particular.quantity)) +
                                     '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(totalAmount
-                                        .toFixed(
-                                            2)) + '</td>' +
-                                    '<td class="text-right">' + particular.particular_unit_cost +
+                                    '<td class="text-right">' + numberWithCommas(amount.toFixed(2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(parseFloat(
+                                        particular.unit_cost).toFixed(2)) +
                                     '</td>' +
                                     '</tr>';
                             });
