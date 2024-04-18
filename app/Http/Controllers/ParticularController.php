@@ -23,7 +23,7 @@ class ParticularController extends Controller
     public function getProjectParticular()
     {
         // Get all projects
-        $projects = Project::all();
+        $projects = DB::select('SELECT * FROM projects');
 
         // Initialize array to hold project particulars data
         $projectParticularsData = [];

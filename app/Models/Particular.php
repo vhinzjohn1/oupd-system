@@ -12,6 +12,6 @@ class Particular extends Model
 
     public function projectParticular()
     {
-        return $this->belongsTo(ProjectParticular::class);
+        return $this->belongsTo(ProjectParticular::class, 'particular_id', 'particular_id');
     }
 }

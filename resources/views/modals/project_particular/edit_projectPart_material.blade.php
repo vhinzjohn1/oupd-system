@@ -29,18 +29,29 @@
                                 <input type="text" class="form-control" id="edit_particular_category"
                                     name="edit_particular_category" readonly required>
                             </div>
-                        </div>
-                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="edit_particular_materialUnit">Unit</label>
                                 <input type="text" class="form-control" id="edit_particular_materialUnit"
                                     name="edit_particular_materialUnit" readonly required>
                             </div>
+                        </div>
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="edit_particular_materialPrice">Price</label>
                                 <input type="text" class="form-control" id="edit_particular_materialPrice"
                                     name="edit_particular_materialPrice" readonly>
                             </div>
+                            <div class="form-group">
+                                <label for="edit_particular_materialQuarter">Quarter</label>
+                                <input type="text" class="form-control" id="edit_particular_materialQuarter"
+                                    name="edit_particular_materialQuarter" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit_particular_materialYear">Year</label>
+                                <input type="text" class="form-control" id="edit_particular_materialYear"
+                                    name="edit_particular_materialYear" readonly>
+                            </div>
+
                             <div class="form-group">
                                 <label for="edit_particular_materialAmount">Amount</label>
                                 <input type="text" class="form-control" id="edit_particular_materialAmount"

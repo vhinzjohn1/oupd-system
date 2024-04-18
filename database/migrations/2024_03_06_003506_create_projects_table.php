@@ -21,6 +21,9 @@ return new class extends Migration {
             $table->decimal('project_appropriation', 10, 2);
             $table->string('project_source_of_fund');
             $table->string('project_mode_of_implementation');
+            $table->integer('ocm')->nullable();
+            $table->integer('contractors_profit')->nullable();
+            $table->integer('vat')->nullable()->default(5);
             $table->timestamps();
         });
     }

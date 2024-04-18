@@ -87,3 +87,24 @@
 .padding-header {
     padding: 1px 10px !important; /* Adjust the values as needed */
 }
+
+/* FOrm Control Focus */
+.form-control:focus {
+    border-color: #00491e !important;
+    border: solid 1px #198f4a !important;
+    box-shadow: 0px 0px 7px 1px rgba(9, 143, 65, 0.7) !important;
+}
+
+.pd-zero {
+    padding: -10px !important;
+    height: 50px !important;
+    margin-top: -10px !important;
+}
+.signature-zero {
+    margin-top: -6px !important;
+}
+@media only screen and (max-width: 768px) {
+    .signature-zero {
+        margin-top: -6px !important;
+    }
+}
