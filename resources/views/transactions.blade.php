@@ -123,15 +123,25 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="add_project_ocm">OCM</label>
-                                                        <input type="number" placeholder="%" class="form-control"
-                                                            id="add_project_ocm">
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control"
+                                                                id="add_project_ocm">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">%</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="add_project_contractProfit">Contract Profit</label>
-                                                        <input type="number" placeholder="%" class="form-control"
-                                                            id="add_project_contractProfit">
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control"
+                                                                id="add_project_contractProfit">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">%</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1371,6 +1381,12 @@
                                 );
                                 $("#add_project_mode_of_implementation").val(
                                     project.project_mode_of_implementation
+                                );
+                                $("#add_project_ocm").val(
+                                    project.ocm
+                                );
+                                $("#add_project_contractProfit").val(
+                                    project.contractors_profit
                                 );
                                 // Format existing values on page load
                                 $('.numberInput').each(function() {
@@ -2688,6 +2704,8 @@
                 let sourceOfFund = $("#add_project_source_of_fund").val();
                 let datePrepared = $("#add_project_date_prepared").val();
                 let modeOfImplementation = $("#add_project_mode_of_implementation").val();
+                let ocm = $("#add_project_ocm").val();
+                let cp = $("#add_project_contractProfit").val();
 
                 // Send Ajax request
                 $.ajax({
@@ -2704,6 +2722,8 @@
                         add_project_source_of_fund: sourceOfFund,
                         add_project_date_prepared: datePrepared,
                         add_project_mode_of_implementation: modeOfImplementation,
+                        add_project_ocm: ocm,
+                        add_project_cp: cp,
                         _token: "{{ csrf_token() }}",
                     },
                     success: function(response) {

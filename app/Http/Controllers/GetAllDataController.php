@@ -240,6 +240,8 @@ class GetAllDataController extends Controller
                     'project_appropriation' => floatval(str_replace(',', '', $requestData['add_project_appropriation'])),
                     'project_source_of_fund' => $requestData['add_project_source_of_fund'],
                     'project_mode_of_implementation' => $requestData['add_project_mode_of_implementation'],
+                    'ocm' => $requestData['add_project_ocm'],
+                    'contractors_profit' => $requestData['add_project_cp'],
                 ]
             );
 
