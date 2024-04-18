@@ -134,8 +134,8 @@
                     labor.rate,
                     labor.date_effective,
                     '<div class="text-center d-flex">' +
-                    `<button type="button" id="editButton" class="btn bg-gradient-success mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${labor.rate}')" ><i class="fas fa-edit"></i></button>` +
-                    `<button type="button" class="btn bg-gradient-danger btn-delete-labor" data-id="${labor.labor_id}"><i class="fas fa-trash-alt"></i></button>` +
+                    `<button type="button" id="editButton" class="btn bg-success mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${labor.rate}')" ><i class="fas fa-edit"></i></button>` +
+                    `<button type="button" class="btn bg-danger btn-delete-labor" data-id="${labor.labor_id}"><i class="fas fa-trash-alt"></i></button>` +
                     // ... (add your delete button logic here) +
                     '</div>'
                 ]).node();

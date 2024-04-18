@@ -10,12 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('signatures', function (Blueprint $table) {
-            $table->id('signature_id');
-            $table->string('fullname');
-            $table->string('degree')->nullable();
-            $table->string('position');
-            $table->string('role');
+        Schema::create('minimum_equipment', function (Blueprint $table) {
+            $table->id('minimum_equipment_id');
+            $table->string('min_equip_description');
+            $table->string('min_equip_owned');
+            $table->string('min_equip_lease');
+            $table->string('min_equip_totalUnits');
             $table->unsignedBigInteger('project_id');
             $table->foreign('project_id')->references('project_id')->on('projects')->onDelete('cascade');
             $table->timestamps();
@@ -27,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('signatures');
+        Schema::dropIfExists('minimum_equipment');
     }
 };

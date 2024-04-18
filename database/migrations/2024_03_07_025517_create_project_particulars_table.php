@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer('quantity')->nullable();
             $table->string('unit')->nullable();
             $table->decimal('unit_cost', 10, 5)->nullable();
-            $table->decimal('total', 10, 5)->nullable(); // Assuming a decimal type with precision 10 and scale 2
+            $table->decimal('total', 30, 5)->nullable(); // Assuming a decimal type with precision 10 and scale 2
             $table->timestamps();
 
             // Foreign key constraints

@@ -28,7 +28,7 @@
                         <input type="hidden" id="projectSelectedID">
                         <h1 id="projectSelectedTitle"></h1>
                     </div>
-                    <button class="btn btn-success" id="newProject">New Project</button>
+                    <div class="btn btn-success" id="newProject" onclick="newProject()">New Project</div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -49,8 +49,6 @@
                                 aria-expanded="false" aria-controls="addProject"><i class="fas fa-minus"></i></button>
                         </div>
                     </div>
-
-
                     <!-- /.card-tools -->
                 </div>
                 <!-- /.card-header -->
@@ -84,13 +82,13 @@
                                             <input type="text" class="form-control" id="add_project_contract_duration"
                                                 name="add_project_contract_duration" required>
                                         </div>
-                                    </div>
-                                    <div class="col-6">
                                         <div class="form-group margin-top">
                                             <label for="add_project_appropriation">Project Cost</label>
                                             <input type="text" class="form-control numberInput"
                                                 id="add_project_appropriation" name="add_project_appropriation" required>
                                         </div>
+                                    </div>
+                                    <div class="col-6">
                                         <div class="form-group margin-top">
                                             <label for="add_project_source_of_fund">Project Source Of Fund</label>
                                             <select type="text" class="form-control" id="add_project_source_of_fund"
@@ -120,6 +118,25 @@
                                                 <option value="By Contract">By Contract</option>
                                             </select>
                                         </div>
+                                        <div class="card">
+                                            <div class="row p-3">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="add_project_ocm">OCM</label>
+                                                        <input type="number" placeholder="%" class="form-control"
+                                                            id="add_project_ocm">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="add_project_contractProfit">Contract Profit</label>
+                                                        <input type="number" placeholder="%" class="form-control"
+                                                            id="add_project_contractProfit">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="modal-footer col-12">
                                             <button type="submit" class="btn btn-success col-12">Save Changes</button>
                                         </div>
@@ -130,12 +147,54 @@
                     </form>
                 </div>
             </div> <!-- ./ Project Card  --->
+            <!---- Signatures Section ---->
+            <div class="card" id="addNewSignature">
+                <div class="card-header header-hover" data-toggle="collapse" data-target="#addSignature"
+                    aria-expanded="false" aria-controls="addSignature">
+                    <div class="d-flex justify-content-between col-12">
+                        <h5 id="ProjectHeader">View Signature Detail</h5>
+                        <div class="card-tools">
+                            <!-- Collapse Button -->
+                            <button type="button" class="btn btn-tool" data-toggle="collapse"
+                                data-target="#addSignature" aria-expanded="false" aria-controls="addSignature"><i
+                                    class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <!-- /.card-tools -->
+                </div>
+                <!-- /.card-header -->
+                {{-- Project Card Start --}}
+                <div class="collapse" id="addSignature">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table class="table col-12" id="signatureTable">
+                                {{-- @include('modals.particular.add_particular_modal'); --}}
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Degree</th>
+                                        <th>Role</th>
+                                        <th>Position</th>
+                                        {{-- <th>Modified By</th> --}}
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- ./ Project Card  --->
             <!-- Your Blade view with JavaScript -->
 
             @include('modals.project_particular.add_projectPart_material')
             @include('modals.project_particular.add_projectPart_labor')
             @include('modals.project_particular.add_projectPart_equipment')
             @include('modals.project_particular.edit_projectPart_material')
+            @include('modals.project.add_projects_modal')
+            @include('modals.project_particular.edit_projectPart_labor')
+            @include('modals.project_particular.edit_projectPart_equipment')
 
             {{-- For testing purposess --}}
             <div class="container-fluid mt-3" id="dynamicContent">
@@ -146,7 +205,7 @@
             <!-- Set up the dropdown for adding Particular -->
             <div class="dropdown" id="addPartMenu">
                 <button class="btn btn-success dropdown-toggle" type="button" id="addParticularBtn"
-                    data-toggle="dropdown" aria-haspopup="true  " aria-expanded="false">
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Add Particular<span class="sr-only"></span>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="addParticularBtn">
@@ -156,13 +215,41 @@
         </div>
 
         <script>
+            $("#add_signature_role").select2({
+                theme: "bootstrap-5",
+                tags: true,
+                placeholder: "Select Role", // Optional placeholder text
+            });
+            $("#add_signature_position").select2({
+                theme: "bootstrap-5",
+                tags: true,
+                placeholder: "Select Position", // Optional placeholder text
+            });
+
+            function newProject() {
+                $("#addProjectModal").modal("show");
+            }
+
             const [year, quarter] = [(new Date()).getFullYear(), ["1st", "2nd", "3rd", "4th"][Math.floor(((new Date())
                 .getMonth() % 12) / 3)]];
             // console.log("Current Year:", year);
             // console.log("Current Quarter (String):", quarter);
 
+
+            loadTransaction();
             getProjects();
-            refreshTransaction();
+            refreshParticularTable();
+            cacheValues();
+
+            function cacheValues() {
+                var getAllData = localStorage.getItem("getAllData");
+                if (getAllData) {
+                    // If cached data exists, parse and use it
+                    const data = JSON.parse(getAllData);
+                    console.log(data);
+                }
+            }
+
 
 
             function formatNumber(number) {
@@ -177,94 +264,268 @@
             }
 
             function editDetail(detailType, materialPartID, material_id, materialName, materialUnit, materialCategoryName,
-                materialPrice, materialQuantity, particular_id1) {
+                materialPrice, materialQuantity, particular_id1, materialQuarter, materialYear, laborNoPerson) {
 
-                // Populate modal fields with the received data
-                $('#edit_particular_material_id').val(material_id);
-                $('#edit_particular_material').val(materialName);
-                $('#edit_particular_materialQuantity').val(materialQuantity);
-                $('#edit_particular_category').val(materialCategoryName);
-                $('#edit_particular_materialUnit').val(materialUnit);
-                $('#edit_particular_materialPrice').val(materialPrice);
-                console.log(detailType);
+                if (detailType === "material") {
+                    // Populate modal fields with the received data
+                    $('#edit_particular_material_id').val(material_id);
+                    $('#edit_particular_material').val(materialName);
+                    $('#edit_particular_materialQuantity').val(materialQuantity);
+                    $('#edit_particular_category').val(materialCategoryName);
+                    $('#edit_particular_materialUnit').val(materialUnit);
+                    $('#edit_particular_materialPrice').val(materialPrice);
+                    $('#edit_particular_materialQuarter').val(materialQuarter);
+                    $('#edit_particular_materialYear').val(materialYear);
+                    console.log(detailType);
 
-                calculateAmount();
+                    calculateAmount();
 
-                // Show the modal
-                $("#editParticularMaterialModal").modal("show");
+                    // Show the modal
+                    $("#editParticularMaterialModal").modal("show");
 
-                // Submit the Particular Material Modal Form
-                $("#editProjectPartMaterialForm").on("submit", function(event) {
-                    event.preventDefault();
-                    // Get form data
-                    var submitProjectID = localStorage.getItem("projectID");
-                    let projectId = submitProjectID;
-                    let particularId = particular_id1;
-                    let detail_type = 'Material';
-                    let materialId = $("#edit_particular_material_id").val();
-                    let materialQuantity = $(
-                        "#edit_particular_materialQuantity"
-                    ).val();
-
-
-                    // Disable the form to prevent multiple submissions
-                    $(this).find(":input").prop("disabled", true);
-
-                    // AJAX request
-                    $.ajax({
-                        url: "/submit-details",
-                        type: "POST",
-                        dataType: "json",
-                        data: {
-                            projectId: projectId,
-                            particularId: particularId,
-                            materialId: materialId,
-                            materialQuantity: materialQuantity,
-                            _token: "{{ csrf_token() }}",
-                            // Add more form data fields here if needed
-                        },
-                        success: function(response) {
-                            $("#editProjectPartMaterialForm")[0].reset();
-                            $("#editParticularMaterialModal").modal("hide");
-
-                            // Re-enable the form for future submissions
-                            $("#editProjectPartMaterialForm")
-                                .find(":input")
-                                .prop("disabled", false);
+                    // Submit the Particular Material Modal Form
+                    $("#editProjectPartMaterialForm").on("submit", function(event) {
+                        event.preventDefault();
+                        // Get form data
+                        var submitProjectID = localStorage.getItem("projectID");
+                        let projectId = submitProjectID;
+                        let particularId = particular_id1;
+                        let detail_type = 'Material';
+                        let materialId = $("#edit_particular_material_id").val();
+                        let materialQuantity = $(
+                            "#edit_particular_materialQuantity"
+                        ).val();
 
 
-                            refreshAllData(parseInt(particularId));
+                        // Disable the form to prevent multiple submissions
+                        $(this).find(":input").prop("disabled", true);
 
-                            // Unbind the submit event handler to prevent multiple submissions
-                            $("#editProjectPartMaterialForm").off("submit");
+                        // AJAX request
+                        $.ajax({
+                            url: "/submit-details",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                projectId: projectId,
+                                particularId: particularId,
+                                materialId: materialId,
+                                materialQuantity: materialQuantity,
+                                _token: "{{ csrf_token() }}",
+                                // Add more form data fields here if needed
+                            },
+                            success: function(response) {
+                                $("#editProjectPartMaterialForm")[0].reset();
+                                $("#editParticularMaterialModal").modal("hide");
 
-                            toastr.options.progressBar = true;
-                            toastr.success("Material Update Successfully!");
+                                // Re-enable the form for future submissions
+                                $("#editProjectPartMaterialForm")
+                                    .find(":input")
+                                    .prop("disabled", false);
 
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle error response from the server
-                            console.error(
-                                "Error submitting form data:",
-                                xhr.responseText
-                            );
 
-                            // Re-enable the form for future submissions
-                            $("#editProjectPartMaterialForm")
-                                .find(":input")
-                                .prop("disabled", false);
-                        },
+                                refreshAllData(parseInt(particularId));
+
+                                // Unbind the submit event handler to prevent multiple submissions
+                                $("#editProjectPartMaterialForm").off("submit");
+
+                                toastr.options.progressBar = true;
+                                toastr.success("Material Update Successfully!");
+
+                            },
+                            error: function(xhr, status, error) {
+                                // Handle error response from the server
+                                console.error(
+                                    "Error submitting form data:",
+                                    xhr.responseText
+                                );
+
+                                // Re-enable the form for future submissions
+                                $("#editProjectPartMaterialForm")
+                                    .find(":input")
+                                    .prop("disabled", false);
+                            },
+                        });
                     });
-                });
+                } else if (detailType === "labor") {
+                    $('#edit_particular_laborID').val(materialPartID);
+                    $('#edit_particular_laborName').val(materialCategoryName);
+                    $('#edit_particular_noOfPerson').val(materialName);
+                    $('#edit_particular_laborWorkDays').val(material_id);
+                    $('#edit_particular_laborRate').val(materialUnit);
+                    // calculateLaborAmount()
+                    $("#editPartLaborModal").modal("show");
+
+                    // Submit the Particular Labor Modal Form
+                    $("#editProjectPartLaborForm").on("submit", function(event) {
+                        event.preventDefault();
+                        // Get form data
+                        var submitProjectID = localStorage.getItem("projectID");
+                        let projectId = submitProjectID;
+                        let particularId = materialPrice;
+                        let detail_type = 'Labor';
+                        let laborId = $("#edit_particular_laborID").val();
+                        let noOfPerson = $(
+                            "#edit_particular_noOfPerson"
+                        ).val();
+                        let workDays = $(
+                            "#edit_particular_laborWorkDays"
+                        ).val();
+
+
+                        // Disable the form to prevent multiple submissions
+                        $(this).find(":input").prop("disabled", true);
+
+                        // AJAX request
+                        $.ajax({
+                            url: "/submit-details",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                projectId: projectId,
+                                particularId: particularId,
+                                laborId: laborId,
+                                noOfPerson: noOfPerson,
+                                workDays: workDays,
+                                _token: "{{ csrf_token() }}",
+                                // Add more form data fields here if needed
+                            },
+                            success: function(response) {
+                                $("#editProjectPartLaborForm")[0].reset();
+                                $("#editPartLaborModal").modal("hide");
+
+                                // Re-enable the form for future submissions
+                                $("#editProjectPartLaborForm")
+                                    .find(":input")
+                                    .prop("disabled", false);
+
+
+                                refreshAllData(parseInt(particularId));
+
+                                // Unbind the submit event handler to prevent multiple submissions
+                                $("#editProjectPartLaborForm").off("submit");
+
+                                toastr.options.progressBar = true;
+                                toastr.success("Labor Update Successfully!");
+
+                            },
+                            error: function(xhr, status, error) {
+                                // Handle error response from the server
+                                console.error(
+                                    "Error submitting form data:",
+                                    xhr.responseText
+                                );
+
+                                // Re-enable the form for future submissions
+                                $("#editProjectPartLaborForm")
+                                    .find(":input")
+                                    .prop("disabled", false);
+                            },
+                        });
+                    });
+                } else if (detailType === "equipment") {
+                    // detailType = detailType
+                    // materialPartID = laborPartID
+                    // material_id = equipmentID
+                    // materialName = equipmentName
+                    // materialUnit = equipmentCategory
+                    // materialCategoryName = equipmentModel
+                    // materialPrice = equipmentCapacity
+                    // materialQuantity = equipmentRate
+                    // particular_id1 = equipmentNoUnit
+                    // materialQuarter = equipmentWorkDays
+                    // materialYear = particular_id
+                    console.log(materialYear);
+                    $('#edit_particular_EquipmentID').val(material_id);
+                    $('#edit_particular_EquipmentName').val(materialName);
+                    $('#edit_particular_EquipmentCategory').val(materialUnit);
+                    $('#edit_particular_EquipmentModel').val(materialCategoryName);
+                    $('#edit_particular_EquipmentCapacity').val(materialPrice);
+                    $('#edit_particular_EquipmentRate').val(materialQuantity);
+                    $('#edit_particular_noOfUnit').val(particular_id1);
+                    $('#edit_particular_EquipmentWorkDays').val(materialQuarter);
+
+                    $("#editPartEquipmentModal").modal("show");
+
+                    // Submit the Particular Equipment Modal Form
+                    $("#editProjectPartEquipmentForm").on("submit", function(event) {
+                        event.preventDefault();
+                        // Get form data
+                        var submitProjectID = localStorage.getItem("projectID");
+                        let projectId = submitProjectID;
+                        let particularId = materialYear;
+                        let detail_type = 'Labor';
+                        let equipmentId = material_id;
+                        let noOfUnits = $(
+                            "#edit_particular_noOfUnit"
+                        ).val();
+                        let workDays = $(
+                            "#edit_particular_EquipmentWorkDays"
+                        ).val();
+
+
+                        // Disable the form to prevent multiple submissions
+                        $(this).find(":input").prop("disabled", true);
+
+                        // AJAX request
+                        $.ajax({
+                            url: "/submit-details",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                projectId: projectId,
+                                particularId: particularId,
+                                equipmentId: equipmentId,
+                                noOfUnit: noOfUnits,
+                                equipmentWorkDays: workDays,
+                                _token: "{{ csrf_token() }}",
+                                // Add more form data fields here if needed
+                            },
+                            success: function(response) {
+
+                                $("#editProjectPartEquipmentForm")[0].reset();
+                                $("#editPartEquipmentModal").modal("hide");
+
+                                // Re-enable the form for future submissions
+                                $("#editProjectPartEquipmentForm")
+                                    .find(":input")
+                                    .prop("disabled", false);
+
+
+                                refreshAllData(parseInt(particularId));
+
+                                // Unbind the submit event handler to prevent multiple submissions
+                                $("#editProjectPartEquipmentForm").off("submit");
+
+                                toastr.options.progressBar = true;
+                                toastr.success("Equipment Update Successfully!");
+
+                            },
+                            error: function(xhr, status, error) {
+                                // Handle error response from the server
+                                console.error(
+                                    "Error submitting form data:",
+                                    xhr.responseText
+                                );
+
+                                // Re-enable the form for future submissions
+                                $("#editProjectPartEquipmentForm")
+                                    .find(":input")
+                                    .prop("disabled", false);
+                            },
+                        });
+                    });
+                }
             }
 
-            function refreshTransaction() {
+            function loadTransaction() {
                 $.ajax({
                     url: "{{ route('getAllData.index') }}",
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
                         console.log(data);
+                        localStorage.setItem('getAllData', JSON.stringify(data));
+
                         const gridOptionsMaterial = {
                             columnDefs: [{
                                     field: "material_id",
@@ -357,6 +618,8 @@
                                         const materialCategoryName = params.data.material_category_name;
                                         const materialPrice = params.data.material_price;
                                         const materialQuantity = params.data.material_quantity;
+                                        const materialQuarter = params.data.material_quarter;
+                                        const materialYear = params.data.material_year;
                                         const particularId = params.data
                                             .particular_id; // Changed from materialPartID to particularId
 
@@ -367,8 +630,8 @@
                                             materialPartID + '\', \'' + materialId + '\', \'' +
                                             materialName + '\', \'' + materialUnit + '\', \'' +
                                             materialCategoryName + '\', \'' + materialPrice + '\', \'' +
-                                            materialQuantity + '\', \'' + particularId +
-                                            // Added particularId here
+                                            materialQuantity + '\', \'' + particularId + '\', \'' +
+                                            materialQuarter + '\', \'' + materialYear +
                                             '\')" class="btn btn-success btn-header mr-1"><i class="fas fa-edit"></i></button>' +
                                             '<button onclick="deleteDetail(\'' + detailType + '\', ' +
                                             materialPartID +
@@ -453,13 +716,18 @@
                                     field: "",
                                     headerName: "Actions",
                                     cellRenderer: function(params) {
-                                        const detailType = "Labor";
-                                        const particularID = params.data.project_particular_labor_id;
+                                        const detailType = "labor";
+                                        const laborPartID = params.data.labor_id;
+                                        const particularID = params.data.particular_id;
+                                        const laborNoPerson = params.data.labor_no_of_persons;
+                                        const workDays = params.data.labor_work_days;
+                                        const laborRate = params.data.labor_rate * 8;
+                                        const laborName = params.data.labor_name;
 
                                         // Construct the HTML string with the detailType and particularID
                                         const htmlString =
                                             `<div>
-                                                <button onclick="editDetail('${detailType}', ${particularID})" class="btn btn-success btn-header">
+                                                <button onclick="editDetail('${detailType}', ${laborPartID}, ${workDays}, ${laborNoPerson}, ${laborRate}, '${laborName}', ${particularID} )" class="btn btn-success btn-header">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <button onclick="deleteDetail('${detailType}', ${particularID})" class="btn btn-danger btn-header">
@@ -551,14 +819,28 @@
                                         const detailType = "equipment";
                                         const particularID =
                                             params.data.project_particular_equipment_id;
+                                        const particular_id = params.data.particular_id;
+                                        const equipmentID = params.data.equipment_id;
+                                        const equipmentName = params.data.equipment_name;
+                                        const equipmentCategory = params.data.equipment_category_name;
+                                        const equipmentModel = params.data.equipment_model;
+                                        const equipmentCapacity = params.data.equipment_capacity;
+                                        const equipmentRate = params.data.equipment_rate;
+                                        const equipmentNoUnit = params.data.equipment_no_of_units;
+                                        const equipmentWorkDays = params.data.equipment_work_days;
 
                                         // Construct the HTML string with the detailType and particularID
                                         const htmlString =
-                                            "<div><button onclick=\"deleteDetail('" +
-                                            detailType +
-                                            "', " +
-                                            particularID +
-                                            ')" class="btn btn-danger btn-header"><i class="fas fa-trash-alt"></i></button></div>';
+                                            `<div>
+                                                <button onclick="editDetail('${detailType}', ${particularID}, ${equipmentID}, '${equipmentName}', '${equipmentCategory}', '${equipmentModel}', ${equipmentCapacity}, ${equipmentRate}, ${equipmentNoUnit}, ${equipmentWorkDays}, ${particular_id})" class="btn btn-success btn-header">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button onclick="deleteDetail('${detailType}', ${particularID})" class="btn btn-danger btn-header">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+
+                                            </div>`;
+
 
                                         // Return the HTML string
                                         return htmlString;
@@ -603,43 +885,49 @@
                                 var cardBody = $('<div class="card-body">');
                                 var row = $('<div class="row">');
                                 // Create a form element with a single row
-                                // Create a form element with a single row
-                                var form = $('<form>').addClass('row p-3 form-top').append(
-                                    $('<div class="col-12">').append(
-                                        $('<div class="row">').append(
-                                            $('<div class="col-3">').append(
-                                                $('<h6>').text('Quantity: ').append(
-                                                    $('<span>').attr('id', 'quantity_' +
-                                                        particular.particular_id).text('')
-                                                )
-                                            ),
-                                            $('<div class="col-2">').append(
-                                                $('<h6>').text('Unit: ').append(
-                                                    $('<span>').attr('id', 'unit_' + particular
-                                                        .particular_id).text('')
-                                                )
-                                            ),
-                                            $('<div class="col-3">').append(
-                                                $('<h6>').text('Unit Cost: ').append(
-                                                    $('<span>').attr('id', 'unit_cost_' +
-                                                        particular.particular_id).text('')
-                                                )
-                                            ),
-                                            $('<div class="col-3">').append(
-                                                $('<h6>').text('Total: ').append(
-                                                    $('<span>').attr('id', 'total_' + particular
-                                                        .particular_id).text('')
-                                                )
-                                            ),
-                                            $('<div class="col-1">').append(
-                                                $('<div class="btn btn-success" id="particularDetail_' +
-                                                    particular.particular_id + '">details</div>'
+                                var form = $('<div class="pd-zero">').addClass('card ').append(
+                                    $('<div>').addClass('card-body row p-3 form-top').append(
+                                        $('<div>').addClass('col-12').append(
+                                            $('<div>').addClass('row').append(
+
+                                                $('<div>').addClass('col-3').append(
+                                                    $('<h6>').text('Quantity: ').append(
+                                                        $('<span>').attr('id', 'quantity_' +
+                                                            particular.particular_id).text('')
+                                                    )
+                                                ),
+                                                $('<div>').addClass('col-2').append(
+                                                    $('<h6>').text('Unit: ').append(
+                                                        $('<span>').attr('id', 'unit_' +
+                                                            particular.particular_id).text('')
+                                                    )
+                                                ),
+                                                $('<div>').addClass('col-3').append(
+                                                    $('<h6>').text('Unit Cost: ').append(
+                                                        $('<span>').attr('id', 'unit_cost_' +
+                                                            particular.particular_id).text('')
+                                                    )
+                                                ),
+                                                $('<div>').addClass('col-3').append(
+                                                    $('<h6>').text('Total: ').append(
+                                                        $('<span>').attr('id', 'total_' +
+                                                            particular.particular_id).text('')
+                                                    )
+                                                ),
+                                                $('<div class="signature-zero">').addClass(
+                                                    'col-1').append(
+                                                    $('<div>').addClass('btn btn-success').attr(
+                                                        'id', 'particularDetail_' + particular
+                                                        .particular_id
+                                                    ).append(
+                                                        $('<i>').addClass('fa fa-plus')
+                                                    )
                                                 )
                                             )
-
                                         )
                                     )
                                 );
+
 
 
                                 // Append the form to the mainCard
@@ -846,33 +1134,23 @@
                                     }
                                 });
 
-                                // const cardIds = ["materialCard_" + particular.particular_id,
-                                //     "laborCard_" + particular.particular_id,
-                                //     "equipmentCard_" + particular.particular_id,
-                                // ];
+                                if (rowDataMaterial.length > 0) {
+                                    console.log("Material Row Data:", rowDataMaterial);
+                                } else {
+                                    console.log("No Material Row Data");
+                                }
 
-                                // cardIds.forEach((id, index) => {
-                                //     const cardToCollapse = document.getElementById(id);
-                                //     if (!cardToCollapse) return; // Ensure the card exists
+                                if (rowDataLabor.length > 0) {
+                                    console.log("Labor Row Data:", rowDataLabor);
+                                } else {
+                                    console.log("No Labor Row Data");
+                                }
 
-                                //     if (index === 0 && rowDataMaterial.length ===
-                                //         0) { // For material card
-                                //         cardToCollapse.classList.add("collapsed-card");
-                                //         console.log("No Material Row Data");
-                                //     }
-                                //     if (index === 1 && rowDataLabor.length ===
-                                //         0) { // For labor card
-                                //         cardToCollapse.classList.add("collapsed-card");
-                                //         console.log("No Labor Row Data");
-                                //     }
-                                //     if (index === 2 && rowDataEquipment.length ===
-                                //         0) { // For equipment card
-                                //         cardToCollapse.classList.add("collapsed-card");
-                                //         console.log("No Equipment Row Data");
-                                //     }
-                                // });
-
-
+                                if (rowDataEquipment.length > 0) {
+                                    console.log("Equipment Row Data:", rowDataEquipment);
+                                } else {
+                                    console.log("No Equipment Row Data");
+                                }
 
                             });
                         });
@@ -897,7 +1175,7 @@
                 totalAmounts
             ) {
                 var card = $(
-                    '<div class="card" id="' +
+                    '<div class="card card-refresh" id="' +
                     detailType.toLowerCase() +
                     "Card_" +
                     particular_id +
@@ -982,7 +1260,7 @@
                 totalAmounts
             ) {
                 var card = $(
-                    '<div class="card cardNoBorder" id="' +
+                    '<div class="card" id="' +
                     detailType.toLowerCase() +
                     "Card_" +
                     particular_id +
@@ -1256,6 +1534,8 @@
                                         const materialCategoryName = params.data.material_category_name;
                                         const materialPrice = params.data.material_price;
                                         const materialQuantity = params.data.material_quantity;
+                                        const materialQuarter = params.data.material_quarter;
+                                        const materialYear = params.data.material_year;
                                         const particularId = params.data
                                             .particular_id; // Changed from materialPartID to particularId
 
@@ -1266,8 +1546,8 @@
                                             materialPartID + '\', \'' + materialId + '\', \'' +
                                             materialName + '\', \'' + materialUnit + '\', \'' +
                                             materialCategoryName + '\', \'' + materialPrice + '\', \'' +
-                                            materialQuantity + '\', \'' + particularId +
-                                            // Added particularId here
+                                            materialQuantity + '\', \'' + particularId + '\', \'' +
+                                            materialQuarter + '\', \'' + materialYear +
                                             '\')" class="btn btn-success btn-header mr-1"><i class="fas fa-edit"></i></button>' +
                                             '<button onclick="deleteDetail(\'' + detailType + '\', ' +
                                             materialPartID +
@@ -1353,20 +1633,30 @@
                                     headerName: "Actions",
                                     cellRenderer: function(params) {
                                         const detailType = "labor";
-                                        const particularID =
-                                            params.data.project_particular_labor_id;
+                                        const laborPartID = params.data.labor_id;
+                                        const particularID = params.data.particular_id;
+                                        const laborNoPerson = params.data.labor_no_of_persons;
+                                        const workDays = params.data.labor_work_days;
+                                        const laborRate = params.data.labor_rate * 8;
+                                        const laborName = params.data.labor_name;
+
 
                                         // Construct the HTML string with the detailType and particularID
                                         const htmlString =
-                                            "<div><button onclick=\"deleteDetail('" +
-                                            detailType +
-                                            "', " +
-                                            particularID +
-                                            ')" class="btn btn-danger btn-header"><i class="fas fa-trash-alt"></i></button></div>';
+                                            `<div>
+                                                <button onclick="editDetail('${detailType}', ${laborPartID}, ${workDays}, ${laborNoPerson}, ${laborRate}, '${laborName}', ${particularID} )" class="btn btn-success btn-header">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button onclick="deleteDetail('${detailType}', ${particularID})" class="btn btn-danger btn-header">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+
+                                            </div>`;
 
                                         // Return the HTML string
                                         return htmlString;
                                     },
+
 
                                     flex: 1,
                                 },
@@ -1446,14 +1736,28 @@
                                         const detailType = "equipment";
                                         const particularID =
                                             params.data.project_particular_equipment_id;
+                                        const particular_id = params.data.particular_id;
+                                        const equipmentID = params.data.equipment_id;
+                                        const equipmentName = params.data.equipment_name;
+                                        const equipmentCategory = params.data.equipment_category_name;
+                                        const equipmentModel = params.data.equipment_model;
+                                        const equipmentCapacity = params.data.equipment_capacity;
+                                        const equipmentRate = params.data.equipment_rate;
+                                        const equipmentNoUnit = params.data.equipment_no_of_units;
+                                        const equipmentWorkDays = params.data.equipment_work_days;
 
                                         // Construct the HTML string with the detailType and particularID
                                         const htmlString =
-                                            "<div><button onclick=\"deleteDetail('" +
-                                            detailType +
-                                            "', " +
-                                            particularID +
-                                            ')" class="btn btn-danger btn-header"><i class="fas fa-trash-alt"></i></button></div>';
+                                            `<div>
+                                                <button onclick="editDetail('${detailType}', ${particularID}, ${equipmentID}, '${equipmentName}', '${equipmentCategory}', '${equipmentModel}', ${equipmentCapacity}, ${equipmentRate}, ${equipmentNoUnit}, ${equipmentWorkDays}, ${particular_id})" class="btn btn-success btn-header">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button onclick="deleteDetail('${detailType}', ${particularID})" class="btn btn-danger btn-header">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+
+                                            </div>`;
+
 
                                         // Return the HTML string
                                         return htmlString;
@@ -1680,14 +1984,14 @@
                                 cardIds.forEach((id) => {
                                     const cardToCollapse = document.getElementById(id);
                                     if (cardToCollapse) {
-                                        cardToCollapse.classList.remove("collapsed-card");
+                                        cardToCollapse.classList.add("collapsed-card");
                                     }
                                 });
-
                             });
                         });
                     },
                 });
+                $(".card-refresh").removeClass("card");
             }
 
             function deleteDetail(detailType, partID) {
@@ -1743,7 +2047,7 @@
                         type: "GET",
                         dataType: "json",
                         success: function(response) {
-                            console.log(response);
+
                             // Extract materials from the Ajax response
                             var materials = response.materials;
                             // Get the select element and empty it
@@ -1899,7 +2203,7 @@
                                         $("#addProjectPartMaterialForm")
                                             .find(":input")
                                             .prop("disabled", false);
-                                        console.log(response);
+
 
                                         refreshAllData(particularId, detail_type);
 
@@ -1934,7 +2238,7 @@
                         type: "GET",
                         dataType: "json",
                         success: function(response) {
-                            console.log(response);
+
                             var labors = response.labors; // Extract labor data from the AJAX response
 
                             // Get the select element and empty it
@@ -2048,7 +2352,7 @@
                                     dataType: "json",
                                     data: data,
                                     success: function(response) {
-                                        console.log(response);
+
                                         $("#addProjectPartLaborForm")[0].reset();
                                         $("#addPartLaborModal").modal("hide");
                                         $("#addProjectPartLaborForm")
@@ -2084,7 +2388,7 @@
                         type: "GET",
                         dataType: "json",
                         success: function(response) {
-                            console.log(response);
+
                             var equipments = response.equipments; // Extract equipment data from the AJAX response
 
                             // Get the select element and empty it
@@ -2253,11 +2557,17 @@
                     // Handle other cases
                 }
             }
-            refreshParticularTable();
 
             // Function to convert integer to Roman numeral
             function intToRoman(num) {
                 const romanNumerals = [{
+                        value: 100,
+                        numeral: "C"
+                    },
+                    {
+                        value: 50,
+                        numeral: "L"
+                    }, {
                         value: 10,
                         numeral: "X"
                     },
@@ -2299,11 +2609,7 @@
                     dataType: "json",
                     success: function(data) {
                         console.log(data);
-                        // Get the selected project ID from localStorage
-                        var selectedProjectID = localStorage.getItem("projectID");
-
                         var dropdownMenu = $("#addPartMenu .dropdown-menu");
-
                         // Clear existing dropdown items
                         dropdownMenu.empty();
 
@@ -2313,7 +2619,7 @@
                                 // Sort the particulars for this project
                                 project.particulars_available.forEach(function(particular) {
                                     var dropdownItem = $(
-                                        '<a class="dropdown-item" href="#" data-particular-id="' +
+                                        '<a class="dropdown-item" href="" data-particular-id="' +
                                         particular.particular_id +
                                         '">' +
                                         particular.particular_name +

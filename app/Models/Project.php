@@ -17,10 +17,17 @@ class Project extends Model
         'project_appropriation',
         'project_source_of_fund',
         'project_mode_of_implementation',
+        'ocm',
+        'contractors_profit',
     ];
 
+    // Project model
     public function projectParticulars()
     {
-        return $this->hasMany(ProjectParticular::class);
+        return $this->hasMany(ProjectParticular::class, 'project_id', 'project_id');
+    }
+    public function signatures()
+    {
+        return $this->hasMany(Signature::class);
     }
 }

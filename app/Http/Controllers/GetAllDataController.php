@@ -46,6 +46,10 @@ class GetAllDataController extends Controller
             ppe.project_particular_equipment_id,
             e.equipment_id,
             e.equipment_name,
+            e.equipment_model,
+            e.equipment_capacity,
+            e.equipment_category_id,
+            ec.equipment_category_name,
             er.rate AS equipment_rate,
             ppe.work_days AS equipment_work_days,
             ppe.no_of_units AS equipment_no_of_units,
@@ -75,6 +79,8 @@ class GetAllDataController extends Controller
             project_particular_equipments ppe ON pp.project_particular_id = ppe.project_particular_id
         LEFT JOIN
             equipments e ON ppe.equipment_id = e.equipment_id
+        LEFT JOIN
+            equipment_categories ec ON e.equipment_category_id = ec.equipment_category_id
         LEFT JOIN
             equipment_rates er ON ppe.equipment_id = er.equipment_id AND er.is_active = 1
         LEFT JOIN
@@ -165,6 +171,9 @@ class GetAllDataController extends Controller
                             'project_particular_equipment_id' => $project->project_particular_equipment_id,
                             'equipment_id' => $project->equipment_id,
                             'equipment_name' => $project->equipment_name,
+                            'equipment_capacity' => $project->equipment_capacity,
+                            'equipment_category_name' => $project->equipment_category_name,
+                            'equipment_model' => $project->equipment_model,
                             'equipment_work_days' => $project->equipment_work_days,
                             'equipment_no_of_units' => $project->equipment_no_of_units,
                             'equipment_rate' => $project->equipment_rate,

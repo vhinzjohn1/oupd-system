@@ -18,4 +18,9 @@ class Signature extends Model
         'role',
     ];
 
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
 }
