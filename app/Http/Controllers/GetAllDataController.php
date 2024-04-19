@@ -28,6 +28,10 @@ class GetAllDataController extends Controller
             p.project_title,
             pm.project_particular_material_id,
             pp.project_particular_id,
+            pp.unit AS project_particular_unit,
+            pp.quantity AS project_particular_quantity,
+            pp.unit_cost AS project_particular_unit_cost,
+            pp.total AS project_particular_total,
             prt.particular_id,
             prt.particular_name,
             pm.quantity AS material_quantity,
@@ -96,6 +100,10 @@ class GetAllDataController extends Controller
             $particularName = $project->particular_name;
             $particularId = $project->particular_id;
             $projectParticularId = $project->project_particular_id;
+            $projectParticularUnit = $project->project_particular_unit;
+            $projectParticularUnitCost = $project->project_particular_unit_cost;
+            $projectParticularQuantity = $project->project_particular_quantity;
+            $projectParticularTotal = $project->project_particular_total;
 
             // Group data by project title
             if (!isset($formattedData[$title])) {
@@ -116,6 +124,10 @@ class GetAllDataController extends Controller
                 if (!isset($formattedData[$title]['particulars'][$particularName])) {
                     $formattedData[$title]['particulars'][$particularName] = [
                         'project_particular_id' => $projectParticularId,
+                        'project_particular_unit' => $projectParticularUnit,
+                        'project_particular_unitCost' => $projectParticularUnitCost,
+                        'project_particular_quantity' => $projectParticularQuantity,
+                        'project_particular_total' => $projectParticularTotal,
                         'particular_id' => $particularId,
                         'particular_name' => $particularName,
                         'details' => [
@@ -240,6 +252,8 @@ class GetAllDataController extends Controller
                     'project_appropriation' => floatval(str_replace(',', '', $requestData['add_project_appropriation'])),
                     'project_source_of_fund' => $requestData['add_project_source_of_fund'],
                     'project_mode_of_implementation' => $requestData['add_project_mode_of_implementation'],
+                    'ocm' => $requestData['add_project_ocm'],
+                    'contractors_profit' => $requestData['add_project_cp'],
                 ]
             );
 

@@ -100,7 +100,6 @@ class PDFController extends Controller
             $title = $project->project_title;
             $location = $project->project_location;
             $owner = $project->project_owner;
-
             $particularName = $project->particular_name;
             $particularId = $project->particular_id;
             $datePrepared = $project->project_date_prepared;

@@ -12,8 +12,9 @@ class ProjectParticular extends Model
     protected $fillable = [
         'project_id',
         'particular_id',
-        'description',
-        'remark',
+        'quantity',
+        'unit',
+        'unit_cost',
         'total',
     ];
 

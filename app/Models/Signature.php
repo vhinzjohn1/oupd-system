@@ -16,6 +16,8 @@ class Signature extends Model
         'degree',
         'position',
         'role',
+        'project_id',
+
     ];
 
     public function project()

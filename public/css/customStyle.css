@@ -18,6 +18,17 @@
         transform: translate(-15%, 0);
     }
 }
+
+/* Select2 Custom Styles */
+.custom-dropdown .select2-results__options {
+    max-height: 200px; /* Adjust as needed */
+    overflow-y: auto;
+}
+/* End Of Select2 Custom Style */
+
+.table-margin {
+    margin-top: -5px;
+}
 .table-responsive table {
     width: 100% !important;
     overflow-x: auto !important;
