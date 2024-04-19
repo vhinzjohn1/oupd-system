@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Signature;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SignatureController extends Controller
 {
@@ -12,23 +14,33 @@ class SignatureController extends Controller
      */
     public function index()
     {
-        //
+        $signature = Signature::all();
+        return $signature;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        try {
+
+            // Retrieve or create project
+            $signature = Signature::updateOrCreate(['fullname' => $request['fullName']], [
+                'degree' => $request['degree'],
+                'position' => $request['position'],
+                'role' => $request['role'],
+                'project_id' => $request['projectId'],
+            ]);
+
+
+            // Return success response
+            return response()->json($signature);
+        } catch (\Exception $e) {
+
+            // Log detailed error message
+            Log::error('Failed to add Signature: ' . $e->getMessage());
+
+            // Return error response
+            return response()->json(['success' => false, 'message' => 'Failed to add Signature. Please check the logs for details.']);
+        }
     }
 
     /**
@@ -39,27 +51,50 @@ class SignatureController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Signature $signature)
+    public function update(Request $request, $signature_id)
     {
-        //
-    }
+        try {
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Signature $signature)
-    {
-        //
+            // Retrieve or create project
+            $signature = Signature::updateOrCreate(['signature_id' => $signature_id], [
+                'degree' => $request['degree'],
+                'position' => $request['position'],
+                'role' => $request['role'],
+                'project_id' => $request['projectId'],
+            ]);
+            // Return success response with signature data and message
+            return response()->json([
+                'success' => true,
+                'message' => 'Signature Edited Successfully',
+                'signature' => $signature
+            ]);
+
+        } catch (\Exception $e) {
+
+            // Log detailed error message
+            Log::error('Failed to add Signature: ' . $e->getMessage());
+
+            // Return error response
+            return response()->json(['success' => false, 'message' => 'Failed to add Signature. Please check the logs for details.']);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Signature $signature)
+    public function destroy($signature_id)
     {
-        //
+        try {
+            // Find the Signature based on signature_id
+            $signature = Signature::findOrFail($signature_id);
+
+            // You can choose to delete the Signature if needed
+            $signature->delete();
+
+            return response()->json(['success' => true, 'message' => 'Signature details deleted successfully!']);
+        } catch (\Exception $e) {
+            Log::error('Failed to delete Signature details: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to delete Signature details. Check logs for details.']);
+        }
     }
 }

@@ -171,7 +171,6 @@ class MaterialController extends Controller
             Price::where('material_id', $material->material_id)->update(['material_id' => null]);
 
             // You can choose to delete the material if needed
-            // Comment if you only want to delete it in the table not in the database
             $material->delete();
 
             return response()->json(['success' => true, 'message' => 'Material details deleted successfully!']);

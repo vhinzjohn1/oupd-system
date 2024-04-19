@@ -60,30 +60,30 @@ class ProjectParticularController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'project_id' => 'required',
-            'particular_id' => 'required', // Remove array validation
-        ]);
 
         try {
-            // Start a database transaction
-            DB::beginTransaction();
 
-            // Find existing ProjectParticular record or create a new one
+            // Retrieve or create project
             $projectParticular = ProjectParticular::updateOrCreate(
                 [
-                    'project_id' => $validatedData['project_id'],
-                    'particular_id' => $validatedData['particular_id'],
+                    'project_id' => $request['project_id'],
+                    'particular_id' => $request['particular_id'],
                 ],
-                $request->all()
+                [
+                    'quantity' => $request['detailQuantity'],
+                    'unit' => $request['detailUnit'],
+                    'unit_cost' => $request['detailUnitCost'],
+                    'total' => $request['detailTotal'],
+                ]
             );
 
-            // Commit the transaction
-            DB::commit();
 
             // Return success response
-            return response()->json(['success' => true, 'message' => 'Project particular added/updated successfully.']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Project particular added/updated successfully.',
+                'projectParticular' => $projectParticular,
+            ]);
         } catch (\Exception $e) {
             // Rollback the transaction if an exception occurs
             DB::rollBack();
@@ -95,7 +95,6 @@ class ProjectParticularController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to add/update project particular. Please check the logs for details.']);
         }
     }
-
 
     // Function to Delete Project Particular
     public function destroy($projectParticularId)

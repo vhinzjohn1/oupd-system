@@ -4,6 +4,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MLEController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectParticularController;
+use App\Http\Controllers\SignatureController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MaterialCategory;
@@ -25,6 +26,7 @@ Auth::routes();
 
 // Route to Controller Material Labor Equipment Resource
 Route::resource('mle', MLEController::class);
+Route::resource('signatures', SignatureController::class);
 
 // Materials Routes and Controller
 Route::resource('materials', MaterialController::class);

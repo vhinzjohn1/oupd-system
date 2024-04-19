@@ -81,7 +81,6 @@ class PDFController extends Controller
             $title = $project->project_title;
             $location = $project->project_location;
             $owner = $project->project_owner;
-
             $particularName = $project->particular_name;
             $particularId = $project->particular_id;
 
@@ -92,6 +91,7 @@ class PDFController extends Controller
                     'project_title' => $title,
                     'project_location' => $location,
                     'project_owner' => $owner,
+                    'signature' => [],
                 ];
             }
 
