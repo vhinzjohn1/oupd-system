@@ -25,11 +25,11 @@
                                     name="add_projectPart_detailUnit" placeholder="cu.m / sq.m">
                             </div>
 
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="add_projectPart_detailUnitCost">Unit Cost</label>
                                 <input type="number" class="form-control" id="add_projectPart_detailUnitCost"
-                                    name="add_projectPart_detailUnitCost">
-                            </div>
+                                    name="add_projectPart_detailUnitCost" readonly>
+                            </div> --}}
                             <div class="form-group">
                                 <label for="add_projectPart_detailTotal">Total</label>
                                 <input type="text" class="form-control" id="add_projectPart_detailTotal"
@@ -48,3 +48,31 @@
     </div>
 </div>
 </div>
+
+<script>
+    // Wait for the DOM to be fully loaded
+    // document.addEventListener("DOMContentLoaded", function() {
+    //     // Select the quantity and total input elements
+    //     const quantityInput = document.getElementById("add_projectPart_detailQuantity");
+    //     const totalInput = document.getElementById("add_projectPart_detailTotal");
+    //     const unitCostInput = document.getElementById("add_projectPart_detailUnitCost");
+
+    //     // Add event listeners to quantity and total inputs
+    //     quantityInput.addEventListener("input", updateUnitCost);
+    //     totalInput.addEventListener("input", updateUnitCost);
+
+    //     // Function to update the unit cost based on quantity and total
+    //     function updateUnitCost() {
+    //         // Get the values of quantity and total inputs
+    //         const quantity = parseFloat(quantityInput.value);
+    //         const total = parseFloat(totalInput.value);
+
+    //         // Calculate the unit cost
+    //         const unitCost = (total !== 0 && !isNaN(quantity) && !isNaN(total)) ? (total / quantity).toFixed(
+    //             2) : "";
+
+    //         // Update the unit cost input value
+    //         unitCostInput.value = unitCost;
+    //     }
+    // });
+</script>

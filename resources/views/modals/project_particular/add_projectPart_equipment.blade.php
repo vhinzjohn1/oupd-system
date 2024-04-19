@@ -21,18 +21,19 @@
                                     <option value=""></option>
                                 </select>
                             </div>
+
                             <div class="form-group">
-                                <label for="add_particular_EquipmentCategory">Category</label>
-                                <input type="text" class="form-control" id="add_particular_EquipmentCategory"
-                                    name="add_particular_EquipmentCategory" required>
-                                </input>
+                                <label for="add_particular_noOfUnit">No of Units</label>
+                                <input type="number" class="form-control" id="add_particular_noOfUnit"
+                                    name="add_particular_noOfUnit" required>
                             </div>
+
                             <div class="form-group">
-                                <label for="add_particular_EquipmentModel">Model</label>
-                                <input type="text" class="form-control" id="add_particular_EquipmentModel"
-                                    name="add_particular_EquipmentModel" required>
-                                </input>
+                                <label for="add_particular_EquipmentWorkDays">Work Days</label>
+                                <input type="number" class="form-control" id="add_particular_EquipmentWorkDays"
+                                    name="add_particular_EquipmentWorkDays" required>
                             </div>
+
                             <div class="form-group">
                                 <label for="add_particular_EquipmentCapacity">Capacity</label>
                                 <input type="text" class="form-control" id="add_particular_EquipmentCapacity"
@@ -49,15 +50,16 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="add_particular_noOfUnit">No of Units</label>
-                                <input type="number" class="form-control" id="add_particular_noOfUnit"
-                                    name="add_particular_noOfUnit" required>
+                                <label for="add_particular_EquipmentCategory">Category</label>
+                                <input type="text" class="form-control" id="add_particular_EquipmentCategory"
+                                    name="add_particular_EquipmentCategory" required>
+                                </input>
                             </div>
-
                             <div class="form-group">
-                                <label for="add_particular_EquipmentWorkDays">Work Days</label>
-                                <input type="number" class="form-control" id="add_particular_EquipmentWorkDays"
-                                    name="add_particular_EquipmentWorkDays" required>
+                                <label for="add_particular_EquipmentModel">Model</label>
+                                <input type="text" class="form-control" id="add_particular_EquipmentModel"
+                                    name="add_particular_EquipmentModel" required>
+                                </input>
                             </div>
 
                             <div class="form-group">

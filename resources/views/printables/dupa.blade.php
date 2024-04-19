@@ -177,7 +177,7 @@
                                         '<th>UNIT COST</th>' +
                                         '<th>COST</th>' +
                                         '</tr>';
-                                    // Append materials to the table    
+                                    // Append materials to the table
                                     materials.forEach(function(material) {
                                         var amount = parseFloat(material
                                             .material_quantity) * parseFloat(
@@ -411,14 +411,20 @@
                                 var totalAmount = materialTotalAmount +
                                     laborTotalAmount + equipmentTotalAmount;
                                 directCostTotalAmount = totalAmount;
+                                var ocmTotalAmount = directCostTotalAmount * (project.ocm / 100);
+                                var cpTotalAmount = directCostTotalAmount * (project
+                                    .contractors_profit / 100);
+                                var indirectCostTotalAmount = ocmTotalAmount + cpTotalAmount;
+                                var vatTotalAmount = (directCostTotalAmount +
+                                    indirectCostTotalAmount) * (project.vat / 100);
+
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">D. ESTIMATED DIRECT COST (A+B+C)</th>' +
                                     '<th>' + numberWithCommas(directCostTotalAmount.toFixed(2)) +
-                                    //nakabold dapat 
+                                    //nakabold dapat
                                     '</th>' +
                                     '</tr>';
-                                console.log(indirectCostTotalAmount);
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">E. INDIRECT COST (MARK-UPS)</th>' +
@@ -426,8 +432,6 @@
                                         .toFixed(2)) + //nakabold dapat ni
                                     '</th>' +
                                     '</tr>';
-                                var totalAmount = directCostTotalAmount * (project.ocm / 100);
-                                ocmTotalAmount += totalAmount;
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-start"></td>' +
@@ -436,9 +440,7 @@
                                     '<td>' + numberWithCommas(ocmTotalAmount.toFixed(2)) +
                                     '</td>' +
                                     '</tr>';
-                                var totalAmount = directCostTotalAmount * (project
-                                    .contractors_profit / 100);
-                                cpTotalAmount += totalAmount;
+
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-start"></td>' +
@@ -447,12 +449,6 @@
                                     '<td>' + numberWithCommas(cpTotalAmount.toFixed(2)) +
                                     '</td>' +
                                     '</tr>';
-                                var totalAmount = ocmTotalAmount + cpTotalAmount;
-                                indirectCostTotalAmount += totalAmount;
-                                var vatTotalAmount = 0;
-                                var totalAmount = (directCostTotalAmount +
-                                    indirectCostTotalAmount) * (project.vat / 100);
-                                vatTotalAmount += totalAmount;
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">F. VAT (5% of EDC+OCM+CP)</th>' +
