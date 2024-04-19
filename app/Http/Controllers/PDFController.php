@@ -58,6 +58,7 @@ class PDFController extends Controller
             pp.unit,
             pp.unit_cost,
             pp.total,
+            pp.project_particular_id,
             s.fullname,
             s.degree,
             s.position,
@@ -120,6 +121,7 @@ class PDFController extends Controller
             $degree = $project->degree;
             $position = $project->position;
             $role = $project->role;
+            $projectParticularId = $project->project_particular_id;
 
             // Check if the role requires fetching additional data
             if (in_array($role, ['Prepared', 'Reviewed', 'Conformed', 'Recommending Approval', 'Checked', 'Submitted', 'Approved'])) {
@@ -171,6 +173,7 @@ class PDFController extends Controller
                 if (!isset($formattedData[$title]['particulars'][$particularName])) {
                     $formattedData[$title]['particulars'][$particularName] = [
                         'particular_id' => $particularId,
+                        'project_particular_id' => $projectParticularId,
                         'particular_name' => $particularName,
                         'quantity' => $quantity,
                         'unit' => $unit,
