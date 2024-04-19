@@ -19,6 +19,15 @@ class PDFController extends Controller
             p.project_title,
             p.project_location,
             p.project_owner,
+            p.project_date_prepared,
+            p.project_appropriation,
+            p.project_source_of_fund,
+            p.project_contract_duration,
+            p.project_mode_of_implementation,
+            p.project_description,
+            p.ocm,
+            p.contractors_profit,
+            p.vat,
             pm.project_particular_material_id,
             prt.particular_id,
             prt.particular_name,
@@ -44,7 +53,16 @@ class PDFController extends Controller
             l.labor_id,
             l.labor_name,
             lr.rate AS labor_rate,
-            l.location AS labor_location
+            l.location AS labor_location,
+            pp.quantity,
+            pp.unit,
+            pp.unit_cost,
+            pp.total,
+            pp.project_particular_id,
+            s.fullname,
+            s.degree,
+            s.position,
+            s.role
         FROM
             projects p
         LEFT JOIN
@@ -71,6 +89,8 @@ class PDFController extends Controller
             equipment_rates er ON ppe.equipment_id = er.equipment_id AND er.is_active = 1
         LEFT JOIN
             prices pr ON m.material_id = pr.material_id AND pr.is_active = 1
+        LEFT JOIN
+            signatures s ON p.project_id = s.project_id
     ");
 
         $formattedData = [];
@@ -83,6 +103,33 @@ class PDFController extends Controller
             $owner = $project->project_owner;
             $particularName = $project->particular_name;
             $particularId = $project->particular_id;
+            $datePrepared = $project->project_date_prepared;
+            $appropriation = $project->project_appropriation;
+            $sourceOfFund = $project->project_source_of_fund;
+            $contractDuration = $project->project_contract_duration;
+            $modeOfImplementation = $project->project_mode_of_implementation;
+            $description = $project->project_description;
+            $ocm = $project->ocm;
+            $contractors_profit = $project->contractors_profit;
+            $vat = $project->vat;
+            $quantity = $project->quantity;
+            $unit = $project->unit;
+            $unitCost = $project->unit_cost;
+            $total = $project->total;
+            // Extract data from the query result
+            $fullname = $project->fullname;
+            $degree = $project->degree;
+            $position = $project->position;
+            $role = $project->role;
+            $projectParticularId = $project->project_particular_id;
+
+            // Check if the role requires fetching additional data
+            if (in_array($role, ['Prepared', 'Reviewed', 'Conformed', 'Recommending Approval', 'Checked', 'Submitted', 'Approved'])) {
+                // Process and gather specific data for the role
+                $fullname = $project->fullname;
+                $degree = $project->degree;
+                $position = $project->position;
+            }
 
             // Group data by project title
             if (!isset($formattedData[$title])) {
@@ -91,9 +138,29 @@ class PDFController extends Controller
                     'project_title' => $title,
                     'project_location' => $location,
                     'project_owner' => $owner,
-                    'signature' => [],
+                    'project_date_prepared' => $datePrepared,
+                    'project_appropriation' => $appropriation,
+                    'project_source_of_fund' => $sourceOfFund,
+                    'project_contract_duration' => $contractDuration,
+                    'project_mode_of_implementation' => $modeOfImplementation,
+                    'project_description' => $description,
+                    'ocm' => $ocm,
+                    'contractors_profit' => $contractors_profit,
+                    'vat' => $vat,
+                    'signatures' => [
+                        'fullname' => [],
+                        'degree' => [],
+                        'position' => [],
+                        'role' => [],
+                    ],
                 ];
             }
+
+            // Add signature data to the project
+            $formattedData[$title]['signatures']['fullname'] = $fullname;
+            $formattedData[$title]['signatures']['degree'] = $degree;
+            $formattedData[$title]['signatures']['position'] = $position;
+            $formattedData[$title]['signatures']['role'] = $role;
 
             // If there are particulars associated with the project, add them
             if (!empty($particularName)) {
@@ -106,7 +173,15 @@ class PDFController extends Controller
                 if (!isset($formattedData[$title]['particulars'][$particularName])) {
                     $formattedData[$title]['particulars'][$particularName] = [
                         'particular_id' => $particularId,
+                        'project_particular_id' => $projectParticularId,
                         'particular_name' => $particularName,
+                        'quantity' => $quantity,
+                        'unit' => $unit,
+                        'unit_cost' => $unitCost,
+                        'total' => $total,
+                        'ocm' => $ocm,
+                        'contractors_profit' => $contractors_profit,
+                        'vat' => $vat,
                         'details' => [
                             'Materials' => [],
                             'Equipment' => [],
@@ -199,7 +274,7 @@ class PDFController extends Controller
         // Sort particulars alphabetically by particular_name
         foreach ($formattedData as &$project) {
             if (isset($project['particulars'])) {
-                $project['particulars'] = collect($project['particulars'])->sortBy('particular_name')->values()->all();
+                $project['particulars'] = collect($project['particulars'])->sortBy('project_particular_id')->values()->all();
             }
         }
 

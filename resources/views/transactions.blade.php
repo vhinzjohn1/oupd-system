@@ -248,6 +248,11 @@
         // console.log("Current Year:", year);
         // console.log("Current Quarter (String):", quarter);
 
+        function updateParticularTotal(projectPartID, projectPartTotal) {
+            console.log(projectPartID);
+            console.log(projectPartTotal);
+
+        }
 
         loadTransaction();
         getProjects();
@@ -467,7 +472,6 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    console.log('This is the signatures: ', data)
                     // Store fetched data in localStorage for future use
                     localStorage.setItem('signatureData', JSON.stringify(data));
                     // Display the fetched data
@@ -720,6 +724,8 @@
         }
 
 
+
+
         $("#addProjectParticularDetailForm").on("submit", function(event) {
             event.preventDefault();
             // Get form data
@@ -775,12 +781,21 @@
             });
         });
 
-        function particularDetail(particular_id, quantity, unit, unitCost, total) {
+        function editparticularDetail(particular_id, quantity, unit, unitCost, total) {
+
+            console.log(total);
+            // let newUnitCost = unitCost ? parseFloat(unitCost).toFixed(2) : '';
+            let newTotal = total ? parseFloat(total).toFixed(2) : '';
+            if (total !== "", total !== null, total !== 0) {
+                $("#add_projectPart_detailTotal").prop("readonly", true);
+            } else { // if total doesnt have value
+                $("#add_projectPart_detailTotal").prop("readonly", false);
+            }
             $("#add_projectPart_detailID").val(particular_id);
             $("#add_projectPart_detailQuantity").val(quantity);
             $("#add_projectPart_detailUnit").val(unit);
-            $("#add_projectPart_detailUnitCost").val(unitCost);
-            $("#add_projectPart_detailTotal").val(total);
+            // $("#add_projectPart_detailUnitCost").val(newUnitCost);
+            $("#add_projectPart_detailTotal").val(newTotal);
             $("#addProjectParticularDetailModal").modal("show");
         }
 
@@ -1152,68 +1167,6 @@
                             );
                             var cardBody = $('<div class="card-body">');
                             var row = $('<div class="row">');
-                            // Create a form element with a single row
-                            var form = $('<div class="pd-zero">').addClass('card ').append(
-                                $('<div>').addClass('card-body row p-3 form-top').append(
-                                    $('<div>').addClass('col-12').append(
-                                        $('<div>').addClass('row').append(
-                                            $('<div>').addClass('col-3').append(
-                                                $('<h6>').text('Quantity: ').append(
-                                                    $('<span>').attr('id', 'quantity_' +
-                                                        particular.particular_id).text(
-                                                        particular
-                                                        .project_particular_quantity)
-                                                )
-                                            ),
-                                            $('<div>').addClass('col-2').append(
-                                                $('<h6>').text('Unit: ').append(
-                                                    $('<span>').attr('id', 'unit_' +
-                                                        particular.particular_id).text(
-                                                        particular.project_particular_unit)
-                                                )
-                                            ),
-                                            $('<div>').addClass('col-3').append(
-                                                $('<h6>').text('Unit Cost: ').append(
-                                                    $('<span>').attr('id', 'unit_cost_' +
-                                                        particular.particular_id).text(
-                                                        particular
-                                                        .project_particular_unitCost)
-                                                )
-                                            ),
-                                            $('<div>').addClass('col-3').append(
-                                                $('<h6>').text('Total: ').append(
-                                                    $('<span>').attr('id', 'total_' +
-                                                        particular.particular_id).text(
-                                                        particular.project_particular_total)
-                                                )
-                                            ),
-                                            $('<div class="signature-zero">').addClass(
-                                                'col-1').append(
-                                                $('<div>').addClass('btn btn-success').attr(
-                                                    'id', 'particularDetail_' + particular
-                                                    .particular_id).append(
-                                                    $('<i>').addClass('fa fa-plus')
-                                                ).click(function() {
-                                                    particularDetail(particular
-                                                        .particular_id, particular
-                                                        .project_particular_quantity,
-                                                        particular
-                                                        .project_particular_unit,
-                                                        particular
-                                                        .project_particular_unitCost,
-                                                        particular
-                                                        .project_particular_total);
-                                                })
-                                            )
-
-
-                                        )
-                                    )
-                                )
-                            );
-                            // Append the form to the mainCard
-                            mainCard.append(form);
-
                             // Append main card to the dynamic content container
                             $("#projectParticularContent").append(mainCard);
 
@@ -1234,14 +1187,15 @@
                                 '<button type="button" class="btn btn-danger" data-project-particular-id="' +
                                 particular.project_particular_id +
                                 '"><i class="fas fa-trash-alt"></i></button>');
-                            dangerButton.click(function(event) {
-                                event.stopPropagation();
-                                var projectParticularId = $(this).data(
-                                    'project-particular-id');
+                            dangerButton.click(
+                                function(event) {
+                                    event.stopPropagation();
+                                    var projectParticularId = $(this).data(
+                                        'project-particular-id');
 
-                                // Call deleteParticular function with projectParticularId
-                                deleteParticular(projectParticularId);
-                            });
+                                    // Call deleteParticular function with projectParticularId
+                                    deleteParticular(projectParticularId);
+                                });
 
                             // Append elements to the header
                             headerContent.append(
@@ -1266,12 +1220,14 @@
 
                             // Calculate total amount for material
                             let totalMaterialAmount = 0;
-                            rowDataMaterial.forEach(function(material) {
+                            rowDataMaterial.forEach(function(
+                                material) {
                                 totalMaterialAmount +=
                                     material.material_quantity *
                                     parseFloat(material.material_price);
                             });
-                            // Format totalMaterialAmount
+
+                            // format totalMaterialAmount
                             totalMaterialAmount = totalMaterialAmount
                                 .toFixed(2)
                                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -1292,7 +1248,8 @@
 
                             // Calculate total amount for equipment
                             let totalEquipmentAmount = 0;
-                            rowDataEquipment.forEach(function(equipment) {
+                            rowDataEquipment.forEach(function(
+                                equipment) {
                                 totalEquipmentAmount +=
                                     equipment.equipment_rate *
                                     equipment.equipment_work_days *
@@ -1303,6 +1260,86 @@
                                 .toFixed(2)
                                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
+
+
+                            const projectPartID = particular.project_particular_id;
+
+                            // Remove commas from the values and parse them as floats
+                            const parseAndSum = (value) => parseFloat(value.replace(/,/g, ''));
+                            const totalProjPart = parseAndSum(totalMaterialAmount) +
+                                parseAndSum(totalLaborAmount) +
+                                parseAndSum(totalEquipmentAmount);
+
+
+
+
+                            var form = $('<div class="pd-zero pd-3" id="projectPartDetail_' +
+                                    particular.particular_id + '">')
+                                .addClass('card')
+                                .append(
+                                    $('<div>').addClass('card-body form-top').append(
+                                        $('<div>').addClass('col-12').append(
+                                            $('<div>').addClass('row').append(
+                                                $('<div>').addClass('col-4').append(
+                                                    $('<h6>').text('Quantity: ').append(
+                                                        $('<span>').attr('id', 'quantity_' +
+                                                            particular.particular_id).text(
+                                                            particular
+                                                            .project_particular_quantity)
+                                                    )
+                                                ),
+                                                $('<div>').addClass('col-3').append(
+                                                    $('<h6>').text('Unit: ').append(
+                                                        $('<span>').attr('id', 'unit_' +
+                                                            particular.particular_id).text(
+                                                            particular.project_particular_unit)
+                                                    )
+                                                ),
+                                                // $('<div>').addClass('col-3').append(
+                                                //     $('<h6>').text('Unit Cost: ').append(
+                                                //         $('<span>').attr('id', 'unit_cost_' +
+                                                //             particular.particular_id).text(
+                                                //             particular
+                                                //             .project_particular_unitCost ?
+                                                //             parseFloat(particular
+                                                //                 .project_particular_unitCost)
+                                                //             .toFixed(2) : ''
+                                                //         )
+                                                //     )
+                                                // ),
+
+                                                $('<div>').addClass('col-4').append(
+                                                    $('<h6>').text('Total Amount: ').append(
+                                                        $('<span>').attr('id', 'total_' +
+                                                            particular.particular_id).text(
+                                                            totalProjPart ?
+                                                            parseFloat(totalProjPart)
+                                                            .toFixed(2) : ''
+                                                        )
+                                                    )
+                                                ),
+
+                                                $('<div class="signature-zero">').addClass(
+                                                    'col-1').append(
+                                                    $('<div>').addClass('btn btn-success').attr(
+                                                        'id', 'particularDetail_' + particular
+                                                        .particular_id).append(
+                                                        $('<i>').addClass('fa fa-plus')
+                                                    ).click(function() {
+                                                        editparticularDetail(particular
+                                                            .particular_id, particular
+                                                            .project_particular_quantity,
+                                                            particular
+                                                            .project_particular_unit,
+                                                            particular
+                                                            .project_particular_unitCost,
+                                                            totalProjPart);
+                                                    })
+                                                )
+                                            )
+                                        )
+                                    )
+                                );
                             // Set up the cards for Material, Labor, and Equipment
                             var materialCard = createDetailCard(
                                 "Material",
@@ -1330,10 +1367,10 @@
                             col11.append(materialCard, laborCard, equipmentCard);
 
                             // Append col1 and col11 to the row
-                            row.append(col11);
+                            row.append(form, col11);
 
                             // Append row to the card body
-                            cardBody.append(form, row);
+                            cardBody.append(row);
 
                             // Append card body to the collapse container
                             cardCollapse.append(cardBody);
@@ -1414,33 +1451,38 @@
                             //     }
                             // });
 
-                            // if (rowDataMaterial.length > 0) {
-                            //     console.log("Material Row Data:", rowDataMaterial);
+                            // console.log('============= Checking Values ==================')
+                            // if (rowDataMaterial.length === 0 && rowDataLabor.length === 0 &&
+                            //     rowDataEquipment.length === 0) {
+                            //     console.log("No Row Data");
                             // } else {
-                            //     console.log("No Material Row Data");
+                            //     if (rowDataMaterial.length > 0) {
+                            //         console.log("Material Has Data");
+                            //     } else {
+                            //         console.log("No Material Row Data");
+                            //     }
+
+                            //     if (rowDataLabor.length > 0) {
+                            //         console.log("Labor Has Data")
+                            //     } else {
+                            //         console.log("No Labor Row Data");
+                            //     }
+
+                            //     if (rowDataEquipment.length > 0) {
+                            //         console.log("Equipment Has Data");
+                            //     } else {
+                            //         console.log("No Equipment Row Data");
+                            //     }
                             // }
 
-                            // if (rowDataLabor.length > 0) {
-                            //     console.log("Labor Row Data:", rowDataLabor);
-                            // } else {
-                            //     console.log("No Labor Row Data");
-                            // }
 
-                            // if (rowDataEquipment.length > 0) {
-                            //     console.log("Equipment Row Data:", rowDataEquipment);
-                            // } else {
-                            //     console.log("No Equipment Row Data");
-                            // }
+                            // console.log(
+                            //     '============== End Checking of Values ==================')
 
                         });
                     });
                 },
             });
-        }
-
-        // Define the refreshMaterials function globally
-        function refreshMaterials(materialGridAPI, rowDataMaterial) {
-            materialGridAPI.setGridOption("rowData", rowDataMaterial);
         }
 
         // Define totalAmountColumn in a scope accessible outside of the function
@@ -1597,7 +1639,7 @@
             );
 
             // Set the headerName dynamically based on the rowData
-            var headerName = "Total " + detailType + " Amount: " + totalAmounts; // Access the correct index
+            var headerName = "Total " + detailType + " Amount: " + totalAmounts;
 
             // Create the footer card
             var footerCard = $('<div class="card totalFooter">');
@@ -2071,18 +2113,91 @@
                     $("#laborCard_" + particularId).empty();
                     $("#equipmentCard_" + particularId).empty();
 
+
+                    console.log("This is the Refresh ParticularID: ", particularId);
+
                     // Iterate through each filtered project item
                     sortedProjects.forEach(function(project) {
                         // Iterate through each particular item
                         project.particulars.forEach(function(particular) {
+                            var form = $('<div>').addClass('card-body form-top').append(
+                                $('<div>').addClass('col-12').append(
+                                    $('<div>').addClass('row').append(
+                                        $('<div>').addClass('col-4').append(
+                                            $('<h6>').text('Quantity: ').append(
+                                                $('<span>').attr('id', 'quantity_' +
+                                                    particular.particular_id).text(
+                                                    particular
+                                                    .project_particular_quantity)
+                                            )
+                                        ),
+                                        $('<div>').addClass('col-3').append(
+                                            $('<h6>').text('Unit: ').append(
+                                                $('<span>').attr('id', 'unit_' +
+                                                    particular.particular_id).text(
+                                                    particular.project_particular_unit)
+                                            )
+                                        ),
+                                        // $('<div>').addClass('col-3').append(
+                                        //     $('<h6>').text('Unit Cost: ').append(
+                                        //         $('<span>').attr('id', 'unit_cost_' +
+                                        //             particular.particular_id).text(
+                                        //             particular
+                                        //             .project_particular_unitCost ?
+                                        //             parseFloat(particular
+                                        //                 .project_particular_unitCost)
+                                        //             .toFixed(2) : ''
+                                        //         )
+                                        //     )
+                                        // ),
+
+                                        $('<div>').addClass('col-4').append(
+                                            $('<h6>').text('Total Amount: ').append(
+                                                $('<span>').attr('id', 'total_' +
+                                                    particular.particular_id).text(
+                                                    particular
+                                                    .project_particular_total ?
+                                                    parseFloat(particular
+                                                        .project_particular_total)
+                                                    .toFixed(2) : ''
+                                                )
+                                            )
+                                        ),
+
+                                        $('<div class="signature-zero">').addClass(
+                                            'col-1').append(
+                                            $('<div>').addClass('btn btn-success').attr(
+                                                'id', 'particularDetail_' + particular
+                                                .particular_id).append(
+                                                $('<i>').addClass('fa fa-plus')
+                                            ).click(function() {
+                                                editparticularDetail(particular
+                                                    .particular_id, particular
+                                                    .project_particular_quantity,
+                                                    particular
+                                                    .project_particular_unit,
+                                                    particular
+                                                    .project_particular_unitCost,
+                                                    particular
+                                                    .project_particular_total);
+                                            })
+                                        )
+                                    )
+                                )
+                            );
+                            $("#projectPartDetail_" + particular.particular_id).empty();
+
+                            // Re-append the form variable
+                            $("#projectPartDetail_" + particular.particular_id).append(form);
                             $('#quantity_' + particular.particular_id).text(particular
                                 .project_particular_quantity)
                             $('#unit_' + particular.particular_id).text(particular
                                 .project_particular_unit)
-                            $('#unit_cost_' + particular.particular_id).text(particular
-                                .project_particular_unitCost)
-                            $('#total_' + particular.particular_id).text(particular
-                                .project_particular_total)
+                            $('#unit_cost_' + particular.particular_id).text(parseFloat(
+                                particular.project_particular_unitCost).toFixed(2));
+                            $('#total_' + particular.particular_id).text(parseFloat(particular
+                                .project_particular_total).toFixed(2));
+
                             // Check if particular_id is particulardID and it's Material data
                             if (
                                 particular.particular_id === particularId &&
@@ -2099,6 +2214,11 @@
                                     totalMaterialAmount +=
                                         material.material_quantity *
                                         parseFloat(material.material_price);
+
+                                    const particularId = "TotalMaterialPartID_" +
+                                        material
+                                        .project_particular_id;
+                                    console.log(particularId);
                                 });
                                 // Format totalMaterialAmount
                                 totalMaterialAmount = totalMaterialAmount
@@ -2547,6 +2667,7 @@
 
         function addDetailBtn(particular_id, detailType) {
             localStorage.setItem("particularId", particular_id);
+            console.log(particular_id);
             // Check the detailType
             if (detailType === "Material") {
                 // Populate the Modal Particular Name
@@ -2555,7 +2676,6 @@
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
-
                         // Extract materials from the Ajax response
                         var materials = response.materials;
                         // Get the select element and empty it
@@ -2861,7 +2981,6 @@
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
-                    console.log('This is the getParticular Data: ', data);
                     var dropdownMenu = $("#addPartMenu .dropdown-menu");
                     // Clear existing dropdown items
                     dropdownMenu.empty();

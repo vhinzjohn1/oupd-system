@@ -125,7 +125,14 @@
                         var project = response.projects.find(p => p.project_id === projectId);
                         if (project) {
                             var directCostTotalAmount = 0;
-                            project.particulars.forEach(function(particular, index) {
+                            var indirectCostTotalAmount = 0;
+                            var materialTotalAmount = 0;
+                            var laborTotalAmount = 0;
+                            var equipmentTotalAmount = 0;
+                            var cpTotalAmount = 0;
+                            var ocmTotalAmount = 0;
+                            var indirectCostTotalAmount = 0;
+                            project.particulars.forEach(function(particular, index, project_particular) {
                                 var materials = particular.details.Materials || [];
                                 var equipment = particular.details.Equipment || [];
                                 var labor = particular.details.Labor || [];
@@ -151,9 +158,10 @@
                                     //nakabold dapat ni
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
-                                    '<td>' + +'</td>' +
+                                    '<td>' + particular.quantity + '</td>' +
+                                    '<td>' + particular.unit + '</td>' +
+                                    '<td>' + numberWithCommas(parseFloat(
+                                        particular.unit_cost).toFixed(2)) + '</td>' +
                                     '</tr>';
                                 // Create materials table
                                 if (materials.length > 0) {
@@ -169,7 +177,7 @@
                                         '<th>UNIT COST</th>' +
                                         '<th>COST</th>' +
                                         '</tr>';
-                                    // Append materials to the table    
+                                    // Append materials to the table
                                     materials.forEach(function(material) {
                                         var amount = parseFloat(material
                                             .material_quantity) * parseFloat(
@@ -249,12 +257,10 @@
                                         '</tr>';
                                     // Append equipment to the table
                                     equipment.forEach(function(equip) {
-                                        var newRate = equip.equipment_rate *
-                                            8; // Convert rate to per day
                                         var amount = equip
                                             .equipment_work_days * equip
                                             .equipment_no_of_units *
-                                            newRate;
+                                            equip.equipment_rate;
                                         equipmentTotalAmount += amount;
                                         divHTML += '<tr>' +
                                             '<td>' + equip.equipment_name + '</td>' +
@@ -262,7 +268,8 @@
                                             '</td>' +
                                             '<td>' + equip.equipment_work_days +
                                             '</td>' +
-                                            '<td>' + numberWithCommas(newRate.toFixed(
+                                            '<td>' + numberWithCommas(parseFloat(equip
+                                                .equipment_rate).toFixed(
                                                 2)) +
                                             '</td>' +
                                             '<td>' + numberWithCommas(amount.toFixed(
@@ -404,71 +411,69 @@
                                 var totalAmount = materialTotalAmount +
                                     laborTotalAmount + equipmentTotalAmount;
                                 directCostTotalAmount = totalAmount;
+                                var ocmTotalAmount = directCostTotalAmount * (project.ocm / 100);
+                                var cpTotalAmount = directCostTotalAmount * (project
+                                    .contractors_profit / 100);
+                                var indirectCostTotalAmount = ocmTotalAmount + cpTotalAmount;
+                                var vatTotalAmount = (directCostTotalAmount +
+                                    indirectCostTotalAmount) * (project.vat / 100);
+
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">D. ESTIMATED DIRECT COST (A+B+C)</th>' +
-                                    '<th>' + numberWithCommas(directCostTotalAmount
-                                        .toFixed(2)) + //nakabold dapat ni
+                                    '<th>' + numberWithCommas(directCostTotalAmount.toFixed(2)) +
+                                    //nakabold dapat
                                     '</th>' +
-                                    '</tr>' +
-                                    //         var indirectCostTotalAmount = 0;
-                                    // var totalAmount = OCM + CP;
-                                    // indirectCostTotalAmount += totalAmount;
-                                    // divHTML +=
+                                    '</tr>';
+                                divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">E. INDIRECT COST (MARK-UPS)</th>' +
-                                    '<th>' + + //nakabold dapat ni
+                                    '<th>' + numberWithCommas(indirectCostTotalAmount
+                                        .toFixed(2)) + //nakabold dapat ni
                                     '</th>' +
-                                    '</tr>' +
-                                    //     var ocmTotalAmount = 0;
-                                    // var totalAmount = directCostTotalAmount * 15%;
-                                    // ocmTotalAmount += totalAmount;
-                                    // divHTML +=
+                                    '</tr>';
+                                divHTML +=
                                     '<tr>' +
                                     '<td class="text-start"></td>' +
                                     '<td colspan="2" class="text-start">1. OVERHEAD, CONTINGENCY & MISCELLANEOUS (15% of ODC)</td>' +
                                     '<td class="text-start">15%</td>' +
-                                    '<td>' + +
+                                    '<td>' + numberWithCommas(ocmTotalAmount.toFixed(2)) +
                                     '</td>' +
-                                    '</tr>' +
-                                    //     var cpTotalAmount = 0;
-                                    // var totalAmount = directCostTotalAmount * 10%;
-                                    // cpTotalAmount += totalAmount;
-                                    // divHTML +=
+                                    '</tr>';
+
+                                divHTML +=
                                     '<tr>' +
                                     '<td class="text-start"></td>' +
                                     '<td colspan="2" class="text-start">2. CONTRACTORS PROFIT (10% of EDC)</td>' +
                                     '<td class="text-start">10%</td>' +
-                                    '<td>' + +
+                                    '<td>' + numberWithCommas(cpTotalAmount.toFixed(2)) +
                                     '</td>' +
-                                    '</tr>' +
-                                    //     var vatTotalAmount = 0;
-                                    // var totalAmount = (directCostTotalAmount +
-                                    //     indirectCostTotalAmount) * 5%;
-                                    // vatTotalAmount += totalAmount;
-                                    // divHTML +=
+                                    '</tr>';
+                                divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">F. VAT (5% of EDC+OCM+CP)</th>' +
-                                    '<th>' + + //nakabold dapat ni
+                                    '<th>' + numberWithCommas(vatTotalAmount.toFixed(2)) +
+                                    //nakabold dapat ni
                                     '</th>' +
-                                    '</tr>' +
-                                    //         var itemCostTotalAmount = 0;
-                                    // var totalAmount = directCostTotalAmount +
-                                    //     indirectCostTotalAmount + vatTotalAmount;
-                                    // itemCostTotalAmount += totalAmount;
-                                    // divHTML +=
+                                    '</tr>';
+                                var itemCostTotalAmount = 0;
+                                var itemCostTotalAmount = directCostTotalAmount +
+                                    indirectCostTotalAmount + vatTotalAmount;
+                                divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">G. TOTAL COST ITEM (D+E+F)</th>' +
-                                    '<th>' + + //nakabold dapat ni
+                                    '<th>' + numberWithCommas(itemCostTotalAmount.toFixed(2)) +
+                                    //nakabold dapat ni
                                     '</th>' +
-                                    '</tr>' +
-                                    //     var unitCostTotalAmount = 0;
-                                    // var totalAmount = itemCostTotalAmount / quantity;
-                                    // unitCostTotalAmount += totalAmount;
-                                    // divHTML +=
+                                    '</tr>';
+                                var unitCostTotalAmount = 0;
+                                var totalAmount = itemCostTotalAmount / particular.quantity;
+                                unitCostTotalAmount = totalAmount;
+                                divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">H. UNIT COST (TOTAL COST OF ITEM/QUANTITY)</th>' +
-                                    '<th>' + + //nakabold dapat ni
+                                    '<th>' + numberWithCommas(unitCostTotalAmount.toFixed(2)) +
+                                    //nakabold dapat ni
                                     '</th>' +
                                     '</tr>' +
                                     '</tbody>' +
@@ -513,7 +518,12 @@
                                     _, text) {
                                     return text.toUpperCase();
                                 });
+
                             });
+                            // Store total amounts in localStorage
+                            localStorage.setItem('materialTotalAmount', materialTotalAmount.toFixed(2));
+                            localStorage.setItem('equipmentTotalAmount', equipmentTotalAmount.toFixed(2));
+                            localStorage.setItem('laborTotalAmount', laborTotalAmount.toFixed(2));
                         }
                     },
                     error: function(xhr, status, error) {
