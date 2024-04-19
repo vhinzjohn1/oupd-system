@@ -54,7 +54,11 @@ class PDFController extends Controller
             pp.quantity,
             pp.unit,
             pp.unit_cost,
-            pp.total
+            pp.total,
+            s.fullname,
+            s.degree,
+            s.position,
+            s.role
         FROM
             projects p
         LEFT JOIN
@@ -81,6 +85,8 @@ class PDFController extends Controller
             equipment_rates er ON ppe.equipment_id = er.equipment_id AND er.is_active = 1
         LEFT JOIN
             prices pr ON m.material_id = pr.material_id AND pr.is_active = 1
+        LEFT JOIN
+            signatures s ON p.project_id = s.project_id
     ");
 
         $formattedData = [];
@@ -104,6 +110,19 @@ class PDFController extends Controller
             $unit = $project->unit;
             $unitCost = $project->unit_cost;
             $total = $project->total;
+            // Extract data from the query result
+            $fullname = $project->fullname;
+            $degree = $project->degree;
+            $position = $project->position;
+            $role = $project->role;
+
+            // Check if the role requires fetching additional data
+            if (in_array($role, ['Prepared', 'Reviewed', 'Conformed', 'Recommending Approval', 'Checked', 'Submitted', 'Approved'])) {
+                // Process and gather specific data for the role
+                $fullname = $project->fullname;
+                $degree = $project->degree;
+                $position = $project->position;
+            }
 
             // Group data by project title
             if (!isset($formattedData[$title])) {
@@ -118,8 +137,20 @@ class PDFController extends Controller
                     'project_contract_duration' => $contractDuration,
                     'project_mode_of_implementation' => $modeOfImplementation,
                     'project_description' => $description,
+                    'signatures' => [
+                        'fullname' => [],
+                        'degree' => [],
+                        'position' => [],
+                        'role' => [],
+                    ],
                 ];
             }
+
+            // Add signature data to the project
+            $formattedData[$title]['signatures']['fullname'] = $fullname;
+            $formattedData[$title]['signatures']['degree'] = $degree;
+            $formattedData[$title]['signatures']['position'] = $position;
+            $formattedData[$title]['signatures']['role'] = $role;
 
             // If there are particulars associated with the project, add them
             if (!empty($particularName)) {
@@ -229,7 +260,7 @@ class PDFController extends Controller
         // Sort particulars alphabetically by particular_name
         foreach ($formattedData as &$project) {
             if (isset($project['particulars'])) {
-                $project['particulars'] = collect($project['particulars'])->sortBy('particular_name')->values()->all();
+                $project['particulars'] = collect($project['particulars'])->sortBy('date_created')->values()->all();
             }
         }
 

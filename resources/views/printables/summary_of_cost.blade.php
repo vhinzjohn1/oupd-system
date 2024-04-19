@@ -99,8 +99,13 @@
             <div class="row justify-content-center" id="particularsContainer"> <!-- Center horizontally -->
                 <!-- Particular tables will be appended here -->
             </div>
+            {{-- <!-- Signatures Section -->
+            <div class="container mt-4" id="signaturesContainer">
+                <!-- Signatures will be dynamically added here -->
+            </div> --}}
         </div>
 
+        <!-- this is for the signatures -->
         <div class="container">
             <div class="container">
                 <div class="row mt-4 align-items-center">
@@ -108,9 +113,9 @@
                         <div class="">
                             <div class="">
                                 <div class="text-center" style="white-space: nowrap;">
-                                    Re-evaluated by: <br><br>
-                                    <u><b>FRITZ MILDRED N. PUABEN</b> </u> <br>
-                                    Draftsman I, OUPD
+                                    Evaluated by: <br><br>
+                                    <u><b><span id="approvedName"></span>, <span id="preparedDegree"></span></b></u> <br>
+                                    <span id="preparedPosition"></span>
                                 </div> <br>
                                 <div class="text-center" style="white-space: nowrap;">
                                     Reviewed by: <br><br>
@@ -150,6 +155,13 @@
                 </div>
             </div>
         </div>
+        <div class="approvedName"></div>
+        <div class="preparedDegree"></div>
+        <div class="preparedPosition"></div>
+
+        <div class="reviewedName"></div>
+        <div class="reviewedDegree"></div>
+        <div class="reviewedPosition"></div>
         <script>
             // Add an event listener to the button
             document.getElementById('printView').addEventListener('click', function() {
@@ -169,6 +181,9 @@
                         $('#projectTitle').text(response.projects[0].project_title);
                         $('#projectLocation').text(response.projects[0].project_location);
                         $('#projectOwner').text(response.projects[0].project_owner);
+
+                        // Call renderSignatures function to update signature elements
+                        renderSignatures(response.projects[0].signatures);
 
                         // Filter project by project_id
                         var projectId = 1; // Change this value to the desired project_id
@@ -222,7 +237,7 @@
                                         materialTotalAmount.toFixed(2)) + '</td>' +
                                     '<td class="text-center">' + numberWithCommas(
                                         equipmentTotalAmount.toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' +  + '</td>' +
+                                    '<td class="text-center">' + +'</td>' +
                                     '<td class="text-center">' + numberWithCommas(laborTotalAmount
                                         .toFixed(
                                             2)) + '</td>' +
@@ -339,8 +354,26 @@
                                 '</tr>' + // Total cost Item
                                 '</table>' +
                                 '</div>';
+                            // // Populate Signatures
+                            // var signaturesHTML = '';
+                            // response.signatures.forEach(function(signature) {
+                            //     signaturesHTML +=
+                            //         '<div class="col d-inline-block me-1">' +
+                            //         '<div class="">' +
+                            //         '<div class="">' +
+                            //         '<div class="text-center" style="white-space: nowrap;">' +
+                            //         signature.position + ': <br><br>' +
+                            //         '<u><b>' + signature.fullname + '</b></u> <br>' +
+                            //         signature.role +
+                            //         '</div><br>' +
+                            //         '</div>' +
+                            //         '</div>' +
+                            //         '</div>';
+                            // });
                             // Append the complete table to the container
                             $('#particularsContainer').html(divHTML);
+                            // // Append signatures HTML to the container
+                            // $('#signaturesContainer').html(signaturesHTML);
                         } else {
                             console.error('Project with ID ' + projectId + ' not found in the response.');
                         }
@@ -350,6 +383,48 @@
                     }
                 });
             });
+
+            function renderSignatures(signatures) {
+                console.log('Rendering signatures:', signatures);
+                for (var role in signatures) {
+                    if (signatures.hasOwnProperty(role)) {
+                        updateSignature(signatures, role, role.toLowerCase()); // Pass role as prefix
+                    }
+                }
+            }
+
+            function updateSignature(signatures, role, prefix) {
+                console.log('Updating signature for role:', role);
+                console.log('Signature details:', signatures[role]);
+
+                // Check if the signature for the role exists
+                if (signatures.hasOwnProperty(role)) {
+                    // Update HTML elements with signature details
+                    console.log('Prefix:', prefix);
+                    console.log('Fullname:', signatures[role].fullname);
+                    console.log('Degree:', signatures[role].degree);
+                    console.log('Position:', signatures[role].position);
+                    // Retrieve signature details
+                    var fullname = signatures[role].fullname || '';
+                    var degree = signatures[role].degree || '';
+                    var position = signatures[role].position || '';
+
+                    // Construct element IDs using the provided prefix
+                    var nameElementId = prefix + 'Name';
+                    var degreeElementId = prefix + 'Degree';
+                    var positionElementId = prefix + 'Position';
+
+                    // Update HTML elements with signature details
+                    $('#' + nameElementId).text(fullname);
+                    $('#' + degreeElementId).text(degree);
+                    $('#' + positionElementId).text(position);
+                } else {
+                    console.log('Signature not found for role:', role);
+                    // Optionally handle this case, e.g., display a default message or hide elements
+                }
+            }
+
+
 
             // Function to add commas to thousands
             function numberWithCommas(x) {

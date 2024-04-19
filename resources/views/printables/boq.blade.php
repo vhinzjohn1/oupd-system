@@ -162,6 +162,9 @@
                         var project = response.projects.find(p => p.project_id === projectId);
 
                         if (project) {
+                            var totalAmount = 0;
+                            var percent = 0;
+                            var percentTotal = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -250,16 +253,19 @@
                                 '</tr>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                var amount = parseFloat(particular.particular_quantity) *
-                                    parseFloat(particular.particular_unit_cost);
-
+                                var amount = parseFloat(particular.quantity) *
+                                    parseFloat(particular.unit_cost);
+                                    totalAmount += amount;
+                                    // all total / project item total * 100
+                                    percent = totalAmount;
+                                    percentTotal += percent;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + +
+                                    '<td class="text-center">' + percent +
                                     '</td>' +
                                     '<td class="text-center">' + particular.quantity +
                                     '</td>' +
@@ -278,7 +284,7 @@
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-right"><strong>Total</strong></td>' +
-                                '<td class="text-center">' + +'</td>' +
+                                '<td class="text-center">' + percentTotal +'</td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center">' + "-" +'</td>' +
