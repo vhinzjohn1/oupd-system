@@ -2024,7 +2024,7 @@
                                 // Show success toast with delay
                                 toastr.options.progressBar = true;
                                 setTimeout(function() {
-                                    toastr.success("Material Deleted Successfully!");
+                                    toastr.success("Deleted Successfully!");
                                 }, 1000);
 
                                 // Handle success response

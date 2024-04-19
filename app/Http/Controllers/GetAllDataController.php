@@ -214,7 +214,7 @@ class GetAllDataController extends Controller
         // Sort particulars alphabetically by particular_name
         foreach ($formattedData as &$project) {
             if (isset($project['particulars'])) {
-                $project['particulars'] = collect($project['particulars'])->sortBy('date_created')->values()->all();
+                $project['particulars'] = collect($project['particulars'])->sortBy('project_particular_id')->values()->all();
             }
         }
 

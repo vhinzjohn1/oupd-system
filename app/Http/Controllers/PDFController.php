@@ -25,6 +25,9 @@ class PDFController extends Controller
             p.project_contract_duration,
             p.project_mode_of_implementation,
             p.project_description,
+            p.ocm,
+            p.contractors_profit,
+            p.vat,
             pm.project_particular_material_id,
             prt.particular_id,
             prt.particular_name,
@@ -106,6 +109,9 @@ class PDFController extends Controller
             $contractDuration = $project->project_contract_duration;
             $modeOfImplementation = $project->project_mode_of_implementation;
             $description = $project->project_description;
+            $ocm = $project->ocm;
+            $contractors_profit = $project->contractors_profit;
+            $vat = $project->vat;
             $quantity = $project->quantity;
             $unit = $project->unit;
             $unitCost = $project->unit_cost;
@@ -137,6 +143,9 @@ class PDFController extends Controller
                     'project_contract_duration' => $contractDuration,
                     'project_mode_of_implementation' => $modeOfImplementation,
                     'project_description' => $description,
+                    'ocm' => $ocm,
+                    'contractors_profit' => $contractors_profit,
+                    'vat' => $vat,
                     'signatures' => [
                         'fullname' => [],
                         'degree' => [],
@@ -168,6 +177,9 @@ class PDFController extends Controller
                         'unit' => $unit,
                         'unit_cost' => $unitCost,
                         'total' => $total,
+                        'ocm' => $ocm,
+                        'contractors_profit' => $contractors_profit,
+                        'vat' => $vat,
                         'details' => [
                             'Materials' => [],
                             'Equipment' => [],
@@ -260,7 +272,7 @@ class PDFController extends Controller
         // Sort particulars alphabetically by particular_name
         foreach ($formattedData as &$project) {
             if (isset($project['particulars'])) {
-                $project['particulars'] = collect($project['particulars'])->sortBy('date_created')->values()->all();
+                $project['particulars'] = collect($project['particulars'])->sortBy('project_particular_id')->values()->all();
             }
         }
 
