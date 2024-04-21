@@ -198,9 +198,11 @@
                         $('#projectImplementation').text(response.projects[0]
                             .project_mode_of_implementation);
 
-                        // Filter project by project_id
-                        var projectId = 1; // Change this value to the desired project_id
-                        var project = response.projects.find(p => p.project_id === projectId);
+                        // Get the selected project ID from localStorage
+                        var selectedProjectID = localStorage.getItem("projectID");
+
+                        // Filter particulars by the selected project_id
+                        var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
                             var totalAmount = 0;
@@ -241,9 +243,11 @@
                                     '<td>' + particular.particular_name + '</td>' +
                                     '<td class="text-center">' + particular.unit +
                                     '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(parseFloat(particular.quantity)) +
+                                    '<td class="text-right">' + numberWithCommas(parseFloat(
+                                        particular.quantity)) +
                                     '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(amount.toFixed(2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(amount.toFixed(
+                                        2)) + '</td>' +
                                     '<td class="text-right">' + numberWithCommas(parseFloat(
                                         particular.unit_cost).toFixed(2)) +
                                     '</td>' +

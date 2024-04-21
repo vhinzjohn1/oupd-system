@@ -216,12 +216,18 @@
                         $('#projectLocation').text(response.projects[0].project_location);
                         $('#projectDuration').text(response.projects[0].project_contract_duration);
 
-                        // Filter project by project_id
-                        var projectId = 1; // Change this value to the desired project_id
-                        var project = response.projects.find(p => p.project_id === projectId);
+                        // Get the selected project ID from localStorage
+                        var selectedProjectID = localStorage.getItem("projectID");
+
+                        // Filter particulars by the selected project_id
+                        var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
                             var totalAmount = 0;
+                            var totalIndirCost = 0;
+                            var totalVat = 0;
+                            var totMarkUpVal = 0;
+                            var totalDirCost = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -281,10 +287,28 @@
                                 '</tr>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                var amount = parseFloat(particular.quantity) *
-                                    parseFloat(particular.unit_cost);
-                                totalAmount += amount;
+                                // Retrieve stored values from localStorage
+                                var dirCostTotAmount = parseFloat(localStorage.getItem(
+                                    'directCostTotalAmount')) || 0;
+                                var vatTotAmount = parseFloat(localStorage.getItem(
+                                    'vatTotalAmount')) || 0;
+                                console.log(dirCostTotAmount);
                                 markUpTotal = project.ocm + project.contractors_profit;
+                                markUpValue = (markUpTotal / 100) * dirCostTotAmount;
+                                indirCostTotal = markUpValue + vatTotAmount;
+                                totalCost = dirCostTotAmount + indirCostTotal;
+                                unitCost = totalCost / particular.quantity;
+                                totalAmount += totalCost;
+                                totalDirCost += dirCostTotAmount;
+                                totMarkUpVal += markUpValue;
+                                totalVat += vatTotAmount;
+                                totalIndirCost += indirCostTotal;
+                                // Store total amounts in localStorage
+                                localStorage.setItem('totalCost',
+                                    totalCost);
+                                localStorage.setItem('totalAmount',
+                                    totalAmount);
+                                console.log('total amount:', totalCost);
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
@@ -294,18 +318,25 @@
                                     '<td class="text-right">' + numberWithCommas(parseFloat(
                                         particular.quantity).toFixed(2)) + '</td>' +
                                     '<td>' + particular.unit + '</td>' +
+                                    '<td class="text-right">' + dirCostTotAmount + '</td>' +
+                                    '<td class="text-center">' + project.ocm +
+                                    '</td>' +
+                                    '<td class="text-center">' + project.contractors_profit + '</td>' +
                                     '<td class="text-right">' + +'</td>' +
-                                    '<td class="text-center">' + (project.ocm).toFixed(2) +'</td>' +
-                                    '<td class="text-center">' + (project.contractors_profit).toFixed(2) +'</td>' +
-                                    '<td class="text-right">' + +'</td>' +
-                                    '<td class="text-center">' + markUpTotal.toFixed(2) +'</td>' +
-                                    '<td class="text-right">' + +'</td>' +
-                                    '<td class="text-right">' + +'</td>' +
-                                    '<td class="text-right">' + +'</td>' +
-                                    '<td class="text-right">' + numberWithCommas(amount.toFixed(
+                                    '<td class="text-center">' + markUpTotal.toFixed(2) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(markUpValue
+                                        .toFixed(
+                                            2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(vatTotAmount
+                                        .toFixed(
+                                            2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(indirCostTotal
+                                        .toFixed(
+                                            2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(totalCost.toFixed(
                                         2)) + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(parseFloat(
-                                        particular.unit_cost).toFixed(2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(unitCost.toFixed(
+                                        2)) + '</td>' +
                                     '</tr>';
                             });
                             // Close the table and container
@@ -318,14 +349,18 @@
                                 '<td class="text-center"><strong>Total</strong></td>' +
                                 '<td></td>' +
                                 '<td></td>' +
-                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-right">' + numberWithCommas(totalDirCost.toFixed(2)) +
+                                '</td>' +
                                 '<td></td>' +
                                 '<td></td>' +
                                 '<td class="text-right">' + +'</td>' +
                                 '<td></td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-right">' + numberWithCommas(totMarkUpVal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-right">' + numberWithCommas(totalVat.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-right">' + numberWithCommas(totalIndirCost.toFixed(2)) +
+                                '</td>' +
                                 '<td class="text-right">' + numberWithCommas(totalAmount.toFixed(2)) +
                                 '</td>' +
                                 '<td></td>' +
@@ -380,13 +415,13 @@
                         return capitalizeWord(tens[Math.floor(num / 10)]) + ' ' + capitalizeWord(ones[num % 10]);
                     } else {
                         return capitalizeWord(ones[Math.floor(num / 100)]) + ' Hundred ' + convertLessThanOneThousand(num %
-                        100);
+                            100);
                     }
                 }
 
                 // Main function logic
                 if (number === 0) {
-                    return 'Zero Dollars';
+                    return 'Zero';
                 }
 
                 // Separate the integer and decimal parts of the number

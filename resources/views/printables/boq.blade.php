@@ -74,7 +74,7 @@
             </div> --}}
 
         <div class="container" id="projectDetails">
-            <div class="container text-center"> <br><br>    
+            <div class="container text-center"> <br><br>
             </div>
         </div>
 
@@ -157,14 +157,16 @@
                         $('#projectLocation').text(response.projects[0].project_location);
                         $('#projectOwner').text(response.projects[0].project_owner);
 
-                        // Filter project by project_id
-                        var projectId = 1; // Change this value to the desired project_id
-                        var project = response.projects.find(p => p.project_id === projectId);
+                        // Get the selected project ID from localStorage
+                        var selectedProjectID = localStorage.getItem("projectID");
+
+                        // Filter particulars by the selected project_id
+                        var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
                             var totalAmount = 0;
                             var percent = 0;
-                            var percentTotal = 0;
+                            var totalPercent = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -176,7 +178,7 @@
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
                                 '<tr>' +
-                                '<th colspan="7" class="text-center">Republic  of the Phillipines <br>CENTRAL MINDANAO UNIVERSITY<br> University Town, Musuan, Bukidnon<br><h3>INDIVIDUAL PROJECT PROGRAM OF WORK</h3><br><p class="text-right"><u>date</u><br>date</p></th>' +
+                                '<th colspan="7" class="text-center">Republic  of the Phillipines <br>CENTRAL MINDANAO UNIVERSITY<br> University Town, Musuan, Bukidnon<br><h3>INDIVIDUAL PROJECT PROGRAM OF WORK</h3><br><p class="text-right"><u>04/22/2024</u><br>date</p></th>' +
                                 '</tr>' +
                                 '<tr>' +
                                 '<th colspan="4" class="text-center">NAME OF THE PROJECT/LOCATION:</th>' +
@@ -184,7 +186,8 @@
                                 '<th class="text-center">' + project.project_appropriation + '</th>' +
                                 '</tr>' +
                                 '<tr>' +
-                                '<th rowspan="3" colspan="4" class="text-center">' + project.project_title + '</th>' +
+                                '<th rowspan="3" colspan="4" class="text-center">' + project.project_title +
+                                '</th>' +
                                 '<th colspan="2" class="text-center">Source of Funds</th>' +
                                 '<th class="text-center">' + project.project_source_of_fund + '</th>' +
                                 '</tr>' +
@@ -208,13 +211,15 @@
                                 '</tr>' +
                                 '<tr>' +
                                 '<th colspan="2" class="text-center">Mode of Implementation</th>' +
-                                '<th class="text-center">' + project.project_mode_of_implementation + '</th>' +
+                                '<th class="text-center">' + project.project_mode_of_implementation +
+                                '</th>' +
                                 '</tr>' +
                                 '<tr>' +
                                 '<th colspan="7" class="text-center">PROJECT DESCRIPTION:</th>' +
                                 '</tr>' +
                                 '<tr>' +
-                                '<th colspan="7" class="text-center">' + project.project_description + '</th>' +
+                                '<th colspan="7" class="text-center">' + project.project_description +
+                                '</th>' +
                                 '</tr>' +
                                 '<tr>' +
                                 '<th colspan="2" class="text-center">TECHNICAL PERSONNEL REQUIRED</th>' +
@@ -253,13 +258,15 @@
                                 '</tr>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                var amount = parseFloat(particular.quantity) *
-                                    parseFloat(particular.unit_cost);
-                                    totalAmount += amount;
-                                    // all total / project item total * 100
-                                    percent = totalAmount;
-                                    percentTotal += percent;
-                                // Add row for the particular
+                                // Retrieve stored values from localStorage
+                                var totCost = parseFloat(localStorage.getItem(
+                                    'totalCost')) || 0;
+                                var totAmount = parseFloat(localStorage.getItem(
+                                    'totalAmount')) || 0;
+                                console.log(totCost);
+                                console.log(totAmount);
+                                percent = (totCost / totAmount) * 100;
+                                totalPercent += percent;
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
@@ -273,8 +280,7 @@
                                     '</td>' +
                                     '<td class="text-center">' + +
                                     '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(amount.toFixed(
-                                        2)) + '</td>' +
+                                    '<td class="text-center">' + +'</td>' +
                                     '</tr>';
                             });
                             // Close the table and container
@@ -284,10 +290,10 @@
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-right"><strong>Total</strong></td>' +
-                                '<td class="text-center">' + percentTotal +'</td>' +
+                                '<td class="text-center">' + totalPercent + '</td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
-                                '<td class="text-center">' + "-" +'</td>' +
+                                '<td class="text-center">' + "-" + '</td>' +
                                 '<td class="text-center"></td>' +
                                 '</tr>' +
                                 '</tfoot>' +

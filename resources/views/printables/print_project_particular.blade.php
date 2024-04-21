@@ -100,9 +100,12 @@
                         $('#projectLocation').text(response.projects[0].project_location);
                         $('#projectOwner').text(response.projects[0].project_owner);
 
-                        // Filter particulars by project_id
-                        var projectId = 1; // Change this value to the desired project_id
-                        var project = response.projects.find(p => p.project_id === projectId);
+                        // Get the selected project ID from localStorage
+                        var selectedProjectID = localStorage.getItem("projectID");
+
+                        // Filter particulars by the selected project_id
+                        var project = response.projects.find(p => p.project_id == selectedProjectID);
+
                         if (project) {
                             project.particulars.forEach(function(particular, index) {
                                 var materials = particular.details.Materials;

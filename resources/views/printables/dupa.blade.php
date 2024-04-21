@@ -115,15 +115,17 @@
                     dataType: 'json',
                     success: function(response) {
                         console.log(response);
-                        console.log('This is material:', matTotal);
                         // Populate project details
                         $('#projectTitle').text(response.projects[0].project_title);
                         $('#projectLocation').text(response.projects[0].project_location);
                         $('#projectOwner').text(response.projects[0].project_owner);
 
-                        // Filter particulars by project_id
-                        var projectId = 1; // Change this value to the desired project_id
-                        var project = response.projects.find(p => p.project_id === projectId);
+                        // Get the selected project ID from localStorage
+                        var selectedProjectID = localStorage.getItem("projectID");
+
+                        // Filter particulars by the selected project_id
+                        var project = response.projects.find(p => p.project_id == selectedProjectID);
+
                         if (project) {
                             var directCostTotalAmount = 0;
                             var indirectCostTotalAmount = 0;
@@ -473,13 +475,20 @@
                                 var totalAmount = materialTotalAmount +
                                     laborTotalAmount + equipmentTotalAmount;
                                 directCostTotalAmount = totalAmount;
+                                // Store total amounts in localStorage
+                                localStorage.setItem('directCostTotalAmount',
+                                    directCostTotalAmount);
+                                console.log(directCostTotalAmount);
                                 var ocmTotalAmount = directCostTotalAmount * (project.ocm / 100);
                                 var cpTotalAmount = directCostTotalAmount * (project
                                     .contractors_profit / 100);
                                 var indirectCostTotalAmount = ocmTotalAmount + cpTotalAmount;
+                                console.log(indirectCostTotalAmount);
                                 var vatTotalAmount = (directCostTotalAmount +
                                     indirectCostTotalAmount) * (project.vat / 100);
-
+                                // Store total amounts in localStorage
+                                localStorage.setItem('vatTotalAmount',
+                                    vatTotalAmount);
 
                                 divHTML +=
                                     '<tr>' +
@@ -536,10 +545,6 @@
                                     //nakabold dapat ni
                                     '</th>' +
                                     '</tr>';
-                                // Retrieve stored values and populate the table AFTER calculations
-                                let storedMaterialTotal = localStorage.getItem(
-                                    'materialTotalAmount');
-                                console.log(storedMaterialTotal);
                                 var unitCostTotalAmount = 0;
                                 var totalAmount = itemCostTotalAmount / particular.quantity;
                                 unitCostTotalAmount = totalAmount;
@@ -603,8 +608,6 @@
                     }
                 });
             });
-
-            var matTotal = localStorage.getItem("matTotalAmount");
 
             // Function to add commas to thousands
             function numberWithCommas(x) {

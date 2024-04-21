@@ -113,9 +113,9 @@
                         <div class="">
                             <div class="">
                                 <div class="text-center" style="white-space: nowrap;">
-                                    Evaluated by: <br><br>
-                                    <u><b><span id="fullname"></span>, <span id="preparedDegree"></span></b></u> <br>
-                                    <span id="preparedPosition"></span>
+                                    Prepared by: <br><br>
+                                    <u><b>FRITZ MILDRED N. PUABEN</b> </u> <br>
+                                    Draftsman I, OUPD
                                 </div> <br>
                                 <div class="text-center" style="white-space: nowrap;">
                                     Reviewed by: <br><br>
@@ -177,6 +177,7 @@
                     dataType: 'json',
                     success: function(response) {
                         console.log(response);
+
                         // Populate project details
                         $('#projectTitle').text(response.projects[0].project_title);
                         $('#projectLocation').text(response.projects[0].project_location);
@@ -186,34 +187,24 @@
                         // // Call renderSignatures function to update signature elements
                         // renderSignatures(response.projects[0].signatures);
 
-                        // Filter project by project_id
-                        var projectId = 1; // Change this value to the desired project_id
-                        var project = response.projects.find(p => p.project_id === projectId);
+                        // Get the selected project ID from localStorage
+                        var selectedProjectID = localStorage.getItem("projectID");
+
+                        // Filter particulars by the selected project_id
+                        var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             };
-                            // Retrieve stored values from localStorage
-                            let matTotalAmount = localStorage.getItem(
-                                'materialTotalAmount');
-                            let labTotalAmount = localStorage.getItem(
-                                'laborTotalAmount');
-                            let equipTotalAmount = localStorage.getItem(
-                                'equipmentTotalAmount');
-                            console.log(matTotalAmount);
+
+                            // Initialize variables for totals
                             var matTotal = 0;
                             var equipTotal = 0;
                             var labTotal = 0;
                             var totalAmount = 0;
                             var allTotal = 0;
-                            matTotal += matTotalAmount;
-                            equipTotal += equipTotalAmount;
-                            labTotal += labTotalAmount;
-                            totalAmount = matTotalAmount + equipTotalAmount + labTotalAmount;
-                            allTotal += totalAmount;
-
                             // Create particulars table
                             divHTML +=
                                 '<div class="container">' +
@@ -234,6 +225,24 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
+                                // Retrieve stored values from localStorage
+                                var matTotalAmount = parseFloat(localStorage.getItem(
+                                    'materialTotalAmount')) || 0;
+                                var equipTotalAmount = parseFloat(localStorage.getItem(
+                                    'equipmentTotalAmount')) || 0;
+                                var labTotalAmount = parseFloat(localStorage.getItem(
+                                    'laborTotalAmount')) || 0;
+                                // Calculate individual totals
+                                matTotal += matTotalAmount;
+                                equipTotal += equipTotalAmount;
+                                labTotal += labTotalAmount;
+                                totalAmount = matTotalAmount + equipTotalAmount + labTotalAmount;
+                                allTotal += totalAmount;
+                                ocmTotal = allTotal * (project.ocm / 100);
+                                cpTotal = allTotal * (project.contractors_profit / 100);
+                                vatTotal = (allTotal + ocmTotal + cpTotal) * (project.vat / 100)
+                                totalIndirCost = ocmTotal + cpTotal + vatTotal;
+                                projectCostTotal = allTotal + totalIndirCost;
                                 // var materialTotal = 0;
                                 // var materialAmount = parseFloat(particular.particular_quantity) *
                                 //     parseFloat(particular.particular_unit_cost);
@@ -244,12 +253,17 @@
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + matTotalAmount + '</td>' +
-                                    '<td class="text-center">' + labTotalAmount + '</td>' +
-                                    '<td class="text-center">' + equipTotalAmount + '</td>' +
-                                    '<td class="text-center">' + totalAmount + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(parseFloat(
+                                        matTotalAmount).toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(parseFloat(
+                                        labTotalAmount).toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(parseFloat(
+                                        equipTotalAmount).toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(parseFloat(
+                                        totalAmount).toFixed(2)) + '</td>' +
                                     '</tr>';
                             });
+                            var amountInWords = convertNumberToWords(projectCostTotal);
                             // Close the table and container
                             divHTML +=
                                 '</tbody>' +
@@ -257,109 +271,131 @@
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-right"><strong>Total</strong></td>' +
-                                '<td class="text-center">' + matTotalAmount + '</td>' +
-                                '<td class="text-center">' + equipTotal + '</td>' +
-                                '<td class="text-center">' + labTotal + '</td>' +
-                                '<td class="text-center">' + allTotal + '</td>' +
+                                '<td class="text-center">' + numberWithCommas(matTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center">' + numberWithCommas(labTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center">' + numberWithCommas(equipTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center">' + numberWithCommas(allTotal.toFixed(2)) +
+                                '</td>' +
                                 '</tr>' +
                                 '</tfoot>' +
-                                // '</table>' +
-                                // '<table class="table table-borderless">' +
-                                // '<tr>' +
-                                // '<td class="text-left">I. Direct Cost</td>' +
-                                // '<td class="text-right"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-left">Materials</td>' +
-                                // '<td class="text-right">' + +'</td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-left">Labor</td>' +
-                                // '<td class="text-right">' + +'</td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-left">Equipment Rental</td>' +
-                                // '<td class="text-right">' + +'</td>' +
-                                // '<td class="text-center">=</td>' +
-                                // '<td class="text-center">' + +'</td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-left">II. Indirect Cost</td>' +
-                                // '<td class="text-right"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-left">OCM (15% of Direct Cost)</td>' +
-                                // '<td class="text-right">' + +'</td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-left">CP (10% of Direct Cost)</td>' +
-                                // '<td class="text-right">' + +'</td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-left">VAT (5% of Total above Cost)</td>' +
-                                // '<td class="text-right">' + +'</td>' +
-                                // '<td class="text-center">=</td>' +
-                                // '<td class="text-center">' + +'</td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-left">III. Mobilization Cost</td>' +
-                                // '<td class="text-right"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-left">Moving-in</td>' +
-                                // '<td class="text-right">' + +'</td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td class="text-center"></td>' +
-                                // '<td class="text-left">Moving-out</td>' +
-                                // '<td class="text-right">' + +'</td>' +
-                                // '<td class="text-center">=</td>' +
-                                // '<td class="text-center">' + +'</td>' +
-                                // '<td class="text-center"></td>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<td colspan="5" class="text-center">SAY: TOTAL ESTIMATED COST IS ONE MILLION EIGHT HUNDED THOUSAND PESOS ONLY</td>' +
-                                // '</tr>' + // totalInWords
-                                // '<tr>' +
-                                // '<td colspan="5" class="text-center">(Php 1,800,000.00)</td>' +
-                                // '</tr>' + // Total cost Item
-                                // '</table>' +
+                                '</table>' +
+                                '<table class="table table-borderless">' +
+                                '<tr>' +
+                                '<td class="text-left">I. Direct Cost</td>' +
+                                '<td class="text-right"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Materials</td>' +
+                                '<td class="text-right">' + numberWithCommas(matTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Labor</td>' +
+                                '<td class="text-right">' + numberWithCommas(labTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Equipment Rental</td>' +
+                                '<td class="text-right">' + numberWithCommas(equipTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center">=</td>' +
+                                '<td class="text-center">' + numberWithCommas(allTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-left">II. Indirect Cost</td>' +
+                                '<td class="text-right"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">OCM (15% of Direct Cost)</td>' +
+                                '<td class="text-right">' + numberWithCommas(ocmTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">CP (10% of Direct Cost)</td>' +
+                                '<td class="text-right">' + numberWithCommas(cpTotal.toFixed(2)) + '</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">VAT (5% of Total above Cost)</td>' +
+                                '<td class="text-right">' + numberWithCommas(vatTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center">=</td>' +
+                                '<td class="text-center">' + numberWithCommas(totalIndirCost.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-left">III. Mobilization Cost</td>' +
+                                '<td class="text-right"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Moving-in</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">Moving-out</td>' +
+                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-center">=</td>' +
+                                '<td class="text-center">' + +'</td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-left">TOTAL PROJECT COST</td>' +
+                                '<td class="text-right"></td>' +
+                                '<td class="text-center"></td>' +
+                                '<td class="text-center">' + numberWithCommas(projectCostTotal.toFixed(2)) +
+                                '</td>' +
+                                '<td class="text-center"></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td colspan="5" class="text-center">TOTAL ESTIMATED COST IS ' +
+                                amountInWords + '</td>' +
+                                '</tr>' + // totalInWords
+                                '<tr>' +
+                                '<td colspan="5" class="text-center">' + numberWithCommas(projectCostTotal
+                                    .toFixed(2)) + '</td>' +
+                                '</tr>' + // Total cost Item
+                                '</table>' +
                                 '</div>';
                             // // Populate Signatures
                             // var signaturesHTML = '';
@@ -431,7 +467,77 @@
             //     }
             // }
 
+            // Function to convert a number to its English word representation with all letters capitalized
+            function convertNumberToWords(number) {
+                const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+                const teens = [
+                    'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen',
+                    'Nineteen'
+                ];
+                const tens = [
+                    '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'
+                ];
 
+                // Function to capitalize all letters in a word
+                function capitalizeWord(word) {
+                    if (typeof word !== 'string') {
+                        return '';
+                    }
+                    return word.split('').map(char => char.toUpperCase()).join('');
+                }
+
+                // Function to convert a number less than one thousand to words
+                function convertLessThanOneThousand(num) {
+                    if (num === 0) {
+                        return '';
+                    } else if (num < 10) {
+                        return capitalizeWord(ones[num]);
+                    } else if (num < 20) {
+                        return capitalizeWord(teens[num - 10]);
+                    } else if (num < 100) {
+                        return capitalizeWord(tens[Math.floor(num / 10)]) + ' ' + capitalizeWord(ones[num % 10]);
+                    } else {
+                        return capitalizeWord(ones[Math.floor(num / 100)]) + ' Hundred ' + convertLessThanOneThousand(num %
+                            100);
+                    }
+                }
+
+                // Main function logic
+                if (number === 0) {
+                    return 'Zero';
+                }
+
+                // Separate the integer and decimal parts of the number
+                const [integerPart, decimalPart] = number.toString().split('.');
+                let words = '';
+
+                // Convert the integer part to words
+                let integerWords = '';
+                let integerNum = parseInt(integerPart, 10);
+                let groupIndex = 0;
+
+                while (integerNum > 0) {
+                    if (integerNum % 1000 !== 0) {
+                        integerWords = convertLessThanOneThousand(integerNum % 1000) + ' ' + ['', 'Thousand', 'Million',
+                            'Billion', 'Trillion'
+                        ][groupIndex] + ' ' + integerWords;
+                    }
+                    integerNum = Math.floor(integerNum / 1000);
+                    groupIndex++;
+                }
+
+                words = capitalizeWord(integerWords.trim());
+
+                // Convert the decimal part to words
+                if (decimalPart) {
+                    words += ' Point';
+                    for (let digit of decimalPart) {
+                        words += ' ' + capitalizeWord(ones[parseInt(digit, 10)]);
+                    }
+                }
+
+                return words.trim() + ' PESOS ONLY';
+            }
 
             // Function to add commas to thousands
             function numberWithCommas(x) {
@@ -463,54 +569,6 @@
                     }
                 }
                 return result;
-            }
-            // Function to convert a number to its English word representation with all letters capitalized
-            function convertNumberToWords(number) {
-                const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-                const teens = [
-                    'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen',
-                    'Nineteen'
-                ];
-                const tens = [
-                    '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'
-                ];
-
-                function capitalizeWord(word) {
-                    return word.split('').map(char => char.toUpperCase()).join('');
-                }
-
-                function convertLessThanOneThousand(num) {
-                    if (num === 0) {
-                        return '';
-                    } else if (num < 10) {
-                        return capitalizeWord(ones[num]);
-                    } else if (num < 20) {
-                        return capitalizeWord(teens[num - 10]);
-                    } else if (num < 100) {
-                        return capitalizeWord(tens[Math.floor(num / 10)]) + ' ' + capitalizeWord(ones[num % 10]);
-                    } else {
-                        return capitalizeWord(ones[Math.floor(num / 100)]) + ' Hundred ' + convertLessThanOneThousand(num %
-                            100);
-                    }
-                }
-
-                if (number === 0) {
-                    return 'ZERO';
-                }
-
-                const groups = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
-                let groupIndex = 0;
-                let words = '';
-
-                while (number > 0) {
-                    if (number % 1000 !== 0) {
-                        words = convertLessThanOneThousand(number % 1000) + ' ' + groups[groupIndex] + ' ' + words;
-                    }
-                    number = Math.floor(number / 1000);
-                    groupIndex++;
-                }
-
-                return capitalizeWord(words.trim());
             }
         </script>
 
