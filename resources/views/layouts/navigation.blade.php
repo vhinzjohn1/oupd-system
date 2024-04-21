@@ -5,18 +5,21 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
             <!-- User Profile -->
-            <li class="nav-item dashboard">
-                <a href="{{ route('profile.show') }}" class="nav-link">
-                    <i class="nav-icon fa fa-address-book"></i>
-                    <p>
-                        {{ Auth::user()->first_name }}
-                        {{ Auth::user()->last_name }}
-                    </p>
-
-                </a>
-            </li>
-
+            @if (Auth::user()->roles == 'admin')
+                <li class="nav-item dashboard">
+                    <a href="{{ route('profile.show') }}" class="nav-link">
+                        <i class="nav-icon fa fa-address-book"></i>
+                        <p>
+                            {{ Auth::user()->first_name }}
+                            {{ Auth::user()->last_name }}
+                        </p>
+                    </a>
+                </li>
+            @endif
             <hr style="background-color: white;">
+
+
+
 
             <!-- Dashboard -->
             <li class="nav-item dashboard">
@@ -81,7 +84,7 @@
                     </li>
                 </ul>
             </li>
-{{-- 
+            {{--
             <!-- Transactionals -->
             <li class="nav-item printables">
                 <a href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">

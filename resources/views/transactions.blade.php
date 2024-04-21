@@ -783,10 +783,13 @@
 
         function editparticularDetail(particular_id, quantity, unit, unitCost, total) {
 
-            console.log(total);
+            console.log("This is the string total: ", total);
+            const intTotalProjPart = parseFloat(total.replace(/,/g, ''));
+            console.log("Integer Total: ", intTotalProjPart);
             // let newUnitCost = unitCost ? parseFloat(unitCost).toFixed(2) : '';
-            let newTotal = total ? parseFloat(total).toFixed(2) : '';
-            if (total !== "", total !== null, total !== 0) {
+            let newTotal = total;
+            console.log(newTotal);
+            if (total !== "") {
                 $("#add_projectPart_detailTotal").prop("readonly", true);
             } else { // if total doesnt have value
                 $("#add_projectPart_detailTotal").prop("readonly", false);
@@ -1270,8 +1273,9 @@
                                 parseAndSum(totalLaborAmount) +
                                 parseAndSum(totalEquipmentAmount);
 
-
-
+                            const formattedTotalProjPart = totalProjPart.toLocaleString();
+                            console.log(totalProjPart);
+                            console.log(formattedTotalProjPart);
 
                             var form = $('<div class="pd-zero pd-3" id="projectPartDetail_' +
                                     particular.particular_id + '">')
@@ -1312,9 +1316,7 @@
                                                     $('<h6>').text('Total Amount: ').append(
                                                         $('<span>').attr('id', 'total_' +
                                                             particular.particular_id).text(
-                                                            totalProjPart ?
-                                                            parseFloat(totalProjPart)
-                                                            .toFixed(2) : ''
+                                                            formattedTotalProjPart
                                                         )
                                                     )
                                                 ),
@@ -1333,7 +1335,7 @@
                                                             .project_particular_unit,
                                                             particular
                                                             .project_particular_unitCost,
-                                                            totalProjPart);
+                                                            formattedTotalProjPart);
                                                     })
                                                 )
                                             )
@@ -1488,174 +1490,198 @@
         // Define totalAmountColumn in a scope accessible outside of the function
         var totalAmountColumn;
 
-        // Function to create detail cards
-        function createDetailCard(
-            detailType,
-            particular_id,
-            particular_name,
-            particular,
-            totalAmounts
-        ) {
-            var card = $(
-                '<div class="card card-refresh" id="' +
-                detailType.toLowerCase() +
-                "Card_" +
-                particular_id +
-                '">'
-            );
-            var cardHeader = $(
-                '<div class="card-header d-flex justify-content-between col-12 header-hover padding-header" data-card-widget="collapse">'
-            );
-            var headerContent = $(
-                '<div class="d-flex justify-content-between col-12">'
-            );
-            var title = $("<h5>").text(detailType);
-            var cardTools = $('<div class="card-tools">');
-            // Create the collapse button with a unique ID
-            var collapseButton = $(
-                '<button type="button" class="btn btn-tool" data-card-widget="collapse">'
-            ).append('<i class="fas fa-toggle-on" id="iconToggle"></i>'); // Initially set to fa-toggle-on
-            // Create the add detail button
-            var addDetailButton = $(
-                '<div class="btn btn-success btn-header" id="' +
-                detailType.toLowerCase() +
-                "Detail_" +
-                particular_id +
-                '" onclick="addDetailBtn(' +
-                particular_id +
-                ", '" +
-                detailType +
-                '\')"><i class="fa fa-plus"></i></div>'
-            ).click(function(event) {
-                event.stopPropagation();
-            });
-            // Append elements to the header
-            headerContent.append(
-                title,
-                cardTools.append(addDetailButton, collapseButton)
-            );
-            cardHeader.append(headerContent);
-            card.append(cardHeader);
+        function toggleTotal(detailType, particular_id) {
+            detailType = detailType.toLowerCase();
+            var $element = $(`#${detailType}CardTotal_${particular_id}`);
+            if ($element.css('opacity') === '1') {
+                $element.css({
+                    'opacity': '0',
+                    'transition': 'opacity 0.4s ease-out'
+                });
+            } else {
+                $element.css({
+                    'opacity': '1',
+                    'transition': 'opacity 0.4s ease-in'
+                });
+            }
+        }
 
-            // Toggle collapse when card header is clicked
-            cardHeader.click(function() {
+        // Function to create detail cards
+        function createDetailCard(detailType, particular_id, particular_name, particular, totalAmounts) {
+            var card = $('<div>', {
+                class: 'card card-refresh',
+                id: `${detailType.toLowerCase()}Card_${particular_id}`
+            });
+
+            var cardHeader = $('<div>', {
+                class: 'card-header d-flex justify-content-between col-12 header-hover padding-header',
+                'data-toggle': 'collapse',
+                'data-target': `#${detailType.toLowerCase()}CardBody_${particular_id}`,
+                onclick: `toggleTotal('${detailType}', '${particular_id}')`
+            });
+            var headerContent = $('<div>', {
+                class: 'd-flex justify-content-between col-12'
+            });
+            var title = $('<h5 class="col-8">').text(detailType);
+
+            var collapse = $('<div>', {
+                class: 'collapse show',
+                id: `${detailType.toLowerCase()}CardBody_${particular_id}`
+            });
+
+            var collapseButton = $('<button>', {
+                    type: 'button',
+                    class: 'btn btn-tool',
+                    'data-card-widget': 'collapse'
+                })
+                .append('<i class="fas fa-toggle-on" id="iconToggle"></i>');
+            var addDetailButton = $('<div>', {
+                    class: 'btn btn-success btn-header',
+                    id: `${detailType.toLowerCase()}Detail_${particular_id}`
+                })
+                .click(function(event) {
+                    event.stopPropagation();
+                    addDetailBtn(particular_id, detailType);
+                })
+                .append('<i class="fa fa-plus"></i>');
+
+            var cardBody = $('<div>', {
+                class: 'card-body',
+                style: 'height: 350px;'
+            });
+            var headerName = `Total ${detailType} Amount: ${totalAmounts}`;
+
+            var footerCard = $('<div>', {
+                class: 'card totalFooter'
+            });
+            var cardBodyFooter = $('<div>', {
+                class: 'card-body col-11'
+            });
+            var footerGridDiv = $('<div>', {
+                class: 'text-right',
+                style: 'margin-top: -10px;'
+            });
+            var headerTotal = $('<div>', {
+                style: 'font-weight: 500; opacity: 0;',
+                id: `${detailType.toLowerCase()}CardTotal_${particular_id}`
+            }).append(`<div>Total ${detailType} Amount: ${totalAmounts}</div>`);
+            var cardTools = $('<div>', {
+                class: 'd-flex justify-content-between col-4'
+            });
+            var sideButton = $('<div>', {
+                class: ''
+            });
+            sideButton.append(addDetailButton, collapseButton);
+
+            // headerContent.append(title, cardTools.append(headerTotal, addDetailButton, collapseButton));
+            headerContent.append(title, cardTools.append(headerTotal).append(sideButton));
+            cardHeader.append(headerContent).click(function() {
                 $(this).find("#iconToggle").toggleClass("fa-toggle-on fa-toggle-off");
             });
 
-            // Add a div for the card body with a unique id
-            var cardBody = $('<div class="card-body" style="height: 350px;">');
-            // Add the div inside cardBody
-            cardBody.append(
-                '<div id="' +
-                detailType.toLowerCase() +
-                "Body_" +
-                particular_id +
-                '" class="ag-theme-quartz" style="height: 85%;"></div>'
-            );
 
-            // Set the headerName dynamically based on the rowData
-            var headerName = "Total " + detailType + " Amount: " + totalAmounts; // Access the correct index
+            cardBody.append($('<div>', {
+                id: `${detailType.toLowerCase()}Body_${particular_id}`,
+                class: 'ag-theme-quartz',
+                style: 'height: 85%;'
+            }));
 
-            // Create the footer card
-            var footerCard = $('<div class="card totalFooter">');
-            var cardBodyFooter = $('<div class="card-body col-11">');
-            var footerGridDiv = $(
-                '<div class="text-right" style="margin-top: -10px;"></div>'
-            );
-            var headerNameSpan = $('<span class="total-text"></span>').text(headerName);
-            footerGridDiv.append(headerNameSpan);
+            footerGridDiv.append($('<span>', {
+                class: 'total-text'
+            }).text(headerName));
             cardBodyFooter.append(footerGridDiv);
             footerCard.append(cardBodyFooter);
 
-            // Append footerCard inside cardBody
             cardBody.append(footerCard);
+            collapse.append(cardBody);
+            card.append(cardHeader, collapse);
 
-            card.append(cardBody);
             return card;
         }
-        // Function to create detail cards
-        function refreshDetailCard(
-            detailType,
-            particular_id,
-            particular_name,
-            particular,
-            totalAmounts
-        ) {
-            var card = $(
-                '<div class="card" id="' +
-                detailType.toLowerCase() +
-                "Card_" +
-                particular_id +
-                '">'
-            );
-            var cardHeader = $(
-                '<div class="card-header d-flex justify-content-between col-12 header-hover padding-header" data-card-widget="collapse">'
-            );
-            var headerContent = $(
-                '<div class="d-flex justify-content-between col-12">'
-            );
-            var title = $("<h5>").text(detailType);
-            var cardTools = $('<div class="card-tools">');
-            // Create the collapse button with a unique ID
-            var collapseButton = $(
-                '<button type="button" class="btn btn-tool" data-card-widget="collapse">'
-            ).append('<i class="fas fa-toggle-on" id="iconToggle"></i>'); // Initially set to fa-toggle-on
-            // Create the add detail button
-            var addDetailButton = $(
-                '<div class="btn btn-success btn-header" id="' +
-                detailType.toLowerCase() +
-                "Detail_" +
-                particular_id +
-                '" onclick="addDetailBtn(' +
-                particular_id +
-                ", '" +
-                detailType +
-                '\')"><i class="fa fa-plus"></i></div>'
-            ).click(function(event) {
-                event.stopPropagation();
-            });
-            // Append elements to the header
-            headerContent.append(
-                title,
-                cardTools.append(addDetailButton, collapseButton)
-            );
-            cardHeader.append(headerContent);
-            card.append(cardHeader);
 
-            // Toggle collapse when card header is clicked
-            cardHeader.click(function() {
+        function refreshDetailCard(detailType, particular_id, particular_name, particular, totalAmounts) {
+            var card = $('<div>', {
+                class: 'card',
+                id: `${detailType.toLowerCase()}Card_${particular_id}`
+            });
+            var cardHeader = $('<div>', {
+                class: 'card-header d-flex justify-content-between col-12 header-hover padding-header',
+                'data-toggle': 'collapse',
+                'data-target': `#${detailType.toLowerCase()}CardBody_${particular_id}`,
+                onclick: `toggleTotal('${detailType}', '${particular_id}')`
+            });
+            var headerContent = $('<div>', {
+                class: 'd-flex justify-content-between col-12'
+            });
+            var title = $('<h5 class="col-8">').text(detailType);
+            var cardTools = $('<div>', {
+                class: 'd-flex justify-content-between col-4'
+            });
+            var collapse = $('<div>', {
+                class: 'collapse show',
+                id: `${detailType.toLowerCase()}CardBody_${particular_id}`
+            });
+            var collapseButton = $('<button>', {
+                    type: 'button',
+                    class: 'btn btn-tool',
+                    'data-card-widget': 'collapse'
+                })
+                .append('<i class="fas fa-toggle-on" id="iconToggle"></i>');
+            var addDetailButton = $('<div>', {
+                    class: 'btn btn-success btn-header',
+                    id: `${detailType.toLowerCase()}Detail_${particular_id}`
+                })
+                .click(function(event) {
+                    event.stopPropagation();
+                    addDetailBtn(particular_id, detailType);
+                })
+                .append('<i class="fa fa-plus"></i>');
+            var headerTotal = $('<div>', {
+                style: 'font-weight: 500; opacity: 0;',
+                id: `${detailType.toLowerCase()}CardTotal_${particular_id}`
+            }).append(`<div>Total ${detailType} Amount: ${totalAmounts}</div>`);
+            var sideButton = $('<div>', {
+                class: ''
+            });
+            sideButton.append(addDetailButton, collapseButton);
+
+            // headerContent.append(title, cardTools.append(headerTotal, addDetailButton, collapseButton));
+            headerContent.append(title, cardTools.append(headerTotal).append(sideButton));
+            cardHeader.append(headerContent).click(function() {
                 $(this).find("#iconToggle").toggleClass("fa-toggle-on fa-toggle-off");
             });
 
-            // Add a div for the card body with a unique id
-            var cardBody = $('<div class="card-body" style="height: 350px;">');
-            // Add the div inside cardBody
-            cardBody.append(
-                '<div id="' +
-                detailType.toLowerCase() +
-                "Body_" +
-                particular_id +
-                '" class="ag-theme-quartz" style="height: 85%;"></div>'
-            );
+            var cardBody = $('<div>', {
+                class: 'card-body',
+                style: 'height: 350px;'
+            });
+            cardBody.append($('<div>', {
+                id: `${detailType.toLowerCase()}Body_${particular_id}`,
+                class: 'ag-theme-quartz',
+                style: 'height: 85%;'
+            }));
 
-            // Set the headerName dynamically based on the rowData
-            var headerName = "Total " + detailType + " Amount: " + totalAmounts;
-
-            // Create the footer card
-            var footerCard = $('<div class="card totalFooter">');
-            var cardBodyFooter = $('<div class="card-body col-11">');
-            var footerGridDiv = $(
-                '<div class="text-right" style="margin-top: -10px;"></div>'
-            );
-            var headerNameSpan = $('<span class="total-text"></span>').text(headerName);
-            footerGridDiv.append(headerNameSpan);
+            var headerName = `Total ${detailType} Amount: ${totalAmounts}`;
+            var footerCard = $('<div>', {
+                class: 'card totalFooter'
+            });
+            var cardBodyFooter = $('<div>', {
+                class: 'card-body col-11'
+            });
+            var footerGridDiv = $('<div>', {
+                class: 'text-right',
+                style: 'margin-top: -10px;'
+            });
+            footerGridDiv.append($('<span>', {
+                class: 'total-text'
+            }).text(headerName));
             cardBodyFooter.append(footerGridDiv);
             footerCard.append(cardBodyFooter);
 
-            // Append footerCard inside cardBody
             cardBody.append(footerCard);
+            collapse.append(cardBody);
+            card.append(cardHeader, collapse);
 
-            card.append(cardBody);
             return card;
         }
 
