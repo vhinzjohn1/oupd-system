@@ -14,6 +14,8 @@ use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\GetAllDataController;
 use App\Http\Controllers\ParticularController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use App\Models\EquipmentCategory;
 use App\Models\Particular;
 use Dompdf\Adapter\PDFLib;
@@ -133,9 +135,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/equipments/{id}', [EquipmentController::class, 'destroy'])->name('equipments.destroy');
 
     // Users Routes
-    Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-    Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
-    Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 // Routes for Particulars and Project Particular

@@ -4,14 +4,22 @@
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-            <li class="nav-item">
-                <a href="{{ route('profile.show') }}" class="nav-link"><i
-                        class="nav-icon fa fa-address-book"></i>{{ Auth::user()->first_name }}
-                    {{ Auth::user()->last_name }}</a>
-
-            </li>
-
+            <!-- User Profile -->
+            @if (Auth::user()->roles == 'admin')
+                <li class="nav-item dashboard">
+                    <a href="{{ route('profile.show') }}" class="nav-link">
+                        <i class="nav-icon fa fa-address-book"></i>
+                        <p>
+                            {{ Auth::user()->first_name }}
+                            {{ Auth::user()->last_name }}
+                        </p>
+                    </a>
+                </li>
+            @endif
             <hr style="background-color: white;">
+
+
+
 
             <!-- Dashboard -->
             <li class="nav-item dashboard">
@@ -77,7 +85,7 @@
                     </li>
                 </ul>
             </li>
-{{-- 
+            {{--
             <!-- Transactionals -->
             {{-- <li class="nav-item printables">
                 <a href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">
