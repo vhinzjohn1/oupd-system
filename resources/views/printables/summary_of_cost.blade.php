@@ -114,7 +114,7 @@
                             <div class="">
                                 <div class="text-center" style="white-space: nowrap;">
                                     Evaluated by: <br><br>
-                                    <u><b><span id="approvedName"></span>, <span id="preparedDegree"></span></b></u> <br>
+                                    <u><b><span id="fullname"></span>, <span id="preparedDegree"></span></b></u> <br>
                                     <span id="preparedPosition"></span>
                                 </div> <br>
                                 <div class="text-center" style="white-space: nowrap;">
@@ -181,8 +181,9 @@
                         $('#projectTitle').text(response.projects[0].project_title);
                         $('#projectLocation').text(response.projects[0].project_location);
                         $('#projectOwner').text(response.projects[0].project_owner);
+                        $('#fullname').text(response.projects[0].fullname);
 
-                        // Call renderSignatures function to update signature elements
+                        // // Call renderSignatures function to update signature elements
                         // renderSignatures(response.projects[0].signatures);
 
                         // Filter project by project_id
@@ -194,6 +195,27 @@
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             };
+                            // Retrieve stored values from localStorage
+                            let matTotalAmount = localStorage.getItem(
+                                'materialTotalAmount');
+                            let labTotalAmount = localStorage.getItem(
+                                'laborTotalAmount');
+                            let equipTotalAmount = localStorage.getItem(
+                                'equipmentTotalAmount');
+                            // Retrieve stored values and populate the table AFTER calculations
+                            let storedMaterialTotal = localStorage.getItem(
+                                'materialTotalAmount');
+                            console.log(storedMaterialTotal);
+                            var matTotal = 0;
+                            var equipTotal = 0;
+                            var labTotal = 0;
+                            var totalAmount = 0;
+                            var allTotal = 0;
+                            matTotal += matTotalAmount;
+                            equipTotal += equipTotalAmount;
+                            labTotal += labTotalAmount;
+                            totalAmount = matTotalAmount + equipTotalAmount + labTotalAmount;
+                            allTotal += totalAmount;
 
                             // Create particulars table
                             divHTML +=
@@ -215,14 +237,10 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                // Retrieve stored values from localStorage
-                                var materialTotalAmount = parseFloat(localStorage.getItem(
-                                    'materialTotalAmount')) || 0;
-                                var equipmentTotalAmount = parseFloat(localStorage.getItem(
-                                    'equipmentTotalAmount')) || 0;
-                                var laborTotalAmount = parseFloat(localStorage.getItem(
-                                        'laborTotalAmount')) ||
-                                    0;
+                                console.log(
+                                    matTotalAmount
+                                ); // Output the value of "materialTotalAmount" to the console
+
                                 // var materialTotal = 0;
                                 // var materialAmount = parseFloat(particular.particular_quantity) *
                                 //     parseFloat(particular.particular_unit_cost);
@@ -233,14 +251,10 @@
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(
-                                        materialTotalAmount.toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(
-                                        equipmentTotalAmount.toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + +'</td>' +
-                                    '<td class="text-center">' + numberWithCommas(laborTotalAmount
-                                        .toFixed(
-                                            2)) + '</td>' +
+                                    '<td class="text-center">' + matTotalAmount + '</td>' +
+                                    '<td class="text-center">' + labTotalAmount + '</td>' +
+                                    '<td class="text-center">' + equipTotalAmount + '</td>' +
+                                    '<td class="text-center">' + totalAmount + '</td>' +
                                     '</tr>';
                             });
                             // Close the table and container
@@ -250,109 +264,109 @@
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-right"><strong>Total</strong></td>' +
-                                '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center">' + +'</td>' +
+                                '<td class="text-center">' + matTotalAmount + '</td>' +
+                                '<td class="text-center">' + equipTotal + '</td>' +
+                                '<td class="text-center">' + labTotal + '</td>' +
+                                '<td class="text-center">' + allTotal + '</td>' +
                                 '</tr>' +
                                 '</tfoot>' +
-                                '</table>' +
-                                '<table class="table table-borderless">' +
-                                '<tr>' +
-                                '<td class="text-left">I. Direct Cost</td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Materials</td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Labor</td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Equipment Rental</td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-left">II. Indirect Cost</td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">OCM (15% of Direct Cost)</td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">CP (10% of Direct Cost)</td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">VAT (5% of Total above Cost)</td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-left">III. Mobilization Cost</td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Moving-in</td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Moving-out</td>' +
-                                '<td class="text-right">' + +'</td>' +
-                                '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + +'</td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td colspan="5" class="text-center">SAY: TOTAL ESTIMATED COST IS ONE MILLION EIGHT HUNDED THOUSAND PESOS ONLY</td>' +
-                                '</tr>' + // totalInWords
-                                '<tr>' +
-                                '<td colspan="5" class="text-center">(Php 1,800,000.00)</td>' +
-                                '</tr>' + // Total cost Item
-                                '</table>' +
+                                // '</table>' +
+                                // '<table class="table table-borderless">' +
+                                // '<tr>' +
+                                // '<td class="text-left">I. Direct Cost</td>' +
+                                // '<td class="text-right"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-left">Materials</td>' +
+                                // '<td class="text-right">' + +'</td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-left">Labor</td>' +
+                                // '<td class="text-right">' + +'</td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-left">Equipment Rental</td>' +
+                                // '<td class="text-right">' + +'</td>' +
+                                // '<td class="text-center">=</td>' +
+                                // '<td class="text-center">' + +'</td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-left">II. Indirect Cost</td>' +
+                                // '<td class="text-right"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-left">OCM (15% of Direct Cost)</td>' +
+                                // '<td class="text-right">' + +'</td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-left">CP (10% of Direct Cost)</td>' +
+                                // '<td class="text-right">' + +'</td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-left">VAT (5% of Total above Cost)</td>' +
+                                // '<td class="text-right">' + +'</td>' +
+                                // '<td class="text-center">=</td>' +
+                                // '<td class="text-center">' + +'</td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-left">III. Mobilization Cost</td>' +
+                                // '<td class="text-right"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-left">Moving-in</td>' +
+                                // '<td class="text-right">' + +'</td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td class="text-center"></td>' +
+                                // '<td class="text-left">Moving-out</td>' +
+                                // '<td class="text-right">' + +'</td>' +
+                                // '<td class="text-center">=</td>' +
+                                // '<td class="text-center">' + +'</td>' +
+                                // '<td class="text-center"></td>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<td colspan="5" class="text-center">SAY: TOTAL ESTIMATED COST IS ONE MILLION EIGHT HUNDED THOUSAND PESOS ONLY</td>' +
+                                // '</tr>' + // totalInWords
+                                // '<tr>' +
+                                // '<td colspan="5" class="text-center">(Php 1,800,000.00)</td>' +
+                                // '</tr>' + // Total cost Item
+                                // '</table>' +
                                 '</div>';
                             // // Populate Signatures
                             // var signaturesHTML = '';

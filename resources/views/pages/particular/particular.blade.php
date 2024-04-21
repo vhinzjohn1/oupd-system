@@ -6,7 +6,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ __('Particulars') }}</h1>
+                    <h1 class="m-0">{{ __('Pay Item') }}</h1>
                 </div><!-- /.col -->
                 {{-- <div class="col-sm-6 text-right">
                     <button type="button" class="btn btn-success" data-toggle="modal" id="addParticularButton">
@@ -29,13 +29,13 @@
                                 <div class="text-right">
                                     <button type="button" class="btn btn-success" data-toggle="modal"
                                         id="addParticularButton">
-                                        Add Particular
+                                        Add Pay Item
                                     </button>
                                 </div>
                                 @include('modals.particular.add_particular_modal');
                                 <thead>
                                     <tr>
-                                        <th>Particular Name</th>
+                                        <th>Pay Item Name</th>
                                         <th>Pay Item (Number)</th>
                                         <th>Actions</th>
                                     </tr>

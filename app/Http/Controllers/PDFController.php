@@ -123,13 +123,13 @@ class PDFController extends Controller
             $role = $project->role;
             $projectParticularId = $project->project_particular_id;
 
-            // Check if the role requires fetching additional data
-            if (in_array($role, ['Prepared', 'Reviewed', 'Conformed', 'Recommending Approval', 'Checked', 'Submitted', 'Approved'])) {
-                // Process and gather specific data for the role
-                $fullname = $project->fullname;
-                $degree = $project->degree;
-                $position = $project->position;
-            }
+            // // Check if the role requires fetching additional data
+            // if (in_array($role, ['Prepared', 'Reviewed', 'Conformed', 'Recommending Approval', 'Checked', 'Submitted', 'Approved'])) {
+            //     // Process and gather specific data for the role
+            //     $fullname = $project->fullname;
+            //     $degree = $project->degree;
+            //     $position = $project->position;
+            // }
 
             // Group data by project title
             if (!isset($formattedData[$title])) {
@@ -147,6 +147,10 @@ class PDFController extends Controller
                     'ocm' => $ocm,
                     'contractors_profit' => $contractors_profit,
                     'vat' => $vat,
+                    'fullname' => $fullname,
+                    'degree' => $degree,
+                    'position' => $position,
+                    'role' => $role,
                     'signatures' => [
                         'fullname' => [],
                         'degree' => [],

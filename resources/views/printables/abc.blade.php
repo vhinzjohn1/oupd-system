@@ -284,6 +284,7 @@
                                 var amount = parseFloat(particular.quantity) *
                                     parseFloat(particular.unit_cost);
                                 totalAmount += amount;
+                                markUpTotal = project.ocm + project.contractors_profit;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
@@ -294,10 +295,10 @@
                                         particular.quantity).toFixed(2)) + '</td>' +
                                     '<td>' + particular.unit + '</td>' +
                                     '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-center">' + (project.ocm).toFixed(2) +'</td>' +
+                                    '<td class="text-center">' + (project.contractors_profit).toFixed(2) +'</td>' +
                                     '<td class="text-right">' + +'</td>' +
-                                    '<td class="text-right">' + +'</td>' +
-                                    '<td class="text-right">' + +'</td>' +
-                                    '<td class="text-right">' + +'</td>' +
+                                    '<td class="text-center">' + markUpTotal.toFixed(2) +'</td>' +
                                     '<td class="text-right">' + +'</td>' +
                                     '<td class="text-right">' + +'</td>' +
                                     '<td class="text-right">' + +'</td>' +
