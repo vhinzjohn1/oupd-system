@@ -182,6 +182,9 @@
                                             material
                                             .material_price);
                                         materialTotalAmount += amount;
+                                        // Store total amounts in localStorage
+                                        localStorage.setItem('materialTotalAmount',
+                                            materialTotalAmount);
                                         divHTML += '<tr>' +
                                             '<td>' + material.material_name + '</td>' +
                                             '<td class="text-right">' + material
@@ -276,6 +279,9 @@
                                             .equipment_no_of_units *
                                             equip.equipment_rate;
                                         equipmentTotalAmount += amount;
+                                        // Store total amounts in localStorage
+                                        localStorage.setItem('equipmentTotalAmount',
+                                            equipmentTotalAmount);
                                         divHTML += '<tr>' +
                                             '<td>' + equip.equipment_name + '</td>' +
                                             '<td class="text-right">' + equip
@@ -380,6 +386,9 @@
                                             .labor_work_days *
                                             newRate;
                                         laborTotalAmount += amount;
+                                        // Store total amounts in localStorage
+                                        localStorage.setItem('laborTotalAmount',
+                                            laborTotalAmount);
                                         divHTML += '<tr>' +
                                             '<td>' + lab.labor_name + '</td>' +
                                             '<td class="text-right">' + lab
@@ -470,10 +479,7 @@
                                 var indirectCostTotalAmount = ocmTotalAmount + cpTotalAmount;
                                 var vatTotalAmount = (directCostTotalAmount +
                                     indirectCostTotalAmount) * (project.vat / 100);
-                                // Store total amounts in localStorage
-                                localStorage.setItem('matTotalAmount', materialTotalAmount);
-                                localStorage.setItem('equipmentTotalAmount', equipmentTotalAmount);
-                                localStorage.setItem('laborTotalAmount', laborTotalAmount);
+
 
                                 divHTML +=
                                     '<tr>' +

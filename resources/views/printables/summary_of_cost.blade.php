@@ -202,10 +202,7 @@
                                 'laborTotalAmount');
                             let equipTotalAmount = localStorage.getItem(
                                 'equipmentTotalAmount');
-                            // Retrieve stored values and populate the table AFTER calculations
-                            let storedMaterialTotal = localStorage.getItem(
-                                'materialTotalAmount');
-                            console.log(storedMaterialTotal);
+                            console.log(matTotalAmount);
                             var matTotal = 0;
                             var equipTotal = 0;
                             var labTotal = 0;
@@ -237,10 +234,6 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                console.log(
-                                    matTotalAmount
-                                ); // Output the value of "materialTotalAmount" to the console
-
                                 // var materialTotal = 0;
                                 // var materialAmount = parseFloat(particular.particular_quantity) *
                                 //     parseFloat(particular.particular_unit_cost);
