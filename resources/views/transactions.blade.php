@@ -213,7 +213,9 @@
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
-            <h4>Project Item</h4>
+            <div class="">
+                <h4></h4>
+            </div>
             <div id="projectParticularContent" class="container-fluid col-12 d-flex flex-column"></div>
         </div>
 
@@ -963,7 +965,7 @@
                                 flex: 1,
                                 valueFormatter: function(params) {
                                     // Format the amount with commas for thousands separators and two decimal places
-                                    return parseFloat(params.value * 8)
+                                    return parseFloat(params.value)
                                         .toFixed(2)
                                         .replace(/\d(?=(\d{3})+\.)/g, "$&,");
                                 },
@@ -979,7 +981,7 @@
                                 flex: 1,
                                 valueGetter: function(params) {
                                     // Access material_quantity and material_price from the row data
-                                    const rate = params.data.labor_rate * 8;
+                                    const rate = params.data.labor_rate;
                                     const noOfPerson = params.data.labor_no_of_persons;
                                     const work_days = params.data.labor_work_days;
 
@@ -1007,7 +1009,7 @@
                                     const projectPartID = params.data.project_particular_labor_id;
                                     const laborNoPerson = params.data.labor_no_of_persons;
                                     const workDays = params.data.labor_work_days;
-                                    const laborRate = params.data.labor_rate * 8;
+                                    const laborRate = params.data.labor_rate;
                                     const laborName = params.data.labor_name;
 
                                     // Construct the HTML string with the detailType and particularID
@@ -1240,7 +1242,6 @@
                             rowDataLabor.forEach(function(labor) {
                                 totalLaborAmount +=
                                     labor.labor_rate *
-                                    8 *
                                     labor.labor_work_days *
                                     labor.labor_no_of_persons; // Update calculation
                             });
@@ -1948,7 +1949,7 @@
                                 flex: 1,
                                 valueFormatter: function(params) {
                                     // Format the amount with commas for thousands separators and two decimal places
-                                    return parseFloat(params.value * 8)
+                                    return parseFloat(params.value)
                                         .toFixed(2)
                                         .replace(/\d(?=(\d{3})+\.)/g, "$&,");
                                 },
@@ -1964,7 +1965,7 @@
                                 flex: 1,
                                 valueGetter: function(params) {
                                     // Access material_quantity and material_price from the row data
-                                    const rate = params.data.labor_rate * 8;
+                                    const rate = params.data.labor_rate;
                                     const noOfPerson = params.data.labor_no_of_persons;
                                     const work_days = params.data.labor_work_days;
 
@@ -1992,7 +1993,7 @@
                                     const projectPartID = params.data.project_particular_labor_id;
                                     const laborNoPerson = params.data.labor_no_of_persons;
                                     const workDays = params.data.labor_work_days;
-                                    const laborRate = params.data.labor_rate * 8;
+                                    const laborRate = params.data.labor_rate;
                                     const laborName = params.data.labor_name;
 
                                     // Construct the HTML string with the detailType and particularID
@@ -2283,7 +2284,6 @@
                                 rowDataLabor.forEach(function(labor) {
                                     totalLaborAmount +=
                                         labor.labor_rate *
-                                        8 *
                                         labor.labor_work_days *
                                         labor.labor_no_of_persons; // Update calculation
                                 });
@@ -2495,7 +2495,6 @@
             if (materialId === "") {
                 materialId = "empty";
             }
-            let materialPriceID = $("#add_particular_priceID").val();
 
             let materialName = $("#add_particular_material").val();
             let materialQuantity = $(
@@ -2528,7 +2527,6 @@
                 materialQuarter: materialQuarter,
                 materialYear: materialYear,
                 materialQuantity: materialQuantity,
-                materialPriceID: materialPriceID,
                 _token: "{{ csrf_token() }}",
             };
             if (materialId !== "empty") {
@@ -2704,7 +2702,6 @@
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
-                        console.log('This is the materials', response);
                         // Extract materials from the Ajax response
                         var materials = response.materials;
                         // Get the select element and empty it
@@ -2762,10 +2759,6 @@
                                         .material_quarter);
                                     $("#add_particular_materialYear").val(selectedMaterial
                                         .material_year);
-                                    $("#add_particular_priceID").val(selectedMaterial
-                                        .material_price_id);
-
-
 
                                     // Chnage readonly attributte of the form
                                     $("#add_particular_category").prop("readonly", true);
