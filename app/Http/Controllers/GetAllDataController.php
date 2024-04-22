@@ -88,7 +88,7 @@ class GetAllDataController extends Controller
         LEFT JOIN
             equipment_rates er ON ppe.equipment_id = er.equipment_id AND er.is_active = 1
         LEFT JOIN
-            prices pr ON m.material_id = pr.material_id AND pr.is_active = 1
+            prices pr ON m.material_id = pr.material_id
     ");
 
         $formattedData = [];
@@ -358,6 +358,7 @@ class GetAllDataController extends Controller
                     'material_id' => $request->materialId,
                 ], [
                     'quantity' => $request->materialQuantity,
+                    'price_id' => $request->materialPriceID,
                 ]);
             } elseif ($request->materialId === "empty") {
                 try {

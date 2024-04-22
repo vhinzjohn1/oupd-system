@@ -42,6 +42,10 @@
     <script src="{{ asset('js/autonumeric.js') }}"></script>
 
 
+    {{-- Script for sortable js --}}
+    <script src="{{ asset('js/sortableJS.min.js') }}"></script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
     </script>

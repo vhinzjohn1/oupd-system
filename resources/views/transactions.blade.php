@@ -2495,6 +2495,7 @@
             if (materialId === "") {
                 materialId = "empty";
             }
+            let materialPriceID = $("#add_particular_priceID").val();
 
             let materialName = $("#add_particular_material").val();
             let materialQuantity = $(
@@ -2527,6 +2528,7 @@
                 materialQuarter: materialQuarter,
                 materialYear: materialYear,
                 materialQuantity: materialQuantity,
+                materialPriceID: materialPriceID,
                 _token: "{{ csrf_token() }}",
             };
             if (materialId !== "empty") {
@@ -2702,6 +2704,7 @@
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
+                        console.log('This is the materials', response);
                         // Extract materials from the Ajax response
                         var materials = response.materials;
                         // Get the select element and empty it
@@ -2759,6 +2762,10 @@
                                         .material_quarter);
                                     $("#add_particular_materialYear").val(selectedMaterial
                                         .material_year);
+                                    $("#add_particular_priceID").val(selectedMaterial
+                                        .material_price_id);
+
+
 
                                     // Chnage readonly attributte of the form
                                     $("#add_particular_category").prop("readonly", true);
