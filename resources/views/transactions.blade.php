@@ -231,7 +231,10 @@
         </div>
     </div>
 
+
     <script>
+        
+        // Signature Table DataTable
         $("#signatureTable").DataTable({
             "responsive": true,
             "lengthChange": true,
