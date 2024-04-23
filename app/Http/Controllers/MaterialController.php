@@ -164,13 +164,10 @@ class MaterialController extends Controller
             // Find the material based on ID
             $material = Material::findOrFail($id);
 
-            // Deactivate existing prices related to the material
-            $material->prices()->update(['is_active' => false]);
+            // Delete related prices
+            $material->prices()->delete();
 
-            // Update foreign key references to null in related material_prices records
-            Price::where('material_id', $material->material_id)->update(['material_id' => null]);
-
-            // You can choose to delete the material if needed
+            // Now delete the material
             $material->delete();
 
             return response()->json(['success' => true, 'message' => 'Material details deleted successfully!']);
@@ -179,6 +176,7 @@ class MaterialController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to delete material details. Check logs for details.']);
         }
     }
+
 
 
 

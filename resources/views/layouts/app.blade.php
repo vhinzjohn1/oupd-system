@@ -18,11 +18,13 @@
     <link rel="stylesheet" href="{{ asset('css/customStyle.css') }}">
 
     <!-- SweetAlert2 -->
-    <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    {{-- <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css"> --}}
 
 
     <!-- SweetAlert2 -->
-    <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
+    {{-- <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script> --}}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <!-- jQuery -->

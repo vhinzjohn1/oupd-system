@@ -37,6 +37,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
+                                <input type="hidden" id="editMaterialPriceID">
                                 <label for="edit_particular_materialPrice">Price</label>
                                 <input type="text" class="form-control" id="edit_particular_materialPrice"
                                     name="edit_particular_materialPrice" readonly>
