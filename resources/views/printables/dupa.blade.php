@@ -509,7 +509,7 @@
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-start"></td>' +
-                                    '<td colspan="2" class="text-start">1. OVERHEAD, CONTINGENCY & MISCELLANEOUS (15% of ODC)</td>' +
+                                    '<td colspan="2" class="text-start">1. OVERHEAD, CONTINGENCY & MISCELLANEOUS (15% of DC)</td>' +
                                     '<td class="text-start">' + project.ocm + '%' + '</td>' +
                                     '<td class="text-right">' + numberWithCommas(ocmTotalAmount
                                         .toFixed(2)) +
@@ -519,7 +519,7 @@
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-start"></td>' +
-                                    '<td colspan="2" class="text-start">2. CONTRACTORS PROFIT (10% of EDC)</td>' +
+                                    '<td colspan="2" class="text-start">2. CONTRACTORS PROFIT (10% of DC)</td>' +
                                     '<td class="text-start">' + project.contractors_profit + '%' +
                                     '</td>' +
                                     '<td class="text-right">' + numberWithCommas(cpTotalAmount
@@ -528,7 +528,7 @@
                                     '</tr>';
                                 divHTML +=
                                     '<tr>' +
-                                    '<th colspan="4" class="text-start">F. VAT (5% of EDC+OCM+CP)</th>' +
+                                    '<th colspan="4" class="text-start">F. VAT (TOTAL ABOVE COST)</th>' +
                                     '<th class="text-right">' + numberWithCommas(vatTotalAmount
                                         .toFixed(2)) +
                                     //nakabold dapat ni

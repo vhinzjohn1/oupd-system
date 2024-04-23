@@ -109,8 +109,8 @@
                         if (project) {
                             project.particulars.forEach(function(particular, index) {
                                 var materials = particular.details.Materials;
-                                var equipment = particular.details.Equipment;
                                 var labor = particular.details.Labor;
+                                var equipment = particular.details.Equipment;
 
                                 // Create a new div for each particular name
                                 var divHTML = '<div class="col-10">' +
@@ -122,10 +122,11 @@
                                 if (materials.length > 0) {
                                     var materialTotalAmount = 0;
                                     divHTML +=
+                                        '<div>1.0 Materials :</div>' +
                                         '<table class="table table-sm text-center table-bordered">' +
                                         '<thead>' +
                                         '<tr>' +
-                                        '<th colspan="5">Materials</th>' +
+                                        // '<th colspan="5">Materials</th>' +
                                         '</tr>' +
                                         '<tr>' +
                                         '<th>Particulars</th>' +
@@ -169,10 +170,11 @@
                                 if (labor.length > 0) {
                                     var laborTotalAmount = 0;
                                     divHTML +=
+                                        '<div>' + '2.0 Labor :' + +' Mandays' + '</div>' +
                                         '<table class="table table-sm text-center table-bordered">' +
                                         '<thead>' +
                                         '<tr>' +
-                                        '<th colspan="5">Labor</th>' +
+                                        // '<th colspan="5">Labor</th>' +
                                         '</tr>' +
                                         '<tr>' +
                                         '<th>Particulars</th>' +
@@ -185,16 +187,17 @@
                                         '<tbody>';
                                     // Append labor to the table
                                     labor.forEach(function(lab) {
-                                        var newRate = parseFloat(lab.labor_rate) *
-                                            8; // Convert rate to per day
+                                        // var newRate = parseFloat(lab.labor_rate) *
+                                        //     8; // Convert rate to per day
                                         var amount = parseFloat(lab.labor_work_days) *
-                                            newRate;
+                                            parseFloat(lab.labor_rate);
                                         laborTotalAmount += amount;
                                         divHTML += '<tr>' +
                                             '<td>' + lab.labor_name + '</td>' +
                                             '<td>' + lab.labor_no_of_persons + '</td>' +
                                             '<td>' + lab.labor_work_days + '</td>' +
-                                            '<td>' + numberWithCommas(newRate.toFixed(2)) +
+                                            '<td>' + numberWithCommas(parseFloat(lab
+                                                .labor_rate).toFixed(2)) +
                                             '</td>' +
                                             '<td>' + numberWithCommas(amount.toFixed(2)) +
                                             '</td>' +
@@ -216,10 +219,11 @@
                                 if (equipment.length > 0) {
                                     var equipmentTotalAmount = 0;
                                     divHTML +=
+                                        '<div>3.0 Equipment Rental :' + + '</div>' +
                                         '<table class="table table-sm text-center table-bordered">' +
                                         '<thead>' +
                                         '<tr>' +
-                                        '<th colspan="5">Equipment</th>' +
+                                        // '<th colspan="5">Equipment</th>' +
                                         '</tr>' +
                                         '<tr>' +
                                         '<th>Particulars</th>' +
@@ -232,16 +236,17 @@
                                         '<tbody>';
                                     // Append equipment to the table
                                     equipment.forEach(function(equip) {
-                                        var newRate = parseFloat(equip.equipment_rate) *
-                                            8; // Convert rate to per day
+                                        // var newRate = parseFloat(equip.equipment_rate) *
+                                        //     8; // Convert rate to per day
                                         var amount = parseFloat(equip.equipment_work_days) *
-                                            newRate;
+                                            parseFloat(equip.equipment_rate);
                                         equipmentTotalAmount += amount;
                                         divHTML += '<tr>' +
                                             '<td>' + equip.equipment_name + '</td>' +
                                             '<td>' + equip.equipment_no_of_units + '</td>' +
                                             '<td>' + equip.equipment_work_days + '</td>' +
-                                            '<td>' + numberWithCommas(newRate.toFixed(2)) +
+                                            '<td>' + numberWithCommas(parseFloat(equip
+                                                .equipment_rate).toFixed(2)) +
                                             '</td>' +
                                             '<td>' + numberWithCommas(amount.toFixed(2)) +
                                             '</td>' +

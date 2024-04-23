@@ -18,14 +18,14 @@ class AdminUserSeeder extends Seeder
     {
         // Create admin user if not exists
         User::firstOrCreate(
-            ['email' => 'oupdadmin@gmail.com'],
+            ['email' => 'admin@gmail.com'],
             [
                 'first_name' => 'OUPD',
                 'middle_name' => 'admin',
                 'last_name' => 'Admin',
                 'user_name' => 'Admin',
                 'roles' => 'admin',
-                'password' => Hash::make('oupdadmin2k24'),
+                'password' => Hash::make('admin123'),
             ]
         );
 

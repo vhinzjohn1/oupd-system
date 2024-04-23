@@ -79,44 +79,14 @@
             });
         });
 
-        function openEditLaborModal(labor_id, labor_rate_id, rate, labor_name, location) {
-            console.log("Labor ID: " + labor_id + ", Rate ID: " + labor_rate_id + ", Location: " +
-                location + ", rate: " + rate);
+        function openEditLaborModal(labor_id, labor_rate_id, rate, labor_name) {
             // Call a function to fetch labor data by labor_id
             $('#edit_labor_id').val(labor_id);
             $('#edit_labor_name').val(labor_name);
-            // $('#edit_material_category_name').val(material.category.material_category_name);
-            $('#edit_location').val('maramag');
             $('#edit_rate').val(rate);
             $('#editLaborModal').modal('show');
         }
-        // // Function to fetch labor data by labor_id
-        // function fetchLaborData(labor_id) {
-        //     $.ajax({
-        //         url: "{{ route('labor.index') }}/" +
-        //             labor_id, // Adjust the route to fetch individual labor data
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         success: function(labor) {
-        //             // Populate the form fields with the fetched labor data
-        //             $('#edit_labor_id').val(labor.labor_id);
-        //             // $('#edit_material_category_name').val(material.category.material_category_name);
-        //             $('#edit_location').val(labor.location);
-        //             $('#edit_labor_name').val(labor.labor_name);
-        //             // $('#edit_rate').val(labor.rate);
-
-        //             // Assuming prices is always an array, even if empty
-        //             const rateData = labor.rates[0] || {};
-        //             $('#edit_rate').val(rateData.rate);
-        //             // $('#edit_quarter').val(rateData.quarter);
-        //             // $('#edit_year').val(rateData.year);
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText);
-        //         }
-        //     });
-        // }
-
+        
         function refreshLaborsTable() {
             // Check if data is already cached in localStorage
             var cachedData = localStorage.getItem('laborsData');
@@ -155,7 +125,7 @@
                     labor.rate,
                     labor.date_effective,
                     '<div class="text-center d-flex">' +
-                    `<button type="button" id="editButton" class="btn bg-success mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.location}', '${labor.rate}')" ><i class="fas fa-edit"></i></button>` +
+                    `<button type="button" id="editButton" class="btn bg-success mr-2" data-id="${labor.labor_id}" onclick="openEditLaborModal(${labor.labor_id},'${labor.labor_name}', '${labor.rate}')" ><i class="fas fa-edit"></i></button>` +
                     `<button type="button" class="btn bg-danger btn-delete-labor" data-id="${labor.labor_id}"><i class="fas fa-trash-alt"></i></button>` +
                     // ... (add your delete button logic here) +
                     '</div>'
@@ -207,7 +177,7 @@
 
                 // Get form data
                 let laborName = $('#add_labor_name').val();
-                let location = 'maramag';
+                // let location = 'maramag';
                 let rate = $('#add_rate').val();
 
 
@@ -217,7 +187,7 @@
                     type: "POST",
                     data: {
                         labor_name: laborName,
-                        location: location,
+                        // location: location,
                         rate: rate,
                         _token: "{{ csrf_token() }}"
                     },
@@ -252,7 +222,6 @@
                 // Get form data
                 let edit_laborId = $('#edit_labor_id').val();
                 let edit_laborName = $('#edit_labor_name').val();
-                let edit_location = 'maramag';
                 let edit_rate = $('#edit_rate').val();
 
                 $.ajax({
@@ -261,7 +230,6 @@
                     type: "PUT",
                     data: {
                         edit_labor_name: edit_laborName,
-                        edit_location: edit_location,
                         edit_rate: edit_rate,
                         _token: "{{ csrf_token() }}"
                     },
