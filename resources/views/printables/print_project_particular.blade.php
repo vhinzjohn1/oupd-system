@@ -170,7 +170,11 @@
                                 if (labor.length > 0) {
                                     var laborTotalAmount = 0;
                                     divHTML +=
-                                        '<div>' + '2.0 Labor :' + +' Mandays' + '</div>' +
+                                        '<div class="row">' +
+                                        '<div class="col-sm-2">' + '2.0 Labor :' + '</div>' +
+                                        '<div class="col-sm-2">' + 'dad' + '</div>' +
+                                        '<div class="col-sm-2">' + ' Mandays' + '</div>' +
+                                        '</div>' +
                                         '<table class="table table-sm text-center table-bordered">' +
                                         '<thead>' +
                                         '<tr>' +
@@ -189,7 +193,8 @@
                                     labor.forEach(function(lab) {
                                         // var newRate = parseFloat(lab.labor_rate) *
                                         //     8; // Convert rate to per day
-                                        var amount = parseFloat(lab.labor_work_days) *
+                                        var amount = parseFloat(lab.labor_no_of_persons) *
+                                            parseFloat(lab.labor_work_days) *
                                             parseFloat(lab.labor_rate);
                                         laborTotalAmount += amount;
                                         divHTML += '<tr>' +
@@ -219,7 +224,7 @@
                                 if (equipment.length > 0) {
                                     var equipmentTotalAmount = 0;
                                     divHTML +=
-                                        '<div>3.0 Equipment Rental :' + + '</div>' +
+                                        '<div>3.0 Equipment Rental :' + +'</div>' +
                                         '<table class="table table-sm text-center table-bordered">' +
                                         '<thead>' +
                                         '<tr>' +

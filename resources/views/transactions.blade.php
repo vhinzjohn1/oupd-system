@@ -963,7 +963,7 @@
                                 flex: 1,
                                 valueFormatter: function(params) {
                                     // Format the amount with commas for thousands separators and two decimal places
-                                    return parseFloat(params.value * 8)
+                                    return parseFloat(params.value)
                                         .toFixed(2)
                                         .replace(/\d(?=(\d{3})+\.)/g, "$&,");
                                 },
@@ -979,7 +979,7 @@
                                 flex: 1,
                                 valueGetter: function(params) {
                                     // Access material_quantity and material_price from the row data
-                                    const rate = params.data.labor_rate * 8;
+                                    const rate = params.data.labor_rate;
                                     const noOfPerson = params.data.labor_no_of_persons;
                                     const work_days = params.data.labor_work_days;
 
@@ -1007,7 +1007,7 @@
                                     const projectPartID = params.data.project_particular_labor_id;
                                     const laborNoPerson = params.data.labor_no_of_persons;
                                     const workDays = params.data.labor_work_days;
-                                    const laborRate = params.data.labor_rate * 8;
+                                    const laborRate = params.data.labor_rate;
                                     const laborName = params.data.labor_name;
 
                                     // Construct the HTML string with the detailType and particularID
@@ -1240,7 +1240,6 @@
                             rowDataLabor.forEach(function(labor) {
                                 totalLaborAmount +=
                                     labor.labor_rate *
-                                    8 *
                                     labor.labor_work_days *
                                     labor.labor_no_of_persons; // Update calculation
                             });
@@ -1948,7 +1947,7 @@
                                 flex: 1,
                                 valueFormatter: function(params) {
                                     // Format the amount with commas for thousands separators and two decimal places
-                                    return parseFloat(params.value * 8)
+                                    return parseFloat(params.value)
                                         .toFixed(2)
                                         .replace(/\d(?=(\d{3})+\.)/g, "$&,");
                                 },
@@ -1964,7 +1963,7 @@
                                 flex: 1,
                                 valueGetter: function(params) {
                                     // Access material_quantity and material_price from the row data
-                                    const rate = params.data.labor_rate * 8;
+                                    const rate = params.data.labor_rate;
                                     const noOfPerson = params.data.labor_no_of_persons;
                                     const work_days = params.data.labor_work_days;
 
@@ -1992,7 +1991,7 @@
                                     const projectPartID = params.data.project_particular_labor_id;
                                     const laborNoPerson = params.data.labor_no_of_persons;
                                     const workDays = params.data.labor_work_days;
-                                    const laborRate = params.data.labor_rate * 8;
+                                    const laborRate = params.data.labor_rate;
                                     const laborName = params.data.labor_name;
 
                                     // Construct the HTML string with the detailType and particularID
@@ -2283,7 +2282,6 @@
                                 rowDataLabor.forEach(function(labor) {
                                     totalLaborAmount +=
                                         labor.labor_rate *
-                                        8 *
                                         labor.labor_work_days *
                                         labor.labor_no_of_persons; // Update calculation
                                 });

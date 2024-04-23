@@ -37,7 +37,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="add_particular_laborRate">Rate (per hrs)</label>
+                                <label for="add_particular_laborRate">Rate</label>
                                 <input type="text" class="form-control" id="add_particular_laborRate"
                                     name="add_particular_laborRate" readonly required>
                             </div>
@@ -70,7 +70,7 @@
 
             var workDays = parseFloat($('#add_particular_laborWorkDays')
                 .val()); // Remove commas before parsing
-            var rate = parseFloat($('#add_particular_laborRate').val()) * 8;
+            var rate = parseFloat($('#add_particular_laborRate').val());
             var noOfPerson = parseFloat($('#add_particular_noOfPerson').val());
             var totalRate = rate * noOfPerson;
 
