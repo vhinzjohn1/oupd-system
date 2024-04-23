@@ -237,10 +237,7 @@ class LaborController extends Controller
             $labor = Labor::findOrFail($id);
 
             // Deactivate existing rates related to the labor
-            $labor->rates()->update(['is_active' => false]);
-
-            // Update foreign key references to null in related labor_rates records
-            LaborRate::where('labor_id', $labor->labor_id)->update(['labor_id' => null]);
+            $labor->rates()->delete();
 
             // Delete the labor
             $labor->delete();

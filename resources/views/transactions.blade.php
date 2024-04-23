@@ -213,8 +213,9 @@
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
-            <div class="">
-                <h4></h4>
+            <div class="d-flex">
+                <h4>Project Item</h4>
+                {{-- <div class="btn btn-success"></div> --}}
             </div>
             <div id="projectParticularContent" class="container-fluid col-12 d-flex flex-column"></div>
         </div>
@@ -231,7 +232,9 @@
         </div>
     </div>
 
+
     <script>
+        // Signature Table DataTable
         $("#signatureTable").DataTable({
             "responsive": true,
             "lengthChange": true,
@@ -253,6 +256,9 @@
         function updateParticularTotal(projectPartID, projectPartTotal) {
             console.log(projectPartID);
             console.log(projectPartTotal);
+
+
+            
 
         }
 
@@ -530,6 +536,10 @@
                 "#edit_particular_materialQuantity"
             ).val();
 
+            let materialPriceID = $(
+                "#editMaterialPriceID"
+            ).val();
+
             // AJAX request
             $.ajax({
                 url: "/submit-details",
@@ -540,6 +550,7 @@
                     particularId: particularId,
                     materialId: materialId,
                     materialQuantity: materialQuantity,
+                    materialPriceID: materialPriceID,
                     _token: "{{ csrf_token() }}",
                     // Add more form data fields here if needed
                 },
@@ -678,6 +689,8 @@
                 $('#edit_particular_materialPrice').val(materialPrice);
                 $('#edit_particular_materialQuarter').val(materialQuarter);
                 $('#edit_particular_materialYear').val(materialYear);
+                $('#editMaterialPriceID').val(laborNoPerson);
+
 
                 localStorage.setItem("particularId", particular_id1);
 
@@ -909,6 +922,7 @@
                                     const materialYear = params.data.material_year;
                                     const particularId = params.data
                                         .particular_id; // Changed from materialPartID to particularId
+                                    const materialPriceID = params.data.material_price_id
 
                                     // Construct the HTML string with the onclick event for edit and delete buttons
                                     const htmlString =
@@ -918,7 +932,8 @@
                                         materialName + '\', \'' + materialUnit + '\', \'' +
                                         materialCategoryName + '\', \'' + materialPrice + '\', \'' +
                                         materialQuantity + '\', \'' + particularId + '\', \'' +
-                                        materialQuarter + '\', \'' + materialYear +
+                                        materialQuarter + '\', \'' + materialYear + '\', \'' +
+                                        materialPriceID +
                                         '\')" class="btn btn-success btn-header mr-1"><i class="fas fa-edit"></i></button>' +
                                         '<button onclick="deleteDetail(\'' + detailType + '\', ' +
                                         materialPartID +
@@ -2516,6 +2531,10 @@
                 "#add_particular_materialYear"
             ).val();
 
+            let materialPriceID = $(
+                "#add_particular_priceID"
+            ).val();
+
             // Remove materialId from the data object if it's "empty"
             let data = {
                 projectId: projectId,
@@ -2527,6 +2546,7 @@
                 materialQuarter: materialQuarter,
                 materialYear: materialYear,
                 materialQuantity: materialQuantity,
+                materialPriceID: materialPriceID,
                 _token: "{{ csrf_token() }}",
             };
             if (materialId !== "empty") {
@@ -2702,6 +2722,7 @@
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
+                        console.log(response);
                         // Extract materials from the Ajax response
                         var materials = response.materials;
                         // Get the select element and empty it
@@ -2759,6 +2780,9 @@
                                         .material_quarter);
                                     $("#add_particular_materialYear").val(selectedMaterial
                                         .material_year);
+
+                                    $("#add_particular_priceID").val(selectedMaterial
+                                        .material_price_id);
 
                                     // Chnage readonly attributte of the form
                                     $("#add_particular_category").prop("readonly", true);

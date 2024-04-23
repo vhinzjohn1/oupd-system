@@ -195,28 +195,37 @@ class PDFController extends Controller
                 }
 
                 if (!empty($project->material_id) && $project->material_price !== null && $project->material_price !== 0) {
+                    // Calculate the amount for the current material
+                    $amount = $project->material_price * $project->material_quantity;
+
                     // Check if the material is already added
                     $existingMaterial = collect($formattedData[$title]['particulars'][$particularName]['details']['Materials'])
                         ->firstWhere('material_id', $project->material_id);
 
                     // Add the material only if it's not already present
                     if (!$existingMaterial) {
+                        // Add the material details to the formatted data
                         $formattedData[$title]['particulars'][$particularName]['details']['Materials'][] = [
                             'particular_id' => $project->particular_id,
                             'project_particular_material_id' => $project->project_particular_material_id,
                             'material_id' => $project->material_id,
                             'material_name' => $project->material_name,
-                            'material_category_id' => $project->material_category_id,
-                            'material_category_name' => $project->material_category_name,
-                            'material_quarter' => $project->material_quarter,
                             'material_quantity' => $project->material_quantity,
                             'material_price_id' => $project->material_price_id,
                             'material_price' => $project->material_price,
-                            'material_year' => $project->material_year,
-                            'material_unit' => $project->material_unit,
+                            'amount' => $amount,
                         ];
                     }
                 }
+
+                // Calculate the total material amount for this particular
+                $totalMaterialAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Materials'])
+                    ->sum('amount');
+
+                // Assign the total material amount to the 'materialTotalAmount' field for this particular
+                $formattedData[$title]['particulars'][$particularName]['materialTotalAmount'] = $totalMaterialAmount;
+
+
 
                 // Add equipment details if not already added
                 if (

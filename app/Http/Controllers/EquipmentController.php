@@ -205,21 +205,9 @@ class EquipmentController extends Controller
             // Find the equipment based on ID
             $equipment = Equipment::findOrFail($id);
 
-            // // Update only the specified fields to null or an empty value
-            // $equipment->equipment_name = null;
-            // $equipment->equipment_model = null;
-            // $equipment->equipment_capacity = null;
-
-            // // Save the changes, it will retain the categories and rate in the table
-            // $equipment->save();
-
             // Deactivate existing rates related to the equipment
-            $equipment->rates()->update(['is_active' => false]);
+            $equipment->rates()->delete();
 
-            // Update foreign key references to null in related equipment_rates records
-            EquipmentRate::where('equipment_id', $equipment->equipment_id)->update(['equipment_id' => null]);
-
-            // You can choose to delete the equipment if needed
             // Comment if you only want to delete it in the table not in the database
             $equipment->delete();
 

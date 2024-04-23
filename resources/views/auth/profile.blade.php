@@ -153,31 +153,31 @@
                 </div>
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
+
+
+
+            {{-- Table for User Management --}}
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-body table-responsive">
+                        <table class="table col-12" id="accountTable">
+                            <thead>
+                                <tr>
+                                    <th>First Name</th>
+                                    <th>Middle Name</th>
+                                    <th>Last Name</th>
+                                    <th>User Name</th>
+                                    <th>Roles</th>
+                                    <th>Email</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /.content -->
-    @endsection
-
-    @section('styles')
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    @endsection
-
-    @section('scripts')
-        @if ($message = Session::get('success'))
-            <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-            <script>
-                toastr.options = {
-                    "closeButton": true,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                }
-
-                toastr.success('{{ $message }}')
-            </script>
-        @endif
     @endsection
