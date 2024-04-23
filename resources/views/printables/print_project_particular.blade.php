@@ -224,7 +224,11 @@
                                 if (equipment.length > 0) {
                                     var equipmentTotalAmount = 0;
                                     divHTML +=
-                                        '<div>3.0 Equipment Rental :' + +'</div>' +
+                                    '<div class="row">' +
+                                        '<div class="col-sm-2">' + '3.0 Equipment :' + '</div>' +
+                                        '<div class="col-sm-2">' + 'dad' + '</div>' +
+                                        '<div class="col-sm-2">' + ' Mandays' + '</div>' +
+                                        '</div>' +
                                         '<table class="table table-sm text-center table-bordered">' +
                                         '<thead>' +
                                         '<tr>' +

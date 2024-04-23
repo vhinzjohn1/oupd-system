@@ -248,6 +248,9 @@
                                 '<td class="text-center">' + +'</td>' +
                                 '</tr>' +
                                 '<tr>' +
+                                '<th colspan="7" class="text-center">ESTIMATED COST OF PROPOSED WORK</th>' +
+                                '</tr>' +
+                                '<tr>' +
                                 '<th scope="col" class="text-center">Item No.</th>' +
                                 '<th scope="col" class="text-center">Description</th>' +
                                 '<th scope="col" class="text-center">% TOTAL</th>' +
