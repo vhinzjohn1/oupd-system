@@ -14,7 +14,8 @@ class ProjectParticularMaterial extends Model
     protected $fillable = [
         'project_particular_id',
         'material_id',
-        'quantity'
+        'quantity',
+        'price_id'
     ];
 
     public function particular()

@@ -213,7 +213,9 @@
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
-            <h4>Project Item</h4>
+            <div class="">
+                <h4></h4>
+            </div>
             <div id="projectParticularContent" class="container-fluid col-12 d-flex flex-column"></div>
         </div>
 
