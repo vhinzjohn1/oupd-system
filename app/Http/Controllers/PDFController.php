@@ -196,7 +196,7 @@ class PDFController extends Controller
 
                 if (!empty($project->material_id) && $project->material_price !== null && $project->material_price !== 0) {
                     // Calculate the amount for the current material
-                    $amount = $project->material_price * $project->material_quantity;
+                    $matAmount = $project->material_price * $project->material_quantity;
 
                     // Check if the material is already added
                     $existingMaterial = collect($formattedData[$title]['particulars'][$particularName]['details']['Materials'])
@@ -213,17 +213,18 @@ class PDFController extends Controller
                             'material_quantity' => $project->material_quantity,
                             'material_price_id' => $project->material_price_id,
                             'material_price' => $project->material_price,
-                            'amount' => $amount,
+                            'material_unit' => $project->material_unit,
+                            'matAmount' => $matAmount,
                         ];
                     }
                 }
 
                 // Calculate the total material amount for this particular
                 $totalMaterialAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Materials'])
-                    ->sum('amount');
+                    ->sum('matAmount');
 
                 // Assign the total material amount to the 'materialTotalAmount' field for this particular
-                $formattedData[$title]['particulars'][$particularName]['materialTotalAmount'] = $totalMaterialAmount;
+                $formattedData[$title]['particulars'][$particularName]['totalMaterialAmount'] = $totalMaterialAmount;
 
 
 
@@ -236,6 +237,8 @@ class PDFController extends Controller
                         true
                     )
                 ) {
+                    // Calculate the amount for the current material
+                    $equipAmount = $project->material_price * $project->material_quantity;
                     // Check if the equipment entry with the same equipment_id exists
                     $existingEquipment = collect($formattedData[$title]['particulars'][$particularName]['details']['Equipment'])
                         ->firstWhere('equipment_id', $project->equipment_id);
@@ -250,9 +253,16 @@ class PDFController extends Controller
                             'equipment_work_days' => $project->equipment_work_days,
                             'equipment_no_of_units' => $project->equipment_no_of_units,
                             'equipment_rate' => $project->equipment_rate,
+                            'equipAmount' => $equipAmount,
                         ];
                     }
                 }
+                // Calculate the total material amount for this particular
+                $totalEquipmentAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Equipment'])
+                    ->sum('equipAmount');
+
+                // Assign the total material amount to the 'materialTotalAmount' field for this particular
+                $formattedData[$title]['particulars'][$particularName]['totalEquipmentAmount'] = $totalEquipmentAmount;
 
                 // Add labor details if not already added
                 if (
@@ -263,6 +273,8 @@ class PDFController extends Controller
                         true
                     )
                 ) {
+                    // Calculate the amount for the current material
+                    $labAmount = $project->labor_no_of_persons * $project->labor_work_days * $project->labor_rate;
                     // Check if the labor entry with the same labor_id exists
                     $existingLabor = collect($formattedData[$title]['particulars'][$particularName]['details']['Labor'])
                         ->firstWhere('labor_id', $project->labor_id);
@@ -278,9 +290,16 @@ class PDFController extends Controller
                             'labor_no_of_persons' => $project->labor_no_of_persons,
                             'labor_location' => $project->labor_location,
                             'labor_rate' => $project->labor_rate,
+                            'labAmount' => $labAmount,
                         ];
                     }
                 }
+                // Calculate the total material amount for this particular
+                $totalLaborAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Labor'])
+                    ->sum('labAmount');
+
+                // Assign the total material amount to the 'materialTotalAmount' field for this particular
+                $formattedData[$title]['particulars'][$particularName]['totalLaborAmount'] = $totalLaborAmount;
             }
         }
 

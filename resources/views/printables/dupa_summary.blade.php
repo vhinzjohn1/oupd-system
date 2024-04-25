@@ -205,6 +205,12 @@
                         var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
+                            var totMarkUpVal = 0;
+                            var totalDirCost = 0;
+                            var edcTotalAmount = 0;
+                            var dirTotal = 0;
+                            var vatTotal = 0;
+                            var totalCostAmount = 0;
                             var totalAmount = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
@@ -233,9 +239,16 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                var amount = parseFloat(particular.quantity) *
-                                    parseFloat(particular.unit_cost);
-                                totalAmount += amount;
+                                edcTotalAmount = particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
+                                dirTotal += edcTotalAmount;
+                                markUpTotal = project.ocm + project.contractors_profit;
+                                markUpValue = (markUpTotal / 100) * edcTotalAmount;
+                                vatValue = (project.vat / 100) * (markUpValue + edcTotalAmount);
+                                indirCostTotal = markUpValue + vatValue;
+                                totalCost = edcTotalAmount + indirCostTotal;
+                                unitCost = totalCost / particular.quantity;
+                                vatTotal += vatValue;
+                                totalCostAmount += totalCost;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
@@ -244,12 +257,11 @@
                                     '<td class="text-center">' + particular.unit +
                                     '</td>' +
                                     '<td class="text-right">' + numberWithCommas(parseFloat(
-                                        particular.quantity)) +
+                                        particular.quantity).toFixed(2)) +
                                     '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(amount.toFixed(
+                                    '<td class="text-right">' + numberWithCommas(totalCost.toFixed(
                                         2)) + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(parseFloat(
-                                        particular.unit_cost).toFixed(2)) +
+                                    '<td class="text-right">' + numberWithCommas(unitCost.toFixed(2)) +
                                     '</td>' +
                                     '</tr>';
                             });
@@ -261,7 +273,7 @@
                                 '<td></td>' +
                                 '<td><strong>Total</strong></td>' +
                                 '<td colspan="2"></td>' +
-                                '<td class="text-right">' + numberWithCommas(totalAmount.toFixed(2)) +
+                                '<td class="text-right">' + numberWithCommas(totalCostAmount.toFixed(2)) +
                                 '</td>' +
                                 '</tr>' +
                                 '</tfoot>' +

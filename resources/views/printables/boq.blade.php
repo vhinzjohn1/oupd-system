@@ -167,6 +167,15 @@
                             var totalAmount = 0;
                             var percent = 0;
                             var totalPercent = 0;
+                            var totalCostAmount = 0;
+                            var totalIndirCost = 0;
+                            var totalVat = 0;
+                            var totMarkUpVal = 0;
+                            var totalDirCost = 0;
+                            var edcTotalAmount = 0;
+                            var dirTotal = 0;
+                            var vatTotal = 0;
+                            var mobTotal = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -261,29 +270,59 @@
                                 '</tr>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                // Retrieve stored values from localStorage
-                                var totCost = parseFloat(localStorage.getItem(
-                                    'totalCost')) || 0;
-                                var totAmount = parseFloat(localStorage.getItem(
-                                    'totalAmount')) || 0;
-                                console.log(totCost);
-                                console.log(totAmount);
-                                percent = (totCost / totAmount) * 100;
+                                // Check if the particular is MOVING-IN or MOVING-OUT
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+
+                                var mobValue = isMovingParticular ? parseFloat(particular.total) :
+                                    0;
+                                mobTotal += mobValue;
+                                // Calculate values based on the type of particular
+                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) :
+                                    (
+                                        parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                            particular.totalLaborAmount) +
+                                        parseFloat(particular.totalEquipmentAmount));
+                                markUpTotal = isMovingParticular ? 0 : (project.ocm + project
+                                    .contractors_profit);
+                                markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
+                                    edcTotalAmount);
+                                vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                    markUpValue + edcTotalAmount));
+                                indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                    vatValue);
+                                totalCost = edcTotalAmount + indirCostTotal;
+                                unitCost = totalCost / particular.quantity;
+
+                                // Accumulate totals
+                                dirTotal += edcTotalAmount;
+                                totMarkUpVal += markUpValue;
+                                vatTotal += vatValue;
+                                totalIndirCost += indirCostTotal;
+                                totalCostAmount += totalCost;
+
+                                // Calculate percent based on accumulated totalCostAmount
+                                var percent = (totalCost / totalCostAmount) * 100;
                                 totalPercent += percent;
+                                console.log('total cost: ', totalCost);
+                                console.log('total cost amount: ', totalCostAmount);
+                                console.log('total percent: ', percent);
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + percent +
+                                    '<td class="text-center">' + numberWithCommas(percent.toFixed(
+                                        2)) +
                                     '</td>' +
-                                    '<td class="text-center">' + particular.quantity +
+                                    '<td class="text-center">' + numberWithCommas(parseFloat(
+                                        particular.quantity).toFixed(2)) +
                                     '</td>' +
                                     '<td class="text-center">' + particular.unit +
                                     '</td>' +
-                                    '<td class="text-center">' + +
-                                    '</td>' +
-                                    '<td class="text-center">' + +'</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
                                     '</tr>';
                             });
                             // Close the table and container

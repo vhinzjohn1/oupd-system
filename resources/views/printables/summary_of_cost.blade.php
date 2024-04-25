@@ -204,7 +204,10 @@
                             var equipTotal = 0;
                             var labTotal = 0;
                             var totalAmount = 0;
-                            var allTotal = 0;
+                            var dirTotal = 0;
+                            var movingIn = 0;
+                            var movingOut = 0;
+                            var mobCost = 0;
                             // Create particulars table
                             divHTML +=
                                 '<div class="container">' +
@@ -225,40 +228,33 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                // Retrieve stored values from localStorage
-                                var matTotalAmount = parseFloat(localStorage.getItem(
-                                    'materialTotalAmount')) || 0;
-                                var equipTotalAmount = parseFloat(localStorage.getItem(
-                                    'equipmentTotalAmount')) || 0;
-                                var labTotalAmount = parseFloat(localStorage.getItem(
-                                    'laborTotalAmount')) || 0;
                                 // Calculate individual totals
-                                matTotal += matTotalAmount;
-                                equipTotal += equipTotalAmount;
-                                labTotal += labTotalAmount;
-                                totalAmount = matTotalAmount + equipTotalAmount + labTotalAmount;
-                                allTotal += totalAmount;
-                                ocmTotal = allTotal * (project.ocm / 100);
-                                cpTotal = allTotal * (project.contractors_profit / 100);
-                                vatTotal = (allTotal + ocmTotal + cpTotal) * (project.vat / 100)
+                                matTotal += particular.totalMaterialAmount;
+                                equipTotal += particular.totalEquipmentAmount;
+                                labTotal += particular.totalLaborAmount;
+                                totalAmount = particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
+                                dirTotal += totalAmount;
+                                ocmTotal = dirTotal * (project.ocm / 100);
+                                cpTotal = dirTotal * (project.contractors_profit / 100);
+                                vatTotal = (dirTotal + ocmTotal + cpTotal) * (project.vat / 100)
                                 totalIndirCost = ocmTotal + cpTotal + vatTotal;
-                                projectCostTotal = allTotal + totalIndirCost;
-                                // var materialTotal = 0;
-                                // var materialAmount = parseFloat(particular.particular_quantity) *
-                                //     parseFloat(particular.particular_unit_cost);
-                                // materialTotal += materialAmount;
-                                // Add row for the particular
+                                projectCostTotal = dirTotal + totalIndirCost + mobCost;
+                                // moving in/moving out =
+                                // direct cost + 0.01 / 2
+                                movingIn = (dirTotal * 0.01) / 2;
+                                movingOut = (dirTotal * 0.01) / 2;
+                                mobCost = movingIn + movingOut;
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
                                     '<td class="text-center">' + numberWithCommas(parseFloat(
-                                        matTotalAmount).toFixed(2)) + '</td>' +
+                                        particular.totalMaterialAmount).toFixed(2)) + '</td>' +
                                     '<td class="text-center">' + numberWithCommas(parseFloat(
-                                        labTotalAmount).toFixed(2)) + '</td>' +
+                                        particular.totalLaborAmount).toFixed(2)) + '</td>' +
                                     '<td class="text-center">' + numberWithCommas(parseFloat(
-                                        equipTotalAmount).toFixed(2)) + '</td>' +
+                                        particular.totalEquipmentAmount).toFixed(2)) + '</td>' +
                                     '<td class="text-center">' + numberWithCommas(parseFloat(
                                         totalAmount).toFixed(2)) + '</td>' +
                                     '</tr>';
@@ -277,7 +273,7 @@
                                 '</td>' +
                                 '<td class="text-center">' + numberWithCommas(equipTotal.toFixed(2)) +
                                 '</td>' +
-                                '<td class="text-center">' + numberWithCommas(allTotal.toFixed(2)) +
+                                '<td class="text-center">' + numberWithCommas(dirTotal.toFixed(2)) +
                                 '</td>' +
                                 '</tr>' +
                                 '</tfoot>' +
@@ -315,7 +311,7 @@
                                 '<td class="text-right">' + numberWithCommas(equipTotal.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + numberWithCommas(allTotal.toFixed(2)) +
+                                '<td class="text-center">' + numberWithCommas(dirTotal.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-center"></td>' +
                                 '</tr>' +
@@ -329,7 +325,7 @@
                                 '</tr>' +
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
-                                '<td class="text-left">OCM (15% of Direct Cost)</td>' +
+                                '<td class="text-left">OCM ('+ project.ocm +'% of Direct Cost)</td>' +
                                 '<td class="text-right">' + numberWithCommas(ocmTotal.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-center"></td>' +
@@ -338,7 +334,7 @@
                                 '</tr>' +
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
-                                '<td class="text-left">CP (10% of Direct Cost)</td>' +
+                                '<td class="text-left">CP ('+ project.contractors_profit +'% of Direct Cost)</td>' +
                                 '<td class="text-right">' + numberWithCommas(cpTotal.toFixed(2)) + '</td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
@@ -346,7 +342,7 @@
                                 '</tr>' +
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
-                                '<td class="text-left">VAT (5% of Total above Cost)</td>' +
+                                '<td class="text-left">VAT ('+ project.vat +'% of Total above Cost)</td>' +
                                 '<td class="text-right">' + numberWithCommas(vatTotal.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-center">=</td>' +
@@ -362,10 +358,12 @@
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
                                 '</tr>' +
+                                // moving in/moving out =
+                                // direct cost + 0.01 / 2
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-left">Moving-in</td>' +
-                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-right">' + numberWithCommas(movingIn.toFixed(2)) +'</td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
@@ -373,9 +371,9 @@
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-left">Moving-out</td>' +
-                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-right">' + numberWithCommas(movingOut.toFixed(2)) +'</td>' +
                                 '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + +'</td>' +
+                                '<td class="text-center">' + numberWithCommas(mobCost.toFixed(2)) +'</td>' +
                                 '<td class="text-center"></td>' +
                                 '</tr>' +
                                 '<tr>' +

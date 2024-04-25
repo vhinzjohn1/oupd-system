@@ -223,11 +223,15 @@
                         var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
-                            var totalAmount = 0;
+                            var totalCostAmount = 0;
                             var totalIndirCost = 0;
                             var totalVat = 0;
                             var totMarkUpVal = 0;
                             var totalDirCost = 0;
+                            var edcTotalAmount = 0;
+                            var dirTotal = 0;
+                            var vatTotal = 0;
+                            var mobTotal = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -287,28 +291,36 @@
                                 '</tr>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                // Retrieve stored values from localStorage
-                                var dirCostTotAmount = parseFloat(localStorage.getItem(
-                                    'directCostTotalAmount')) || 0;
-                                var vatTotAmount = parseFloat(localStorage.getItem(
-                                    'vatTotalAmount')) || 0;
-                                console.log(dirCostTotAmount);
-                                markUpTotal = project.ocm + project.contractors_profit;
-                                markUpValue = (markUpTotal / 100) * dirCostTotAmount;
-                                indirCostTotal = markUpValue + vatTotAmount;
-                                totalCost = dirCostTotAmount + indirCostTotal;
+                                // Check if the particular is MOVING-IN or MOVING-OUT
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+
+                                var mobValue = isMovingParticular ? parseFloat(particular.total) :
+                                0;
+                                mobTotal += mobValue;
+                                // Calculate values based on the type of particular
+                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) : (
+                                    parseFloat(particular.totalMaterialAmount) + parseFloat(particular.totalLaborAmount) +
+                                    parseFloat(particular.totalEquipmentAmount));
+                                markUpTotal = isMovingParticular ? 0 : (project.ocm + project
+                                    .contractors_profit);
+                                markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
+                                    edcTotalAmount);
+                                vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                    markUpValue + edcTotalAmount));
+                                indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                    vatValue);
+                                totalCost = edcTotalAmount + indirCostTotal;
                                 unitCost = totalCost / particular.quantity;
-                                totalAmount += totalCost;
-                                totalDirCost += dirCostTotAmount;
+                                dirTotal += edcTotalAmount;
                                 totMarkUpVal += markUpValue;
-                                totalVat += vatTotAmount;
+                                vatTotal += vatValue;
                                 totalIndirCost += indirCostTotal;
-                                // Store total amounts in localStorage
-                                localStorage.setItem('totalCost',
-                                    totalCost);
-                                localStorage.setItem('totalAmount',
-                                    totalAmount);
-                                console.log('total amount:', totalCost);
+                                totalCostAmount += totalCost;
+
+                                console.log('mob', mobTotal);
+                                console.log('dir total:', dirTotal);
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
@@ -318,29 +330,36 @@
                                     '<td class="text-right">' + numberWithCommas(parseFloat(
                                         particular.quantity).toFixed(2)) + '</td>' +
                                     '<td>' + particular.unit + '</td>' +
-                                    '<td class="text-right">' + dirCostTotAmount + '</td>' +
-                                    '<td class="text-center">' + project.ocm +
+                                    '<td class="text-right">' + numberWithCommas(parseFloat(
+                                            edcTotalAmount)
+                                        .toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + (isMovingParticular ? '' : project
+                                        .ocm) + '</td>' +
+                                    '<td class="text-center">' + (isMovingParticular ? '' : project
+                                        .contractors_profit) + '</td>' +
+                                    '<td class="text-right">' + (isMovingParticular ?
+                                        numberWithCommas(parseFloat(particular.total)
+                                            .toFixed(2)) : '') +
                                     '</td>' +
-                                    '<td class="text-center">' + project.contractors_profit + '</td>' +
-                                    '<td class="text-right">' + +'</td>' +
-                                    '<td class="text-center">' + markUpTotal.toFixed(2) + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(markUpValue
-                                        .toFixed(
-                                            2)) + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(vatTotAmount
-                                        .toFixed(
-                                            2)) + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(indirCostTotal
-                                        .toFixed(
-                                            2)) + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(totalCost.toFixed(
+                                    '<td class="text-center">' + (isMovingParticular ? '' :
+                                        markUpTotal.toFixed(2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(
+                                        isMovingParticular ? '' : markUpValue
+                                        .toFixed(2)) + '</td>' +
+                                    '<td class="text-right">' + (isMovingParticular ? '' :
+                                        numberWithCommas(vatValue.toFixed(2))) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(
+                                        isMovingParticular ? '' : indirCostTotal
+                                        .toFixed(2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(parseFloat(
+                                        totalCost).toFixed(
                                         2)) + '</td>' +
                                     '<td class="text-right">' + numberWithCommas(unitCost.toFixed(
                                         2)) + '</td>' +
                                     '</tr>';
                             });
                             // Close the table and container
-                            var amountInWords = convertNumberToWords(totalAmount);
+                            var amountInWords = convertNumberToWords(totalCostAmount);
                             divHTML +=
                                 '</tbody>' +
                                 '<tfoot>' +
@@ -349,19 +368,20 @@
                                 '<td class="text-center"><strong>Total</strong></td>' +
                                 '<td></td>' +
                                 '<td></td>' +
-                                '<td class="text-right">' + numberWithCommas(totalDirCost.toFixed(2)) +
+                                '<td class="text-right">' + numberWithCommas(parseFloat(dirTotal).toFixed(2)) +
                                 '</td>' +
                                 '<td></td>' +
                                 '<td></td>' +
-                                '<td class="text-right">' + +'</td>' +
+                                '<td class="text-right">' + numberWithCommas(parseFloat(mobTotal).toFixed(
+                                    2)) + '</td>' +
                                 '<td></td>' +
                                 '<td class="text-right">' + numberWithCommas(totMarkUpVal.toFixed(2)) +
                                 '</td>' +
-                                '<td class="text-right">' + numberWithCommas(totalVat.toFixed(2)) +
+                                '<td class="text-right">' + numberWithCommas(vatTotal.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-right">' + numberWithCommas(totalIndirCost.toFixed(2)) +
                                 '</td>' +
-                                '<td class="text-right">' + numberWithCommas(totalAmount.toFixed(2)) +
+                                '<td class="text-right">' + numberWithCommas(totalCostAmount.toFixed(2)) +
                                 '</td>' +
                                 '<td></td>' +
                                 '</tr>' +
@@ -369,7 +389,7 @@
                                 '</table>' +
                                 '<div class="text-center">' +
                                 '<h5>TOTAL ESTIMATED COST IS ' + amountInWords + '</h5>' +
-                                '<h5>' + numberWithCommas(totalAmount.toFixed(2)) + '</h5>' +
+                                '<h5>' + numberWithCommas(totalCostAmount.toFixed(2)) + '</h5>' +
                                 '</div>' +
                                 '</div>';
                             // Append the complete table to the container
