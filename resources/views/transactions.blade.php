@@ -162,7 +162,7 @@
                 <div class="card-header header-hover" data-toggle="collapse" data-target="#addSignature"
                     aria-expanded="false" aria-controls="addSignature">
                     <div class="d-flex justify-content-between col-12">
-                        <h5 id="ProjectHeader">View Signature Detail</h5>
+                        <h5 id="ProjectHeader">Signature Detail</h5>
                         <div class="card-tools">
                             <!-- Collapse Button -->
                             <button type="button" class="btn btn-tool" data-toggle="collapse"
@@ -198,6 +198,97 @@
                     </div>
                 </div>
             </div> <!-- ./ Project Card  --->
+
+
+            <!----- Third Column for Required ----->
+            <div class="d-flex col-12">
+                <!------ Technical Personnel Required ------>
+                <div class="col-6">
+                    <div class="card" id="addTechnicalPersonnel">
+                        <div class="card-header header-hover col-12" data-toggle="collapse"
+                            data-target="#addTechnicalPCard" aria-expanded="false">
+                            <div class="d-flex justify-content-between col-12">
+                                <h5 id="ProjectHeader">Technical Personnel</h5>
+                                <div class="card-tools">
+                                    <!-- Collapse Button -->
+                                    <button type="button" class="btn btn-tool" data-toggle="collapse"
+                                        aria-expanded="false"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        {{-- Project Card Start --}}
+                        <div class="collapse" id="addTechnicalPCard">
+                            <div class="row p-3">
+                                <div class="col-lg-12">
+                                    <div class="text-right mb-3">
+                                        <button type="button" class="btn btn-success" id="addtechnicalPersonnelBtn"><i
+                                                class="fa fa-plus"></i></button>
+                                    </div>
+                                    <table class="table col-12 table-margin" id="technicalPersonnelTable">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Description</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- ./ Project Card  --->
+                </div>
+
+                <!------ Minimum Equipment Requirement ------>
+                <div class="col-6">
+                    <div class="card" id="addMinEquipReq">
+                        <div class="card-header header-hover col-12" data-toggle="collapse"
+                            data-target="#addMinEquipReqCard" aria-expanded="false">
+                            <div class="d-flex justify-content-between col-12">
+                                <h5 id="ProjectHeader">Minimum Equipment</h5>
+                                <div class="card-tools">
+                                    <!-- Collapse Button -->
+                                    <button type="button" class="btn btn-tool" data-toggle="collapse"
+                                        aria-expanded="false"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        {{-- Project Card Start --}}
+                        <div class="collapse" id="addMinEquipReqCard">
+                            <div class="row p-3">
+                                <div class="col-lg-12">
+                                    <div class="text-right mb-3">
+                                        <button type="button" class="btn btn-success" id="addMinEquipReqBtn"><i
+                                                class="fa fa-plus"></i></button>
+                                    </div>
+                                    <table class="table col-12 table-margin" id="addMinEquipReqTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Owned</th>
+                                                <th>Lease</th>
+                                                <th>Total # of Unit</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- ./ Project Card  --->
+                </div>
+            </div>
+
+
+
             <!-- Your Blade view with JavaScript -->
 
             @include('modals.project_particular_detail.add_project_particular_detail')
@@ -214,7 +305,8 @@
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
             <div class="d-flex">
-                <h4>Project Item</h4>
+                <h4>Project Item <i class="fas fa-sort-amount-up-alt header-hover" onclick="sortProjectParticular()"></i>
+                </h4>
                 {{-- <div class="btn btn-success"></div> --}}
             </div>
             <div id="projectParticularContent" class="container-fluid col-12 d-flex flex-column"></div>
@@ -244,6 +336,10 @@
             "paging": false,
         });
 
+        function sortProjectParticular() {
+            console.log("Hello World")
+        }
+
         function newProject() {
             $("#addProjectModal").modal("show");
         }
@@ -257,8 +353,25 @@
             console.log(projectPartID);
             console.log(projectPartTotal);
 
+            // Make AJAX request to update the project
+            $.ajax({
+                url: "{{ route('projectParticulars.update', ['projectParticular' => ':projectParticular']) }}"
+                    .replace(
+                        ':projectParticular',
+                        projectPartID),
+                type: "PUT",
+                data: {
+                    projectPartTotal: projectPartTotal,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
 
-            
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log error response for debugging
+                    alert('Error occurred. Check console for details.');
+                }
+            });
 
         }
 
@@ -390,7 +503,6 @@
                     }
                 });
             }
-
         });
 
         // Delete Signature
@@ -520,7 +632,7 @@
 
         // Check if selectedProjectTitle has a value
         if (selectedProjectTitle) {
-            $("#ProjectHeader").text("View Project Details");
+            $("#ProjectHeader").text("Project Details");
         }
 
         // Submit the Particular Material Modal Form
@@ -799,8 +911,6 @@
         function editparticularDetail(particular_id, quantity, unit, unitCost, total) {
 
             console.log("This is the string total: ", total);
-            const intTotalProjPart = parseFloat(total.replace(/,/g, ''));
-            console.log("Integer Total: ", intTotalProjPart);
             // let newUnitCost = unitCost ? parseFloat(unitCost).toFixed(2) : '';
             let newTotal = total;
             console.log(newTotal);
@@ -809,11 +919,14 @@
             } else { // if total doesnt have value
                 $("#add_projectPart_detailTotal").prop("readonly", false);
             }
+
+            const totalAmountValue = $('#total_' + particular_id).text();
+            console.log('This is the values total: ', totalAmountValue);
             $("#add_projectPart_detailID").val(particular_id);
             $("#add_projectPart_detailQuantity").val(quantity);
             $("#add_projectPart_detailUnit").val(unit);
             // $("#add_projectPart_detailUnitCost").val(newUnitCost);
-            $("#add_projectPart_detailTotal").val(newTotal);
+            $("#add_projectPart_detailTotal").val(totalAmountValue);
             $("#addProjectParticularDetailModal").modal("show");
         }
 
@@ -825,7 +938,6 @@
                 success: function(data) {
                     console.log(data);
                     localStorage.setItem('getAllData', JSON.stringify(data));
-
                     const gridOptionsMaterial = {
                         columnDefs: [{
                                 field: "material_id",
@@ -1196,8 +1308,8 @@
                             var headerContent = $(
                                 '<div class="d-flex justify-content-between">'
                             );
-                            var title = $("<h5>").text(intToRoman(index + 1) + ". " + particular
-                                .particular_name);
+                            var title = $("<h5>").text(particular.particular_name).addClass(
+                                "numeralPartName");
                             var cardTools = $('<div class="card-tools">');
                             var collapseButton = $(
                                 '<button type="button" class="btn btn-tool">'
@@ -1279,8 +1391,6 @@
                                 .toFixed(2)
                                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-
-
                             const projectPartID = particular.project_particular_id;
 
                             // Remove commas from the values and parse them as floats
@@ -1289,9 +1399,8 @@
                                 parseAndSum(totalLaborAmount) +
                                 parseAndSum(totalEquipmentAmount);
 
+                            // Formatted Total Amount In a Particular
                             const formattedTotalProjPart = totalProjPart.toLocaleString();
-                            console.log(totalProjPart);
-                            console.log(formattedTotalProjPart);
 
                             var form = $('<div class="pd-zero pd-3" id="projectPartDetail_' +
                                     particular.particular_id + '">')
@@ -1315,24 +1424,17 @@
                                                             particular.project_particular_unit)
                                                     )
                                                 ),
-                                                // $('<div>').addClass('col-3').append(
-                                                //     $('<h6>').text('Unit Cost: ').append(
-                                                //         $('<span>').attr('id', 'unit_cost_' +
-                                                //             particular.particular_id).text(
-                                                //             particular
-                                                //             .project_particular_unitCost ?
-                                                //             parseFloat(particular
-                                                //                 .project_particular_unitCost)
-                                                //             .toFixed(2) : ''
-                                                //         )
-                                                //     )
-                                                // ),
 
                                                 $('<div>').addClass('col-4').append(
                                                     $('<h6>').text('Total Amount: ').append(
                                                         $('<span>').attr('id', 'total_' +
                                                             particular.particular_id).text(
-                                                            formattedTotalProjPart
+                                                            parseFloat(particular
+                                                                .project_particular_total)
+                                                            .toLocaleString('en-US', {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            })
                                                         )
                                                     )
                                                 ),
@@ -1351,9 +1453,14 @@
                                                             .project_particular_unit,
                                                             particular
                                                             .project_particular_unitCost,
-                                                            formattedTotalProjPart);
-                                                    })
-                                                )
+                                                            parseFloat(particular
+                                                                .project_particular_total
+                                                            )
+                                                            .toLocaleString('en-US', {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }))
+                                                    }))
                                             )
                                         )
                                     )
@@ -1395,10 +1502,11 @@
 
                             // Append card header and collapse container to the main card
                             mainCard.append(cardHeader, cardCollapse);
-
                             // Append main card to the dynamic content container
                             $("#projectParticularContent").append(mainCard);
+
                         });
+
                         // Filter the projects based on the selected project ID
                         var filteredProjects = data.projects.filter(
                             (project) => project.project_id == selectedProjectID
@@ -1499,6 +1607,7 @@
 
                         });
                     });
+
                 },
             });
         }
@@ -1901,25 +2010,31 @@
                                     const materialId = params.data.material_id;
                                     const materialName = params.data.material_name;
                                     const materialUnit = params.data.material_unit;
-                                    const materialCategoryName = params.data.material_category_name;
+                                    const materialCategoryName = params.data
+                                        .material_category_name;
                                     const materialPrice = params.data.material_price;
                                     const materialQuantity = params.data.material_quantity;
                                     const materialQuarter = params.data.material_quarter;
                                     const materialYear = params.data.material_year;
                                     const particularId = params.data
                                         .particular_id; // Changed from materialPartID to particularId
+                                    const materialPriceID = params.data.material_price_id
 
                                     // Construct the HTML string with the onclick event for edit and delete buttons
                                     const htmlString =
                                         '<div>' +
-                                        '<button onclick="editDetail(\'' + detailType + '\', \'' +
+                                        '<button onclick="editDetail(\'' + detailType +
+                                        '\', \'' +
                                         materialPartID + '\', \'' + materialId + '\', \'' +
                                         materialName + '\', \'' + materialUnit + '\', \'' +
-                                        materialCategoryName + '\', \'' + materialPrice + '\', \'' +
+                                        materialCategoryName + '\', \'' + materialPrice +
+                                        '\', \'' +
                                         materialQuantity + '\', \'' + particularId + '\', \'' +
-                                        materialQuarter + '\', \'' + materialYear +
+                                        materialQuarter + '\', \'' + materialYear + '\', \'' +
+                                        materialPriceID +
                                         '\')" class="btn btn-success btn-header mr-1"><i class="fas fa-edit"></i></button>' +
-                                        '<button onclick="deleteDetail(\'' + detailType + '\', ' +
+                                        '<button onclick="deleteDetail(\'' + detailType +
+                                        '\', ' +
                                         materialPartID +
                                         ')" class="btn btn-danger btn-header"><i class="fas fa-trash-alt"></i></button>' +
                                         '</div>';
@@ -2005,7 +2120,8 @@
                                     const detailType = "labor";
                                     const laborPartID = params.data.labor_id;
                                     const particularID = params.data.particular_id;
-                                    const projectPartID = params.data.project_particular_labor_id;
+                                    const projectPartID = params.data
+                                        .project_particular_labor_id;
                                     const laborNoPerson = params.data.labor_no_of_persons;
                                     const workDays = params.data.labor_work_days;
                                     const laborRate = params.data.labor_rate;
@@ -2039,6 +2155,7 @@
                         rowSelection: "multiple",
                         enableCellChangeFlash: true,
                     };
+
                     const gridOptionsEquipment = {
                         columnDefs: [{
                                 field: "equipment_id",
@@ -2109,7 +2226,8 @@
                                     const particular_id = params.data.particular_id;
                                     const equipmentID = params.data.equipment_id;
                                     const equipmentName = params.data.equipment_name;
-                                    const equipmentCategory = params.data.equipment_category_name;
+                                    const equipmentCategory = params.data
+                                        .equipment_category_name;
                                     const equipmentModel = params.data.equipment_model;
                                     const equipmentCapacity = params.data.equipment_capacity;
                                     const equipmentRate = params.data.equipment_rate;
@@ -2155,13 +2273,80 @@
                     $("#laborCard_" + particularId).empty();
                     $("#equipmentCard_" + particularId).empty();
 
-
-                    console.log("This is the Refresh ParticularID: ", particularId);
+                    // Array to store total amount arrays for all particulars
+                    const totalAmountArray = [];
 
                     // Iterate through each filtered project item
                     sortedProjects.forEach(function(project) {
                         // Iterate through each particular item
                         project.particulars.forEach(function(particular) {
+
+                            // Declaring Total Values
+                            // Filter out details that should not be displayed in the grid
+                            const rowDataMaterial = Object.values(
+                                particular.details.Materials
+                            );
+                            const rowDataLabor = Object.values(
+                                particular.details.Labor
+                            );
+                            const rowDataEquipment = Object.values(
+                                particular.details.Equipment
+                            );
+
+                            // Calculate total amount for material
+                            let totalMaterialAmount = 0;
+                            rowDataMaterial.forEach(function(
+                                material) {
+                                totalMaterialAmount +=
+                                    material.material_quantity *
+                                    parseFloat(material.material_price);
+                            });
+
+                            // format totalMaterialAmount
+                            totalPartMaterialAmount = totalMaterialAmount
+                                .toFixed(2)
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                            // Calculate total amount for labor
+                            let totalLaborAmount = 0;
+                            rowDataLabor.forEach(function(labor) {
+                                totalLaborAmount +=
+                                    labor.labor_rate *
+                                    labor.labor_work_days *
+                                    labor.labor_no_of_persons; // Update calculation
+                            });
+                            // Format totalLaborAmount
+                            totalPartLaborAmount = totalLaborAmount
+                                .toFixed(2)
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                            // Calculate total amount for equipment
+                            let totalEquipmentAmount = 0;
+                            rowDataEquipment.forEach(function(
+                                equipment) {
+                                totalEquipmentAmount +=
+                                    equipment.equipment_rate *
+                                    equipment.equipment_work_days *
+                                    equipment.equipment_no_of_units;
+                            });
+                            // Format totalEquipmentAmount
+                            totalPartEquipmentAmount = totalEquipmentAmount
+                                .toFixed(2)
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                            // Create an object to store the total amounts along with the particularId
+                            const totalAmountObject = {
+                                particular_id: particular.particular_id,
+                                totalPartMaterialAmount: totalMaterialAmount,
+                                totalPartLaborAmount: totalLaborAmount,
+                                totalPartEquipmentAmount: totalEquipmentAmount,
+                                totalPartAmount: totalMaterialAmount + totalLaborAmount +
+                                    totalEquipmentAmount,
+                            };
+
+                            // Push the object to the array
+                            totalAmountArray.push(totalAmountObject);
+
                             var form = $('<div>').addClass('card-body form-top').append(
                                 $('<div>').addClass('col-12').append(
                                     $('<div>').addClass('row').append(
@@ -2180,18 +2365,6 @@
                                                     particular.project_particular_unit)
                                             )
                                         ),
-                                        // $('<div>').addClass('col-3').append(
-                                        //     $('<h6>').text('Unit Cost: ').append(
-                                        //         $('<span>').attr('id', 'unit_cost_' +
-                                        //             particular.particular_id).text(
-                                        //             particular
-                                        //             .project_particular_unitCost ?
-                                        //             parseFloat(particular
-                                        //                 .project_particular_unitCost)
-                                        //             .toFixed(2) : ''
-                                        //         )
-                                        //     )
-                                        // ),
 
                                         $('<div>').addClass('col-4').append(
                                             $('<h6>').text('Total Amount: ').append(
@@ -2220,8 +2393,8 @@
                                                     .project_particular_unit,
                                                     particular
                                                     .project_particular_unitCost,
-                                                    particular
-                                                    .project_particular_total);
+                                                    project.project_particular_total
+                                                );
                                             })
                                         )
                                     )
@@ -2230,14 +2403,16 @@
                             $("#projectPartDetail_" + particular.particular_id).empty();
 
                             // Re-append the form variable
-                            $("#projectPartDetail_" + particular.particular_id).append(form);
+                            $("#projectPartDetail_" + particular.particular_id).append(
+                                form);
                             $('#quantity_' + particular.particular_id).text(particular
                                 .project_particular_quantity)
                             $('#unit_' + particular.particular_id).text(particular
                                 .project_particular_unit)
                             $('#unit_cost_' + particular.particular_id).text(parseFloat(
                                 particular.project_particular_unitCost).toFixed(2));
-                            $('#total_' + particular.particular_id).text(parseFloat(particular
+                            $('#total_' + particular.particular_id).text(parseFloat(
+                                particular
                                 .project_particular_total).toFixed(2));
 
                             // Check if particular_id is particulardID and it's Material data
@@ -2245,7 +2420,6 @@
                                 particular.particular_id === particularId &&
                                 particular.details.hasOwnProperty("Materials")
                             ) {
-                                console.log(particular.details.Materials)
                                 // Filter out details that should not be displayed in the grid
                                 const rowDataMaterial = Object.values(
                                     particular.details.Materials
@@ -2260,7 +2434,6 @@
                                     const particularId = "TotalMaterialPartID_" +
                                         material
                                         .project_particular_id;
-                                    console.log(particularId);
                                 });
                                 // Format totalMaterialAmount
                                 totalMaterialAmount = totalMaterialAmount
@@ -2279,10 +2452,8 @@
                                     );
                                     // Replace the content of #materialCard_1 with materialCard
                                     $("#materialCard_" + particularId).append(materialCard);
-                                    console.log('Successfully Append')
                                 } catch (error) {
                                     console.error('Error appending materialCard:', error);
-                                    // Handle the error here
                                 }
                             }
                             // Check if particular_id is particularID and it's Labor data
@@ -2300,7 +2471,8 @@
                                     totalLaborAmount +=
                                         labor.labor_rate *
                                         labor.labor_work_days *
-                                        labor.labor_no_of_persons; // Update calculation
+                                        labor
+                                        .labor_no_of_persons; // Update calculation
                                 });
                                 // Format totalLaborAmount
                                 totalLaborAmount = totalLaborAmount
@@ -2431,19 +2603,21 @@
                             materialGridAPI.setGridOption("rowData", rowDataMaterial);
                             laborGridAPI.setGridOption("rowData", rowDataLabor);
                             equipmentGridAPI.setGridOption("rowData", rowDataEquipment);
-
-                            // const cardIds = ["materialCard_" + particular.particular_id,
-                            //     "laborCard_" + particular.particular_id,
-                            //     "equipmentCard_" + particular.particular_id,
-                            // ];
-                            // cardIds.forEach((id) => {
-                            //     const cardToCollapse = document.getElementById(id);
-                            //     if (cardToCollapse) {
-                            //         cardToCollapse.classList.add("collapsed-card");
-                            //     }
-                            // });
                         });
+
                     });
+
+                    const updateThisData = totalAmountArray.find(item => item.particular_id === particularId);
+                    const totalPartAmountSorted = updateThisData.totalPartAmount;
+
+
+                    updateParticularTotal(particularId, totalPartAmountSorted);
+                    const parseTotalPartAmount = parseFloat(totalPartAmountSorted)
+                        .toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    $("#total_" + particularId).text(parseTotalPartAmount);
                 },
             });
             $("#materialCard_" + particularId).removeClass("card");
@@ -2477,15 +2651,12 @@
                         data: data,
                         success: function(response) {
                             console.log(response.message);
-
                             refreshAllData(parseInt(partID), detailType);
                             // Show success toast with delay
                             toastr.options.progressBar = true;
                             setTimeout(function() {
                                 toastr.success("Deleted Successfully!");
                             }, 1000);
-
-                            // Handle success response
                         },
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText);
@@ -2568,6 +2739,7 @@
                     refreshAllData(parseInt(particularId), detail_type);
 
                     toastr.options.progressBar = true;
+                    console.log(response);
                     toastr.success("Material Added Successfully!");
                 },
                 error: function(xhr, status, error) {
@@ -2897,7 +3069,8 @@
                     dataType: "json",
                     success: function(response) {
 
-                        var equipments = response.equipments; // Extract equipment data from the AJAX response
+                        var equipments = response
+                            .equipments; // Extract equipment data from the AJAX response
 
                         // Get the select element and empty it
                         var equipmentSelect = $(
@@ -2981,49 +3154,6 @@
             }
         }
 
-        // Function to convert integer to Roman numeral
-        function intToRoman(num) {
-            const romanNumerals = [{
-                    value: 100,
-                    numeral: "C"
-                },
-                {
-                    value: 50,
-                    numeral: "L"
-                }, {
-                    value: 10,
-                    numeral: "X"
-                },
-                {
-                    value: 9,
-                    numeral: "IX"
-                },
-                {
-                    value: 5,
-                    numeral: "V"
-                },
-                {
-                    value: 4,
-                    numeral: "IV"
-                },
-                {
-                    value: 1,
-                    numeral: "I"
-                }
-            ];
-            let result = '';
-            romanNumerals.forEach(({
-                value,
-                numeral
-            }) => {
-                while (num >= value) {
-                    result += numeral;
-                    num -= value;
-                }
-            });
-            return result;
-        }
-
         // Populate the Table and Refresh at the same time
         function refreshParticularTable() {
             $.ajax({
@@ -3050,7 +3180,8 @@
 
                                 // Add onchange event handler to each dropdown item
                                 dropdownItem.on('click', function() {
-                                    var particularId = $(this).data('particular-id');
+                                    var particularId = $(this).data(
+                                        'particular-id');
                                     // Prepare data for AJAX request
                                     var requestData = {
                                         project_id: selectedProjectID,
@@ -3072,7 +3203,8 @@
                                             // Reload the current page
                                             location.reload();
                                         },
-                                        error: function(xhr, status, error) {
+                                        error: function(xhr, status,
+                                            error) {
                                             // Handle error response
                                             console.error(
                                                 "Error storing project particular:",
@@ -3184,6 +3316,99 @@
                 }
             });
         }
+
+        // SortableJS
+        document.addEventListener("DOMContentLoaded", function() {
+            // Code to execute when the DOM is fully loaded
+            const sortable = new Sortable(document.getElementById('projectParticularContent'), {
+                group: 'shared', // set both lists to the same group
+                animation: 150
+            });
+
+            // Function to update Roman numerals
+            function updateRomanNumerals() {
+                const listItems = document.querySelectorAll('#projectParticularContent .numeralPartName');
+                listItems.forEach((item, index) => {
+                    const romanNumeral = intToRoman(index +
+                        1); // Adding 1 to index to match 1-based indexing
+                    // Remove existing Roman numeral before adding a new one
+                    item.textContent = item.textContent.replace(/^\w+\.\s/, '');
+                    // Prepend the Roman numeral directly to the beginning of each item's text content
+                    item.textContent = romanNumeral + '. ' + item.textContent;
+                });
+            }
+
+            // Function to save the order of list items in local storage
+            function saveOrder() {
+                const listItems = document.querySelectorAll('#projectParticularContent .numeralPartName');
+                const order = Array.from(listItems).map(item => item.textContent);
+                localStorage.setItem('sortableOrder', JSON.stringify(order));
+            }
+
+            // Function to load the order of list items from local storage
+            function loadOrder() {
+                const order = JSON.parse(localStorage.getItem('sortableOrder'));
+                if (order) {
+                    const listItems = document.querySelectorAll('#projectParticularContent .numeralPartName');
+                    listItems.forEach((item, index) => {
+                        item.textContent = order[index];
+                    });
+                }
+            }
+
+            // Initialize Roman numerals
+            function intToRoman(num) {
+                const romanNumerals = [{
+                        value: 100,
+                        numeral: "C"
+                    },
+                    {
+                        value: 50,
+                        numeral: "L"
+                    }, {
+                        value: 10,
+                        numeral: "X"
+                    },
+                    {
+                        value: 9,
+                        numeral: "IX"
+                    },
+                    {
+                        value: 5,
+                        numeral: "V"
+                    },
+                    {
+                        value: 4,
+                        numeral: "IV"
+                    },
+                    {
+                        value: 1,
+                        numeral: "I"
+                    }
+                ];
+                let result = '';
+                romanNumerals.forEach(({
+                    value,
+                    numeral
+                }) => {
+                    while (num >= value) {
+                        result += numeral;
+                        num -= value;
+                    }
+                });
+                return result;
+            }
+
+            // Call updateRomanNumerals() initially
+            updateRomanNumerals();
+
+            // Listen for SortableJS events
+            sortable.option("onEnd", function(evt) {
+                saveOrder();
+                updateRomanNumerals();
+            });
+
+        });
     </script>
     <!-- /.content -->
 @endsection

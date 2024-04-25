@@ -6,11 +6,11 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ __('Pay Item') }}</h1>
+                    <h1 class="m-0">{{ __('Project Item') }}</h1>
                 </div><!-- /.col -->
                 {{-- <div class="col-sm-6 text-right">
                     <button type="button" class="btn btn-success" data-toggle="modal" id="addParticularButton">
-                        Add Particular
+                        Add Item
                     </button>
                 </div> --}}
             </div><!-- /.row -->
@@ -102,21 +102,38 @@
         // Function to display particular data in the DataTable
         function displayParticulars(data) {
             var table = $('#particularTable').DataTable();
-            var existingRows = table.rows().remove().draw(false);
+            table.clear().draw();
 
             data.forEach(function(particular, index) {
+                var editButton =
+                    `<button type="button" class="btn bg-success mr-2 editParticularButton" data-id="${particular.particular_id}" data-name="${particular.particular_name}" data-pay-item="${particular.pay_item}"><i class="fas fa-edit"></i></button>`;
+                var deleteButton =
+                    `<button type="button" class="btn bg-danger deleteParticularButton" data-id="${particular.particular_id}"><i class="fas fa-trash-alt"></i></button>`;
+                var buttonsContainer = '<div class="text-center d-flex">' + editButton + deleteButton + '</div>';
+
                 var newRow = table.row.add([
                     particular.particular_name,
                     particular.pay_item,
-                    '<div class="text-center d-flex">' +
-                    `<button type="button" id="editParticularButton" class="btn bg-success mr-2" data-id="${particular.particular_id}" onclick="openParticularModal(${particular.particular_id}, '${particular.particular_name}', '${particular.pay_item}')"><i class="fas fa-edit"></i></button>` +
-                    `<button type="button" id="deleteParticularButton" class="btn bg-danger" data-id="${particular.particular_id}" onclick="deleteParticular(${particular.particular_id})"><i class="fas fa-trash-alt"></i></button>` +
-                    '</div>'
+                    buttonsContainer
                 ]).node();
             });
 
             table.draw();
+
+            // Add event listeners for dynamically created buttons
+            $('#particularTable').on('click', '.editParticularButton', function() {
+                var particularId = $(this).data('id');
+                var particularName = $(this).data('name');
+                var payItem = $(this).data('pay-item');
+                openParticularModal(particularId, particularName, payItem);
+            });
+
+            $('#particularTable').on('click', '.deleteParticularButton', function() {
+                var particularId = $(this).data('id');
+                deleteParticular(particularId);
+            });
         }
+
 
 
         // Manually Open Particular Modal

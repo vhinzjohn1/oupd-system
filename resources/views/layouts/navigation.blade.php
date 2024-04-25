@@ -59,9 +59,7 @@
                     <li class="nav-item">
                         <a href="{{ route('particular') }}" class="nav-link">
                             <i class="nav-icon far fa-address-card"></i>
-                            <p>
-                                {{ __('List of Pay Item') }}
-                            </p>
+                            <p>{{ __('List of Items') }}</p>
                         </a>
                     </li>
                     <li class="nav-item">

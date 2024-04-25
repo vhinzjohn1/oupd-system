@@ -88,9 +88,6 @@ class ParticularController extends Controller
         }
     }
 
-
-
-
     public function update(Request $request, $particular_id)
     {
         // Validate incoming request data
