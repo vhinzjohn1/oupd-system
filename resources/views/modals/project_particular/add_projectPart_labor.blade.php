@@ -70,7 +70,7 @@
 
             var workDays = parseFloat($('#add_particular_laborWorkDays')
                 .val()); // Remove commas before parsing
-            var rate = parseFloat($('#add_particular_laborRate').val()) * 8;
+            var rate = parseFloat($('#add_particular_laborRate').val());
             var noOfPerson = parseFloat($('#add_particular_noOfPerson').val());
             var totalRate = rate * noOfPerson;
 

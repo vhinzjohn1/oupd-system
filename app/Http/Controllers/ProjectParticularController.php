@@ -60,7 +60,6 @@ class ProjectParticularController extends Controller
 
     public function store(Request $request)
     {
-
         try {
 
             // Retrieve or create project
@@ -95,6 +94,32 @@ class ProjectParticularController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to add/update project particular. Please check the logs for details.']);
         }
     }
+
+    public function update(Request $request, $project_particular_id)
+    {
+        try {
+
+            // Retrieve or create project
+            $projectPart = ProjectParticular::updateOrCreate(['particular_id' => $project_particular_id], [
+                'total' => $request['projectPartTotal'],
+            ]);
+            // Return success response with signature data and message
+            return response()->json([
+                'success' => true,
+                'message' => 'Project Particular Edited Successfully',
+                'ProjectParticular' => $projectPart
+            ]);
+
+        } catch (\Exception $e) {
+
+            // Log detailed error message
+            Log::error('Failed to update Total: ' . $e->getMessage());
+
+            // Return error response
+            return response()->json(['success' => false, 'message' => 'Failed to update Total. Please check the logs for details.']);
+        }
+    }
+
 
     // Function to Delete Project Particular
     public function destroy($projectParticularId)

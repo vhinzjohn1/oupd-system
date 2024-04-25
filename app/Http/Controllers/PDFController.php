@@ -221,8 +221,6 @@ class PDFController extends Controller
                 // Assign the total material amount to the 'materialTotalAmount' field for this particular
                 $formattedData[$title]['particulars'][$particularName]['materialTotalAmount'] = $totalMaterialAmount;
 
-
-
                 // Add equipment details if not already added
                 if (
                     !empty($project->equipment_id) &&

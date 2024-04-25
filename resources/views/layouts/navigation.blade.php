@@ -58,7 +58,7 @@
                     <li class="nav-item">
                         <a href="{{ route('particular') }}" class="nav-link">
                             <i class="nav-icon far fa-address-card"></i>
-                            <p>{{ __('List of Particular') }}</p>
+                            <p>{{ __('List of Items') }}</p>
                         </a>
                     </li>
                     <!-- List of Materials -->

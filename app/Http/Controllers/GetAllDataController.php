@@ -354,6 +354,7 @@ class GetAllDataController extends Controller
 
             if ($request->has('materialId') && $request->materialId !== "empty") {
                 // Update or create a record in the project_particular_materials table
+                // Submit if it is alreadt on the masterlist
                 $projectParticular->materials()->updateOrCreate([
                     'material_id' => $request->materialId,
                 ], [
@@ -382,18 +383,6 @@ class GetAllDataController extends Controller
                         $material->save();
                     }
 
-                    // Add the newly created material to the ProjectParticular
-                    $projectParticular = ProjectParticular::firstOrCreate([
-                        'project_id' => $request->projectId,
-                        'particular_id' => $request->particularId,
-                    ]);
-
-                    $projectParticular->materials()->updateOrCreate([
-                        'material_id' => $material->material_id,
-                    ], [
-                        'quantity' => $request->materialQuantity,
-                    ]);
-
                     DB::table('prices')
                         ->where('material_id', $material->material_id)
                         ->update(['is_active' => false]);
@@ -407,6 +396,19 @@ class GetAllDataController extends Controller
 
                     // Save the price
                     $price->save();
+
+                    // Add the newly created material to the ProjectParticular
+                    $projectParticular = ProjectParticular::firstOrCreate([
+                        'project_id' => $request->projectId,
+                        'particular_id' => $request->particularId,
+                    ]);
+
+                    $projectParticular->materials()->updateOrCreate([
+                        'material_id' => $material->material_id,
+                    ], [
+                        'quantity' => $request->materialQuantity,
+                        'price_id' => $price->price_id,
+                    ]);
 
                     // Commit the transaction
                     DB::commit();

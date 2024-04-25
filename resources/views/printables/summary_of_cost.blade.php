@@ -293,7 +293,7 @@
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + "materialTotal" +
+                                    '<td class="text-center">' + particular.materialTotalAmount +
                                     '</td>' +
                                     '<td class="text-center">' + "laborTotal" +
                                     '</td>' +
