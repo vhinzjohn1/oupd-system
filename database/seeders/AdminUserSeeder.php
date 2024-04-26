@@ -49,8 +49,8 @@ class AdminUserSeeder extends Seeder
             'FINISHINGS AND OTHER CIVIL WORK',
             'ELECTRICAL WORK',
             'MECHANICAL WORK',
-            'Moving-In',
-            'Moving-Out'
+            'MOVING-IN',
+            'MOVING-OUT'
         ];
 
         foreach ($particulars as $particular) {

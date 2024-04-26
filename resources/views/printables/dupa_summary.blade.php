@@ -239,7 +239,8 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                edcTotalAmount = particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
+                                edcTotalAmount = particular.totalMaterialAmount + particular
+                                    .totalLaborAmount + particular.totalEquipmentAmount;
                                 dirTotal += edcTotalAmount;
                                 markUpTotal = project.ocm + project.contractors_profit;
                                 markUpValue = (markUpTotal / 100) * edcTotalAmount;
@@ -261,7 +262,8 @@
                                     '</td>' +
                                     '<td class="text-right">' + numberWithCommas(totalCost.toFixed(
                                         2)) + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(unitCost.toFixed(2)) +
+                                    '<td class="text-right">' + numberWithCommas(unitCost.toFixed(
+                                        2)) +
                                     '</td>' +
                                     '</tr>';
                             });
@@ -279,6 +281,20 @@
                                 '</tfoot>' +
                                 '</table>' +
                                 '</div>';
+                            // Check if the role is "Prepared by" and iterate over signatures if true
+                            if (project.role === "Prepared by") {
+                                console.log('fullname: ',project.fullname);
+                                console.log('degree: ',project.degree);
+                                console.log('position: ',project.position);
+                                    // Add row for the signature
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<td>' + project.fullname + '</td>' +
+                                        '<td>' + project.degree + '</td>' +
+                                        '<td>' + project.position + '</td>' +
+                                        '</tr>';
+                            };
+
                             // Append the complete table to the container
                             $('#particularsContainer').html(divHTML);
                         } else {
