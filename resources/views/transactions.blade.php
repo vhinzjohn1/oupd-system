@@ -414,6 +414,9 @@
             let position = $('#add_project_signature_position').val();
             let projectID = $('#signature_projectID').val();
 
+            console.log(projectId);
+            console.log(fullName);
+
             // Make AJAX request to add new paticular
             $.ajax({
                 url: "{{ route('signatures.store') }}",
@@ -427,21 +430,20 @@
                     _token: "{{ csrf_token() }}"
                 },
                 success: function(response) {
-                    toastr.options.progressBar = true;
-                    toastr.success('Signature Added Successfully!');
+
                     console.log(response); // Log response for debugging
 
-                    if (response) {
+                    if (response.success) {
                         $('#addSignatureForm')[0].reset();
                         $('#addProjectSignatureModal').modal('hide');
-
-                        console.log('successfully added');
+                        toastr.options.progressBar = true;
+                        toastr.success('Signature Added Successfully!');
 
                         refreshSignature();
 
                     } else {
-                        // Show error message if material addition fails
-                        alert('Failed to add signature: ' + response.message);
+                        toastr.options.progressBar = true;
+                        toastr.error('Signature Not Added!');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -592,6 +594,7 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
+                    console.log(data)
                     // Store fetched data in localStorage for future use
                     localStorage.setItem('signatureData', JSON.stringify(data));
                     // Display the fetched data
@@ -603,12 +606,17 @@
             });
 
         }
-        // Function to display particular data in the DataTable
+        // Display the signature
         function displaySignature(data) {
+            var submitProjectID = localStorage.getItem("projectID");
+
+            // Filter the data to include only signatures with matching project_id
+            var filteredData = data.filter(signature => signature.project_id == submitProjectID);
+
             var table = $('#signatureTable').DataTable();
             var existingRows = table.rows().remove().draw(false);
 
-            data.forEach(function(signature, index) {
+            filteredData.forEach(function(signature, index) {
                 var newRow = table.row.add([
                     signature.fullname,
                     signature.degree,
@@ -623,6 +631,8 @@
 
             table.draw();
         }
+
+
 
         function formatNumber(number) {
             return Number(number).toLocaleString('en-US');
@@ -851,8 +861,6 @@
         }
 
 
-
-
         $("#addProjectParticularDetailForm").on("submit", function(event) {
             event.preventDefault();
             // Get form data
@@ -863,14 +871,17 @@
             let detailUnit = $(
                 "#add_projectPart_detailUnit"
             ).val();
-
             let detailUnitCost = $(
                 "#add_projectPart_detailUnitCost"
             ).val();
-
             let detailTotal = $(
                 "#add_projectPart_detailTotal"
             ).val();
+
+            console.log("======== debug here =========")
+            console.log(projectId);
+            console.log(particularID);
+            console.log(detailQuantity);
 
             // AJAX request
             $.ajax({
@@ -909,19 +920,12 @@
         });
 
         function editparticularDetail(particular_id, quantity, unit, unitCost, total) {
-
-            console.log("This is the string total: ", total);
-            // let newUnitCost = unitCost ? parseFloat(unitCost).toFixed(2) : '';
-            let newTotal = total;
-            console.log(newTotal);
-            if (total !== "") {
+            const totalAmountValue = $('#total_' + particular_id).text();
+            if (totalAmountValue !== "") {
                 $("#add_projectPart_detailTotal").prop("readonly", true);
-            } else { // if total doesnt have value
+            } else {
                 $("#add_projectPart_detailTotal").prop("readonly", false);
             }
-
-            const totalAmountValue = $('#total_' + particular_id).text();
-            console.log('This is the values total: ', totalAmountValue);
             $("#add_projectPart_detailID").val(particular_id);
             $("#add_projectPart_detailQuantity").val(quantity);
             $("#add_projectPart_detailUnit").val(unit);
@@ -1429,15 +1433,19 @@
                                                     $('<h6>').text('Total Amount: ').append(
                                                         $('<span>').attr('id', 'total_' +
                                                             particular.particular_id).text(
+                                                            particular
+                                                            .project_particular_total != null ?
                                                             parseFloat(particular
                                                                 .project_particular_total)
                                                             .toLocaleString('en-US', {
                                                                 minimumFractionDigits: 2,
                                                                 maximumFractionDigits: 2
-                                                            })
+                                                            }) :
+                                                            ''
                                                         )
                                                     )
                                                 ),
+
 
                                                 $('<div class="signature-zero">').addClass(
                                                     'col-1').append(
@@ -1453,14 +1461,11 @@
                                                             .project_particular_unit,
                                                             particular
                                                             .project_particular_unitCost,
-                                                            parseFloat(particular
-                                                                .project_particular_total
-                                                            )
-                                                            .toLocaleString('en-US', {
-                                                                minimumFractionDigits: 2,
-                                                                maximumFractionDigits: 2
-                                                            }))
-                                                    }))
+                                                            project
+                                                            .project_particular_total
+                                                        );
+                                                    })
+                                                )
                                             )
                                         )
                                     )
@@ -2343,7 +2348,6 @@
                                 totalPartAmount: totalMaterialAmount + totalLaborAmount +
                                     totalEquipmentAmount,
                             };
-
                             // Push the object to the array
                             totalAmountArray.push(totalAmountObject);
 
@@ -2371,10 +2375,14 @@
                                                 $('<span>').attr('id', 'total_' +
                                                     particular.particular_id).text(
                                                     particular
-                                                    .project_particular_total ?
+                                                    .project_particular_total != null ?
                                                     parseFloat(particular
                                                         .project_particular_total)
-                                                    .toFixed(2) : ''
+                                                    .toLocaleString('en-US', {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }) :
+                                                    ''
                                                 )
                                             )
                                         ),

@@ -67,7 +67,7 @@
 
 
         {{-- <!-- Project Details -->
-        <div class="container text-center">
+        < class="container text-center">
             <!-- CMU Logo -->
             <div class="cmuLogoContainer">
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
@@ -105,6 +105,9 @@
             <div class="row justify-content-center" id="particularsContainer"> <!-- Center horizontally -->
                 <!-- Particular tables will be appended here -->
             </div>
+        </div>
+        <div class="" id="preparedBy">
+
         </div>
         <div class="container">
             <div class="row mt-4">
@@ -239,7 +242,8 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                edcTotalAmount = particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
+                                edcTotalAmount = particular.totalMaterialAmount + particular
+                                    .totalLaborAmount + particular.totalEquipmentAmount;
                                 dirTotal += edcTotalAmount;
                                 markUpTotal = project.ocm + project.contractors_profit;
                                 markUpValue = (markUpTotal / 100) * edcTotalAmount;
@@ -261,7 +265,8 @@
                                     '</td>' +
                                     '<td class="text-right">' + numberWithCommas(totalCost.toFixed(
                                         2)) + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(unitCost.toFixed(2)) +
+                                    '<td class="text-right">' + numberWithCommas(unitCost.toFixed(
+                                        2)) +
                                     '</td>' +
                                     '</tr>';
                             });
@@ -279,8 +284,20 @@
                                 '</tfoot>' +
                                 '</table>' +
                                 '</div>';
+                                
+                            const test = project.signatures;
+
+                            const preparedBy = '<div class="card">Prepared by: </div>' + project.signatures[
+                                0].role;
+
+                            console.log(test);
+
+                            if (project.signatures[0].role === "Recommending Approval") {
+                                console.log("hello world");
+                            }
                             // Append the complete table to the container
                             $('#particularsContainer').html(divHTML);
+                            $('#preparedBy').html(preparedBy);
                         } else {
                             console.error('Project with ID ' + projectId + ' not found in the response.');
                         }
