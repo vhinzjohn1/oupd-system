@@ -41,8 +41,8 @@
                             <div class="form-group">
                                 <input type="hidden" id="add_particular_priceID">
                                 <label for="add_particular_materialPrice">Price</label>
-                                <input type="text" class="form-control" id="add_particular_materialPrice"
-                                    name="add_particular_materialPrice" readonly>
+                                <input type="text" class="form-control"
+                                    id="add_particular_materialPrice" name="add_particular_materialPrice" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="add_particular_materialQuarter">Quarter</label>

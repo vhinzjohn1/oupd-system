@@ -84,7 +84,7 @@
                                         </div>
                                         <div class="form-group margin-top">
                                             <label for="add_project_appropriation">Project Cost</label>
-                                            <input type="text" class="form-control numberInput"
+                                            <input type="text" class="form-control price-input"
                                                 id="add_project_appropriation" name="add_project_appropriation" required>
                                         </div>
                                     </div>
@@ -1856,23 +1856,6 @@
                             $("#add_project_contractProfit").val(
                                 project.contractors_profit
                             );
-                            // Format existing values on page load
-                            $('.numberInput').each(function() {
-                                let initialValue = $(this).val().replace(/,/g, '');
-                                if (initialValue !== '') {
-                                    $(this).val(formatNumber(initialValue));
-                                }
-                                // Trigger the 'input' event to apply formatting
-                                $(this).trigger('input');
-                            });
-
-                            // Handle real-time input formatting (no changes needed here)
-                            $('.numberInput').on('input', function() {
-                                let formattedValue = $(this).val().replace(/,/g, '');
-                                if (formattedValue !== '') {
-                                    $(this).val(formatNumber(formattedValue));
-                                }
-                            });
                         }
                         $("#add_project_source_of_fund").select2({
                             theme: "bootstrap-5",
@@ -1885,6 +1868,7 @@
                             // allowClear: true, // Allow clearing the selection
                         });
                     });
+                    initializePriceInputs();
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -3252,6 +3236,12 @@
             let ocm = $("#add_project_ocm").val();
             let cp = $("#add_project_contractProfit").val();
 
+            // Remove the P and commas
+            let projectCostCleaned = appropriation.replace('₱', '').replace(/,/g,
+                '');
+            let projectCost = parseFloat(projectCostCleaned);
+            console.log(projectCost);
+
             // Send Ajax request
             $.ajax({
                 url: "{{ route('getAllData.store') }}",
@@ -3263,7 +3253,7 @@
                     add_project_owner: projectOwner,
                     add_project_description: projectDescription,
                     add_project_contract_duration: contactDuration,
-                    add_project_appropriation: appropriation,
+                    add_project_appropriation: projectCost,
                     add_project_source_of_fund: sourceOfFund,
                     add_project_date_prepared: datePrepared,
                     add_project_mode_of_implementation: modeOfImplementation,
@@ -3273,7 +3263,7 @@
                 },
                 success: function(response) {
                     // Reset the form
-                    $("#projectDetailsForm")[0].reset();
+                    // $("#projectDetailsForm")[0].reset();
                     getProjects();
 
                     toastr.options.progressBar = true;
@@ -3415,8 +3405,26 @@
                 saveOrder();
                 updateRomanNumerals();
             });
+            // Call the function to initialize price inputs
+            // initializePriceInputs();
 
         });
+
+        function initializePriceInputs() {
+            const priceInputs = document.querySelectorAll('.price-input');
+            priceInputs.forEach(input => {
+                const mask = IMask(input, {
+                    mask: Number,
+                    scale: 2,
+                    thousandsSeparator: ',',
+                    padFractionalZeros: true,
+                    normalizeZeros: true,
+                    radix: '.',
+                    mapToRadix: ['.'],
+                    min: 0
+                });
+            });
+        }
     </script>
     <!-- /.content -->
 @endsection

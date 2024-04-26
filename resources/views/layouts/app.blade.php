@@ -41,7 +41,8 @@
 
 
     {{-- script for number format --}}
-    <script src="{{ asset('js/autonumeric.js') }}"></script>
+    {{-- <script src="{{ asset('js/autonumeric.js') }}"></script> --}}
+    <script src="https://unpkg.com/imask"></script>
 
 
     {{-- Script for sortable js --}}

@@ -4,6 +4,7 @@
 
     <head>
 
+
     </head>
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -45,21 +46,49 @@
         <button type="button" class="btn btn-secondary" id="popoverButton" data-toggle="popover" title="Popover Title">
             Open Popover
         </button>
-        <input class="currency-input form-control" type="text" id="numberInput">
-        <input class="currency-input form-control" type="text" id="price" name="price" placeholder="price">
+        <input type="text" class="form-control price-input" id="price-input">
+        <input type="text" class="form-control price-input">
+
+        <button class="btn btn-success" onclick="test()">submit</button>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const currencyInputs = document.querySelectorAll('.currency-input');
-            currencyInputs.forEach(input => {
-                new AutoNumeric(input, {
-                    digitGroupSeparator: ',',
-                    decimalCharacter: '.',
-                    currencySymbol: '₱',
-                    currencySymbolPlacement: 'p'
+            function initializePriceInputs() {
+                const priceInputs = document.querySelectorAll('.price-input');
+                priceInputs.forEach(input => {
+                    const mask = IMask(input, {
+                        mask: Number,
+                        scale: 2,
+                        thousandsSeparator: ',',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: '.',
+                        mapToRadix: ['.'],
+                        min: 0
+                    });
                 });
-            });
+            }
+
+            // Call the function to initialize price inputs
+            initializePriceInputs();
         });
+
+
+
+
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const currencyInputs = document.querySelectorAll('.currency-input');
+        //     currencyInputs.forEach(input => {
+        //         new AutoNumeric(input, {
+        //             digitGroupSeparator: ',',
+        //             decimalCharacter: '.',
+        //             currencySymbol: '₱',
+        //             currencySymbolPlacement: 'p'
+        //         });
+        //     });
+
+
+        // });
     </script>
 
     <script>
