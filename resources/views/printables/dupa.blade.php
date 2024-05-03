@@ -127,20 +127,17 @@
                         var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
-                            var directCostTotalAmount = 0;
-                            var indirectCostTotalAmount = 0;
-                            var cpTotalAmount = 0;
-                            var ocmTotalAmount = 0;
-                            var indirectCostTotalAmount = 0;
+                            var directCostTotal = 0;
+
+                            var totalMaterial = 0; // Declare these variables outside the loop
+                            var totalLabor = 0;
+                            var totalEquipment = 0;
                             project.particulars.forEach(function(particular, index, project_particular) {
                                 var materials = particular.details.Materials || [];
                                 var equipment = particular.details.Equipment || [];
                                 var labor = particular.details.Labor || [];
 
-                                var materialTotalAmount = 0;
-                                var equipmentTotalAmount = 0;
-                                var laborTotalAmount = 0;
-
+                                console.log('last cost: ', particular.totalMaterialAmount);
                                 // Create a new div for each particular name
                                 var divHTML =
                                     '<table class="table table-bordered table-striped">' +
@@ -162,10 +159,11 @@
                                     '<td class="text-right">' + particular.quantity + '</td>' +
                                     '<td class="text-center">' + particular.unit + '</td>' +
                                     '<td class="text-right">' + numberWithCommas(parseFloat(
-                                        particular.unit_cost).toFixed(2)) + '</td>' +
+                                        particular.unitCostTotal).toFixed(2)) + '</td>' +
                                     '</tr>';
                                 // Create materials table
                                 if (materials.length > 0) {
+                                    var totalMaterial = 0;
                                     divHTML +=
                                         '<tr>' +
                                         '<th colspan="5" class="text-center">MATERIALS</th>' +
@@ -179,15 +177,7 @@
                                         '</tr>';
                                     // Append materials to the table
                                     materials.forEach(function(material) {
-                                        console.log('unit:', material.material_unit);
-                                        var amount = parseFloat(material
-                                            .material_quantity) * parseFloat(
-                                            material
-                                            .material_price);
-                                        materialTotalAmount += amount;
-                                        // Store total amounts in localStorage
-                                        localStorage.setItem('materialTotalAmount',
-                                            materialTotalAmount);
+                                        totalMaterial += material.matAmount;
                                         divHTML += '<tr>' +
                                             '<td>' + material.material_name + '</td>' +
                                             '<td class="text-right">' + material
@@ -199,17 +189,18 @@
                                                 material
                                                 .material_price) + '</td>' +
                                             '<td class="text-right">' + numberWithCommas(
-                                                amount.toFixed(
+                                                parseFloat(material.matAmount).toFixed(
                                                     2)) +
                                             '</td>' +
                                             '</tr>';
                                     });
+                                    console.log('total material: ', totalMaterial)
                                     divHTML +=
                                         '<tr>' +
                                         '<th colspan="4" class="text-start">A. TOTAL FOR MATERIALS</th>' +
-                                        '<th class="text-right">' + numberWithCommas(
-                                            materialTotalAmount
-                                            .toFixed(2)) + '</th>' + //nakabold dapat ni
+                                        '<th class="text-right">' + numberWithCommas(totalMaterial
+                                            .toFixed(2)) + '</th>' +
+                                        //nakabold dapat ni
                                         '</tr>';
                                 } else {
                                     // No Materials available
@@ -246,10 +237,10 @@
                                         '<td></td>' +
                                         '</tr>';
 
-                                    // Calculate total for this particular (including material total as 0)
-                                    var totalAmount = materialTotalAmount + equipmentTotalAmount +
-                                        laborTotalAmount;
-                                    directCostTotalAmount += totalAmount;
+                                    // Explicitly set totalLabor to 0
+                                    var totalMaterial = 0;
+
+                                    directCostTotal = totalMaterial + totalLabor + totalEquipment;
 
                                     // Display material total as dash (-) instead of 0.00 in the table
                                     var materialCostDisplay = '-'; // Use dash as placeholder
@@ -262,7 +253,7 @@
                                 }
                                 // Create labor table
                                 if (labor.length > 0) {
-                                    var laborTotalAmount = 0;
+                                    var totalLabor = 0;
                                     divHTML +=
                                         '<tr>' +
                                         '<th class="text-center" colspan="5">LABOR</th>' +
@@ -276,13 +267,7 @@
                                         '</tr>';
                                     // Append labor to the table
                                     labor.forEach(function(lab) {
-                                        var amount = lab.labor_no_of_persons * lab
-                                            .labor_work_days *
-                                            lab.labor_rate;
-                                        laborTotalAmount += amount;
-                                        // Store total amounts in localStorage
-                                        localStorage.setItem('laborTotalAmount',
-                                            laborTotalAmount);
+                                        totalLabor += lab.labAmount;
                                         divHTML += '<tr>' +
                                             '<td>' + lab.labor_name + '</td>' +
                                             '<td class="text-right">' + lab
@@ -297,7 +282,7 @@
                                                     2)) +
                                             '</td>' +
                                             '<td class="text-right">' + numberWithCommas(
-                                                amount
+                                                parseFloat(lab.labAmount)
                                                 .toFixed(
                                                     2)) +
                                             '</td>' +
@@ -306,8 +291,8 @@
                                     divHTML +=
                                         '<tr>' +
                                         '<th colspan="4" class="text-start">B. TOTAL FOR LABOR</th>' +
-                                        '<th class="text-right">' + numberWithCommas(
-                                            laborTotalAmount.toFixed(2)) +
+                                        '<th class="text-right">' + numberWithCommas(totalLabor
+                                            .toFixed(2)) +
                                         //nakabold dapat ni
                                         '</th>' +
                                         '</tr>';
@@ -346,15 +331,12 @@
                                         '<td></td>' +
                                         '</tr>';
 
-                                    // Explicitly set laborTotalAmount to 0
-                                    var laborTotalAmount = 0;
+                                    // Explicitly set totalEquipment to 0
+                                    var totalLabor = 0;
 
-                                    // Calculate total for this particular (including labor total as 0)
-                                    var totalAmount = materialTotalAmount + equipmentTotalAmount +
-                                        laborTotalAmount;
-                                    directCostTotalAmount += totalAmount;
+                                    directCostTotal = totalMaterial + totalLabor + totalEquipment;
 
-                                    // Display labor total as dash (-) instead of 0.00 in the table
+                                    // Display material total as dash (-) instead of 0.00 in the table
                                     var laborCostDisplay = '-'; // Use dash as placeholder
 
                                     divHTML +=
@@ -365,7 +347,7 @@
                                 }
                                 // Create equipment table
                                 if (equipment.length > 0) {
-                                    var equipmentTotalAmount = 0;
+                                    var totalEquipment = 0;
                                     divHTML +=
                                         '<tr>' +
                                         '<th class="text-center" colspan="5">EQUIPMENT</th>' +
@@ -379,14 +361,7 @@
                                         '</tr>';
                                     // Append equipment to the table
                                     equipment.forEach(function(equip) {
-                                        var amount = equip
-                                            .equipment_work_days * equip
-                                            .equipment_no_of_units *
-                                            equip.equipment_rate;
-                                        equipmentTotalAmount += amount;
-                                        // Store total amounts in localStorage
-                                        localStorage.setItem('equipmentTotalAmount',
-                                            equipmentTotalAmount);
+                                        totalEquipment += equip.equipAmount;
                                         divHTML += '<tr>' +
                                             '<td>' + equip.equipment_name + '</td>' +
                                             '<td class="text-right">' + equip
@@ -401,7 +376,7 @@
                                                     2)) +
                                             '</td>' +
                                             '<td class="text-right">' + numberWithCommas(
-                                                amount.toFixed(
+                                                parseFloat(equip.equipAmount).toFixed(
                                                     2)) +
                                             '</td>' +
                                             '</tr>';
@@ -410,8 +385,8 @@
                                     divHTML +=
                                         '<tr>' +
                                         '<th colspan="4" class="text-start">C. TOTAL FOR EQUIPMENT</th>' +
-                                        '<th class="text-right">' + numberWithCommas(
-                                            equipmentTotalAmount.toFixed(
+                                        '<th class="text-right">' + numberWithCommas(totalEquipment
+                                            .toFixed(
                                                 2)) + //nakabold dapat ni
                                         '</th>' +
                                         '</tr>';
@@ -450,15 +425,12 @@
                                         '<td></td>' +
                                         '</tr>';
 
-                                    // Explicitly set equipmentTotalAmount to 0
-                                    var equipmentTotalAmount = 0;
+                                    // Explicitly set totalEquipment to 0
+                                    var totalEquipment = 0;
+                                    // Calculate total for this particular (including material total as 0)
+                                    directCostTotal = totalMaterial + totalLabor + totalEquipment;
 
-                                    // Calculate total for this particular (including equipment total as 0)
-                                    var totalAmount = materialTotalAmount + equipmentTotalAmount +
-                                        laborTotalAmount;
-                                    directCostTotalAmount += totalAmount;
-
-                                    // Display equipment total as dash (-) instead of 0.00 in the table
+                                    // Display material total as dash (-) instead of 0.00 in the table
                                     var equipmentCostDisplay = '-'; // Use dash as placeholder
 
                                     divHTML +=
@@ -467,88 +439,77 @@
                                         '<th class="text-end">' + equipmentCostDisplay + '</th>' +
                                         '</tr>';
                                 }
-                                var totalAmount = materialTotalAmount +
-                                    laborTotalAmount + equipmentTotalAmount;
-                                directCostTotalAmount = totalAmount;
-                                // Store total amounts in localStorage
-                                localStorage.setItem('directCostTotalAmount',
-                                    directCostTotalAmount);
-                                console.log(directCostTotalAmount);
-                                var ocmTotalAmount = directCostTotalAmount * (project.ocm / 100);
-                                var cpTotalAmount = directCostTotalAmount * (project
-                                    .contractors_profit / 100);
-                                var indirectCostTotalAmount = ocmTotalAmount + cpTotalAmount;
-                                console.log(indirectCostTotalAmount);
-                                var vatTotalAmount = (directCostTotalAmount +
-                                    indirectCostTotalAmount) * (project.vat / 100);
-                                // Store total amounts in localStorage
-                                localStorage.setItem('vatTotalAmount',
-                                    vatTotalAmount);
-
+                                directCostTotal = totalMaterial + totalLabor + totalEquipment;
+                                var ocmTotal = directCostTotal * (particular.ocm / 100);
+                                var cpTotal = directCostTotal * (particular.contractors_profit /
+                                    100);
+                                var indirectCostTotal = ocmTotal + cpTotal;
+                                var vatTotal = (directCostTotal + indirectCostTotal) * (particular
+                                    .vat / 100);
+                                var totalCostItem = directCostTotal + indirectCostTotal + vatTotal;
+                                var unitCostTotal = totalCostItem / particular.quantity;
+                                console.log('vat: ', directCostTotal)
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">D. ESTIMATED DIRECT COST (A+B+C)</th>' +
-                                    '<th class="text-right">' + numberWithCommas(
-                                        directCostTotalAmount.toFixed(2)) +
+                                    '<th class="text-right">' + numberWithCommas(directCostTotal
+                                        .toFixed(2)) +
                                     //nakabold dapat
                                     '</th>' +
                                     '</tr>';
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">E. INDIRECT COST (MARK-UPS)</th>' +
-                                    '<th class="text-right">' + numberWithCommas(
-                                        indirectCostTotalAmount
+                                    '<th class="text-right">' + numberWithCommas(indirectCostTotal
                                         .toFixed(2)) + //nakabold dapat ni
                                     '</th>' +
                                     '</tr>';
+
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-start"></td>' +
-                                    '<td colspan="2" class="text-start">1. OVERHEAD, CONTINGENCY & MISCELLANEOUS (' + project.ocm + '% of EDC)</td>' +
+                                    '<td colspan="2" class="text-start">1. OVERHEAD, CONTINGENCY & MISCELLANEOUS (' +
+                                    project.ocm + '% of EDC)</td>' +
                                     '<td class="text-right">' + project.ocm + '%' + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(ocmTotalAmount
-                                        .toFixed(2)) +
+                                    '<td class="text-right">' + numberWithCommas(ocmTotal.toFixed(
+                                        2)) +
                                     '</td>' +
                                     '</tr>';
 
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-start"></td>' +
-                                    '<td colspan="2" class="text-start">2. CONTRACTORS PROFIT (' + project.contractors_profit + ' of EDC)</td>' +
+                                    '<td colspan="2" class="text-start">2. CONTRACTORS PROFIT (' +
+                                    project.contractors_profit + ' of EDC)</td>' +
                                     '<td class="text-right">' + project.contractors_profit + '%' +
                                     '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(cpTotalAmount
-                                        .toFixed(2)) +
+                                    '<td class="text-right">' + numberWithCommas(cpTotal.toFixed(
+                                        2)) +
                                     '</td>' +
                                     '</tr>';
+                                console.log('cp:', cpTotal)
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="3" class="text-start">F. VAT (TOTAL ABOVE COST)</th>' +
                                     '<td class="text-right">' + project.vat + '%' +
                                     '</td>' +
-                                    '<th class="text-right">' + numberWithCommas(vatTotalAmount
-                                        .toFixed(2)) +
+                                    '<th class="text-right">' + numberWithCommas(vatTotal.toFixed(
+                                        2)) +
                                     //nakabold dapat ni
                                     '</th>' +
                                     '</tr>';
-                                var itemCostTotalAmount = 0;
-                                var itemCostTotalAmount = directCostTotalAmount +
-                                    indirectCostTotalAmount + vatTotalAmount;
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">G. TOTAL COST ITEM (D+E+F)</th>' +
-                                    '<th class="text-right">' + numberWithCommas(itemCostTotalAmount
+                                    '<th class="text-right">' + numberWithCommas(totalCostItem
                                         .toFixed(2)) +
                                     //nakabold dapat ni
                                     '</th>' +
                                     '</tr>';
-                                var unitCostTotalAmount = 0;
-                                var totalAmount = itemCostTotalAmount / particular.quantity;
-                                unitCostTotalAmount = totalAmount;
                                 divHTML +=
                                     '<tr>' +
                                     '<th colspan="4" class="text-start">H. UNIT COST (TOTAL COST OF ITEM/QUANTITY)</th>' +
-                                    '<th class="text-right">' + numberWithCommas(unitCostTotalAmount
+                                    '<th class="text-right">' + numberWithCommas(unitCostTotal
                                         .toFixed(2)) +
                                     //nakabold dapat ni
                                     '</th>' +
@@ -561,12 +522,19 @@
                                     '<div class="d-flex flex-column align-items-center">' +
                                     '<div class="d-flex flex-column align-items-start">' +
                                     '<div>' +
-                                    'Re-evaluated by: <br><br>' +
-                                    '<div style="text-align: center;">' +
-                                    '<u><b>FRITZ MILDRED N. PUABEN</b></u> <br>' +
-                                    'Draftsman I, OUPD' +
-                                    '</div>' +
-                                    '</div>' +
+                                    'Prepared by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Prepared by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div> <br>';
+                                    }
+                                });
+                                divHTML +=
                                     '</div>' +
                                     '</div>' +
                                     '</div>' +
@@ -574,12 +542,19 @@
                                     '<div class="d-flex flex-column align-items-center">' +
                                     '<div class="d-flex flex-column align-items-start">' +
                                     '<div>' +
-                                    'Checked by: <br><br>' +
-                                    '<div style="text-align: center;">' +
-                                    '<u><b>MARIA EILANI N. NON</b></u> <br>' +
-                                    'Engineer II, OUPD' +
-                                    '</div>' +
-                                    '</div>' +
+                                    'Checked by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Checked by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
                                     '</div>' +
                                     '</div>' +
                                     '</div>' +

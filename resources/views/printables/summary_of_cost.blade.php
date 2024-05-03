@@ -105,63 +105,6 @@
             </div> --}}
         </div>
 
-        <!-- this is for the signatures -->
-        <div class="container">
-            <div class="container">
-                <div class="row mt-4 align-items-center">
-                    <div class="col d-inline-block me-1">
-                        <div class="">
-                            <div class="">
-                                <div class="text-center" style="white-space: nowrap;">
-                                    Prepared by: <br><br>
-                                    <u><b>FRITZ MILDRED N. PUABEN</b> </u> <br>
-                                    Draftsman I, OUPD
-                                </div> <br>
-                                <div class="text-center" style="white-space: nowrap;">
-                                    Reviewed by: <br><br>
-                                    <u><b>ROY V. AGBAYANI</b> </u> <br>
-                                    Director, OUPD
-                                </div> <br>
-                                <div class="text-center" style="white-space: nowrap;">
-                                    Conformed by: <br><br>
-                                    <u><b>JOHN D. TAJONES</b> </u> <br>
-                                    DEAN, CISC
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col d-inline-block me-1">
-                        <div class="">
-                            <div class="">
-                                <div class="text-center" style="white-space: nowrap;">
-                                    Checked by: <br><br>
-                                    <u><b>MARIA EILANI N. NON</b> </u> <br>
-                                    Engineer II, OUPD
-                                </div> <br>
-                                <div class="text-center" style="white-space: nowrap;">
-                                    Recommending Approval: <br><br>
-                                    <u><b>HERMIE P. PAVA</b> </u> <br>
-                                    VP-Administration
-                                </div> <br>
-                                <div class="text-center" style="white-space: nowrap;">
-                                    Approved: <br><br>
-                                    <u><b>ROLITO G. EBALLE, PH.D</b> </u> <br>
-                                    University President
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Repeat the structure for other elements as needed -->
-                </div>
-            </div>
-        </div>
-        <div class="approvedName"></div>
-        <div class="preparedDegree"></div>
-        <div class="preparedPosition"></div>
-
-        <div class="reviewedName"></div>
-        <div class="reviewedDegree"></div>
-        <div class="reviewedPosition"></div>
         <script>
             // Add an event listener to the button
             document.getElementById('printView').addEventListener('click', function() {
@@ -200,6 +143,9 @@
                             };
 
                             // Initialize variables for totals
+                            var matAmount = 0;
+                            var labAmount = 0;
+                            var equipAmount = 0;
                             var matTotal = 0;
                             var equipTotal = 0;
                             var labTotal = 0;
@@ -207,6 +153,7 @@
                             var dirTotal = 0;
                             var movingIn = 0;
                             var movingOut = 0;
+                            var mobCost = 0;
                             var mobCost = 0;
                             // Create particulars table
                             divHTML +=
@@ -226,39 +173,38 @@
                                 '</tr>' +
                                 '</thead>' +
                                 '<tbody>';
-                            // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
                                 // Calculate individual totals
-                                matTotal += particular.totalMaterialAmount;
-                                equipTotal += particular.totalEquipmentAmount;
-                                labTotal += particular.totalLaborAmount;
-                                totalAmount = particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
+                                matAmount = particular.totalMaterialAmount;
+                                matTotal += matAmount;
+                                equipAmount = particular.totalEquipmentAmount;
+                                equipTotal += equipAmount;
+                                labAmount = particular.totalLaborAmount;
+                                labTotal += labAmount;
+                                var totalAmount = matTotal + labTotal + equipTotal;
                                 dirTotal += totalAmount;
-                                ocmTotal = dirTotal * (project.ocm / 100);
-                                cpTotal = dirTotal * (project.contractors_profit / 100);
-                                vatTotal = (dirTotal + ocmTotal + cpTotal) * (project.vat / 100)
-                                totalIndirCost = ocmTotal + cpTotal + vatTotal;
-                                projectCostTotal = dirTotal + totalIndirCost + mobCost;
-                                // moving in/moving out =
-                                // direct cost + 0.01 / 2
-                                movingIn = (dirTotal * 0.01) / 2;
-                                movingOut = (dirTotal * 0.01) / 2;
-                                mobCost = movingIn + movingOut;
+ console.log(particular.totalMaterialAmount)
+                                // Append particular details to the table
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(parseFloat(
-                                        particular.totalMaterialAmount).toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(parseFloat(
-                                        particular.totalLaborAmount).toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(parseFloat(
-                                        particular.totalEquipmentAmount).toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(parseFloat(
-                                        totalAmount).toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(matAmount.toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(labAmount.toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(equipAmount.toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(totalAmount.toFixed(2)) + '</td>' +
                                     '</tr>';
                             });
+                            // Calculate other totals outside the loop
+                            var ocmTotal = dirTotal * (project.ocm / 100);
+                            var cpTotal = dirTotal * (project.contractors_profit / 100);
+                            var vatTotal = (dirTotal + ocmTotal + cpTotal) * (project.vat / 100);
+                            var totalIndirCost = ocmTotal + cpTotal + vatTotal;
+                            var projectCostTotal = dirTotal + totalIndirCost + mobCost;
+                            var movingIn = (dirTotal * 0.01) / 2;
+                            var movingOut = (dirTotal * 0.01) / 2;
+                            var mobCost = movingIn + movingOut;
                             var amountInWords = convertNumberToWords(projectCostTotal);
                             // Close the table and container
                             divHTML +=
@@ -325,7 +271,7 @@
                                 '</tr>' +
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
-                                '<td class="text-left">OCM ('+ project.ocm +'% of Direct Cost)</td>' +
+                                '<td class="text-left">OCM (' + project.ocm + '% of Direct Cost)</td>' +
                                 '<td class="text-right">' + numberWithCommas(ocmTotal.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-center"></td>' +
@@ -334,7 +280,8 @@
                                 '</tr>' +
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
-                                '<td class="text-left">CP ('+ project.contractors_profit +'% of Direct Cost)</td>' +
+                                '<td class="text-left">CP (' + project.contractors_profit +
+                                '% of Direct Cost)</td>' +
                                 '<td class="text-right">' + numberWithCommas(cpTotal.toFixed(2)) + '</td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
@@ -342,7 +289,8 @@
                                 '</tr>' +
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
-                                '<td class="text-left">VAT ('+ project.vat +'% of Total above Cost)</td>' +
+                                '<td class="text-left">VAT (' + project.vat +
+                                '% of Total above Cost)</td>' +
                                 '<td class="text-right">' + numberWithCommas(vatTotal.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-center">=</td>' +
@@ -363,7 +311,8 @@
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-left">Moving-in</td>' +
-                                '<td class="text-right">' + numberWithCommas(movingIn.toFixed(2)) +'</td>' +
+                                '<td class="text-right">' + numberWithCommas(movingIn.toFixed(2)) +
+                                '</td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
@@ -371,9 +320,11 @@
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-left">Moving-out</td>' +
-                                '<td class="text-right">' + numberWithCommas(movingOut.toFixed(2)) +'</td>' +
+                                '<td class="text-right">' + numberWithCommas(movingOut.toFixed(2)) +
+                                '</td>' +
                                 '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + numberWithCommas(mobCost.toFixed(2)) +'</td>' +
+                                '<td class="text-center">' + numberWithCommas(mobCost.toFixed(2)) +
+                                '</td>' +
                                 '<td class="text-center"></td>' +
                                 '</tr>' +
                                 '<tr>' +
@@ -390,31 +341,114 @@
                                 amountInWords + '</td>' +
                                 '</tr>' + // totalInWords
                                 '<tr>' +
-                                '<td colspan="5" class="text-center">' + numberWithCommas(projectCostTotal
-                                    .toFixed(2)) + '</td>' +
+                                '<td colspan="5" class="text-center">(' + numberWithCommas(projectCostTotal
+                                    .toFixed(2)) + ')</td>' +
                                 '</tr>' + // Total cost Item
                                 '</table>' +
                                 '</div>';
-                            // // Populate Signatures
-                            // var signaturesHTML = '';
-                            // response.signatures.forEach(function(signature) {
-                            //     signaturesHTML +=
-                            //         '<div class="col d-inline-block me-1">' +
-                            //         '<div class="">' +
-                            //         '<div class="">' +
-                            //         '<div class="text-center" style="white-space: nowrap;">' +
-                            //         signature.position + ': <br><br>' +
-                            //         '<u><b>' + signature.fullname + '</b></u> <br>' +
-                            //         signature.role +
-                            //         '</div><br>' +
-                            //         '</div>' +
-                            //         '</div>' +
-                            //         '</div>';
-                            // });
-                            // Append the complete table to the container
+                            divHTML +=
+                                '<div class="container">' +
+                                '<div class="row mt-4">' +
+                                '<div class="col-6">' +
+                                '<div class="d-flex flex-column align-items-center">' +
+                                '<div class="d-flex flex-column align-items-start">' +
+                                '<div>' +
+                                'Prepared by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Prepared by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname + '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div> <br>';
+                                }
+                            });
+                            divHTML +=
+                                '<div class="mt-3">' +
+                                'Reviewed by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Reviewed by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '<div class="mt-3">' +
+                                'Conformed by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Conformed by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="col-6">' +
+                                '<div class="d-flex flex-column align-items-center">' +
+                                '<div class="d-flex flex-column align-items-start">' +
+                                '<div>' +
+                                'Checked by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Checked by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '<div class="mt-3">' +
+                                'Recommending Approval: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Recommending Approval') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '<div class="mt-3">' +
+                                'Approved by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Approved by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname + ', ' + signature
+                                        .degree +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
                             $('#particularsContainer').html(divHTML);
-                            // // Append signatures HTML to the container
-                            // $('#signaturesContainer').html(signaturesHTML);
                         } else {
                             console.error('Project with ID ' + projectId + ' not found in the response.');
                         }

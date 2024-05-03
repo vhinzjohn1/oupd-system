@@ -204,26 +204,29 @@
             <div class="d-flex col-12">
                 <!------ Technical Personnel Required ------>
                 <div class="col-6">
-                    <div class="card" id="addTechnicalPersonnel">
+                    <div class="card" id="addNewTechnicalPersonnel">
                         <div class="card-header header-hover col-12" data-toggle="collapse"
-                            data-target="#addTechnicalPCard" aria-expanded="false">
+                            data-target="#addTechnicalPersonnel" aria-expanded="false"
+                            aria-controls="addTechnicalPersonnel">
                             <div class="d-flex justify-content-between col-12">
                                 <h5 id="ProjectHeader">Technical Personnel</h5>
                                 <div class="card-tools">
                                     <!-- Collapse Button -->
                                     <button type="button" class="btn btn-tool" data-toggle="collapse"
-                                        aria-expanded="false"><i class="fas fa-minus"></i></button>
+                                        aria-expanded="false"><i class="fas fa-minus"
+                                            aria-controls="addTechnicalPersonnel"
+                                            data-target="#addTechnicalPersonnel"></i></button>
                                 </div>
                             </div>
                             <!-- /.card-tools -->
                         </div>
                         <!-- /.card-header -->
                         {{-- Project Card Start --}}
-                        <div class="collapse" id="addTechnicalPCard">
+                        <div class="collapse" id="addTechnicalPersonnel">
                             <div class="row p-3">
                                 <div class="col-lg-12">
                                     <div class="text-right mb-3">
-                                        <button type="button" class="btn btn-success" id="addtechnicalPersonnelBtn"><i
+                                        <button type="button" class="btn btn-success" id="addTechnicalPersonnelBtn"><i
                                                 class="fa fa-plus"></i></button>
                                     </div>
                                     <table class="table col-12 table-margin" id="technicalPersonnelTable">
@@ -245,14 +248,15 @@
 
                 <!------ Minimum Equipment Requirement ------>
                 <div class="col-6">
-                    <div class="card" id="addMinEquipReq">
+                    <div class="card" id="addNewMinimumEquipment">
                         <div class="card-header header-hover col-12" data-toggle="collapse"
-                            data-target="#addMinEquipReqCard" aria-expanded="false">
+                            data-target="#addMinimumEquipment" aria-expanded="false" aria-controls="addMinimumEquipment">
                             <div class="d-flex justify-content-between col-12">
                                 <h5 id="ProjectHeader">Minimum Equipment</h5>
                                 <div class="card-tools">
                                     <!-- Collapse Button -->
                                     <button type="button" class="btn btn-tool" data-toggle="collapse"
+                                        data-target="#addMinimumEquipment" aria-controls="addMinimumEquipment"
                                         aria-expanded="false"><i class="fas fa-minus"></i></button>
                                 </div>
                             </div>
@@ -260,14 +264,14 @@
                         </div>
                         <!-- /.card-header -->
                         {{-- Project Card Start --}}
-                        <div class="collapse" id="addMinEquipReqCard">
+                        <div class="collapse" id="addMinimumEquipment">
                             <div class="row p-3">
                                 <div class="col-lg-12">
                                     <div class="text-right mb-3">
-                                        <button type="button" class="btn btn-success" id="addMinEquipReqBtn"><i
+                                        <button type="button" class="btn btn-success" id="addMinimumEquipmentBtn"><i
                                                 class="fa fa-plus"></i></button>
                                     </div>
-                                    <table class="table col-12 table-margin" id="addMinEquipReqTable">
+                                    <table class="table col-12 table-margin" id="minimumEquipmentTable">
                                         <thead>
                                             <tr>
                                                 <th>Description</th>
@@ -301,6 +305,10 @@
             @include('modals.project_particular.edit_projectPart_equipment')
             @include('modals.signature.add_signature')
             @include('modals.signature.edit_signature')
+            {{-- @include('modals.tech_personnel.add_tech_personnel')
+            @include('modals.tech_personnel.edit_tech_personnel') --}}
+            {{-- @include('modals.min_equipment.add_min_equipment')
+            @include('modals.min_equipment.edit_min_equipment') --}}
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
@@ -623,6 +631,504 @@
 
             table.draw();
         }
+
+
+        // // TechnicalPersonnel Table DataTable
+        // $("#technicalPersonnelTable").DataTable({
+        //     "responsive": true,
+        //     "lengthChange": true,
+        //     "autoWidth": true,
+        //     "searching": false,
+        //     "ordering": true,
+        //     "paging": false,
+        // });
+
+        // getProjects();
+        // refreshParticularTable();
+        // refreshTechnicalPersonnel();
+        // cacheValues();
+
+        // function cacheValues() {
+        //     var getAllData = localStorage.getItem("getAllData");
+        //     if (getAllData) {
+        //         // If cached data exists, parse and use it
+        //         const data = JSON.parse(getAllData);
+        //         console.log(data);
+        //     }
+        // }
+
+
+        // $('#addTechnicalPersonnelForm').submit(function(e) {
+        //     e.preventDefault();
+
+        //     // Get form data
+        //     var submitProjectID = localStorage.getItem("projectID");
+        //     let projectId = submitProjectID;
+        //     let personnelDescription = $('#add_personnel_description').val();
+        //     let personnelNo = $('#add_personnel_no').val();
+        //     let projectID = $('#technical_personnelID').val();
+
+        //     // Make AJAX request to add new paticular
+        //     $.ajax({
+        //         url: "{{ route('technical_personnels.store') }}",
+        //         type: "POST",
+        //         data: {
+        //             projectId: projectId,
+        //             personnelDescription: personnelDescription,
+        //             personnelNo: personnelNo,
+        //             _token: "{{ csrf_token() }}"
+        //         },
+        //         success: function(response) {
+        //             toastr.options.progressBar = true;
+        //             toastr.success('Technical Personnel Added Successfully!');
+        //             console.log(response); // Log response for debugging
+
+        //             if (response) {
+        //                 $('#addTechnicalPersonnelForm')[0].reset();
+        //                 $('#addTechnicalPersonnelModal').modal('hide');
+
+        //                 console.log('successfully added');
+
+        //                 refreshTechnicalPersonnel();
+
+        //             } else {
+        //                 // Show error message if material addition fails
+        //                 alert('Failed to add technical personnel: ' + response.message);
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(xhr.responseText); // Log error response for debugging
+        //             alert('Error occurred. Check console for details.');
+        //         }
+        //     });
+        // });
+
+        // // Edit TechnicalPersonnel
+        // $('#editTechnicalPersonnelForm').submit(function(e) {
+        //     e.preventDefault();
+
+        //     // Get form data
+        //     var submitProjectID = localStorage.getItem("projectID");
+        //     let projectId = submitProjectID;
+        //     let personnelDescription = $('#edit_personnel_description').val();
+        //     let personnelNo = $('#edit_personnel_no').val();
+        //     let technicalPersonnelID = $('#editTechnicalPersonnelID').val();
+
+        //     // // Check if all values are empty
+        //     // if (position === null) {
+        //     //     toastr.options.progressBar = true;
+        //     //     toastr.error('Position is Required');
+        //     // } else {
+        //     // Make AJAX request to add new paticular
+        //     $.ajax({
+        //         url: "{{ route('technical_personnels.update', ['technical_personnel' => ':technical_personnel']) }}"
+        //             .replace(
+        //                 ':technical_personnel',
+        //                 technicalPersonnelID),
+        //         type: "PUT",
+        //         data: {
+        //             personnelDescription: personnelDescription,
+        //             personnelNo: personnelNo,
+        //             technical_personnel_id: technicalPersonnelID, // Change technical_personnel_id to id
+        //             projectId: projectId,
+        //             _token: "{{ csrf_token() }}"
+        //         },
+        //         success: function(response) {
+        //             toastr.options.progressBar = true;
+        //             if (response.success) {
+        //                 toastr.success(response.message);
+
+        //                 $('#editTechnicalPersonnelForm')[0].reset();
+        //                 $('#editTechnicalPersonnelModal').modal('hide');
+
+        //                 refreshTechnicalPersonnel();
+        //             } else {
+        //                 toastr.error(response.message);
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(xhr.responseText); // Log error response for debugging
+        //             alert('Error occurred. Check console for details.');
+        //         }
+        //     });
+        //     // }
+        // });
+
+        // // Delete TechnicalPersonnel
+        // function deleteTechnicalPersonnel(technical_personnel_id) {
+        //     Swal.fire({
+        //         title: 'Are you sure?',
+        //         text: 'You will not be able to recover this Technical Personnel!',
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'Yes, delete it!'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             $.ajax({
+        //                 url: "{{ url('technical_personnels') }}/" + technical_personnel_id,
+        //                 type: 'DELETE',
+        //                 data: {
+        //                     _token: "{{ csrf_token() }}"
+        //                 },
+        //                 success: function(response) {
+        //                     toastr.options.progressBar = true;
+        //                     toastr.success('Technical Personnel Deleted Successfully!');
+        //                     refreshTechnicalPersonnel();
+        //                 },
+        //                 error: function(xhr, status, error) {
+        //                     console.error(xhr.responseText); // Log error response for debugging
+        //                     toastr.error(
+        //                         'Error occurred while deleting Signature. Please check console for details.'
+        //                     );
+        //                 }
+        //             });
+        //         }
+        //     });
+        // }
+
+        // // Function to populate and show edit modal for technical personnel
+        // function editTechPersonnelModal(project_id, personnel_no, personnel_description, technical_personnel_id) {
+        //     $('#edit_personnel_description').val(personnel_description)
+
+        //     // if (personnel_no === "null") {
+        //     //     personnel_no = "0";
+        //     //     $('#edit_personnel_no').val(personnel_no)
+        //     // } else {
+        //     //     $('#edit_personnel_no').val(personnel_no)
+        //     // }
+
+
+        //     // function updateOrAppendOption($select, value) {
+        //     //     // Check if the option already exists
+        //     //     var optionExists = $select.find('option[value="' + value + '"]').length > 0;
+
+        //     //     if (optionExists) {
+        //     //         // Update the existing option's text and value
+        //     //         $select.val(value).trigger('change');
+        //     //     } else {
+        //     //         // Create a new option element
+        //     //         var newOption = new Option(value, value, true, true);
+
+        //     //         // Append the new option to the Select2 input
+        //     //         $select.append(newOption).trigger('change');
+        //     //     }
+        //     // }
+
+        //     // // Usage
+        //     // updateOrAppendOption($('#edit_personnel_description'), personnel_description);
+        //     // updateOrAppendOption($('#edit_personnel_no'), personnel_no);
+
+        //     $('#editTechnicalPersonnelID').val(technical_personnel_id)
+        //     $('#editTechnicalPersonnelModal').modal('show');
+        // }
+
+        // function refreshTechnicalPersonnel() {
+        //     $('#addTechnicalPersonnelBtn').click(function() {
+        //         $('#addTechnicalPersonnelModal').modal('show');
+        //     });
+
+        //     // Check if data is already cached in localStorage
+        //     var cachedTechnicalPersonnelData = localStorage.getItem('technicalPersonnelData');
+
+        //     if (cachedTechnicalPersonnelData) {
+        //         // If cached data exists, parse and use it
+        //         displayTechnicalPersonnel(JSON.parse(cachedTechnicalPersonnelData));
+        //     }
+        //     // If no cached data, fetch new data via AJAX
+        //     $.ajax({
+        //         url: "{{ route('technical_personnels.index') }}",
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(data) {
+        //             // Store fetched data in localStorage for future use
+        //             localStorage.setItem('technicalPersonnelData', JSON.stringify(data));
+        //             // Display the fetched data
+        //             displayTechnicalPersonnel(data);
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(xhr.responseText);
+        //         }
+        //     });
+
+        // }
+        // // Function to display particular data in the DataTable
+        // function displayTechnicalPersonnel(data) {
+        //     var table = $('#technicalPersonnelTable').DataTable();
+        //     var existingRows = table.rows().remove().draw(false);
+
+        //     data.forEach(function(technical_personnel, index) {
+        //         var newRow = table.row.add([
+        //             technical_personnel.personnel_description,
+        //             technical_personnel.personnel_no,
+        //             '<div class="text-center d-flex">' +
+        //             `<button type="button" class="btn bg-success mr-2" data-id="${technical_personnel.project_id}" onclick="editTechPersonnelModal(${technical_personnel.project_id}, '${technical_personnel.personnel_description}', '${technical_personnel.personnel_no}', ${technical_personnel.technical_personnel_id} )"><i class="fas fa-edit"></i></button>` +
+        //             `<button type="button" class="btn bg-danger" data-id="${technical_personnel.particular_id}" onclick="deleteTechnicalPersonnel(${technical_personnel.technical_personnel_id})"><i class="fas fa-trash-alt"></i></button>` +
+        //             '</div>'
+        //         ]).node();
+        //     });
+
+        //     table.draw();
+        // }
+
+        // // MinimunEquipment Table DataTable
+        // $("#minimumEquipmentTable").DataTable({
+        //     "responsive": true,
+        //     "lengthChange": true,
+        //     "autoWidth": true,
+        //     "searching": false,
+        //     "ordering": true,
+        //     "paging": false,
+        // });
+
+        // getProjects();
+        // refreshParticularTable();
+        // refreshMinimumEquipment();
+        // cacheValues();
+
+        // function cacheValues() {
+        //     var getAllData = localStorage.getItem("getAllData");
+        //     if (getAllData) {
+        //         // If cached data exists, parse and use it
+        //         const data = JSON.parse(getAllData);
+        //         console.log(data);
+        //     }
+        // }
+        // // $("#add_project_signature_role, #add_project_signature_position").select2({
+        // //     theme: "bootstrap-5",
+        // //     tags: true,
+        // //     dropdownParent: $("#addProjectSignatureModal"),
+        // // });
+        // // $("#edit_project_signature_role, #edit_project_signature_position")
+        // //     .select2({
+        // //         theme: "bootstrap-5",
+        // //         tags: true,
+        // //         dropdownParent: $("#editProjectSignatureModal"),
+        // //     });
+
+
+        // $('#addMinimumEquipmentForm').submit(function(e) {
+        //     e.preventDefault();
+
+        //     // Get form data
+        //     var submitProjectID = localStorage.getItem("projectID");
+        //     let projectId = submitProjectID;
+        //     let minEquipDescription = $('#add_min_equip_description').val();
+        //     let minEquipOwned = $('#add_min_equip_owned').val();
+        //     let minEquipLease = $('#add_min_equip_lease').val();
+        //     let minEquipTotalUnits = $('#add_min_equip_totalUnits').val();
+        //     let projectID = $('#minimum_equipment_projectID').val();
+
+        //     // Make AJAX request to add new paticular
+        //     $.ajax({
+        //         url: "{{ route('minimum_equipments.store') }}",
+        //         type: "POST",
+        //         data: {
+        //             minEquipDescription: minEquipDescription,
+        //             minEquipOwned: minEquipOwned,
+        //             minEquipLease: minEquipLease,
+        //             minEquipTotalUnits: minEquipTotalUnits,
+        //             projectId: projectId,
+        //             _token: "{{ csrf_token() }}"
+        //         },
+        //         success: function(response) {
+        //             toastr.options.progressBar = true;
+        //             toastr.success('Minimum Equipment Added Successfully!');
+        //             console.log(response); // Log response for debugging
+
+        //             if (response) {
+        //                 $('#addMinimumEquipmentForm')[0].reset();
+        //                 $('#addMinimumEquipmentModal').modal('hide');
+
+        //                 console.log('successfully added');
+
+        //                 refreshMinimumEquipment();
+
+        //             } else {
+        //                 // Show error message if material addition fails
+        //                 alert('Failed to add minimum equipment: ' + response.message);
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(xhr.responseText); // Log error response for debugging
+        //             alert('Error occurred. Check console for details.');
+        //         }
+        //     });
+        // });
+
+        // // Edit MinimumEquipment
+        // $('#editMinimumEquipmentForm').submit(function(e) {
+        //     e.preventDefault();
+
+        //     // Get form data
+        //     var submitProjectID = localStorage.getItem("projectID");
+        //     let projectId = submitProjectID;
+        //     let minEquipDescription = $('#edit_min_equip_description').val();
+        //     let minEquipOwned = $('#edit_min_equip_owned').val();
+        //     let minEquipLease = $('#edit_min_equip_lease').val();
+        //     let minEquipTotalUnits = $('#edit_min_equip_totalUnits').val();
+        //     let minimum_equipmentID = $('#editMinimumEquipmentID').val();
+
+        //     // // Check if all values are empty
+        //     // if (position === null) {
+        //     //     toastr.options.progressBar = true;
+        //     //     toastr.error('Position is Required');
+        //     // } else {
+        //         // Make AJAX request to add new paticular
+        //         $.ajax({
+        //             url: "{{ route('minimum_equipments.update', ['minimum_equipment' => ':minimum_equipment']) }}".replace(
+        //                 ':minimum_equipment',
+        //                 minimum_equipmentID),
+        //             type: "PUT",
+        //             data: {
+        //                 minEquipDescription: minEquipDescription,
+        //                 minEquipOwned: minEquipOwned,
+        //                 minimum_equipment_id: minimum_equipmentID,
+        //                 minEquipLease: minEquipLease,
+        //                 minEquipTotalUnits: minEquipTotalUnits,
+        //                 projectId: projectId,
+        //                 _token: "{{ csrf_token() }}"
+        //             },
+        //             success: function(response) {
+        //                 toastr.options.progressBar = true;
+        //                 if (response.success) {
+        //                     toastr.success(response.message);
+
+        //                     $('#editMinimumEquipmentForm')[0].reset();
+        //                     $('#editMinimumEquipmentModal').modal('hide');
+
+        //                     refreshMinimumEquipment();
+        //                 } else {
+        //                     toastr.error(response.message);
+        //                 }
+        //             },
+        //             error: function(xhr, status, error) {
+        //                 console.error(xhr.responseText); // Log error response for debugging
+        //                 alert('Error occurred. Check console for details.');
+        //             }
+        //         });
+        //     // }
+        // });
+
+        // // Delete MinimumEquipment
+        // function deleteMinimumEquipment(minimum_equipment_id) {
+        //     Swal.fire({
+        //         title: 'Are you sure?',
+        //         text: 'You will not be able to recover this Minimum Equipment!',
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'Yes, delete it!'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             $.ajax({
+        //                 url: "{{ url('minimum_equipments') }}/" + minimum_equipment_id,
+        //                 type: 'DELETE',
+        //                 data: {
+        //                     _token: "{{ csrf_token() }}"
+        //                 },
+        //                 success: function(response) {
+        //                     toastr.options.progressBar = true;
+        //                     toastr.success('Minimum Equipment Deleted Successfully!');
+        //                     refreshMinimumEquipment();
+        //                 },
+        //                 error: function(xhr, status, error) {
+        //                     console.error(xhr.responseText); // Log error response for debugging
+        //                     toastr.error(
+        //                         'Error occurred while deleting Minimum Equipment. Please check console for details.'
+        //                     );
+        //                 }
+        //             });
+        //         }
+        //     });
+        // }
+
+        // function editMinimumEquipmentModal(project_id, min_equip_description, min_equip_owned, min_equip_lease, min_equip_totalUnits, minimum_equipment_id) {
+        //     $('#edit_min_equip_description').val(min_equip_description)
+
+        //     // if (degree === "null") {
+        //     //     degree = "";
+        //     //     $('#edit_signature_degree').val(degree)
+        //     // } else {
+        //     //     $('#edit_signature_degree').val(degree)
+        //     // }
+
+
+        //     // function updateOrAppendOption($select, value) {
+        //     //     // Check if the option already exists
+        //     //     var optionExists = $select.find('option[value="' + value + '"]').length > 0;
+
+        //     //     if (optionExists) {
+        //     //         // Update the existing option's text and value
+        //     //         $select.val(value).trigger('change');
+        //     //     } else {
+        //     //         // Create a new option element
+        //     //         var newOption = new Option(value, value, true, true);
+
+        //     //         // Append the new option to the Select2 input
+        //     //         $select.append(newOption).trigger('change');
+        //     //     }
+        //     // }
+
+        //     // // Usage
+        //     // updateOrAppendOption($('#edit_project_signature_role'), role);
+        //     // updateOrAppendOption($('#edit_project_signature_position'), position);
+
+        //     $('#editMinimumEquipmentID').val(minimum_equipment_id)
+        //     $('#editMinimumEquipmentModal').modal('show');
+        // }
+
+        // function refreshMinimumEquipment() {
+        //     $('#addMinimumEquipmentBtn').click(function() {
+        //         $('#addMinimumEquipmentModal').modal('show');
+        //     });
+
+        //     // Check if data is already cached in localStorage
+        //     var cachedMinimumEquipmentData = localStorage.getItem('minimum_equipment_Data');
+
+        //     if (cachedMinimumEquipmentData) {
+        //         // If cached data exists, parse and use it
+        //         displayMinimumEquipment(JSON.parse(cachedMinimumEquipmentData));
+        //     }
+        //     // If no cached data, fetch new data via AJAX
+        //     $.ajax({
+        //         url: "{{ route('minimum_equipments.index') }}",
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(data) {
+        //             // Store fetched data in localStorage for future use
+        //             localStorage.setItem('minimum_equipment_Data', JSON.stringify(data));
+        //             // Display the fetched data
+        //             displayMinimumEquipment(data);
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error(xhr.responseText);
+        //         }
+        //     });
+
+        // }
+        // // Function to display particular data in the DataTable
+        // function displayMinimumEquipment(data) {
+        //     var table = $('#minimumEquipmentTable').DataTable();
+        //     var existingRows = table.rows().remove().draw(false);
+
+        //     data.forEach(function(minimum_equipment, index) {
+        //         var newRow = table.row.add([
+        //             minimum_equipment.min_equip_description,
+        //             minimum_equipment.min_equip_owned,
+        //             minimum_equipment.min_equip_lease,
+        //             minimum_equipment.min_equip_totalUnits,
+        //             '<div class="text-center d-flex">' +
+        //             `<button type="button" class="btn bg-success mr-2" data-id="${minimum_equipment.project_id}" onclick="editMinimumEquipmentModal(${minimum_equipment.project_id}, '${minimum_equipment.min_equip_description}', '${minimum_equipment.min_equip_owned}', '${minimum_equipment.min_equip_lease}', '${minimum_equipment.min_equip_totalUnits}', ${minimum_equipment.minimum_equipment_id} )"><i class="fas fa-edit"></i></button>` +
+        //             `<button type="button" class="btn bg-danger" data-id="${minimum_equipment.particular_id}" onclick="deleteMinimumEquipment(${minimum_equipment.minimum_equipment_id})"><i class="fas fa-trash-alt"></i></button>` +
+        //             '</div>'
+        //         ]).node();
+        //     });
+
+        //     table.draw();
+        // }
 
         function formatNumber(number) {
             return Number(number).toLocaleString('en-US');

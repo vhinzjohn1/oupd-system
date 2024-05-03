@@ -41,21 +41,21 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('staff123'),
             ]
         );
-        $particulars = [
-            'EARTHWORK',
-            'COMPACTION',
-            'P.P.E',
-            'PLAIN AND REINFORCED CONCRETE WORK',
-            'FINISHINGS AND OTHER CIVIL WORK',
-            'ELECTRICAL WORK',
-            'MECHANICAL WORK',
-            'MOVING-IN',
-            'MOVING-OUT'
-        ];
+        // $particulars = [
+        //     'EARTHWORK',
+        //     'COMPACTION',
+        //     'P.P.E',
+        //     'PLAIN AND REINFORCED CONCRETE WORK',
+        //     'FINISHINGS AND OTHER CIVIL WORK',
+        //     'ELECTRICAL WORK',
+        //     'MECHANICAL WORK',
+        //     'MOVING-IN',
+        //     'MOVING-OUT'
+        // ];
 
-        foreach ($particulars as $particular) {
-            Particular::firstOrCreate(['particular_name' => $particular]);
-        }
+        // foreach ($particulars as $particular) {
+        //     Particular::firstOrCreate(['particular_name' => $particular]);
+        // }
 
         Project::firstOrCreate([
             'project_title' => 'CISC Construction Pavements',

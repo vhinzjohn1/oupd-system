@@ -16,6 +16,8 @@ use App\Http\Controllers\ParticularController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MinimumEquipmentController;
+use App\Http\Controllers\TechnicalPersonnelController;
 use App\Models\EquipmentCategory;
 use App\Models\Particular;
 use Dompdf\Adapter\PDFLib;
@@ -29,6 +31,9 @@ Auth::routes();
 // Route to Controller Material Labor Equipment Resource
 Route::resource('mle', MLEController::class);
 Route::resource('signatures', SignatureController::class);
+
+Route::resource('technical_personnels', TechnicalPersonnelController::class);
+Route::resource('minimum_equipments', MinimumEquipmentController::class);
 
 // Materials Routes and Controller
 Route::resource('materials', MaterialController::class);
@@ -87,6 +92,31 @@ Route::middleware('auth')->group(function () {
 
     Route::view('about', 'about')->name('about');
 
+    // // Route for the index page of technical_personnel
+    // Route::get('/technical_personnel', [TechnicalPersonnelController::class, 'index'])->name('technical_personnel.index');
+
+    // // Route to get the Store function in the TechnicalPersonnelController
+    // Route::post('/technical_personnel', [TechnicalPersonnelController::class, 'store'])->name('technical_personnel.store');
+
+    // // Route to get the update function in the TechnicalPersonnelController
+    // Route::put('/technical_personnel/{id}', [TechnicalPersonnelController::class, 'update'])->name('technical_personnel.update');
+
+    // // Route::view('/pages/transaction', 'pages.transaction')->name('transaction');
+
+    // Route::delete('/technical_personnel/{id}', [TechnicalPersonnelController::class, 'destroy'])->name('technical_personnel.destroy');
+
+    // // Route for the index page of minimum_equipment
+    // Route::get('/minimum_equipment', [MinimumEquipmentController::class, 'index'])->name('minimum_equipment.index');
+
+    // // Route to get the Store function in the MinimumEquipmentController
+    // Route::post('/minimum_equipment', [MinimumEquipmentController::class, 'store'])->name('minimum_equipment.store');
+
+    // // Route to get the update function in the MinimumEquipmentController
+    // Route::put('/minimum_equipment/{id}', [MinimumEquipmentController::class, 'update'])->name('minimum_equipment.update');
+
+    // // Route::view('/pages/transaction', 'pages.transaction')->name('transaction');
+
+    // Route::delete('/minimum_equipment/{id}', [MinimumEquipmentController::class, 'destroy'])->name('minimum_equipment.destroy');
 
     // Routes for labors
     Route::get('/pages/list_of_labors', function () {
@@ -187,6 +217,9 @@ Route::get('/printables/summary_of_cost', function () {
 Route::get('/printables/boq', function () {
     return view('printables.boq');
 })->name('boq');
+Route::get('/printables/ppmp', function () {
+    return view('printables.ppmp');
+})->name('ppmp');
 
 // Project Particular Routes:
 Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');

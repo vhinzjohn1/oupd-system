@@ -23,16 +23,26 @@ class SignatureController extends Controller
         try {
 
             // Retrieve or create project
-            $signature = Signature::updateOrCreate(['fullname' => $request['fullName']], [
-                'degree' => $request['degree'],
-                'position' => $request['position'],
-                'role' => $request['role'],
-                'project_id' => $request['projectId'],
-            ]);
-
-
-            // Return success response
-            return response()->json($signature);
+            $signature = Signature::firstOrCreate(
+                [
+                    'project_id' => $request['projectId'],
+                    'role' => $request['role'],
+                ],
+                [
+                    'fullname' => $request['fullName'],
+                    'degree' => $request['degree'],
+                    'position' => $request['position'],
+                    'role' => $request['role'],
+                    'project_id' => $request['projectId'],
+                ]
+            );
+            if ($signature->wasRecentlyCreated) {
+                // New record was created
+                return response()->json(['success' => true, 'message' => 'Successfully added Signature']);
+            } else {
+                // Existing record was retrieved
+                return response()->json(['success' => false, 'message' => 'Signature already exists for this project.']);
+            }
         } catch (\Exception $e) {
 
             // Log detailed error message
@@ -41,6 +51,7 @@ class SignatureController extends Controller
             // Return error response
             return response()->json(['success' => false, 'message' => 'Failed to add Signature. Please check the logs for details.']);
         }
+
     }
 
     /**

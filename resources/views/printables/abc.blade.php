@@ -107,95 +107,6 @@
             </div>
         </div>
 
-        <div class="container">
-            <div class="container">
-                <div class="row mt-4">
-                    <div class="col d-inline-block me-1">
-                        <div class="">
-                            <div class="">
-                                <div style="white-space: nowrap;">
-                                    Re-evaluated by: <br><br>
-                                    <div style="text-align: center;">
-                                        <u><b>FRITZ MILDRED N. PUABEN</b> </u> <br>
-                                        Draftsman I, OUPD
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col d-inline-block me-1">
-                        <div class="">
-                            <div class="">
-                                <div style="white-space: nowrap;">
-                                    Checked by: <br><br>
-                                    <div style="text-align: center;">
-                                        <u><b>MARIA EILANI N. NON</b> </u> <br>
-                                        Engineer II, OUPD
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col d-inline-block me-1">
-                        <div class="">
-                            <div class="">
-                                <div style="white-space: nowrap;">
-                                    Reviewed by: <br><br>
-                                    <div style="text-align: center;">
-                                        <u><b>REYNALDO B. MABELIN</b> </u> <br>
-                                        Director, OUPD
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col d-inline-block me-1">
-                        <div class="">
-                            <div class="">
-                                <div style="white-space: nowrap;">
-                                    Checked by: <br><br>
-                                    <div style="text-align: center;">
-                                        <u><b>ROY V. AGBAYANI</b> </u> <br>
-                                        Director, OUPD
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col d-inline-block me-1">
-                        <div class="">
-                            <div class="">
-                                <div style="white-space: nowrap;">
-                                    Recommending Approval: <br><br>
-                                    <div style="text-align: center;">
-                                        <u><b>HERMIE P. PAVA</b> </u> <br>
-                                        VP-Administration
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col d-inline-block me-1">
-                        <div class="">
-                            <div class="">
-                                <div style="white-space: nowrap;">
-                                    Approved: <br><br>
-                                    <div style="text-align: center;">
-                                        <u><b>ROLITO G. EBALLE, PH.D</b> </u> <br>
-                                        University President
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Repeat the structure for other elements as needed -->
-                </div>
-
-
-            </div>
-
-        </div>
-
         <script>
             // Add an event listener to the button
             document.getElementById('printView').addEventListener('click', function() {
@@ -297,12 +208,14 @@
 
 
                                 var mobValue = isMovingParticular ? parseFloat(particular.total) :
-                                0;
+                                    0;
                                 mobTotal += mobValue;
                                 // Calculate values based on the type of particular
-                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) : (
-                                    parseFloat(particular.totalMaterialAmount) + parseFloat(particular.totalLaborAmount) +
-                                    parseFloat(particular.totalEquipmentAmount));
+                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) :
+                                    (
+                                        parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                            particular.totalLaborAmount) +
+                                        parseFloat(particular.totalEquipmentAmount));
                                 markUpTotal = isMovingParticular ? 0 : (project.ocm + project
                                     .contractors_profit);
                                 markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
@@ -368,7 +281,8 @@
                                 '<td class="text-center"><strong>Total</strong></td>' +
                                 '<td></td>' +
                                 '<td></td>' +
-                                '<td class="text-right">' + numberWithCommas(parseFloat(dirTotal).toFixed(2)) +
+                                '<td class="text-right">' + numberWithCommas(parseFloat(dirTotal).toFixed(
+                                    2)) +
                                 '</td>' +
                                 '<td></td>' +
                                 '<td></td>' +
@@ -390,6 +304,107 @@
                                 '<div class="text-center">' +
                                 '<h5>TOTAL ESTIMATED COST IS ' + amountInWords + '</h5>' +
                                 '<h5>' + numberWithCommas(totalCostAmount.toFixed(2)) + '</h5>' +
+                                '</div>' +
+                                '</div>';
+                            divHTML +=
+                                '<div class="container">' +
+                                '<div class="row mt-4">' +
+                                '<div class="col d-inline-block me-1">' +
+                                '<div style="white-space: nowrap;">' +
+                                'Prepared by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Prepared by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname + '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
+                                '<div class="col d-inline-block me-1">' +
+                                '<div style="white-space: nowrap;">' +
+                                'Checked by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Checked by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
+                                '<div class="col d-inline-block me-1">' +
+                                '<div style="white-space: nowrap;">' +
+                                'Reviewed by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Reviewed by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
+                                '<div class="col d-inline-block me-1">' +
+                                '<div style="white-space: nowrap;">' +
+                                'Submitted by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Submitted by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
+                                '<div class="col d-inline-block me-1">' +
+                                '<div style="white-space: nowrap;">' +
+                                'Recommending Approval: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Recommending Approval') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
+                                '<div class="col d-inline-block me-1">' +
+                                '<div style="white-space: nowrap;">' +
+                                'Approved by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Approved by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname + ', ' + signature
+                                        .degree +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
                                 '</div>' +
                                 '</div>';
                             // Append the complete table to the container

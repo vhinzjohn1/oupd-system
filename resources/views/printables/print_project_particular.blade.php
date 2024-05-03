@@ -198,7 +198,7 @@
                                             '<div class="row">' +
                                             '<div class="col-sm-3">' + '2.0 Labor :' +
                                             '</div>' +
-                                            '<div class="col-sm-3">' + laborMandays +
+                                            '<div class="col-sm-3">' + particular.totalLabMandays +
                                             '&nbsp&nbsp&nbsp&nbsp Mandays</div>' +
                                             '</div>' +
                                             '<table class="table table-sm text-center table-bordered">' +
@@ -217,10 +217,6 @@
                                             '<tbody>';
                                         // Append labor to the table
                                         labor.forEach(function(lab) {
-                                            var mandays = parseFloat(lab
-                                                    .labor_no_of_persons) *
-                                                parseFloat(lab.labor_work_days);
-                                            laborMandays += mandays;
                                             var amount = parseFloat(lab
                                                     .labor_no_of_persons) *
                                                 parseFloat(lab.labor_work_days) *
@@ -251,9 +247,9 @@
                                             '</tr>' +
                                             '</tfoot>' +
                                             '</table>';
-                                        console.log('total mandays:',
-                                            laborMandays
-                                        ); // Total Mandays for all labor entries
+                                        // console.log('total mandays:',
+                                        //     laborMandays
+                                        // ); // Total Mandays for all labor entries
                                         console.log('labor total amount:',
                                             laborTotalAmount
                                         ); // Total Amount for all labor entries
@@ -264,10 +260,11 @@
                                         var equipmentTotalAmount = 0;
                                         var equipmentMandays = 0;
                                         divHTML +=
-                                            '<div class="row">' +
+                                        '<div class="row">' +
                                             '<div class="col-sm-3">' + '3.0 Equipment :' +
                                             '</div>' +
-                                            '<div class="col-sm-3" id="equipmentMandaysDisplay"></div>' +
+                                            '<div class="col-sm-3">' + particular.totalEquipMandays +
+                                            '&nbsp&nbsp&nbsp&nbsp Mandays</div>' +
                                             '</div>' +
                                             '<table class="table table-sm text-center table-bordered">' +
                                             '<thead>' +
@@ -396,7 +393,7 @@
             function numberWithCommas(x) {
                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
-
+            
             // Function to convert number to Roman numeral
             function getRomanNumeral(num) {
                 const romanNumerals = {

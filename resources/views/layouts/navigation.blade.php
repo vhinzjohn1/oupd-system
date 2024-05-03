@@ -136,6 +136,12 @@
                             <p>{{ __('Generate BOQ') }}</p>
                         </a>
                     </li>
+                    <li class="nav-item printables">
+                        <a href="{{ route('ppmp') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate PPMP') }}</p>
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>

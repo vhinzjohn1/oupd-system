@@ -33,17 +33,19 @@
                                     <option value="Reviewed by">Reviewed by</option>
                                     <option value="Recommending Approval">Recommending Approval</option>
                                     <option value="Conformed by">Conformed by</option>
-                                    <option value="Approved">Approved</option>
+                                    <option value="Approved by">Approved by</option>
+                                    <option value="Submitted by">Submitted by</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="add_project_signature_position">Position</label>
                                 <select data-placeholder="Select Postion" type="text" class="form-control"
-                                    id="add_project_signature_position" name="add_project_signature_position">
+                                    id="add_project_signature_position" name="add_project_signature_position" required>
                                     <option value=""></option>
-                                    <option value="CMU President">CMU President</option>
-                                    <option value="Draftsman">Draftsman</option>
-                                    <option value="President">President</option>
+                                    <option value="University President">University President</option>
+                                    <option value="Draftsman, OUPD">Draftsman, OUPD</option>
+                                    <option value="Director, OUPD">Director, OUPD</option>
+                                    <option value="Engineer, OUPD">Engineer, OUPD</option>
                                 </select>
                             </div>
                         </div>
