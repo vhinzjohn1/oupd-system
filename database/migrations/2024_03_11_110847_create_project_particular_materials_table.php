@@ -20,7 +20,7 @@ return new class extends Migration {
             // Foreign keys
             $table->foreign('price_id')->references('price_id')->on('prices')->onDelete('cascade');
             $table->foreign('project_particular_id')->references('project_particular_id')->on('project_particulars')->onDelete('cascade');
-            $table->foreign('material_id')->references('material_id')->on('materials')->onDelete('restrict');
+            $table->foreign('material_id')->references('material_id')->on('materials')->onDelete('cascade');
             $table->timestamps();
         });
     }

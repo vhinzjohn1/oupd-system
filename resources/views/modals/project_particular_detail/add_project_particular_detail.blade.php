@@ -14,7 +14,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <input type="text" id="add_projectPart_detailID">
+                                <input type="hidden" id="add_projectPart_detailID">
                                 <label for="add_projectPart_detailQuantity">Quantity</label>
                                 <input type="number" class="form-control" id="add_projectPart_detailQuantity"
                                     name="add_projectPart_detailQuantity" required>
@@ -40,7 +40,6 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn bg-success">Save changes</button>
                     </div>
             </form>

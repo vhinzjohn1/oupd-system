@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'POW')
 @section('content')
     <!DOCTYPE html>
     <html lang="en">
@@ -8,10 +9,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Generate PDF</title>
-        <!-- jQuery -->
-        <script src="../../plugins/jquery/jquery.min.js"></script>
-        <!-- Bootstrap 4 -->
-        <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
         <!-- Latest Bootstrap 5.3 CSS -->
         <link rel="stylesheet" href="{{ asset('plugins/tom-select/bootstrap.min.css') }}">
@@ -106,7 +103,8 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        console.log(response);
+                        console.log("This is the response: ", response);
+
                         // Populate project details
                         $('#projectTitle').text(response.projects[0].project_title);
                         $('#projectLocation').text(response.projects[0].project_location);

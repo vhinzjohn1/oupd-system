@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'ABC')
 @section('content')
     <!DOCTYPE html>
     <html lang="en">
@@ -7,11 +8,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Generate PDF</title>
-        <!-- jQuery -->
-        <script src="../../plugins/jquery/jquery.min.js"></script>
-        <!-- Bootstrap 4 -->
-        <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
         <!-- Latest Bootstrap 5.3 CSS -->
         <link rel="stylesheet" href="{{ asset('plugins/tom-select/bootstrap.min.css') }}">
@@ -297,12 +293,14 @@
 
 
                                 var mobValue = isMovingParticular ? parseFloat(particular.total) :
-                                0;
+                                    0;
                                 mobTotal += mobValue;
                                 // Calculate values based on the type of particular
-                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) : (
-                                    parseFloat(particular.totalMaterialAmount) + parseFloat(particular.totalLaborAmount) +
-                                    parseFloat(particular.totalEquipmentAmount));
+                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) :
+                                    (
+                                        parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                            particular.totalLaborAmount) +
+                                        parseFloat(particular.totalEquipmentAmount));
                                 markUpTotal = isMovingParticular ? 0 : (project.ocm + project
                                     .contractors_profit);
                                 markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
@@ -368,7 +366,8 @@
                                 '<td class="text-center"><strong>Total</strong></td>' +
                                 '<td></td>' +
                                 '<td></td>' +
-                                '<td class="text-right">' + numberWithCommas(parseFloat(dirTotal).toFixed(2)) +
+                                '<td class="text-right">' + numberWithCommas(parseFloat(dirTotal).toFixed(
+                                    2)) +
                                 '</td>' +
                                 '<td></td>' +
                                 '<td></td>' +

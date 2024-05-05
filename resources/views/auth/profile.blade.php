@@ -153,31 +153,6 @@
                 </div>
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
-
-
-
-            {{-- Table for User Management --}}
-            <div class="container-fluid">
-                <div class="card">
-                    <div class="card-body table-responsive">
-                        <table class="table col-12" id="accountTable">
-                            <thead>
-                                <tr>
-                                    <th>First Name</th>
-                                    <th>Middle Name</th>
-                                    <th>Last Name</th>
-                                    <th>User Name</th>
-                                    <th>Roles</th>
-                                    <th>Email</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
         <!-- /.content -->
     @endsection

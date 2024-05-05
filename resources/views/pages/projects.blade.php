@@ -422,6 +422,7 @@
                     project.project_contract_duration,
                     '<div class="text-center d-flex">' +
                     `<button type="button" id="editProjectButton" class="btn bg-success mr-2" data-id="${project.project_id}" onclick="viewProjectModal(${project.project_id}, '${project.project_title}', '${project.project_location}', '${project.project_owner}', '${project.project_description}', '${project.project_contract_duration}', '${project.project_date_prepared}', '${project.project_target_start_date}', '${project.project_appropriation}', '${project.project_source_of_fund}', '${project.project_mode_of_implementation}')"><i class="fas fa-edit" aria-hidden="true"></i></button>` +
+                    `<button type="button" id="deleteProject" class="btn btn-danger mr-2" data-id="${project.project_id}" onclick="deleteProject(${project.project_id})" ><i class="fa fa-trash-alt"></i></button>` +
                     `<button type="button" id="selectProjectButton" class="btn btn-success mr-2" data-id="${project.project_id}" onclick="selectProject(${project.project_id}, '${project.project_title}')" > Select </button>` +
                     // ... (add your delete button logic here) +
                     '</div>'
@@ -429,6 +430,39 @@
             });
 
             table.draw();
+        }
+
+        function deleteProject(project_id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this Project!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('project') }}/" + project_id,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            toastr.options.progressBar = true;
+                            toastr.success('Project Deleted Successfully!');
+                            refreshProjectsTable();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText); // Log error response for debugging
+                            toastr.error(
+                                'Error occurred while deleting Project. Please check console for details.'
+                            );
+                        }
+                    });
+                }
+            });
         }
 
 

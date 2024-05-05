@@ -16,6 +16,11 @@
                 height: 43px;
                 font-weight: 630;
             }
+
+            .select2Below {
+                top: auto !important;
+                bottom: auto !important;
+            }
         </style>
     </head>
     <!-- Content Header (Page header) -->
@@ -119,7 +124,7 @@
                                             </select>
                                         </div>
                                         <div class="card">
-                                            <div class="row p-3">
+                                            <div class="row p-3 d-flex justify-content-center">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="add_project_ocm">OCM</label>
@@ -144,6 +149,20 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- VAT  --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="add_project_vat">VAT</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control"
+                                                                id="add_project_vat">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">%</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
 
@@ -296,36 +315,112 @@
             @include('modals.project_particular.add_projectPart_labor')
             @include('modals.project_particular.add_projectPart_equipment')
             @include('modals.project_particular.edit_projectPart_material')
-            @include('modals.project.add_projects_modal')
+            @include('modals.transactionals.add_trans_proj_modal')
             @include('modals.project_particular.edit_projectPart_labor')
             @include('modals.project_particular.edit_projectPart_equipment')
             @include('modals.signature.add_signature')
             @include('modals.signature.edit_signature')
+
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
             <div class="d-flex">
-                <h4>Project Item <i class="fas fa-sort-amount-up-alt header-hover" onclick="sortProjectParticular()"></i>
-                </h4>
+                <h4>Project Item</h4>
+
                 {{-- <div class="btn btn-success"></div> --}}
             </div>
             <div id="projectParticularContent" class="container-fluid col-12 d-flex flex-column"></div>
         </div>
 
-        <!-- Set up the dropdown for adding Particular -->
-        <div class="dropdown" id="addPartMenu">
-            <button class="btn btn-success dropdown-toggle" type="button" id="addParticularBtn" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Add Particular<span class="sr-only"></span>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="addParticularBtn">
-                <!-- Create dropdown options -->
-            </div>
+        <div class="col-2">
+            <select class="form-control" id="selectProjParticular">
+
+            </select>
         </div>
+
     </div>
 
 
     <script>
+        $("#selectProjParticular")
+            .select2({
+                theme: "bootstrap-5",
+                placeholder: "Add Project Item",
+                dropdownPosition: 'below'
+            });
+
+        // Populate the Table and Refresh at the same time
+        function refreshParticularTable() {
+            $.ajax({
+                url: "{{ route('getParticulars') }}",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    console.log(data)
+                    if (Array.isArray(data) && data.length > 0) {
+                        var selectedProjID = localStorage.getItem("projectID");
+                        var selectElem = $("#selectProjParticular").empty();
+
+                        // Filter data for the selected project ID
+                        var selectedProject = data.find(function(project) {
+                            return project.project_id == selectedProjID;
+                        });
+
+                        // If selected project is found
+                        if (selectedProject && selectedProject.particulars_available) {
+                            // Add a blank option
+                            selectElem.append('<option value=""></option>');
+
+                            // Append options for each particular available in the project
+                            selectedProject.particulars_available.forEach(function(particular) {
+                                selectElem.append('<option value="' + particular.particular_id + '">' +
+                                    particular.particular_name + '</option>');
+                            });
+                        } else {
+                            console.error(
+                                "Selected project or particulars available data not found or invalid.");
+                        }
+                    } else {
+                        console.error("No data or invalid data received.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                },
+            });
+        }
+
+        // Event handler for select2 select event
+        $('#selectProjParticular').on('select2:select', function(e) {
+            var selectedParticularId = e.params.data.id;
+
+            // Prepare data for AJAX request
+            var requestData = {
+                project_id: selectedProjectID, // Assuming selectedProjectID is defined
+                particular_id: selectedParticularId,
+                _token: "{{ csrf_token() }}",
+            };
+
+            // Send AJAX request to store the project particular
+            $.ajax({
+                url: "{{ route('projectParticulars.store') }}",
+                type: "POST",
+                dataType: "json",
+                data: requestData,
+                success: function(response) {
+                    // Handle success response
+                    console.log("Project particular successfully stored:", response);
+                    // Reload the current page
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error("Error storing project particular:", xhr.responseText);
+                }
+            });
+        });
+
+
         // Signature Table DataTable
         $("#signatureTable").DataTable({
             "responsive": true,
@@ -340,9 +435,56 @@
             console.log("Hello World")
         }
 
+        // Adding Project
         function newProject() {
-            $("#addProjectModal").modal("show");
+            $("#addTransProjModal").modal("show");
         }
+
+        $('#addTransProjectForm').submit(function(e) {
+            e.preventDefault();
+
+            // Get form data
+            let title = $('#add_trans_project_title').val();
+            let location = $('#add_trans_project_location').val();
+            let owner = $('#add_trans_project_owner').val();
+            let description = $('#add_trans_project_description').val();
+            let contractDuration = $('#add_trans_project_contract_duration').val();
+            let datePrepared = $('#add_trans_project_date_prepared').val();
+            let appropriation = $('#add_trans_project_appropriation').val();
+            let sourceOfFund = $('#add_trans_project_source_of_fund').val();
+            let modeOfImplementation = $('#add_trans_project_mode_of_implementation').val();
+
+            // Make AJAX request to add new material
+            $.ajax({
+                url: "{{ route('project.store') }}",
+                type: "POST",
+                data: {
+                    project_title: title,
+                    project_location: location,
+                    project_owner: owner,
+                    project_description: description,
+                    project_contract_duration: contractDuration,
+                    project_date_prepared: datePrepared,
+                    project_appropriation: appropriation,
+                    project_source_of_fund: sourceOfFund,
+                    project_mode_of_implementation: modeOfImplementation,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    toastr.options.progressBar = true;
+                    toastr.success('Project Added Successfully!');
+                    localStorage.setItem('projectID', response.project_id);
+                    localStorage.setItem('projectTitle', response.project_title);
+
+                    window.location.reload();
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log error response for debugging
+                    alert('Error occurred. Check console for details.');
+                }
+            });
+        });
 
         const [year, quarter] = [(new Date()).getFullYear(), ["1st", "2nd", "3rd", "4th"][Math.floor(((new Date())
             .getMonth() % 12) / 3)]];
@@ -400,6 +542,12 @@
                 tags: true,
                 dropdownParent: $("#editProjectSignatureModal"),
             });
+
+        $("#add_project_signature_role").on("change", function() {
+
+            const value = $("#add_project_signature_role").val();
+            console.log(value)
+        });
 
 
         $('#addSignatureForm').submit(function(e) {
@@ -1312,8 +1460,19 @@
                             var headerContent = $(
                                 '<div class="d-flex justify-content-between">'
                             );
-                            var title = $("<h5>").text(particular.particular_name).addClass(
-                                "numeralPartName");
+
+                            // Project Item H5
+                            var title = $("<h5>", {
+                                "class": "numeralPartName",
+                                "id": particular.particular_id
+                            }).append(
+                                $("<span>", {
+                                    "id": ""
+                                }).text("")
+                            ).append(
+                                particular.particular_name
+                            );
+
                             var cardTools = $('<div class="card-tools">');
                             var collapseButton = $(
                                 '<button type="button" class="btn btn-tool">'
@@ -1823,6 +1982,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
+                    console.log("This is the project data:", data);
                     // Iterate over each project
                     data.forEach(function(project) {
                         // Check if the project ID matches the selected project ID
@@ -1855,6 +2015,9 @@
                             );
                             $("#add_project_contractProfit").val(
                                 project.contractors_profit
+                            );
+                            $("#add_project_vat").val(
+                                project.vat
                             );
                         }
                         $("#add_project_source_of_fund").select2({
@@ -2684,9 +2847,6 @@
             let materialUnit = $(
                 "#add_particular_materialUnit"
             ).val();
-            let materialPrice = $(
-                "#add_particular_materialPrice"
-            ).val();
             let materialQuarter = $(
                 "#add_particular_materialQuarter"
             ).val();
@@ -2697,6 +2857,14 @@
             let materialPriceID = $(
                 "#add_particular_priceID"
             ).val();
+            let commaPrice = $(
+                "#add_particular_materialPrice"
+            ).val();
+
+            // Remove the P and commas
+            let materialPriceCleaned = commaPrice.replace('₱', '').replace(/,/g,
+                '');
+            let materialPrice = parseFloat(materialPriceCleaned);
 
             // Remove materialId from the data object if it's "empty"
             let data = {
@@ -2948,6 +3116,8 @@
                                     $("#add_particular_priceID").val(selectedMaterial
                                         .material_price_id);
 
+                                    initializePriceInputs();
+
                                     // Chnage readonly attributte of the form
                                     $("#add_particular_category").prop("readonly", true);
                                     $("#add_particular_materialUnit").prop("readonly", true);
@@ -3146,76 +3316,7 @@
             }
         }
 
-        // Populate the Table and Refresh at the same time
-        function refreshParticularTable() {
-            $.ajax({
-                url: "{{ route('getParticulars') }}",
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    var dropdownMenu = $("#addPartMenu .dropdown-menu");
-                    // Clear existing dropdown items
-                    dropdownMenu.empty();
 
-                    // Loop through the data to find particulars for the selected project ID
-                    data.forEach(function(project) {
-                        if (project.project_id == selectedProjectID) {
-                            // Sort the particulars for this project
-                            project.particulars_available.forEach(function(particular) {
-                                var dropdownItem = $(
-                                    '<a class="dropdown-item" href="" data-particular-id="' +
-                                    particular.particular_id +
-                                    '">' +
-                                    particular.particular_name +
-                                    "</a>"
-                                );
-
-                                // Add onchange event handler to each dropdown item
-                                dropdownItem.on('click', function() {
-                                    var particularId = $(this).data(
-                                        'particular-id');
-                                    // Prepare data for AJAX request
-                                    var requestData = {
-                                        project_id: selectedProjectID,
-                                        particular_id: particularId,
-                                        _token: "{{ csrf_token() }}",
-                                    };
-
-                                    // Send AJAX request to store the project particular
-                                    $.ajax({
-                                        url: "{{ route('projectParticulars.store') }}",
-                                        type: "POST",
-                                        dataType: "json",
-                                        data: requestData,
-                                        success: function(response) {
-                                            // Handle success response
-                                            console.log(
-                                                "Project particular successfully stored:",
-                                                response);
-                                            // Reload the current page
-                                            location.reload();
-                                        },
-                                        error: function(xhr, status,
-                                            error) {
-                                            // Handle error response
-                                            console.error(
-                                                "Error storing project particular:",
-                                                xhr.responseText);
-                                        }
-                                    });
-                                });
-
-                                dropdownMenu.append(dropdownItem);
-                            });
-                        }
-                    });
-
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                },
-            });
-        }
 
 
         $("#projectDetailsForm").submit(function(event) {
@@ -3235,6 +3336,7 @@
             let modeOfImplementation = $("#add_project_mode_of_implementation").val();
             let ocm = $("#add_project_ocm").val();
             let cp = $("#add_project_contractProfit").val();
+            let vat = $("#add_project_vat").val();
 
             // Remove the P and commas
             let projectCostCleaned = appropriation.replace('₱', '').replace(/,/g,
@@ -3259,6 +3361,7 @@
                     add_project_mode_of_implementation: modeOfImplementation,
                     add_project_ocm: ocm,
                     add_project_cp: cp,
+                    add_project_vat: vat,
                     _token: "{{ csrf_token() }}",
                 },
                 success: function(response) {
@@ -3315,7 +3418,6 @@
             });
         }
 
-        // SortableJS
         document.addEventListener("DOMContentLoaded", function() {
             // Code to execute when the DOM is fully loaded
             const sortable = new Sortable(document.getElementById('projectParticularContent'), {
@@ -3329,18 +3431,22 @@
                 listItems.forEach((item, index) => {
                     const romanNumeral = intToRoman(index +
                         1); // Adding 1 to index to match 1-based indexing
-                    // Remove existing Roman numeral before adding a new one
-                    item.textContent = item.textContent.replace(/^\w+\.\s/, '');
-                    // Prepend the Roman numeral directly to the beginning of each item's text content
-                    item.textContent = romanNumeral + '. ' + item.textContent;
+                    const spanElement = item.querySelector('span'); // Get the span element inside h5
+                    if (spanElement) {
+                        spanElement.textContent = romanNumeral; // Set the Roman numeral as the span's text
+                    }
                 });
             }
 
             // Function to save the order of list items in local storage
             function saveOrder() {
                 const listItems = document.querySelectorAll('#projectParticularContent .numeralPartName');
-                const order = Array.from(listItems).map(item => item.textContent);
+                const order = Array.from(listItems).map(item => ({
+                    id: item.id,
+                    text: item.textContent
+                }));
                 localStorage.setItem('sortableOrder', JSON.stringify(order));
+                console.log('Saved Sorted order saved locally:', order);
             }
 
             // Function to load the order of list items from local storage
@@ -3363,7 +3469,8 @@
                     {
                         value: 50,
                         numeral: "L"
-                    }, {
+                    },
+                    {
                         value: 10,
                         numeral: "X"
                     },
@@ -3394,7 +3501,7 @@
                         num -= value;
                     }
                 });
-                return result;
+                return result + ". ";
             }
 
             // Call updateRomanNumerals() initially
@@ -3405,10 +3512,9 @@
                 saveOrder();
                 updateRomanNumerals();
             });
-            // Call the function to initialize price inputs
-            // initializePriceInputs();
-
         });
+
+
 
         function initializePriceInputs() {
             const priceInputs = document.querySelectorAll('.price-input');

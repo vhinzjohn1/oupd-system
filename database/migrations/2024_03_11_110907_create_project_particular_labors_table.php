@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer('no_of_persons');
             $table->unsignedInteger('work_days');
             $table->foreign('project_particular_id')->references('project_particular_id')->on('project_particulars')->onDelete('cascade');
-            $table->foreign('labor_id')->references('labor_id')->on('labors')->onDelete('restrict');
+            $table->foreign('labor_id')->references('labor_id')->on('labors')->onDelete('cascade');
             $table->timestamps();
         });
     }

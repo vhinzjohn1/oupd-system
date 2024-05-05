@@ -13,7 +13,7 @@ class ParticularController extends Controller
 {
     public function index()
     {
-        $particular = Particular::all();
+        $particular = DB::select('SELECT * FROM particulars');
         if (request()->ajax()) {
             return response()->json($particular);
         } else {

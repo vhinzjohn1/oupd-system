@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('equipment_id')->nullable(); // Foreign Key
             $table->foreign('equipment_id')
                 ->references('equipment_id')
-                ->on('equipments');
+                ->on('equipments')->onDelete('cascade');
             $table->boolean('is_active')->default(true);
             $table->timestamp('date_effective')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();

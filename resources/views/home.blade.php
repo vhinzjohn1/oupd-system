@@ -4,6 +4,45 @@
 
     <head>
 
+        <style>
+            .userLink {
+                cursor: pointer;
+                display: block;
+                padding: 0.5rem 1rem;
+                border: 1px solid #dee2e6;
+                border-radius: 0.25rem;
+                margin-bottom: 0.5rem;
+                color: white;
+                text-decoration: none;
+            }
+
+            .userLink:focus {
+                background-color: #ffc107 !important;
+                /* Change background color when link is clicked */
+                color: black !important;
+                /* Change text color when link is clicked */
+            }
+
+            .btn-success.active {
+                background-color: #ffc107 !important;
+                /* Change background color when link is clicked */
+                color: black !important;
+            }
+
+            /* Adjust checkbox size */
+            input[type="checkbox"] {
+                transform: scale(1.5);
+                /* Increase checkbox size */
+                margin-right: 5px;
+                /* Add spacing between checkbox and label */
+            }
+
+            /* Make text bigger and bold */
+            .form-check-label {
+                font-size: 18px;
+                font-weight: bold;
+            }
+        </style>
 
     </head>
     <!-- Content Header (Page header) -->
@@ -21,178 +60,20 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
+            <!------- This is the User Permission Section ------>
+            <div class="btn btn-success" id="submitBtn">Submit</div>
 
-            <div id="example1" class="list-group col">
-                <div class="list-group-item">Item 1</div>
-                <div class="list-group-item">Item 2</div>
-                <div class="list-group-item">Item 3</div>
-                <div class="list-group-item">Item 4</div>
-                <div class="list-group-item">Item 6</div>
-                <div class="list-group-item">Item 5</div>
-            </div>
 
-            {{-- <div id="example1">
-                <div class="card">Item 1</div>
-                <div class="card">Item 2</div>
-                <div class="">Item 3</div>
-                <div class="">Item 4</div>
-                <div class="">Item 6</div>
-                <div class="">Item 5</div>
-            </div> --}}
-            <div class="btn btn-danger" onclick="confirmDeletion()">Delete</div>
-        </div> <!-- ./ Project Card  --->
-        <!-- Your Blade view with JavaScript -->
 
-        <button type="button" class="btn btn-secondary" id="popoverButton" data-toggle="popover" title="Popover Title">
-            Open Popover
-        </button>
-        <input type="text" class="form-control price-input" id="price-input">
-        <input type="text" class="form-control price-input">
-
-        <button class="btn btn-success" onclick="test()">submit</button>
+        </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            function initializePriceInputs() {
-                const priceInputs = document.querySelectorAll('.price-input');
-                priceInputs.forEach(input => {
-                    const mask = IMask(input, {
-                        mask: Number,
-                        scale: 2,
-                        thousandsSeparator: ',',
-                        padFractionalZeros: true,
-                        normalizeZeros: true,
-                        radix: '.',
-                        mapToRadix: ['.'],
-                        min: 0
-                    });
-                });
-            }
 
-            // Call the function to initialize price inputs
-            initializePriceInputs();
-        });
-
-
-
-
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const currencyInputs = document.querySelectorAll('.currency-input');
-        //     currencyInputs.forEach(input => {
-        //         new AutoNumeric(input, {
-        //             digitGroupSeparator: ',',
-        //             decimalCharacter: '.',
-        //             currencySymbol: '₱',
-        //             currencySymbolPlacement: 'p'
-        //         });
-        //     });
-
-
-        // });
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            // Load the order of list items from local storage
-            loadOrder();
-            // Initialize SortableJS
-            const sortable = new Sortable(document.getElementById('example1'), {
-                group: 'shared', // set both lists to the same group
-                animation: 150,
-                onEnd: function(evt) {
-                    saveOrder();
-                }
-            });
-
-            // Function to update Roman numerals
-            function updateRomanNumerals() {
-                const listItems = document.querySelectorAll('#example1 .list-group-item');
-                listItems.forEach((item, index) => {
-                    const romanNumeral = intToRoman(index +
-                        1); // Adding 1 to index to match 1-based indexing
-                    // Remove existing Roman numeral before adding a new one
-                    item.textContent = item.textContent.replace(/^\w+\.\s/, '');
-                    // Prepend the Roman numeral directly to the beginning of each item's text content
-                    item.textContent = romanNumeral + '. ' + item.textContent;
-                });
-            }
-
-            // Function to save the order of list items in local storage
-            function saveOrder() {
-                const listItems = document.querySelectorAll('#example1 .list-group-item');
-                const order = Array.from(listItems).map(item => item.textContent);
-                localStorage.setItem('sortableOrder', JSON.stringify(order));
-            }
-
-            // Function to load the order of list items from local storage
-            function loadOrder() {
-                const order = JSON.parse(localStorage.getItem('sortableOrder'));
-                if (order) {
-                    const listItems = document.querySelectorAll('#example1 .list-group-item');
-                    listItems.forEach((item, index) => {
-                        item.textContent = order[index];
-                    });
-                }
-            }
-
-            // Initialize Roman numerals
-            function intToRoman(num) {
-                const romanNumerals = [{
-                        value: 100,
-                        numeral: "C"
-                    },
-                    {
-                        value: 50,
-                        numeral: "L"
-                    }, {
-                        value: 10,
-                        numeral: "X"
-                    },
-                    {
-                        value: 9,
-                        numeral: "IX"
-                    },
-                    {
-                        value: 5,
-                        numeral: "V"
-                    },
-                    {
-                        value: 4,
-                        numeral: "IV"
-                    },
-                    {
-                        value: 1,
-                        numeral: "I"
-                    }
-                ];
-                let result = '';
-                romanNumerals.forEach(({
-                    value,
-                    numeral
-                }) => {
-                    while (num >= value) {
-                        result += numeral;
-                        num -= value;
-                    }
-                });
-                return result;
-            }
-
-            // Call updateRomanNumerals() initially
-            updateRomanNumerals();
-
-
-
-            // Listen for SortableJS events
-            sortable.option("onEnd", function(evt) {
-                saveOrder();
-                updateRomanNumerals();
-            });
-        });
-    </script>
 
 
     <script>
+        $('#submitBtn').click(function() {
+           router.visit('home');
+        })
         // Function to confirm deletion
         function confirmDeletion(id) {
             // Show SweetAlert confirmation dialog
@@ -251,6 +132,46 @@
                     });
                 });
         }
+
+        // Add event listener for the button
+        $("#logValuesBtn").click(() => {
+            // Get the current user details
+            const userName = $("#userName").text();
+            const currentUser = users.find(user => user.name === userName);
+            if (!currentUser) {
+                alert("Please select a User");
+                return;
+            }
+
+            // Initialize the table values object
+            const tableValues = {
+                user_name: currentUser.name,
+                user_id: currentUser.user_id,
+                role_id: currentUser.role_id,
+                descriptions: []
+            };
+
+            // Accumulate descriptions and actions
+            $("#descriptionTable tbody tr").each(function() {
+                const description = $(this).find("td:first-child").text();
+                const actions = [];
+                $(this).find("input[type='checkbox']").each(function() {
+                    const privilege = $(this).attr("name");
+                    const isChecked = $(this).prop("checked");
+                    if (isChecked) {
+                        actions.push(privilege);
+                    }
+                });
+                tableValues.descriptions.push({
+                    description,
+                    actions
+                });
+            });
+
+            // Log the table values
+            console.log("Table Values:");
+            console.log(tableValues);
+        });
     </script>
 
 

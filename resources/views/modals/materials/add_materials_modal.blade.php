@@ -15,15 +15,17 @@
                     <!-- Add form fields for adding a new material -->
                     <div class="row">
                         <div class="col-6">
-                            <div class="form-group">
-                                <label for="add_material_category">Material Category</label>
-                                <input type="text" class="form-control" id="add_material_category"
-                                    name="add_material_category" required>
-                            </div>
+
                             <div class="form-group">
                                 <label for="add_material_name">Material Name</label>
                                 <input type="text" class="form-control" id="add_material_name"
                                     name="add_material_name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="add_material_category">Material Category</label>
+                                <input type="text" class="form-control" id="add_material_category"
+                                    name="add_material_category" required>
                             </div>
 
                             <div class="form-group">
@@ -50,7 +52,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn bg-success">Save changes</button>
                 </div>
             </form>

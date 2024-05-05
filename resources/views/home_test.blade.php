@@ -24,10 +24,7 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-            <!-- Your Blade view with JavaScript -->
-
-
-            {{-- For testing purposess --}}
+           
 
         </div>
 

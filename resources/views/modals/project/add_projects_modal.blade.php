@@ -1,11 +1,3 @@
-{{-- <style>
-    /* Media Query for Tablets Ipads portrait mode */
-    @media (min-width: 768px) and (max-width: 1024px) {
-        .add_project_title {
-            font-size: 0.8rem;
-        }
-    }
-</style> --}}
 <div class="modal fade preview-modal" id="addProjectModal" tabindex="-1" role="dialog"
     aria-labelledby="addProjectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-height: 75vh;">
@@ -82,7 +74,6 @@
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn bg-success">Save changes</button>
                 </div>
             </form>

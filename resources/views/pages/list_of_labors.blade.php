@@ -127,6 +127,7 @@
             console.log(data);
 
             data.forEach(function(labor, index) {
+                const laborName = JSON.stringify(labor.labor_name);
                 // Assuming rates is always an array, even if empty
                 var newRow = table.row.add([
                     // labor.labor_id,

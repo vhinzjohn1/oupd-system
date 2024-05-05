@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'SUMMARY OF COST')
 @section('content')
     <!DOCTYPE html>
     <html lang="en">

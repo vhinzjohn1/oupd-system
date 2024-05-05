@@ -19,6 +19,7 @@ class Project extends Model
         'project_mode_of_implementation',
         'ocm',
         'contractors_profit',
+        'vat',
     ];
 
     // Project model

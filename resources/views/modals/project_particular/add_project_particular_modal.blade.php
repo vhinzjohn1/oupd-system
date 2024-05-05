@@ -122,7 +122,6 @@
 
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <div class="btn bg-success" id="CombineValuesButton">Save Changes</div>
                     </div>
                 </div>
