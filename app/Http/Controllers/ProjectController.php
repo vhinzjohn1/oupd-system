@@ -209,7 +209,6 @@ class ProjectController extends Controller
             'project_mode_of_implementation' => 'required|string',
         ]);
 
-
         try {
 
             // Start a database transaction
@@ -295,6 +294,24 @@ class ProjectController extends Controller
 
             // Return error response
             return response()->json(['success' => false, 'message' => 'Failed to update project. Please check the logs for details.']);
+        }
+    }
+
+    public function destroy($project_id)
+    {
+        try {
+            // Execute raw query to delete project by ID
+            DB::statement('DELETE FROM projects WHERE project_id = ?', [$project_id]);
+
+
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'Project deleted successfully']);
+        } catch (\Exception $e) {
+            // Log detailed error message
+            Log::error('Failed to delete project: ' . $e->getMessage());
+
+            // Return error response
+            return response()->json(['success' => false, 'message' => 'Failed to delete project. Please check the logs for details.']);
         }
     }
 

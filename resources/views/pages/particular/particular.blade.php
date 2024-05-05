@@ -29,14 +29,14 @@
                                 <div class="text-right">
                                     <button type="button" class="btn btn-success" data-toggle="modal"
                                         id="addParticularButton">
-                                        Add Pay Item
+                                        Add Item
                                     </button>
                                 </div>
                                 @include('modals.particular.add_particular_modal');
                                 <thead>
                                     <tr>
-                                        <th>Pay Item Name</th>
-                                        <th>Pay Item (Number)</th>
+                                        <th>Project Item Name</th>
+                                        <th>Project Item (Number)</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -76,7 +76,7 @@
         // Populate the Table and Refresh at the same time
         function refreshParticularTable() {
             // Check if data is already cached in localStorage
-            var cachedData = localStorage.getItem('particularsData');
+            const cachedData = localStorage.getItem('particularsData');
 
             if (cachedData) {
                 // If cached data exists, parse and use it
@@ -101,19 +101,23 @@
 
         // Function to display particular data in the DataTable
         function displayParticulars(data) {
-            var table = $('#particularTable').DataTable();
+            const table = $('#particularTable').DataTable();
             table.clear().draw();
 
             data.forEach(function(particular, index) {
-                var editButton =
+                const editButton =
                     `<button type="button" class="btn bg-success mr-2 editParticularButton" data-id="${particular.particular_id}" data-name="${particular.particular_name}" data-pay-item="${particular.pay_item}"><i class="fas fa-edit"></i></button>`;
-                var deleteButton =
+                const deleteButton =
                     `<button type="button" class="btn bg-danger deleteParticularButton" data-id="${particular.particular_id}"><i class="fas fa-trash-alt"></i></button>`;
-                var buttonsContainer = '<div class="text-center d-flex">' + editButton + deleteButton + '</div>';
+                const buttonsContainer = '<div class="text-center d-flex">' + editButton + deleteButton + '</div>';
 
-                var newRow = table.row.add([
-                    particular.particular_name,
-                    particular.pay_item,
+
+                const particularName = particular.particular_name;
+                const payItem = particular.pay_item;
+
+                const newRow = table.row.add([
+                    particularName,
+                    payItem,
                     buttonsContainer
                 ]).node();
             });
@@ -122,14 +126,15 @@
 
             // Add event listeners for dynamically created buttons
             $('#particularTable').on('click', '.editParticularButton', function() {
-                var particularId = $(this).data('id');
-                var particularName = $(this).data('name');
-                var payItem = $(this).data('pay-item');
+                const particularId = $(this).data('id');
+                const particularName = $(this).data('name');
+
+                const payItem = $(this).data('pay-item');
                 openParticularModal(particularId, particularName, payItem);
             });
 
             $('#particularTable').on('click', '.deleteParticularButton', function() {
-                var particularId = $(this).data('id');
+                const particularId = $(this).data('id');
                 deleteParticular(particularId);
             });
         }

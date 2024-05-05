@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'DUPA SUMMARY')
 @section('content')
     <!DOCTYPE html>
     <html lang="en">
@@ -7,11 +8,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Generate PDF</title>
-        <!-- jQuery -->
-        <script src="../../plugins/jquery/jquery.min.js"></script>
-        <!-- Bootstrap 4 -->
-        <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
         <!-- Latest Bootstrap 5.3 CSS -->
         <link rel="stylesheet" href="{{ asset('plugins/tom-select/bootstrap.min.css') }}">
@@ -67,6 +63,7 @@
 
 
         {{-- <!-- Project Details -->
+        < class="container text-center">
         < class="container text-center">
             <!-- CMU Logo -->
             <div class="cmuLogoContainer">
@@ -324,6 +321,7 @@
                                 '</div>';
                             // Append the complete table to the container
                             $('#particularsContainer').html(divHTML);
+                            $('#preparedBy').html(preparedBy);
                         } else {
                             console.error('Project with ID ' + projectId +
                                 ' not found in the response.');

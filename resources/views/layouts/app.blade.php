@@ -41,7 +41,8 @@
 
 
     {{-- script for number format --}}
-    <script src="{{ asset('js/autonumeric.js') }}"></script>
+    {{-- <script src="{{ asset('js/autonumeric.js') }}"></script> --}}
+    <script src="https://unpkg.com/imask"></script>
 
 
     {{-- Script for sortable js --}}
@@ -87,7 +88,9 @@
         }
     </style>
 
+
     @yield('styles')
+    @livewireStyles
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -207,8 +210,8 @@
             });
         }
     </script> --}}
-
     @yield('scripts')
+    @livewireScripts
 </body>
 
 </html>

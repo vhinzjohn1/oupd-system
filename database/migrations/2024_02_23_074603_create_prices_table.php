@@ -19,7 +19,7 @@ class CreatePricesTable extends Migration
             $table->unsignedBigInteger('material_id')->nullable();
             $table->foreign('material_id')
                 ->references('material_id')
-                ->on('materials');
+                ->on('materials')->onDelete('cascade');
             $table->timestamps();
         });
 

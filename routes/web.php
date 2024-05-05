@@ -15,6 +15,7 @@ use App\Http\Controllers\GetAllDataController;
 use App\Http\Controllers\ParticularController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MinimumEquipmentController;
 use App\Http\Controllers\TechnicalPersonnelController;
@@ -26,6 +27,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+// Make sure only admin can access to this route
+Route::middleware(['auth'])->group(function () {
+    // Routes that only admins can access
+    Route::get('/user-management', function () {
+        return view('user-management.users');
+    })->name('user-management');
+});
+
+// Route::middleware(['auth', 'admin'])->group(function () {
+//     // Routes that only admins can access
+//     Route::get('/user-management', function () {
+//         return view('user-management.users');
+//     })->name('user-management');
+// });
 Auth::routes();
 
 // Route to Controller Material Labor Equipment Resource
@@ -39,26 +55,28 @@ Route::resource('minimum_equipments', MinimumEquipmentController::class);
 Route::resource('materials', MaterialController::class);
 Route::resource('project', ProjectController::class);
 
-Route::resource('labor', LaborController::class);
+Route::resource('labors', LaborController::class);
 Route::resource('particulars', ParticularController::class);
 
 Route::resource('projectParticulars', ProjectParticularController::class);
 
 Route::resource('getAllData', GetAllDataController::class)->except(['show']);
 
+Route::resource('users', UserController::class);
+
 // Define the route for the masterList function
 Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']);
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/material-categories', function () {
-    $categories = MaterialCategory::all()->pluck('material_category_name');
-    return response()->json($categories);
-});
-Route::get('/equipment-categories', function () {
-    $categories = EquipmentCategory::all()->pluck('equipment_category_name');
-    return response()->json($categories);
-});
+// Route::get('/material-categories', function () {
+//     $categories = MaterialCategory::all()->pluck('material_category_name');
+//     return response()->json($categories);
+// });
+// Route::get('/equipment-categories', function () {
+//     $categories = EquipmentCategory::all()->pluck('equipment_category_name');
+//     return response()->json($categories);
+// });
 
 Route::middleware('auth')->group(function () {
 
@@ -70,7 +88,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/generate-pdf', function () {
         return view('printables.print_project_particular');
     });
-
     Route::get('/pages/projects', function () {
         return view('pages.projects');
     })->name('projects');
@@ -122,12 +139,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/pages/list_of_labors', function () {
         return view('pages.list_of_labors');
     })->name('list_of_labors');
-
-    // Route for the index page of labors
-    Route::get('/labors', [LaborController::class, 'index'])->name('labors.index');
-
-    // Route to get the Store function in the Labor Controller
-    Route::post('/labors', [LaborController::class, 'store'])->name('labors.store');
 
     // Route to get the update function in the Labor Controller
     Route::put('/labors/{id}', [LaborController::class, 'update'])->name('labors.update');

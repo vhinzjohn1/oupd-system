@@ -15,11 +15,17 @@
                         </p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('user-management') }}" class="nav-link">
+                        <i class="nav-icon fa fa-address-book"></i>
+                        <p>
+                            User Management
+                        </p>
+                    </a>
+                </li>
             @endif
             <hr style="background-color: white;">
-
-
-
 
             <!-- Dashboard -->
             <li class="nav-item dashboard">
@@ -101,37 +107,37 @@
 
                     {{-- List of Material Sidebar Navigation --}}
                     <li class="nav-item printables">
-                        <a href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate POW') }}</p>
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a href="{{ route('dupa') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('dupa') }}" class="nav-link" id="transaction">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate DUPA') }}</p>
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a href="{{ route('dupa_summary') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('dupa_summary') }}" class="nav-link" id="transaction">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate DUPA SUMMARY') }}</p>
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a href="{{ route('summary_of_cost') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('summary_of_cost') }}" class="nav-link" id="transaction">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate SUMMARY OF COST') }}</p>
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a href="{{ route('abc') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('abc') }}" class="nav-link" id="transaction">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate ABC') }}</p>
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a href="{{ route('boq') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('boq') }}" class="nav-link" id="transaction">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate BOQ') }}</p>
                         </a>

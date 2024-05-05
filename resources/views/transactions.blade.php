@@ -16,6 +16,11 @@
                 height: 43px;
                 font-weight: 630;
             }
+
+            .select2Below {
+                top: auto !important;
+                bottom: auto !important;
+            }
         </style>
     </head>
     <!-- Content Header (Page header) -->
@@ -84,7 +89,7 @@
                                         </div>
                                         <div class="form-group margin-top">
                                             <label for="add_project_appropriation">Project Cost</label>
-                                            <input type="text" class="form-control numberInput"
+                                            <input type="text" class="form-control price-input"
                                                 id="add_project_appropriation" name="add_project_appropriation" required>
                                         </div>
                                     </div>
@@ -119,7 +124,7 @@
                                             </select>
                                         </div>
                                         <div class="card">
-                                            <div class="row p-3">
+                                            <div class="row p-3 d-flex justify-content-center">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="add_project_ocm">OCM</label>
@@ -144,6 +149,20 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- VAT  --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="add_project_vat">VAT</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control"
+                                                                id="add_project_vat">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">%</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
 
@@ -300,7 +319,7 @@
             @include('modals.project_particular.add_projectPart_labor')
             @include('modals.project_particular.add_projectPart_equipment')
             @include('modals.project_particular.edit_projectPart_material')
-            @include('modals.project.add_projects_modal')
+            @include('modals.transactionals.add_trans_proj_modal')
             @include('modals.project_particular.edit_projectPart_labor')
             @include('modals.project_particular.edit_projectPart_equipment')
             @include('modals.signature.add_signature')
@@ -309,31 +328,107 @@
             @include('modals.tech_personnel.edit_tech_personnel') --}}
             {{-- @include('modals.min_equipment.add_min_equipment')
             @include('modals.min_equipment.edit_min_equipment') --}}
+
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
             <div class="d-flex">
-                <h4>Project Item <i class="fas fa-sort-amount-up-alt header-hover" onclick="sortProjectParticular()"></i>
-                </h4>
+                <h4>Project Item</h4>
+
                 {{-- <div class="btn btn-success"></div> --}}
             </div>
             <div id="projectParticularContent" class="container-fluid col-12 d-flex flex-column"></div>
         </div>
 
-        <!-- Set up the dropdown for adding Particular -->
-        <div class="dropdown" id="addPartMenu">
-            <button class="btn btn-success dropdown-toggle" type="button" id="addParticularBtn" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Add Particular<span class="sr-only"></span>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="addParticularBtn">
-                <!-- Create dropdown options -->
-            </div>
+        <div class="col-2">
+            <select class="form-control" id="selectProjParticular">
+
+            </select>
         </div>
+
     </div>
 
 
     <script>
+        $("#selectProjParticular")
+            .select2({
+                theme: "bootstrap-5",
+                placeholder: "Add Project Item",
+                dropdownPosition: 'below'
+            });
+
+        // Populate the Table and Refresh at the same time
+        function refreshParticularTable() {
+            $.ajax({
+                url: "{{ route('getParticulars') }}",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    console.log(data)
+                    if (Array.isArray(data) && data.length > 0) {
+                        var selectedProjID = localStorage.getItem("projectID");
+                        var selectElem = $("#selectProjParticular").empty();
+
+                        // Filter data for the selected project ID
+                        var selectedProject = data.find(function(project) {
+                            return project.project_id == selectedProjID;
+                        });
+
+                        // If selected project is found
+                        if (selectedProject && selectedProject.particulars_available) {
+                            // Add a blank option
+                            selectElem.append('<option value=""></option>');
+
+                            // Append options for each particular available in the project
+                            selectedProject.particulars_available.forEach(function(particular) {
+                                selectElem.append('<option value="' + particular.particular_id + '">' +
+                                    particular.particular_name + '</option>');
+                            });
+                        } else {
+                            console.error(
+                                "Selected project or particulars available data not found or invalid.");
+                        }
+                    } else {
+                        console.error("No data or invalid data received.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                },
+            });
+        }
+
+        // Event handler for select2 select event
+        $('#selectProjParticular').on('select2:select', function(e) {
+            var selectedParticularId = e.params.data.id;
+
+            // Prepare data for AJAX request
+            var requestData = {
+                project_id: selectedProjectID, // Assuming selectedProjectID is defined
+                particular_id: selectedParticularId,
+                _token: "{{ csrf_token() }}",
+            };
+
+            // Send AJAX request to store the project particular
+            $.ajax({
+                url: "{{ route('projectParticulars.store') }}",
+                type: "POST",
+                dataType: "json",
+                data: requestData,
+                success: function(response) {
+                    // Handle success response
+                    console.log("Project particular successfully stored:", response);
+                    // Reload the current page
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error("Error storing project particular:", xhr.responseText);
+                }
+            });
+        });
+
+
         // Signature Table DataTable
         $("#signatureTable").DataTable({
             "responsive": true,
@@ -348,9 +443,56 @@
             console.log("Hello World")
         }
 
+        // Adding Project
         function newProject() {
-            $("#addProjectModal").modal("show");
+            $("#addTransProjModal").modal("show");
         }
+
+        $('#addTransProjectForm').submit(function(e) {
+            e.preventDefault();
+
+            // Get form data
+            let title = $('#add_trans_project_title').val();
+            let location = $('#add_trans_project_location').val();
+            let owner = $('#add_trans_project_owner').val();
+            let description = $('#add_trans_project_description').val();
+            let contractDuration = $('#add_trans_project_contract_duration').val();
+            let datePrepared = $('#add_trans_project_date_prepared').val();
+            let appropriation = $('#add_trans_project_appropriation').val();
+            let sourceOfFund = $('#add_trans_project_source_of_fund').val();
+            let modeOfImplementation = $('#add_trans_project_mode_of_implementation').val();
+
+            // Make AJAX request to add new material
+            $.ajax({
+                url: "{{ route('project.store') }}",
+                type: "POST",
+                data: {
+                    project_title: title,
+                    project_location: location,
+                    project_owner: owner,
+                    project_description: description,
+                    project_contract_duration: contractDuration,
+                    project_date_prepared: datePrepared,
+                    project_appropriation: appropriation,
+                    project_source_of_fund: sourceOfFund,
+                    project_mode_of_implementation: modeOfImplementation,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    toastr.options.progressBar = true;
+                    toastr.success('Project Added Successfully!');
+                    localStorage.setItem('projectID', response.project_id);
+                    localStorage.setItem('projectTitle', response.project_title);
+
+                    window.location.reload();
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log error response for debugging
+                    alert('Error occurred. Check console for details.');
+                }
+            });
+        });
 
         const [year, quarter] = [(new Date()).getFullYear(), ["1st", "2nd", "3rd", "4th"][Math.floor(((new Date())
             .getMonth() % 12) / 3)]];
@@ -409,6 +551,12 @@
                 dropdownParent: $("#editProjectSignatureModal"),
             });
 
+        $("#add_project_signature_role").on("change", function() {
+
+            const value = $("#add_project_signature_role").val();
+            console.log(value)
+        });
+
 
         $('#addSignatureForm').submit(function(e) {
             e.preventDefault();
@@ -421,6 +569,9 @@
             let role = $('#add_project_signature_role').val();
             let position = $('#add_project_signature_position').val();
             let projectID = $('#signature_projectID').val();
+
+            console.log(projectId);
+            console.log(fullName);
 
             // Make AJAX request to add new paticular
             $.ajax({
@@ -435,21 +586,20 @@
                     _token: "{{ csrf_token() }}"
                 },
                 success: function(response) {
-                    toastr.options.progressBar = true;
-                    toastr.success('Signature Added Successfully!');
+
                     console.log(response); // Log response for debugging
 
-                    if (response) {
+                    if (response.success) {
                         $('#addSignatureForm')[0].reset();
                         $('#addProjectSignatureModal').modal('hide');
-
-                        console.log('successfully added');
+                        toastr.options.progressBar = true;
+                        toastr.success('Signature Added Successfully!');
 
                         refreshSignature();
 
                     } else {
-                        // Show error message if material addition fails
-                        alert('Failed to add signature: ' + response.message);
+                        toastr.options.progressBar = true;
+                        toastr.error('Signature Not Added!');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -600,6 +750,7 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
+                    console.log(data)
                     // Store fetched data in localStorage for future use
                     localStorage.setItem('signatureData', JSON.stringify(data));
                     // Display the fetched data
@@ -611,12 +762,17 @@
             });
 
         }
-        // Function to display particular data in the DataTable
+        // Display the signature
         function displaySignature(data) {
+            var submitProjectID = localStorage.getItem("projectID");
+
+            // Filter the data to include only signatures with matching project_id
+            var filteredData = data.filter(signature => signature.project_id == submitProjectID);
+
             var table = $('#signatureTable').DataTable();
             var existingRows = table.rows().remove().draw(false);
 
-            data.forEach(function(signature, index) {
+            filteredData.forEach(function(signature, index) {
                 var newRow = table.row.add([
                     signature.fullname,
                     signature.degree,
@@ -633,502 +789,6 @@
         }
 
 
-        // // TechnicalPersonnel Table DataTable
-        // $("#technicalPersonnelTable").DataTable({
-        //     "responsive": true,
-        //     "lengthChange": true,
-        //     "autoWidth": true,
-        //     "searching": false,
-        //     "ordering": true,
-        //     "paging": false,
-        // });
-
-        // getProjects();
-        // refreshParticularTable();
-        // refreshTechnicalPersonnel();
-        // cacheValues();
-
-        // function cacheValues() {
-        //     var getAllData = localStorage.getItem("getAllData");
-        //     if (getAllData) {
-        //         // If cached data exists, parse and use it
-        //         const data = JSON.parse(getAllData);
-        //         console.log(data);
-        //     }
-        // }
-
-
-        // $('#addTechnicalPersonnelForm').submit(function(e) {
-        //     e.preventDefault();
-
-        //     // Get form data
-        //     var submitProjectID = localStorage.getItem("projectID");
-        //     let projectId = submitProjectID;
-        //     let personnelDescription = $('#add_personnel_description').val();
-        //     let personnelNo = $('#add_personnel_no').val();
-        //     let projectID = $('#technical_personnelID').val();
-
-        //     // Make AJAX request to add new paticular
-        //     $.ajax({
-        //         url: "{{ route('technical_personnels.store') }}",
-        //         type: "POST",
-        //         data: {
-        //             projectId: projectId,
-        //             personnelDescription: personnelDescription,
-        //             personnelNo: personnelNo,
-        //             _token: "{{ csrf_token() }}"
-        //         },
-        //         success: function(response) {
-        //             toastr.options.progressBar = true;
-        //             toastr.success('Technical Personnel Added Successfully!');
-        //             console.log(response); // Log response for debugging
-
-        //             if (response) {
-        //                 $('#addTechnicalPersonnelForm')[0].reset();
-        //                 $('#addTechnicalPersonnelModal').modal('hide');
-
-        //                 console.log('successfully added');
-
-        //                 refreshTechnicalPersonnel();
-
-        //             } else {
-        //                 // Show error message if material addition fails
-        //                 alert('Failed to add technical personnel: ' + response.message);
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText); // Log error response for debugging
-        //             alert('Error occurred. Check console for details.');
-        //         }
-        //     });
-        // });
-
-        // // Edit TechnicalPersonnel
-        // $('#editTechnicalPersonnelForm').submit(function(e) {
-        //     e.preventDefault();
-
-        //     // Get form data
-        //     var submitProjectID = localStorage.getItem("projectID");
-        //     let projectId = submitProjectID;
-        //     let personnelDescription = $('#edit_personnel_description').val();
-        //     let personnelNo = $('#edit_personnel_no').val();
-        //     let technicalPersonnelID = $('#editTechnicalPersonnelID').val();
-
-        //     // // Check if all values are empty
-        //     // if (position === null) {
-        //     //     toastr.options.progressBar = true;
-        //     //     toastr.error('Position is Required');
-        //     // } else {
-        //     // Make AJAX request to add new paticular
-        //     $.ajax({
-        //         url: "{{ route('technical_personnels.update', ['technical_personnel' => ':technical_personnel']) }}"
-        //             .replace(
-        //                 ':technical_personnel',
-        //                 technicalPersonnelID),
-        //         type: "PUT",
-        //         data: {
-        //             personnelDescription: personnelDescription,
-        //             personnelNo: personnelNo,
-        //             technical_personnel_id: technicalPersonnelID, // Change technical_personnel_id to id
-        //             projectId: projectId,
-        //             _token: "{{ csrf_token() }}"
-        //         },
-        //         success: function(response) {
-        //             toastr.options.progressBar = true;
-        //             if (response.success) {
-        //                 toastr.success(response.message);
-
-        //                 $('#editTechnicalPersonnelForm')[0].reset();
-        //                 $('#editTechnicalPersonnelModal').modal('hide');
-
-        //                 refreshTechnicalPersonnel();
-        //             } else {
-        //                 toastr.error(response.message);
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText); // Log error response for debugging
-        //             alert('Error occurred. Check console for details.');
-        //         }
-        //     });
-        //     // }
-        // });
-
-        // // Delete TechnicalPersonnel
-        // function deleteTechnicalPersonnel(technical_personnel_id) {
-        //     Swal.fire({
-        //         title: 'Are you sure?',
-        //         text: 'You will not be able to recover this Technical Personnel!',
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Yes, delete it!'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             $.ajax({
-        //                 url: "{{ url('technical_personnels') }}/" + technical_personnel_id,
-        //                 type: 'DELETE',
-        //                 data: {
-        //                     _token: "{{ csrf_token() }}"
-        //                 },
-        //                 success: function(response) {
-        //                     toastr.options.progressBar = true;
-        //                     toastr.success('Technical Personnel Deleted Successfully!');
-        //                     refreshTechnicalPersonnel();
-        //                 },
-        //                 error: function(xhr, status, error) {
-        //                     console.error(xhr.responseText); // Log error response for debugging
-        //                     toastr.error(
-        //                         'Error occurred while deleting Signature. Please check console for details.'
-        //                     );
-        //                 }
-        //             });
-        //         }
-        //     });
-        // }
-
-        // // Function to populate and show edit modal for technical personnel
-        // function editTechPersonnelModal(project_id, personnel_no, personnel_description, technical_personnel_id) {
-        //     $('#edit_personnel_description').val(personnel_description)
-
-        //     // if (personnel_no === "null") {
-        //     //     personnel_no = "0";
-        //     //     $('#edit_personnel_no').val(personnel_no)
-        //     // } else {
-        //     //     $('#edit_personnel_no').val(personnel_no)
-        //     // }
-
-
-        //     // function updateOrAppendOption($select, value) {
-        //     //     // Check if the option already exists
-        //     //     var optionExists = $select.find('option[value="' + value + '"]').length > 0;
-
-        //     //     if (optionExists) {
-        //     //         // Update the existing option's text and value
-        //     //         $select.val(value).trigger('change');
-        //     //     } else {
-        //     //         // Create a new option element
-        //     //         var newOption = new Option(value, value, true, true);
-
-        //     //         // Append the new option to the Select2 input
-        //     //         $select.append(newOption).trigger('change');
-        //     //     }
-        //     // }
-
-        //     // // Usage
-        //     // updateOrAppendOption($('#edit_personnel_description'), personnel_description);
-        //     // updateOrAppendOption($('#edit_personnel_no'), personnel_no);
-
-        //     $('#editTechnicalPersonnelID').val(technical_personnel_id)
-        //     $('#editTechnicalPersonnelModal').modal('show');
-        // }
-
-        // function refreshTechnicalPersonnel() {
-        //     $('#addTechnicalPersonnelBtn').click(function() {
-        //         $('#addTechnicalPersonnelModal').modal('show');
-        //     });
-
-        //     // Check if data is already cached in localStorage
-        //     var cachedTechnicalPersonnelData = localStorage.getItem('technicalPersonnelData');
-
-        //     if (cachedTechnicalPersonnelData) {
-        //         // If cached data exists, parse and use it
-        //         displayTechnicalPersonnel(JSON.parse(cachedTechnicalPersonnelData));
-        //     }
-        //     // If no cached data, fetch new data via AJAX
-        //     $.ajax({
-        //         url: "{{ route('technical_personnels.index') }}",
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         success: function(data) {
-        //             // Store fetched data in localStorage for future use
-        //             localStorage.setItem('technicalPersonnelData', JSON.stringify(data));
-        //             // Display the fetched data
-        //             displayTechnicalPersonnel(data);
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText);
-        //         }
-        //     });
-
-        // }
-        // // Function to display particular data in the DataTable
-        // function displayTechnicalPersonnel(data) {
-        //     var table = $('#technicalPersonnelTable').DataTable();
-        //     var existingRows = table.rows().remove().draw(false);
-
-        //     data.forEach(function(technical_personnel, index) {
-        //         var newRow = table.row.add([
-        //             technical_personnel.personnel_description,
-        //             technical_personnel.personnel_no,
-        //             '<div class="text-center d-flex">' +
-        //             `<button type="button" class="btn bg-success mr-2" data-id="${technical_personnel.project_id}" onclick="editTechPersonnelModal(${technical_personnel.project_id}, '${technical_personnel.personnel_description}', '${technical_personnel.personnel_no}', ${technical_personnel.technical_personnel_id} )"><i class="fas fa-edit"></i></button>` +
-        //             `<button type="button" class="btn bg-danger" data-id="${technical_personnel.particular_id}" onclick="deleteTechnicalPersonnel(${technical_personnel.technical_personnel_id})"><i class="fas fa-trash-alt"></i></button>` +
-        //             '</div>'
-        //         ]).node();
-        //     });
-
-        //     table.draw();
-        // }
-
-        // // MinimunEquipment Table DataTable
-        // $("#minimumEquipmentTable").DataTable({
-        //     "responsive": true,
-        //     "lengthChange": true,
-        //     "autoWidth": true,
-        //     "searching": false,
-        //     "ordering": true,
-        //     "paging": false,
-        // });
-
-        // getProjects();
-        // refreshParticularTable();
-        // refreshMinimumEquipment();
-        // cacheValues();
-
-        // function cacheValues() {
-        //     var getAllData = localStorage.getItem("getAllData");
-        //     if (getAllData) {
-        //         // If cached data exists, parse and use it
-        //         const data = JSON.parse(getAllData);
-        //         console.log(data);
-        //     }
-        // }
-        // // $("#add_project_signature_role, #add_project_signature_position").select2({
-        // //     theme: "bootstrap-5",
-        // //     tags: true,
-        // //     dropdownParent: $("#addProjectSignatureModal"),
-        // // });
-        // // $("#edit_project_signature_role, #edit_project_signature_position")
-        // //     .select2({
-        // //         theme: "bootstrap-5",
-        // //         tags: true,
-        // //         dropdownParent: $("#editProjectSignatureModal"),
-        // //     });
-
-
-        // $('#addMinimumEquipmentForm').submit(function(e) {
-        //     e.preventDefault();
-
-        //     // Get form data
-        //     var submitProjectID = localStorage.getItem("projectID");
-        //     let projectId = submitProjectID;
-        //     let minEquipDescription = $('#add_min_equip_description').val();
-        //     let minEquipOwned = $('#add_min_equip_owned').val();
-        //     let minEquipLease = $('#add_min_equip_lease').val();
-        //     let minEquipTotalUnits = $('#add_min_equip_totalUnits').val();
-        //     let projectID = $('#minimum_equipment_projectID').val();
-
-        //     // Make AJAX request to add new paticular
-        //     $.ajax({
-        //         url: "{{ route('minimum_equipments.store') }}",
-        //         type: "POST",
-        //         data: {
-        //             minEquipDescription: minEquipDescription,
-        //             minEquipOwned: minEquipOwned,
-        //             minEquipLease: minEquipLease,
-        //             minEquipTotalUnits: minEquipTotalUnits,
-        //             projectId: projectId,
-        //             _token: "{{ csrf_token() }}"
-        //         },
-        //         success: function(response) {
-        //             toastr.options.progressBar = true;
-        //             toastr.success('Minimum Equipment Added Successfully!');
-        //             console.log(response); // Log response for debugging
-
-        //             if (response) {
-        //                 $('#addMinimumEquipmentForm')[0].reset();
-        //                 $('#addMinimumEquipmentModal').modal('hide');
-
-        //                 console.log('successfully added');
-
-        //                 refreshMinimumEquipment();
-
-        //             } else {
-        //                 // Show error message if material addition fails
-        //                 alert('Failed to add minimum equipment: ' + response.message);
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText); // Log error response for debugging
-        //             alert('Error occurred. Check console for details.');
-        //         }
-        //     });
-        // });
-
-        // // Edit MinimumEquipment
-        // $('#editMinimumEquipmentForm').submit(function(e) {
-        //     e.preventDefault();
-
-        //     // Get form data
-        //     var submitProjectID = localStorage.getItem("projectID");
-        //     let projectId = submitProjectID;
-        //     let minEquipDescription = $('#edit_min_equip_description').val();
-        //     let minEquipOwned = $('#edit_min_equip_owned').val();
-        //     let minEquipLease = $('#edit_min_equip_lease').val();
-        //     let minEquipTotalUnits = $('#edit_min_equip_totalUnits').val();
-        //     let minimum_equipmentID = $('#editMinimumEquipmentID').val();
-
-        //     // // Check if all values are empty
-        //     // if (position === null) {
-        //     //     toastr.options.progressBar = true;
-        //     //     toastr.error('Position is Required');
-        //     // } else {
-        //         // Make AJAX request to add new paticular
-        //         $.ajax({
-        //             url: "{{ route('minimum_equipments.update', ['minimum_equipment' => ':minimum_equipment']) }}".replace(
-        //                 ':minimum_equipment',
-        //                 minimum_equipmentID),
-        //             type: "PUT",
-        //             data: {
-        //                 minEquipDescription: minEquipDescription,
-        //                 minEquipOwned: minEquipOwned,
-        //                 minimum_equipment_id: minimum_equipmentID,
-        //                 minEquipLease: minEquipLease,
-        //                 minEquipTotalUnits: minEquipTotalUnits,
-        //                 projectId: projectId,
-        //                 _token: "{{ csrf_token() }}"
-        //             },
-        //             success: function(response) {
-        //                 toastr.options.progressBar = true;
-        //                 if (response.success) {
-        //                     toastr.success(response.message);
-
-        //                     $('#editMinimumEquipmentForm')[0].reset();
-        //                     $('#editMinimumEquipmentModal').modal('hide');
-
-        //                     refreshMinimumEquipment();
-        //                 } else {
-        //                     toastr.error(response.message);
-        //                 }
-        //             },
-        //             error: function(xhr, status, error) {
-        //                 console.error(xhr.responseText); // Log error response for debugging
-        //                 alert('Error occurred. Check console for details.');
-        //             }
-        //         });
-        //     // }
-        // });
-
-        // // Delete MinimumEquipment
-        // function deleteMinimumEquipment(minimum_equipment_id) {
-        //     Swal.fire({
-        //         title: 'Are you sure?',
-        //         text: 'You will not be able to recover this Minimum Equipment!',
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Yes, delete it!'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             $.ajax({
-        //                 url: "{{ url('minimum_equipments') }}/" + minimum_equipment_id,
-        //                 type: 'DELETE',
-        //                 data: {
-        //                     _token: "{{ csrf_token() }}"
-        //                 },
-        //                 success: function(response) {
-        //                     toastr.options.progressBar = true;
-        //                     toastr.success('Minimum Equipment Deleted Successfully!');
-        //                     refreshMinimumEquipment();
-        //                 },
-        //                 error: function(xhr, status, error) {
-        //                     console.error(xhr.responseText); // Log error response for debugging
-        //                     toastr.error(
-        //                         'Error occurred while deleting Minimum Equipment. Please check console for details.'
-        //                     );
-        //                 }
-        //             });
-        //         }
-        //     });
-        // }
-
-        // function editMinimumEquipmentModal(project_id, min_equip_description, min_equip_owned, min_equip_lease, min_equip_totalUnits, minimum_equipment_id) {
-        //     $('#edit_min_equip_description').val(min_equip_description)
-
-        //     // if (degree === "null") {
-        //     //     degree = "";
-        //     //     $('#edit_signature_degree').val(degree)
-        //     // } else {
-        //     //     $('#edit_signature_degree').val(degree)
-        //     // }
-
-
-        //     // function updateOrAppendOption($select, value) {
-        //     //     // Check if the option already exists
-        //     //     var optionExists = $select.find('option[value="' + value + '"]').length > 0;
-
-        //     //     if (optionExists) {
-        //     //         // Update the existing option's text and value
-        //     //         $select.val(value).trigger('change');
-        //     //     } else {
-        //     //         // Create a new option element
-        //     //         var newOption = new Option(value, value, true, true);
-
-        //     //         // Append the new option to the Select2 input
-        //     //         $select.append(newOption).trigger('change');
-        //     //     }
-        //     // }
-
-        //     // // Usage
-        //     // updateOrAppendOption($('#edit_project_signature_role'), role);
-        //     // updateOrAppendOption($('#edit_project_signature_position'), position);
-
-        //     $('#editMinimumEquipmentID').val(minimum_equipment_id)
-        //     $('#editMinimumEquipmentModal').modal('show');
-        // }
-
-        // function refreshMinimumEquipment() {
-        //     $('#addMinimumEquipmentBtn').click(function() {
-        //         $('#addMinimumEquipmentModal').modal('show');
-        //     });
-
-        //     // Check if data is already cached in localStorage
-        //     var cachedMinimumEquipmentData = localStorage.getItem('minimum_equipment_Data');
-
-        //     if (cachedMinimumEquipmentData) {
-        //         // If cached data exists, parse and use it
-        //         displayMinimumEquipment(JSON.parse(cachedMinimumEquipmentData));
-        //     }
-        //     // If no cached data, fetch new data via AJAX
-        //     $.ajax({
-        //         url: "{{ route('minimum_equipments.index') }}",
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         success: function(data) {
-        //             // Store fetched data in localStorage for future use
-        //             localStorage.setItem('minimum_equipment_Data', JSON.stringify(data));
-        //             // Display the fetched data
-        //             displayMinimumEquipment(data);
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(xhr.responseText);
-        //         }
-        //     });
-
-        // }
-        // // Function to display particular data in the DataTable
-        // function displayMinimumEquipment(data) {
-        //     var table = $('#minimumEquipmentTable').DataTable();
-        //     var existingRows = table.rows().remove().draw(false);
-
-        //     data.forEach(function(minimum_equipment, index) {
-        //         var newRow = table.row.add([
-        //             minimum_equipment.min_equip_description,
-        //             minimum_equipment.min_equip_owned,
-        //             minimum_equipment.min_equip_lease,
-        //             minimum_equipment.min_equip_totalUnits,
-        //             '<div class="text-center d-flex">' +
-        //             `<button type="button" class="btn bg-success mr-2" data-id="${minimum_equipment.project_id}" onclick="editMinimumEquipmentModal(${minimum_equipment.project_id}, '${minimum_equipment.min_equip_description}', '${minimum_equipment.min_equip_owned}', '${minimum_equipment.min_equip_lease}', '${minimum_equipment.min_equip_totalUnits}', ${minimum_equipment.minimum_equipment_id} )"><i class="fas fa-edit"></i></button>` +
-        //             `<button type="button" class="btn bg-danger" data-id="${minimum_equipment.particular_id}" onclick="deleteMinimumEquipment(${minimum_equipment.minimum_equipment_id})"><i class="fas fa-trash-alt"></i></button>` +
-        //             '</div>'
-        //         ]).node();
-        //     });
-
-        //     table.draw();
-        // }
 
         function formatNumber(number) {
             return Number(number).toLocaleString('en-US');
@@ -1357,8 +1017,6 @@
         }
 
 
-
-
         $("#addProjectParticularDetailForm").on("submit", function(event) {
             event.preventDefault();
             // Get form data
@@ -1369,14 +1027,17 @@
             let detailUnit = $(
                 "#add_projectPart_detailUnit"
             ).val();
-
             let detailUnitCost = $(
                 "#add_projectPart_detailUnitCost"
             ).val();
-
             let detailTotal = $(
                 "#add_projectPart_detailTotal"
             ).val();
+
+            console.log("======== debug here =========")
+            console.log(projectId);
+            console.log(particularID);
+            console.log(detailQuantity);
 
             // AJAX request
             $.ajax({
@@ -1415,19 +1076,12 @@
         });
 
         function editparticularDetail(particular_id, quantity, unit, unitCost, total) {
-
-            console.log("This is the string total: ", total);
-            // let newUnitCost = unitCost ? parseFloat(unitCost).toFixed(2) : '';
-            let newTotal = total;
-            console.log(newTotal);
-            if (total !== "") {
+            const totalAmountValue = $('#total_' + particular_id).text();
+            if (totalAmountValue !== "") {
                 $("#add_projectPart_detailTotal").prop("readonly", true);
-            } else { // if total doesnt have value
+            } else {
                 $("#add_projectPart_detailTotal").prop("readonly", false);
             }
-
-            const totalAmountValue = $('#total_' + particular_id).text();
-            console.log('This is the values total: ', totalAmountValue);
             $("#add_projectPart_detailID").val(particular_id);
             $("#add_projectPart_detailQuantity").val(quantity);
             $("#add_projectPart_detailUnit").val(unit);
@@ -1814,8 +1468,19 @@
                             var headerContent = $(
                                 '<div class="d-flex justify-content-between">'
                             );
-                            var title = $("<h5>").text(particular.particular_name).addClass(
-                                "numeralPartName");
+
+                            // Project Item H5
+                            var title = $("<h5>", {
+                                "class": "numeralPartName",
+                                "id": particular.particular_id
+                            }).append(
+                                $("<span>", {
+                                    "id": ""
+                                }).text("")
+                            ).append(
+                                particular.particular_name
+                            );
+
                             var cardTools = $('<div class="card-tools">');
                             var collapseButton = $(
                                 '<button type="button" class="btn btn-tool">'
@@ -1935,15 +1600,19 @@
                                                     $('<h6>').text('Total Amount: ').append(
                                                         $('<span>').attr('id', 'total_' +
                                                             particular.particular_id).text(
+                                                            particular
+                                                            .project_particular_total != null ?
                                                             parseFloat(particular
                                                                 .project_particular_total)
                                                             .toLocaleString('en-US', {
                                                                 minimumFractionDigits: 2,
                                                                 maximumFractionDigits: 2
-                                                            })
+                                                            }) :
+                                                            ''
                                                         )
                                                     )
                                                 ),
+
 
                                                 $('<div class="signature-zero">').addClass(
                                                     'col-1').append(
@@ -1959,14 +1628,11 @@
                                                             .project_particular_unit,
                                                             particular
                                                             .project_particular_unitCost,
-                                                            parseFloat(particular
-                                                                .project_particular_total
-                                                            )
-                                                            .toLocaleString('en-US', {
-                                                                minimumFractionDigits: 2,
-                                                                maximumFractionDigits: 2
-                                                            }))
-                                                    }))
+                                                            project
+                                                            .project_particular_total
+                                                        );
+                                                    })
+                                                )
                                             )
                                         )
                                     )
@@ -2324,6 +1990,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
+                    console.log("This is the project data:", data);
                     // Iterate over each project
                     data.forEach(function(project) {
                         // Check if the project ID matches the selected project ID
@@ -2357,23 +2024,9 @@
                             $("#add_project_contractProfit").val(
                                 project.contractors_profit
                             );
-                            // Format existing values on page load
-                            $('.numberInput').each(function() {
-                                let initialValue = $(this).val().replace(/,/g, '');
-                                if (initialValue !== '') {
-                                    $(this).val(formatNumber(initialValue));
-                                }
-                                // Trigger the 'input' event to apply formatting
-                                $(this).trigger('input');
-                            });
-
-                            // Handle real-time input formatting (no changes needed here)
-                            $('.numberInput').on('input', function() {
-                                let formattedValue = $(this).val().replace(/,/g, '');
-                                if (formattedValue !== '') {
-                                    $(this).val(formatNumber(formattedValue));
-                                }
-                            });
+                            $("#add_project_vat").val(
+                                project.vat
+                            );
                         }
                         $("#add_project_source_of_fund").select2({
                             theme: "bootstrap-5",
@@ -2386,6 +2039,7 @@
                             // allowClear: true, // Allow clearing the selection
                         });
                     });
+                    initializePriceInputs();
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -2849,7 +2503,6 @@
                                 totalPartAmount: totalMaterialAmount + totalLaborAmount +
                                     totalEquipmentAmount,
                             };
-
                             // Push the object to the array
                             totalAmountArray.push(totalAmountObject);
 
@@ -2877,10 +2530,14 @@
                                                 $('<span>').attr('id', 'total_' +
                                                     particular.particular_id).text(
                                                     particular
-                                                    .project_particular_total ?
+                                                    .project_particular_total != null ?
                                                     parseFloat(particular
                                                         .project_particular_total)
-                                                    .toFixed(2) : ''
+                                                    .toLocaleString('en-US', {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }) :
+                                                    ''
                                                 )
                                             )
                                         ),
@@ -3198,9 +2855,6 @@
             let materialUnit = $(
                 "#add_particular_materialUnit"
             ).val();
-            let materialPrice = $(
-                "#add_particular_materialPrice"
-            ).val();
             let materialQuarter = $(
                 "#add_particular_materialQuarter"
             ).val();
@@ -3211,6 +2865,14 @@
             let materialPriceID = $(
                 "#add_particular_priceID"
             ).val();
+            let commaPrice = $(
+                "#add_particular_materialPrice"
+            ).val();
+
+            // Remove the P and commas
+            let materialPriceCleaned = commaPrice.replace('₱', '').replace(/,/g,
+                '');
+            let materialPrice = parseFloat(materialPriceCleaned);
 
             // Remove materialId from the data object if it's "empty"
             let data = {
@@ -3462,6 +3124,8 @@
                                     $("#add_particular_priceID").val(selectedMaterial
                                         .material_price_id);
 
+                                    initializePriceInputs();
+
                                     // Chnage readonly attributte of the form
                                     $("#add_particular_category").prop("readonly", true);
                                     $("#add_particular_materialUnit").prop("readonly", true);
@@ -3660,76 +3324,7 @@
             }
         }
 
-        // Populate the Table and Refresh at the same time
-        function refreshParticularTable() {
-            $.ajax({
-                url: "{{ route('getParticulars') }}",
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    var dropdownMenu = $("#addPartMenu .dropdown-menu");
-                    // Clear existing dropdown items
-                    dropdownMenu.empty();
 
-                    // Loop through the data to find particulars for the selected project ID
-                    data.forEach(function(project) {
-                        if (project.project_id == selectedProjectID) {
-                            // Sort the particulars for this project
-                            project.particulars_available.forEach(function(particular) {
-                                var dropdownItem = $(
-                                    '<a class="dropdown-item" href="" data-particular-id="' +
-                                    particular.particular_id +
-                                    '">' +
-                                    particular.particular_name +
-                                    "</a>"
-                                );
-
-                                // Add onchange event handler to each dropdown item
-                                dropdownItem.on('click', function() {
-                                    var particularId = $(this).data(
-                                        'particular-id');
-                                    // Prepare data for AJAX request
-                                    var requestData = {
-                                        project_id: selectedProjectID,
-                                        particular_id: particularId,
-                                        _token: "{{ csrf_token() }}",
-                                    };
-
-                                    // Send AJAX request to store the project particular
-                                    $.ajax({
-                                        url: "{{ route('projectParticulars.store') }}",
-                                        type: "POST",
-                                        dataType: "json",
-                                        data: requestData,
-                                        success: function(response) {
-                                            // Handle success response
-                                            console.log(
-                                                "Project particular successfully stored:",
-                                                response);
-                                            // Reload the current page
-                                            location.reload();
-                                        },
-                                        error: function(xhr, status,
-                                            error) {
-                                            // Handle error response
-                                            console.error(
-                                                "Error storing project particular:",
-                                                xhr.responseText);
-                                        }
-                                    });
-                                });
-
-                                dropdownMenu.append(dropdownItem);
-                            });
-                        }
-                    });
-
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                },
-            });
-        }
 
 
         $("#projectDetailsForm").submit(function(event) {
@@ -3749,6 +3344,13 @@
             let modeOfImplementation = $("#add_project_mode_of_implementation").val();
             let ocm = $("#add_project_ocm").val();
             let cp = $("#add_project_contractProfit").val();
+            let vat = $("#add_project_vat").val();
+
+            // Remove the P and commas
+            let projectCostCleaned = appropriation.replace('₱', '').replace(/,/g,
+                '');
+            let projectCost = parseFloat(projectCostCleaned);
+            console.log(projectCost);
 
             // Send Ajax request
             $.ajax({
@@ -3761,17 +3363,18 @@
                     add_project_owner: projectOwner,
                     add_project_description: projectDescription,
                     add_project_contract_duration: contactDuration,
-                    add_project_appropriation: appropriation,
+                    add_project_appropriation: projectCost,
                     add_project_source_of_fund: sourceOfFund,
                     add_project_date_prepared: datePrepared,
                     add_project_mode_of_implementation: modeOfImplementation,
                     add_project_ocm: ocm,
                     add_project_cp: cp,
+                    add_project_vat: vat,
                     _token: "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     // Reset the form
-                    $("#projectDetailsForm")[0].reset();
+                    // $("#projectDetailsForm")[0].reset();
                     getProjects();
 
                     toastr.options.progressBar = true;
@@ -3823,7 +3426,6 @@
             });
         }
 
-        // SortableJS
         document.addEventListener("DOMContentLoaded", function() {
             // Code to execute when the DOM is fully loaded
             const sortable = new Sortable(document.getElementById('projectParticularContent'), {
@@ -3837,18 +3439,22 @@
                 listItems.forEach((item, index) => {
                     const romanNumeral = intToRoman(index +
                         1); // Adding 1 to index to match 1-based indexing
-                    // Remove existing Roman numeral before adding a new one
-                    item.textContent = item.textContent.replace(/^\w+\.\s/, '');
-                    // Prepend the Roman numeral directly to the beginning of each item's text content
-                    item.textContent = romanNumeral + '. ' + item.textContent;
+                    const spanElement = item.querySelector('span'); // Get the span element inside h5
+                    if (spanElement) {
+                        spanElement.textContent = romanNumeral; // Set the Roman numeral as the span's text
+                    }
                 });
             }
 
             // Function to save the order of list items in local storage
             function saveOrder() {
                 const listItems = document.querySelectorAll('#projectParticularContent .numeralPartName');
-                const order = Array.from(listItems).map(item => item.textContent);
+                const order = Array.from(listItems).map(item => ({
+                    id: item.id,
+                    text: item.textContent
+                }));
                 localStorage.setItem('sortableOrder', JSON.stringify(order));
+                console.log('Saved Sorted order saved locally:', order);
             }
 
             // Function to load the order of list items from local storage
@@ -3871,7 +3477,8 @@
                     {
                         value: 50,
                         numeral: "L"
-                    }, {
+                    },
+                    {
                         value: 10,
                         numeral: "X"
                     },
@@ -3902,7 +3509,7 @@
                         num -= value;
                     }
                 });
-                return result;
+                return result + ". ";
             }
 
             // Call updateRomanNumerals() initially
@@ -3913,8 +3520,25 @@
                 saveOrder();
                 updateRomanNumerals();
             });
-
         });
+
+
+
+        function initializePriceInputs() {
+            const priceInputs = document.querySelectorAll('.price-input');
+            priceInputs.forEach(input => {
+                const mask = IMask(input, {
+                    mask: Number,
+                    scale: 2,
+                    thousandsSeparator: ',',
+                    padFractionalZeros: true,
+                    normalizeZeros: true,
+                    radix: '.',
+                    mapToRadix: ['.'],
+                    min: 0
+                });
+            });
+        }
     </script>
     <!-- /.content -->
 @endsection

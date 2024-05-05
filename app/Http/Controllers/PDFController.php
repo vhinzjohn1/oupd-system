@@ -175,10 +175,10 @@ class PDFController extends Controller
                         'contractors_profit' => $contractors_profit,
                         'vat' => $vat,
                         'details' => [
-                            'Materials' => [],
-                            'Equipment' => [],
-                            'Labor' => [],
-                        ],
+                                'Materials' => [],
+                                'Equipment' => [],
+                                'Labor' => [],
+                            ],
                     ];
                 }
 

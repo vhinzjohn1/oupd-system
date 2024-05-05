@@ -254,6 +254,7 @@ class GetAllDataController extends Controller
                     'project_mode_of_implementation' => $requestData['add_project_mode_of_implementation'],
                     'ocm' => $requestData['add_project_ocm'],
                     'contractors_profit' => $requestData['add_project_cp'],
+                    'vat' => $requestData['add_project_vat'],
                 ]
             );
 

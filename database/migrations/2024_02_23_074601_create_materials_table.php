@@ -14,10 +14,9 @@ class CreateMaterialsTable extends Migration
             $table->string('material_name');
             $table->string('unit');
             $table->unsignedBigInteger('material_category_id');
-
             $table->foreign('material_category_id')
                 ->references('material_category_id')
-                ->on('material_categories');
+                ->on('material_categories')->onDelete('cascade');
 
             $table->timestamps();
         });

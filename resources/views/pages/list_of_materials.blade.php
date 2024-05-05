@@ -84,20 +84,7 @@
             deleteMaterial(materialId);
         });
 
-        function openEditMaterialModal(material_id, price_id, price, quarter, year, material_name, material_category_name,
-            unit) {
 
-            // Call a function to fetch material data by material_id
-            $('#edit_material_id').val(material_id);
-            $('#edit_material_category_name').val(material_category_name);
-            $('#edit_material_name').val(material_name);
-            $('#edit_unit').val(unit);
-            // Assuming prices is always an array, even if empty
-            $('#edit_price').val(price);
-            $('#edit_quarter').val(quarter);
-            $('#edit_year').val(year);
-            $('#editMaterialModal').modal('show');
-        }
 
         function refreshMaterialsTable() {
             // Check if data is already cached in localStorage
@@ -128,6 +115,7 @@
 
         // Function to display materials data in the DataTable
         function displayMaterials(data) {
+            console.log(data);
             var table = $('#materialTable').DataTable();
             var existingRows = table.rows().remove().draw(false);
 
@@ -142,16 +130,45 @@
                     material.year,
                     '<div class="text-center d-flex">' +
                     `<button type="button" id="editButton" class="btn bg-success mr-2"
-                data-material-id="${material.material_id}" data-price-id="${material.price_id}"
-                onclick="openEditMaterialModal(${material.material_id}, ${material.price_id},
-                '${material.price}', '${material.quarter}', '${material.year}',
-                '${material.material_name}', '${material.material_category_name}', '${material.unit}')"><i class="fa fa-edit"></i></button>` +
+                        data-material-id="${material.material_id}" data-priceId="${material.price_id}" data-price="${material.price}" data-quarter="${material.quarter}" data-year="${material.year}" data-material-name="${material.material_name}" data-category-name="${material.material_category_name}" data-unit="${material.unit}"><i class="fa fa-edit"></i></button>` +
                     `<button type="button" class="btn btn-danger btn-delete-material" data-id="${material.material_id}"><i class="fa fa-trash-alt"></i></button>` +
                     '</div>'
                 ]).node();
             });
 
             table.draw();
+
+            // Add event listeners for dynamically created buttons
+            $('#materialTable').on('click', '#editButton', function() {
+                const materialID = $(this).data('material-id');
+                const priceID = $(this).data('priceId');
+                const price = $(this).data('price');
+                const quarter = $(this).data('quarter');
+                const year = $(this).data('year');
+                const materialName = $(this).data('material-name');
+                const materialCategory = $(this).data('category-name');
+                const unit = $(this).data('unit');
+
+                console.log(materialName);
+                console.log(materialCategory);
+                openEditMaterialModal(materialID, priceID, price, quarter, year, materialName, materialCategory,
+                    unit);
+            });
+        }
+
+        function openEditMaterialModal(material_id, price_id, price, quarter, year, material_name, material_category_name,
+            unit) {
+
+            // Call a function to fetch material data by material_id
+            $('#edit_material_id').val(material_id);
+            $('#edit_material_category_name').val(material_category_name);
+            $('#edit_material_name').val(material_name);
+            $('#edit_unit').val(unit);
+            // Assuming prices is always an array, even if empty
+            $('#edit_price').val(price);
+            $('#edit_quarter').val(quarter);
+            $('#edit_year').val(year);
+            $('#editMaterialModal').modal('show');
         }
 
         function deleteMaterial(materialId) {

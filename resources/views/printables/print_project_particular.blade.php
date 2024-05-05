@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'POW')
 @section('content')
     <!DOCTYPE html>
     <html lang="en">
@@ -8,10 +9,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Generate PDF</title>
-        <!-- jQuery -->
-        <script src="../../plugins/jquery/jquery.min.js"></script>
-        <!-- Bootstrap 4 -->
-        <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
         <!-- Latest Bootstrap 5.3 CSS -->
         <link rel="stylesheet" href="{{ asset('plugins/tom-select/bootstrap.min.css') }}">
@@ -101,6 +98,10 @@
                         // Filter particulars by the selected project_id
                         var project = response.projects.find(p => p.project_id == selectedProjectID);
 
+                        // Get The sorted Value
+                        const sortedItem = JSON.parse(localStorage.getItem(
+                            'sortableOrder'));
+                        console.log(sortedItem);
                         if (project) {
                             project.particulars.forEach(function(particular, index) {
                                 var materials = particular.details.Materials;
