@@ -219,6 +219,28 @@
                                 '<th scope="col" class="text-center">TOTAL ESTIMATED COST</th>' +
                                 '<th scope="col" class="text-center">UNIT COST</th>' +
                                 '</tr>';
+                            project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+                                // Calculate values based on the type of particular
+                                var edcTotalAmount = isMovingParticular ? parseFloat(particular
+                                    .total) : (parseFloat(particular.totalMaterialAmount) +
+                                    parseFloat(particular.totalLaborAmount) + parseFloat(
+                                        particular.totalEquipmentAmount));
+                                var markUpTotal = isMovingParticular ? 0 : (project.ocm + project
+                                    .contractors_profit);
+                                var markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
+                                    edcTotalAmount);
+                                var vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                    markUpValue + edcTotalAmount));
+                                var indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                    vatValue);
+                                var totalCost = edcTotalAmount + indirCostTotal;
+
+                                // Accumulate totalCostAmount
+                                totalCostAmount += totalCost;
+                            });
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
                                 // Check if the particular is MOVING-IN or MOVING-OUT
@@ -251,7 +273,7 @@
                                 totMarkUpVal += markUpValue;
                                 vatTotal += vatValue;
                                 totalIndirCost += indirCostTotal;
-                                totalCostAmount += totalCost;
+                                // totalCostAmount += totalCost;
 
                                 // Calculate percent based on accumulated totalCostAmount
                                 var percent = (totalCost / totalCostAmount) * 100;

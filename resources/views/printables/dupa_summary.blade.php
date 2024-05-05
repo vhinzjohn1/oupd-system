@@ -72,32 +72,6 @@
             <div class="cmuLogoContainer">
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
-        <table class="table table-borderless" id="projectDetails">
-            <tr>
-                <td>Name of tde Project :</td>
-                <td><span id="projectTitle"></span></td>
-                <td>Source of Fund :</td>
-                <td><span id="projectSOF"></span></td>
-            </tr>
-            <tr>
-                <td>Date Prepared :</td>
-                <td><span id="projectDate"></span></td>
-                <td>Location :</td>
-                <td><span id="projectLocation"></span></td>
-            </tr>
-            <tr>
-                <td>Appropriation :</td>
-                <td><span id="projectAppropriation"></span></td>
-                <td>Contract Duration :</td>
-                <td><span id="projectDuration"></span></td>
-            </tr>
-            <tr>
-                <td>Owner :</td>
-                <td><span id="projectOwner"></span></td>
-                <td>Mode of Implementation :</td>
-                <td><span id="projectImplementation"></span></td>
-            </tr>
-        </table>
 
         <!-- Project Particulars -->
         <div class="container-fluid">
@@ -125,16 +99,6 @@
                     dataType: 'json',
                     success: function(response) {
                         console.log(response);
-                        // Populate project details
-                        $('#projectTitle').text(response.projects[0].project_title);
-                        $('#projectDate').text(response.projects[0].project_date_prepared);
-                        $('#projectAppropriation').text(response.projects[0].project_appropriation);
-                        $('#projectOwner').text(response.projects[0].project_owner);
-                        $('#projectSOF').text(response.projects[0].project_source_of_fund);
-                        $('#projectLocation').text(response.projects[0].project_location);
-                        $('#projectDuration').text(response.projects[0].project_contract_duration);
-                        $('#projectImplementation').text(response.projects[0]
-                            .project_mode_of_implementation);
 
                         // Get the selected project ID from localStorage
                         var selectedProjectID = localStorage.getItem("projectID");
@@ -143,14 +107,41 @@
                         var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
-                                var totalCostAmount = 0;
+                            var totalCostAmount = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             };
 
+                            console.log('title', project.project_title)
                             // Create particulars table
                             divHTML +=
+                                '<table class="table table-borderless" id="projectDetails">' +
+                                '<tr>' +
+                                '<th>Name of the Project :</th>' +
+                                '<th>' + project.project_title + '</th>' +
+                                '<th>Source of Fund :</th>' +
+                                '<th>' + project.project_source_of_fund + '</th>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<th>Date Prepared :</th>' +
+                                '<th>' + project.project_date_prepared + '</th>' +
+                                '<th>Location :</th>' +
+                                '<th>' + project.project_location + '</th>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<th>Appropriation :</th>' +
+                                '<th>' + project.project_appropriation + '</th>' +
+                                '<th>Contract Duration :</th>' +
+                                '<th>' + project.project_contract_duration + '</th>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<th>Owner :</th>' +
+                                '<th>' + project.project_owned + '</th>' +
+                                '<th>Mode of Implementation :</th>' +
+                                '<th>' + project.project_mode_of_implementation + '</th>' +
+                                '</tr>' +
+                                '</table>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
@@ -171,8 +162,18 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                totalCostAmount += particular.totalCostItem;
-                                console.log('total cost: ', particular.totalMaterialAmount);
+                                directCostTotal = particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
+                                var ocmTotal = directCostTotal * (particular.ocm / 100);
+                                var cpTotal = directCostTotal * (particular.contractors_profit /
+                                    100);
+                                var indirectCostTotal = ocmTotal + cpTotal;
+                                var vatTotal = (directCostTotal + indirectCostTotal) * (particular
+                                    .vat / 100);
+                                var totalCostItem = directCostTotal + indirectCostTotal + vatTotal;
+                                var unitCostTotal = totalCostItem / particular.quantity;
+                                console.log('vat: ', totalCostItem)
+
+                                totalCostAmount += totalCostItem;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
@@ -183,11 +184,10 @@
                                     '<td class="text-right">' + numberWithCommas(parseFloat(
                                         particular.quantity).toFixed(2)) +
                                     '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(parseFloat(
-                                        particular.totalCostItem).toFixed(
+                                    '<td class="text-right">' + numberWithCommas(totalCostItem.toFixed(
                                         2)) + '</td>' +
                                     '<td class="text-right">' + numberWithCommas(parseFloat(
-                                        particular.unitCostTotal).toFixed(
+                                        unitCostTotal).toFixed(
                                         2)) +
                                     '</td>' +
                                     '</tr>';

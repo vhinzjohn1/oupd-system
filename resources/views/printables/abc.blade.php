@@ -77,28 +77,6 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
-        <div class="container text-center">
-            <div class="row mt-4">
-                <div class="row mt-2">
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="text-center">
-                            <h5>APPROVED BUDGET FOR THE CONTRACT</h5> <!-- Default -->
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column align-items-start">
-                        <div><strong>PROJECT TITLE:</strong> <span id="projectTitle" style="font-size: 20px;"></span>
-                        </div>
-                        <div><strong>LOCATION:</strong> <span id="projectLocation" style="font-size: 20px;"></span>
-                        </div>
-                        <div><strong>Contract Duration:</strong> <span id="projectDuration" style="font-size: 20px;"></span>
-                        </div> <br>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
         <!-- Project Particulars -->
         <div class="container-fluid">
             <!-- Loop through each particular -->
@@ -122,10 +100,6 @@
                     dataType: 'json',
                     success: function(response) {
                         console.log(response);
-                        // Populate project details
-                        $('#projectTitle').text(response.projects[0].project_title);
-                        $('#projectLocation').text(response.projects[0].project_location);
-                        $('#projectDuration').text(response.projects[0].project_contract_duration);
 
                         // Get the selected project ID from localStorage
                         var selectedProjectID = localStorage.getItem("projectID");
@@ -150,6 +124,24 @@
 
                             // Create particulars table
                             divHTML +=
+                                '<div class="container text-center">' +
+                                '<div class="row mt-4">' +
+                                '<div class="row mt-2">' +
+                                '<div class="d-flex flex-column align-items-center">' +
+                                '<div class="text-center">' +
+                                '<h5>APPROVED BUDGET FOR THE CONTRACT</h5>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="d-flex flex-column align-items-start">' +
+                                '<div><strong>PROJECT TITLE: ' + project.project_title +
+                                '</strong></div>' +
+                                '<div><strong>LOCATION: ' + project.project_location +
+                                '</strong></div>' +
+                                '<div><strong>Contract Duration: ' + project.project_contract_duration +
+                                '</strong></div><br>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
@@ -233,7 +225,7 @@
                                 totalCostAmount += totalCost;
 
                                 console.log('mob', mobTotal);
-                                console.log('dir total:', dirTotal);
+                                console.log('dir total:', totalCostAmount);
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +

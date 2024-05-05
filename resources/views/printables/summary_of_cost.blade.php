@@ -73,26 +73,6 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
-        <div class="container" id="projectDetails">
-            <div class="container text-center">
-                <div class="row mt-4">
-                    <div class="row mt-2">
-                        <div class="d-flex flex-column align-items-start">
-                            <div><strong>PROJECT TITLE : </strong> <span id="projectTitle" style="font-size: 20px;"></span>
-                            </div>
-                            <div><strong>LOCATION : </strong> <span id="projectLocation" style="font-size: 20px;"></span>
-                            </div>
-                            <div><strong>OWNER : </strong> <span id="projectOwner" style="font-size: 20px;"></span></div>
-                            <div><strong>SUBJECT : </strong> <span id="projectSubject" style="font-size: 20px;">Summary of
-                                    Cost</span></div> <br>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
         <!-- Project Particulars -->
         <div class="container-fluid">
             <!-- Loop through each particular -->
@@ -120,12 +100,6 @@
                     dataType: 'json',
                     success: function(response) {
                         console.log(response);
-
-                        // Populate project details
-                        $('#projectTitle').text(response.projects[0].project_title);
-                        $('#projectLocation').text(response.projects[0].project_location);
-                        $('#projectOwner').text(response.projects[0].project_owner);
-                        $('#fullname').text(response.projects[0].fullname);
 
                         // // Call renderSignatures function to update signature elements
                         // renderSignatures(response.projects[0].signatures);
@@ -157,6 +131,22 @@
                             var mobCost = 0;
                             // Create particulars table
                             divHTML +=
+                                '<div class="container text-center">' +
+                                '<div class="row mt-4">' +
+                                '<div class="row mt-2">' +
+                                '<div class="d-flex flex-column align-items-center">' +
+                                '</div>' +
+                                '<div class="d-flex flex-column align-items-start">' +
+                                '<div><strong>PROJECT TITLE: ' + project.project_title +
+                                '</strong> </div>' +
+                                '<div><strong>LOCATION: ' + project.project_location +
+                                '</strong></div>' +
+                                '<div><strong>OWNER: ' + project.project_owner + '</strong> </div>' +
+                                '<div><strong>SUBJECT : Summary of Cost</strong> </div> <br>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
@@ -175,25 +165,25 @@
                                 '<tbody>';
                             project.particulars.forEach(function(particular, index) {
                                 // Calculate individual totals
-                                matAmount = particular.totalMaterialAmount;
-                                matTotal += matAmount;
-                                equipAmount = particular.totalEquipmentAmount;
-                                equipTotal += equipAmount;
-                                labAmount = particular.totalLaborAmount;
-                                labTotal += labAmount;
-                                var totalAmount = matTotal + labTotal + equipTotal;
+                                matTotal += particular.totalMaterialAmount;
+                                equipTotal += particular.totalEquipmentAmount;
+                                labTotal += particular.totalLaborAmount;
+                                totalAmount = particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
                                 dirTotal += totalAmount;
- console.log(particular.totalMaterialAmount)
+                                console.log('total', matAmount)
                                 // Append particular details to the table
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(matAmount.toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(labAmount.toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(equipAmount.toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(totalAmount.toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(particular.totalMaterialAmount.toFixed(
+                                        2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(particular.totalLaborAmount.toFixed(
+                                        2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(particular.totalEquipmentAmount.toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(totalAmount
+                                        .toFixed(2)) + '</td>' +
                                     '</tr>';
                             });
                             // Calculate other totals outside the loop

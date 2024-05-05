@@ -182,37 +182,7 @@ class PDFController extends Controller
                     ];
                 }
 
-                // Loop over all particulars for the current project title
-                foreach ($formattedData[$title]['particulars'] as &$particular) {
-                    // Calculate the total material amount for this particular
-                    $totalMaterialAmount = collect($particular['details']['Materials'])->sum('matAmount');
 
-                    // Calculate the total equipment amount for this particular
-                    $totalEquipmentAmount = collect($particular['details']['Equipment'])->sum('equipAmount');
-
-                    // Calculate the total labor amount for this particular
-                    $totalLaborAmount = collect($particular['details']['Labor'])->sum('labAmount');
-
-                    // Calculate the direct cost total
-                    $directCostTotal = $totalMaterialAmount + $totalEquipmentAmount + $totalLaborAmount;
-
-                    // Calculate other totals
-                    $ocmTotal =  $directCostTotal * ($particular['ocm'] / 100);
-                    $cpTotal =  $directCostTotal * ($particular['contractors_profit'] / 100);
-                    $indirectCostTotal = $ocmTotal + $cpTotal;
-                    $vatTotal = ($directCostTotal + $indirectCostTotal) * ($particular['vat'] / 100);
-                    $totalCostItem = $directCostTotal + $indirectCostTotal + $vatTotal;
-                    $unitCostTotal = $totalCostItem / $particular['quantity'];
-
-                    // Assign the calculated values to the particular
-                    $particular['directCostTotal'] = $directCostTotal;
-                    $particular['ocmTotal'] = $ocmTotal;
-                    $particular['cpTotal'] = $cpTotal;
-                    $particular['indirectCostTotal'] = $indirectCostTotal;
-                    $particular['vatTotal'] = $vatTotal;
-                    $particular['totalCostItem'] = $totalCostItem;
-                    $particular['unitCostTotal'] = $unitCostTotal;
-                }
                 if (!empty($project->material_id) && $project->material_price !== null && $project->material_price !== 0) {
                     // Calculate the amount for the current material
                     $matAmount = $project->material_price * $project->material_quantity;
@@ -239,8 +209,8 @@ class PDFController extends Controller
                 }
 
                 // Calculate the total material amount for this particular
-                // $totalMaterialAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Materials'])
-                //     ->sum('matAmount');
+                $totalMaterialAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Materials'])
+                    ->sum('matAmount');
 
                 // Assign the total material amount to the 'materialTotalAmount' field for this particular
                 $formattedData[$title]['particulars'][$particularName]['totalMaterialAmount'] = $totalMaterialAmount;
@@ -278,8 +248,8 @@ class PDFController extends Controller
                     }
                 }
                 // Calculate the total material amount for this particular
-                // $totalEquipmentAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Equipment'])
-                //     ->sum('equipAmount');
+                $totalEquipmentAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Equipment'])
+                    ->sum('equipAmount');
                 $totalEquipMandays = collect($formattedData[$title]['particulars'][$particularName]['details']['Equipment'])
                     ->sum('equipmentMandays');
 
@@ -321,14 +291,45 @@ class PDFController extends Controller
                     }
                 }
                 // Calculate the total material amount for this particular
-                // $totalLaborAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Labor'])
-                //     ->sum('labAmount');
+                $totalLaborAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Labor'])
+                    ->sum('labAmount');
                 $totalLabMandays = collect($formattedData[$title]['particulars'][$particularName]['details']['Labor'])
                     ->sum('laborMandays');
 
                 // Assign the total material amount to the 'materialTotalAmount' field for this particular
                 $formattedData[$title]['particulars'][$particularName]['totalLaborAmount'] = $totalLaborAmount;
                 $formattedData[$title]['particulars'][$particularName]['totalLabMandays'] = $totalLabMandays;
+                // // Loop over all particulars for the current project title
+                // foreach ($formattedData[$title]['particulars'] as &$particular) {
+                //     // Calculate the total material amount for this particular
+                //     $totalMaterialAmount = collect($particular['details']['Materials'])->sum('matAmount');
+
+                //     // Calculate the total equipment amount for this particular
+                //     $totalEquipmentAmount = collect($particular['details']['Equipment'])->sum('equipAmount');
+
+                //     // Calculate the total labor amount for this particular
+                //     $totalLaborAmount = collect($particular['details']['Labor'])->sum('labAmount');
+
+                //     // Calculate the direct cost total
+                //     $directCostTotal = $totalMaterialAmount + $totalEquipmentAmount + $totalLaborAmount;
+
+                //     // Calculate other totals
+                //     $ocmTotal =  $directCostTotal * ($particular['ocm'] / 100);
+                //     $cpTotal =  $directCostTotal * ($particular['contractors_profit'] / 100);
+                //     $indirectCostTotal = $ocmTotal + $cpTotal;
+                //     $vatTotal = ($directCostTotal + $indirectCostTotal) * ($particular['vat'] / 100);
+                //     $totalCostItem = $directCostTotal + $indirectCostTotal + $vatTotal;
+                //     $unitCostTotal = $totalCostItem / $particular['quantity'];
+
+                //     // Assign the calculated values to the particular
+                //     $particular['directCostTotal'] = $directCostTotal;
+                //     $particular['ocmTotal'] = $ocmTotal;
+                //     $particular['cpTotal'] = $cpTotal;
+                //     $particular['indirectCostTotal'] = $indirectCostTotal;
+                //     $particular['vatTotal'] = $vatTotal;
+                //     $particular['totalCostItem'] = $totalCostItem;
+                //     $particular['unitCostTotal'] = $unitCostTotal;
+                // }
             }
         }
 

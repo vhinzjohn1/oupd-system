@@ -60,7 +60,7 @@
         <div class="btn hideBtn btn-right btn-lg btn-outline-dark" id="printView">Print</div>
 
 
-        <!-- Project Details -->
+        {{-- <!-- Project Details -->
         <div class="container text-center">
 
             <div id="projectDetails">
@@ -70,7 +70,7 @@
                 <p><strong>SUBJECT:</strong> <span id="projectSubject" style="font-size: 20px;"></span></p>
             </div>
             <h5>PROGRAM OF WORKS</h5> <!-- Default -->
-        </div>
+        </div> --}}
 
         <!-- Project Particulars -->
         <div class="container-fluid">
@@ -95,10 +95,6 @@
                     dataType: 'json',
                     success: function(response) {
                         console.log(response);
-                        // Populate project details
-                        $('#projectTitle').text(response.projects[0].project_title);
-                        $('#projectLocation').text(response.projects[0].project_location);
-                        $('#projectOwner').text(response.projects[0].project_owner);
                         // Get the selected project ID from localStorage
                         var selectedProjectID = localStorage.getItem("projectID");
 
@@ -110,12 +106,25 @@
                                 var materials = particular.details.Materials;
                                 var labor = particular.details.Labor;
                                 var equipment = particular.details.Equipment;
+                                var divHTML =
+                                    '<div class="container text-center">' +
+                                    '<div>' +
+                                    '<p><strong>PROJECT TITLE: ' + project.project_title +
+                                    '</strong></p>' +
+                                    '<p><strong>LOCATION: ' + project.project_location +
+                                    '</strong></p>' +
+                                    '<p><strong>OWNER: ' + project.project_owner + '</strong></p>' +
+                                    '<p><strong>SUBJECT:</strong></p>' +
+                                    '</div>' +
+                                    '<h5>PROGRAM OF WORKS</h5>' +
+                                    '</div>';
+
 
                                 // Check if the particular is a moving-in or moving-out
                                 if (particular.particular_name === "MOVING-IN" || particular
                                     .particular_name === "MOVING-OUT") {
                                     // Display only the Roman numeral and the particular name
-                                    var divHTML = '<div class="col-10">' +
+                                    divHTML += '<div class="col-10">' +
                                         '<div class="row">' +
                                         '<div class="col-md-6">' +
                                         '<h5 class="text-left">' + getRomanNumeral(index + 1) +
@@ -260,10 +269,11 @@
                                         var equipmentTotalAmount = 0;
                                         var equipmentMandays = 0;
                                         divHTML +=
-                                        '<div class="row">' +
+                                            '<div class="row">' +
                                             '<div class="col-sm-3">' + '3.0 Equipment :' +
                                             '</div>' +
-                                            '<div class="col-sm-3">' + particular.totalEquipMandays +
+                                            '<div class="col-sm-3">' + particular
+                                            .totalEquipMandays +
                                             '&nbsp&nbsp&nbsp&nbsp Mandays</div>' +
                                             '</div>' +
                                             '<table class="table table-sm text-center table-bordered">' +
@@ -393,7 +403,7 @@
             function numberWithCommas(x) {
                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
-            
+
             // Function to convert number to Roman numeral
             function getRomanNumeral(num) {
                 const romanNumerals = {
