@@ -73,6 +73,26 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
+        <div class="container text-center">
+            <div class="row mt-4">
+                <div class="row mt-2">
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="text-center">
+                            <h5>APPROVED BUDGET FOR THE CONTRACT</h5> <!-- Default -->
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column align-items-start">
+                        <div><strong>PROJECT TITLE:</strong> <span id="projectTitle" style="font-size: 20px;"></span>
+                        </div>
+                        <div><strong>LOCATION:</strong> <span id="projectLocation" style="font-size: 20px;"></span>
+                        </div>
+                        <div><strong>Contract Duration:</strong> <span id="projectDuration" style="font-size: 20px;"></span>
+                        </div> <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Project Particulars -->
         <div class="container-fluid">
             <!-- Loop through each particular -->
@@ -118,26 +138,32 @@
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             };
 
+                            // Populate project details based on the selected project
+                            $('#projectTitle').text(project.project_title);
+                            $('#projectLocation').text(project.project_location);
+                            $('#projectDuration').text(project.project_contract_duration);
+
+                            console.log(project.project_contract_duration)
                             // Create particulars table
                             divHTML +=
-                                '<div class="container text-center">' +
-                                '<div class="row mt-4">' +
-                                '<div class="row mt-2">' +
-                                '<div class="d-flex flex-column align-items-center">' +
-                                '<div class="text-center">' +
-                                '<h5>APPROVED BUDGET FOR THE CONTRACT</h5>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="d-flex flex-column align-items-start">' +
-                                '<div><strong>PROJECT TITLE: ' + project.project_title +
-                                '</strong></div>' +
-                                '<div><strong>LOCATION: ' + project.project_location +
-                                '</strong></div>' +
-                                '<div><strong>Contract Duration: ' + project.project_contract_duration +
-                                '</strong></div><br>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
+                                // '<div class="container text-center">' +
+                                // '<div class="row mt-4">' +
+                                // '<div class="row mt-2">' +
+                                // '<div class="d-flex flex-column align-items-center">' +
+                                // '<div class="text-center">' +
+                                // '<h5>APPROVED BUDGET FOR THE CONTRACT</h5>' +
+                                // '</div>' +
+                                // '</div>' +
+                                // '<div class="d-flex flex-column align-items-start">' +
+                                // '<div><strong>PROJECT TITLE: ' + project.project_title +
+                                // '</strong></div>' +
+                                // '<div><strong>LOCATION: ' + project.project_location +
+                                // '</strong></div>' +
+                                // '<div><strong>Contract Duration: ' + project.project_contract_duration +
+                                // '</strong></div><br>' +
+                                // '</div>' +
+                                // '</div>' +
+                                // '</div>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
@@ -332,7 +358,7 @@
                                 '<div style="white-space: nowrap;">' +
                                 'Reviewed by: <br><br>';
                             project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Reviewed by') {
+                                if (signature.role === 'Reviewed by (ABC & DUPAS)') {
                                     divHTML +=
                                         '<div style="text-align: center;">' +
                                         '<b><u>' + signature.fullname +

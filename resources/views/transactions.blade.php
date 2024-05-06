@@ -230,11 +230,13 @@
                             <div class="d-flex justify-content-between col-12">
                                 <h5 id="ProjectHeader">Technical Personnel</h5>
                                 <div class="card-tools">
-                                    <!-- Collapse Button -->
+                                    <!-- Collapse Button for Technical Personnel -->
                                     <button type="button" class="btn btn-tool" data-toggle="collapse"
-                                        aria-expanded="false"><i class="fas fa-minus"
-                                            aria-controls="addTechnicalPersonnel"
-                                            data-target="#addTechnicalPersonnel"></i></button>
+                                        data-target="#addTechnicalPersonnel" aria-expanded="false"
+                                        aria-controls="addTechnicalPersonnel">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+
                                 </div>
                             </div>
                             <!-- /.card-tools -->
@@ -324,11 +326,12 @@
             @include('modals.project_particular.edit_projectPart_equipment')
             @include('modals.signature.add_signature')
             @include('modals.signature.edit_signature')
-            {{-- @include('modals.tech_personnel.add_tech_personnel')
-            @include('modals.tech_personnel.edit_tech_personnel') --}}
-            {{-- @include('modals.min_equipment.add_min_equipment')
-            @include('modals.min_equipment.edit_min_equipment') --}}
+            @include('modals.tech_personnel.add_tech_personnel')
+            @include('modals.tech_personnel.edit_tech_personnel')
+            @include('modals.min_equipment.add_min_equipment')
+            @include('modals.min_equipment.edit_min_equipment')
 
+        </div>
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
@@ -788,6 +791,403 @@
             table.draw();
         }
 
+        // Technical Personnel
+        $("#technicalPersonnelTable").DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": true,
+            "searching": false,
+            "ordering": true,
+            "paging": false,
+        });
+
+        refreshTechnicalPersonnel();
+
+        $('#addTechnicalPersonnelForm').submit(function(e) {
+            e.preventDefault();
+
+            // Get form data
+            var submitProjectID = localStorage.getItem("projectID");
+            let projectId = submitProjectID;
+            let personnelDescription = $('#add_personnel_description').val();
+            let personnelNo = $('#add_personnel_no').val();
+
+            // Make AJAX request to add new technical personnel
+            $.ajax({
+                url: "{{ route('technical_personnels.store') }}",
+                type: "POST",
+                data: {
+                    personnelDescription: personnelDescription,
+                    personnelNo: personnelNo,
+                    projectId: projectId,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#addTechnicalPersonnelForm')[0].reset();
+                        $('#addTechnicalPersonnelModal').modal('hide');
+                        toastr.options.progressBar = true;
+                        toastr.success('Technical Personnel Added Successfully!');
+
+                        refreshTechnicalPersonnel();
+
+                    } else {
+                        toastr.options.progressBar = true;
+                        toastr.error('Failed to Add Technical Personnel!');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log error response for debugging
+                    alert('Error occurred. Check console for details.');
+                }
+            });
+        });
+
+        // Edit Technical Personnel
+        $('#editTechnicalPersonnelForm').submit(function(e) {
+            e.preventDefault();
+
+            // Get form data
+            var submitProjectID = localStorage.getItem("projectID");
+            let projectId = submitProjectID;
+            let personnelDescription = $('#edit_personnel_description').val();
+            let personnelNo = $('#edit_personnel_no').val();
+            let technicalPersonnelID = $('#editTechnicalPersonnelID').val();
+
+            // Make AJAX request to edit technical personnel
+            $.ajax({
+                url: "{{ route('technical_personnels.update', ['technical_personnel' => ':technical_personnel']) }}"
+                    .replace(':technical_personnel', technicalPersonnelID),
+                type: "PUT",
+                data: {
+                    personnelDescription: personnelDescription,
+                    personnelNo: personnelNo,
+                    projectId: projectId,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    toastr.options.progressBar = true;
+                    if (response.success) {
+                        toastr.success('Technical Personnel Updated Successfully!');
+
+                        $('#editTechnicalPersonnelForm')[0].reset();
+                        $('#editTechnicalPersonnelModal').modal('hide');
+
+                        refreshTechnicalPersonnel();
+                    } else {
+                        toastr.error('Failed to Update Technical Personnel!');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log error response for debugging
+                    alert('Error occurred. Check console for details.');
+                }
+            });
+        });
+
+        // Delete Technical Personnel
+        function deleteTechnicalPersonnel(technical_personnel_id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this Technical Personnel!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('technical_personnels') }}/" + technical_personnel_id,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            toastr.options.progressBar = true;
+                            toastr.success('Technical Personnel Deleted Successfully!');
+                            refreshTechnicalPersonnel();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText); // Log error response for debugging
+                            toastr.error(
+                                'Error occurred while deleting Technical Personnel. Please check console for details.'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+
+        // Edit Technical Personnel Modal
+        function editTechnicalPersonnelModal(technical_personnel_id, description, number) {
+            $('#edit_personnel_description').val(personnelDescription);
+            $('#edit_personnel_no').val(personnelNo);
+            $('#editTechnicalPersonnelID').val(technicalPersonnelID);
+            $('#editTechnicalPersonnelModal').modal('show');
+        }
+
+        // Refresh Technical Personnel
+        function refreshTechnicalPersonnel() {
+            $('#addTechnicalPersonnelBtn').click(function() {
+                refreshTechnicalPersonnel(); // Fetch updated data
+                console.log("Button clicked!")
+                $('#addTechnicalPersonnelModal').modal('show'); // Show the modal
+            });
+
+            // Check if data is already cached in localStorage
+            var cachedTechnicalPersonnelData = localStorage.getItem('technicalPersonnelData');
+
+            if (cachedTechnicalPersonnelData) {
+                // If cached data exists, parse and use it
+                displayTechnicalPersonnel(JSON.parse(cachedTechnicalPersonnelData));
+            }
+            // If no cached data, fetch new data via AJAX
+            $.ajax({
+                url: "{{ route('technical_personnels.index') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // ... (rest of the function logic)
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    // Handle error gracefully, e.g., display an error message
+                }
+            });
+        }
+
+        // Display the Technical Personnel
+        function displayTechnicalPersonnel(data) {
+            var submitProjectID = localStorage.getItem("projectID");
+
+            // Filter the data to include only technical personnel with matching project_id
+            var filteredData = data.filter(technical_personnel => technical_personnel.project_id == submitProjectID);
+
+            var table = $('#technicalPersonnelTable').DataTable();
+            var existingRows = table.rows().remove().draw(false);
+
+            filteredData.forEach(function(technical_personnel, index) {
+                var newRow = table.row.add([
+                    technical_personnel.personnel_description,
+                    technical_personnel.personnel_no,
+                    '<div class="text-center d-flex">' +
+                    `<button type="button" class="btn bg-success mr-2" data-id="${technical_personnel.project_id}"  onclick="editTechnicalPersonnelModal(${technical_personnel.project_id}, '${technical_personnel.personnel_description}', '${technical_personnel.personnel_no}', '${technical_personnel.technical_personnel_id}')"><i class="fas fa-edit"></i></button>` +
+                    `<button type="button" class="btn bg-danger" data-id="${technical_personnel.particular_id}" onclick="deleteTechnicalPersonnel(${technical_personnel.technical_personnel_id})"><i class="fas fa-trash-alt"></i></button>` +
+                    '</div>'
+                ]).node();
+            });
+
+            table.draw();
+        }
+
+        // minimum equipment
+        // Minimum Equipment
+        $("#minimumEquipmentTable").DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": true,
+            "searching": false,
+            "ordering": true,
+            "paging": false,
+        });
+
+        $('#addMinimumEquipmentForm').submit(function(e) {
+            e.preventDefault();
+
+            // Get form data
+            var projectId = localStorage.getItem("projectID");
+            let minEquipDescription = $('#add_min_equip_description').val();
+            let minEquipOwned = $('#add_min_equip_owned').val();
+            let minEquipLease = $('#add_min_equip_lease').val();
+            let minEquipTotalUnits = $('#add_min_equip_totalUnits').val();
+
+            console.log(projectId);
+            console.log(minEquipDescription);
+
+            // Make AJAX request to add new minimum equipment
+            $.ajax({
+                url: "{{ route('minimum_equipments.store') }}",
+                type: "POST",
+                data: {
+                    minEquipDescription: minEquipDescription,
+                    minEquipOwned: minEquipOwned,
+                    minEquipLease: minEquipLease,
+                    minEquipTotalUnits: minEquipTotalUnits,
+                    projectId: projectId,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    console.log(response); // Log response for debugging
+
+                    if (response.success) {
+                        $('#addMinimumEquipmentForm')[0].reset();
+                        $('#addMinimumEquipmentModal').modal('hide');
+                        toastr.options.progressBar = true;
+                        toastr.success('Minimum Equipment Added Successfully!');
+
+                        refreshMinimumEquipment();
+
+                    } else {
+                        toastr.options.progressBar = true;
+                        toastr.error('Minimum Equipment Not Added!');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log error response for debugging
+                    alert('Error occurred. Check console for details.');
+                }
+            });
+        });
+
+        // Edit Minimum Equipment
+        $('#editMinimumEquipmentForm').submit(function(e) {
+            e.preventDefault();
+
+            // Get form data
+            var projectId = localStorage.getItem("projectID");
+            let minEquipDescription = $('#edit_min_equip_description').val();
+            let minEquipOwned = $('#edit_min_equip_owned').val();
+            let minEquipLease = $('#edit_min_equip_lease').val();
+            let minEquipTotalUnits = $('#edit_min_equip_totalUnits').val();
+            let minimumEquipmentID = $('#editMinimumEquipmentID').val();
+
+            refreshMinimumEquipment();
+            // Make AJAX request to edit minimum equipment
+            $.ajax({
+                url: "{{ route('minimum_equipments.update', ['minimum_equipment' => ':minimum_equipment']) }}"
+                    .replace(':minimum_equipment', minimumEquipmentID),
+                type: "PUT",
+                data: {
+                    minEquipDescription: minEquipDescription,
+                    minEquipOwned: minEquipOwned,
+                    minEquipLease: minEquipLease,
+                    minEquipTotalUnits: minEquipTotalUnits,
+                    projectId: projectId,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    toastr.options.progressBar = true;
+                    if (response.success) {
+                        toastr.success(response.message);
+
+                        $('#editMinimumEquipmentForm')[0].reset();
+                        $('#editMinimumEquipmentModal').modal('hide');
+
+                        refreshMinimumEquipment();
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log error response for debugging
+                    alert('Error occurred. Check console for details.');
+                }
+            });
+        });
+
+        // Delete Minimum Equipment
+        function deleteMinimumEquipment(minimum_equipment_id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this Minimum Equipment!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('minimum_equipments') }}/" + minimum_equipment_id,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            toastr.options.progressBar = true;
+                            toastr.success('Minimum Equipment Deleted Successfully!');
+                            refreshMinimumEquipment();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText); // Log error response for debugging
+                            toastr.error(
+                                'Error occurred while deleting Minimum Equipment. Please check console for details.'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+
+        function editMinimumEquipmentModal(project_id, minEquipDescription, minEquipOwned, minEquipLease,
+            minEquipTotalUnits, minimum_equipment_id) {
+            $('#edit_min_equip_description').val(minEquipDescription);
+            $('#edit_min_equip_owned').val(minEquipOwned);
+            $('#edit_min_equip_lease').val(minEquipLease);
+            $('#edit_min_equip_totalUnits').val(minEquipTotalUnits);
+            $('#editMinimumEquipmentID').val(minimum_equipment_id);
+            $('#editMinimumEquipmentModal').modal('show');
+        }
+
+        function refreshMinimumEquipment() {
+            $('#addMinimumEquipmentBtn').click(function() {
+                refreshMinimumEquipment(); // Fetch updated data
+                console.log("Button clicked!")
+                $('#addMinimumEquipmentModal').modal('show');
+            });
+
+            // Check if data is already cached in localStorage
+            var cachedMinimumEquipmentData = localStorage.getItem('minimumEquipmentData');
+
+            if (cachedMinimumEquipmentData) {
+                // If cached data exists, parse and use it
+                displayMinimumEquipment(JSON.parse(cachedMinimumEquipmentData));
+            }
+            // If no cached data, fetch new data via AJAX
+            $.ajax({
+                url: "{{ route('minimum_equipments.index') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data)
+                    // Store fetched data in localStorage for future use
+                    localStorage.setItem('minimumEquipmentData', JSON.stringify(data));
+                    // Display the fetched data
+                    displayMinimumEquipment(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+
+        }
+
+        // Display the minimum equipment
+        function displayMinimumEquipment(data) {
+            var submitProjectID = localStorage.getItem("projectID");
+
+            // Filter the data to include only minimum equipment with matching project_id
+            var filteredData = data.filter(minimum_equipment => minimum_equipment.project_id == submitProjectID);
+
+            var table = $('#minimumEquipmentTable').DataTable();
+            var existingRows = table.rows().remove().draw(false);
+
+            filteredData.forEach(function(minimum_equipment, index) {
+                var newRow = table.row.add([
+                    minimum_equipment.min_equip_description,
+                    minimum_equipment.min_equip_owned,
+                    minimum_equipment.min_equip_lease,
+                    minimum_equipment.min_equip_totalUnits,
+                    '<div class="text-center d-flex">' +
+                    `<button type="button" class="btn bg-success mr-2" data-id="${minimum_equipment.project_id}" onclick="editMinimumEquipmentModal(${minimum_equipment.project_id}, '${minimum_equipment.min_equip_description}', '${minimum_equipment.min_equip_owned}', '${minimum_equipment.min_equip_lease}', '${minimum_equipment.min_equip_totalUnits}', ${minimum_equipment.minimum_equipment_id} )"><i class="fas fa-edit"></i></button>` +
+                    `<button type="button" class="btn bg-danger" data-id="${minimum_equipment.particular_id}" onclick="deleteMinimumEquipment(${minimum_equipment.minimum_equipment_id})"><i class="fas fa-trash-alt"></i></button>` +
+                    '</div>'
+                ]).node();
+            });
+
+            table.draw();
+        }
 
 
         function formatNumber(number) {

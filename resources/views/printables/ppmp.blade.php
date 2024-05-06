@@ -73,6 +73,33 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
+            <table class="table table-borderless" id="projectDetails">
+                <tr>
+                    <td>Name of the Project :</td>
+                    <td><span id="projectTitle"></span></td>
+                    <td>Source of Fund :</td>
+                    <td><span id="projectSOF"></span></td>
+                </tr>
+                <tr>
+                    <td>Date Prepared :</td>
+                    <td><span id="projectDate"></span></td>
+                    <td>Location :</td>
+                    <td><span id="projectLocation"></span></td>
+                </tr>
+                <tr>
+                    <td>Appropriation :</td>
+                    <td><span id="projectAppropriation"></span></td>
+                    <td>Contract Duration :</td>
+                    <td><span id="projectDuration"></span></td>
+                </tr>
+                <tr>
+                    <td>Owner :</td>
+                    <td><span id="projectOwner"></span></td>
+                    <td>Mode of Implementation :</td>
+                    <td><span id="projectImplementation"></span></td>
+                </tr>
+            </table>
+
         <!-- Project Particulars -->
         <div class="container-fluid">
             <!-- Loop through each particular -->
@@ -116,34 +143,43 @@
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             };
 
+                            // Populate project details
+                            $('#projectTitle').text(project.project_title);
+                            $('#projectDate').text(project.project_date_prepared);
+                            $('#projectAppropriation').text(project.project_appropriation);
+                            $('#projectOwner').text(project.project_owner);
+                            $('#projectSOF').text(project.project_source_of_fund);
+                            $('#projectLocation').text(project.project_location);
+                            $('#projectDuration').text(project.project_contract_duration);
+                            $('#projectImplementation').text(project.project_mode_of_implementation);
                             // Create particulars table
                             divHTML +=
-                                '<table class="table table-borderless" id="projectDetails">' +
-                                '<tr>' +
-                                '<th>Name of the Project :</th>' +
-                                '<th>' + project.project_title + '</th>' +
-                                '<th>Source of Fund :</th>' +
-                                '<th>' + project.project_source_of_fund + '</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th>Date Prepared :</th>' +
-                                '<th>' + project.project_date_prepared + '</th>' +
-                                '<th>Location :</th>' +
-                                '<th>' + project.project_location + '</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th>Appropriation :</th>' +
-                                '<th>' + project.project_appropriation + '</th>' +
-                                '<th>Contract Duration :</th>' +
-                                '<th>' + project.project_contract_duration + '</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th>Owner :</th>' +
-                                '<th>' + project.project_owned + '</th>' +
-                                '<th>Mode of Implementation :</th>' +
-                                '<th>' + project.project_mode_of_implementation + '</th>' +
-                                '</tr>' +
-                                '</table>' +
+                                // '<table class="table table-borderless" id="projectDetails">' +
+                                // '<tr>' +
+                                // '<th>Name of the Project :</th>' +
+                                // '<th>' + project.project_title + '</th>' +
+                                // '<th>Source of Fund :</th>' +
+                                // '<th>' + project.project_source_of_fund + '</th>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<th>Date Prepared :</th>' +
+                                // '<th>' + project.project_date_prepared + '</th>' +
+                                // '<th>Location :</th>' +
+                                // '<th>' + project.project_location + '</th>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<th>Appropriation :</th>' +
+                                // '<th>' + project.project_appropriation + '</th>' +
+                                // '<th>Contract Duration :</th>' +
+                                // '<th>' + project.project_contract_duration + '</th>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<th>Owner :</th>' +
+                                // '<th>' + project.project_owned + '</th>' +
+                                // '<th>Mode of Implementation :</th>' +
+                                // '<th>' + project.project_mode_of_implementation + '</th>' +
+                                // '</tr>' +
+                                // '</table>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
@@ -185,8 +221,8 @@
                             // Add row for the particular
                             divHTML +=
                                 '<tr>' +
-                                '<td>' + +'</td>' +
-                                '<td> col' + "title" + '</td>' +
+                                '<td></td>' +
+                                '<td>' + project.project_title + '</td>' +
                                 '<td class="text-center">' + 'METHOD' +
                                 '</td>' +
                                 '<td class="text-right">' + numberWithCommas(totalCostAmount.toFixed(2)) +
@@ -221,7 +257,7 @@
                                 '<div style="white-space: nowrap;">' +
                                 'Prepared by: <br><br>';
                             project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Prepared by') {
+                                if (signature.role === 'Prepared by (PPMP)') {
                                     divHTML +=
                                         '<div style="text-align: center;">' +
                                         '<b><u>' + signature.fullname + '</u></b> <br>' +
@@ -236,7 +272,7 @@
                                 '<div style="white-space: nowrap;">' +
                                 'Checked by: <br><br>';
                             project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Reviewed by') {
+                                if (signature.role === 'Reviewed by (PPMP)') {
                                     divHTML +=
                                         '<div style="text-align: center;">' +
                                         '<b><u>' + signature.fullname +

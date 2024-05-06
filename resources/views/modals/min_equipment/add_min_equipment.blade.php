@@ -8,7 +8,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="addminimumEquipmentForm">
+            <form id="addMinimumEquipmentForm"> <!-- Fixed form ID here -->
                 @csrf
                 <div class="modal-body">
                     <div class="row">

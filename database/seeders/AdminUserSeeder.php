@@ -87,59 +87,59 @@ class AdminUserSeeder extends Seeder
         //     Particular::firstOrCreate(['particular_name' => $particular]);
         // }
 
-        Project::firstOrCreate([
-            'project_title' => 'CISC Construction Pavements',
-            'project_location' => 'University Town Musuan Maramag Bukidnon',
-            'project_owner' => 'Central Mindanao University',
-            'project_description' => 'On going --',
-            'project_contract_duration' => '90 CD',
-            'project_date_prepared' => date('Y-m-d', strtotime('01/02/2023')), // Convert date format
-            'project_appropriation' => (int) '15000000', // Cast as integer
-            'project_source_of_fund' => 'General Fund',
-            'project_mode_of_implementation' => 'By Admin',
-        ]);
+        // Project::firstOrCreate([
+        //     'project_title' => 'CISC Construction Pavements',
+        //     'project_location' => 'University Town Musuan Maramag Bukidnon',
+        //     'project_owner' => 'Central Mindanao University',
+        //     'project_description' => 'On going --',
+        //     'project_contract_duration' => '90 CD',
+        //     'project_date_prepared' => date('Y-m-d', strtotime('01/02/2023')), // Convert date format
+        //     'project_appropriation' => (int) '15000000', // Cast as integer
+        //     'project_source_of_fund' => 'General Fund',
+        //     'project_mode_of_implementation' => 'By Admin',
+        // ]);
 
 
-        // Define material categories
-        $categories = ['Embankment', 'Aggregate Surface Course', 'Portland Cement'];
+        // // Define material categories
+        // $categories = ['Embankment', 'Aggregate Surface Course', 'Portland Cement'];
 
-        foreach ($categories as $categoryName) {
-            // Create or retrieve material category
-            $materialCategory = MaterialCategory::firstOrCreate(['material_category_name' => $categoryName]);
+        // foreach ($categories as $categoryName) {
+        //     // Create or retrieve material category
+        //     $materialCategory = MaterialCategory::firstOrCreate(['material_category_name' => $categoryName]);
 
-            // Define materials for each category
-            $materials = $this->getMaterialsByCategory($categoryName);
+        //     // Define materials for each category
+        //     $materials = $this->getMaterialsByCategory($categoryName);
 
-            // Generate materials for each category
-            foreach ($materials as $material) {
-                $materialName = $material['name'];
-                $unit = $material['unit'];
-                $price = $material['price'];
-                $quarter = $material['quarter'];
-                $year = $material['year'];
+        //     // Generate materials for each category
+        //     foreach ($materials as $material) {
+        //         $materialName = $material['name'];
+        //         $unit = $material['unit'];
+        //         $price = $material['price'];
+        //         $quarter = $material['quarter'];
+        //         $year = $material['year'];
 
-                // Check if material with the same name exists
-                $existingMaterial = Material::where('material_name', $materialName)->first();
+        //         // Check if material with the same name exists
+        //         $existingMaterial = Material::where('material_name', $materialName)->first();
 
-                if (!$existingMaterial) {
-                    // If material does not exist, create a new one
-                    $newMaterial = new Material([
-                        'material_name' => $materialName,
-                        'unit' => $unit,
-                    ]);
+        //         if (!$existingMaterial) {
+        //             // If material does not exist, create a new one
+        //             $newMaterial = new Material([
+        //                 'material_name' => $materialName,
+        //                 'unit' => $unit,
+        //             ]);
 
-                    $newMaterial->category()->associate($materialCategory);
-                    $newMaterial->save();
+        //             $newMaterial->category()->associate($materialCategory);
+        //             $newMaterial->save();
 
-                    // Create a new price instance
-                    $newMaterial->prices()->create([
-                        'price' => $price,
-                        'quarter' => $quarter,
-                        'year' => $year,
-                    ]);
-                }
-            }
-        }
+        //             // Create a new price instance
+        //             $newMaterial->prices()->create([
+        //                 'price' => $price,
+        //                 'quarter' => $quarter,
+        //                 'year' => $year,
+        //             ]);
+        //         }
+        //     }
+        // }
 
     }
 

@@ -57,7 +57,7 @@
         <div class="btn hideBtn btn-right btn-lg btn-outline-dark" id="printView">Print</div>
 
 
-        {{-- <!-- Project Details -->
+        <!-- Project Details -->
         <div class="container text-center">
 
             <div id="projectDetails">
@@ -67,7 +67,7 @@
                 <p><strong>SUBJECT:</strong> <span id="projectSubject" style="font-size: 20px;"></span></p>
             </div>
             <h5>PROGRAM OF WORKS</h5> <!-- Default -->
-        </div> --}}
+        </div>
 
         <!-- Project Particulars -->
         <div class="container-fluid">
@@ -103,24 +103,35 @@
                             'sortableOrder'));
                         console.log(sortedItem);
                         if (project) {
+                            // Populate project details based on the selected project
+                            $('#projectTitle').text(project.project_title);
+                            $('#projectLocation').text(project.project_location);
+                            $('#projectOwner').text(project.project_owner);
+
                             project.particulars.forEach(function(particular, index) {
                                 var materials = particular.details.Materials;
                                 var labor = particular.details.Labor;
                                 var equipment = particular.details.Equipment;
+
                                 var divHTML =
                                     '<div class="container text-center">' +
-                                    '<div>' +
-                                    '<p><strong>PROJECT TITLE: ' + project.project_title +
-                                    '</strong></p>' +
-                                    '<p><strong>LOCATION: ' + project.project_location +
-                                    '</strong></p>' +
-                                    '<p><strong>OWNER: ' + project.project_owner + '</strong></p>' +
-                                    '<p><strong>SUBJECT:</strong></p>' +
+                                    '<div class="row mt-4">' +
+                                    '<div class="row mt-2">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="row mt-">' +
+                                    '<h5>DETAILED UNIT PRICE ANALYSIS (DUPA)</h5></div>' +
                                     '</div>' +
-                                    '<h5>PROGRAM OF WORKS</h5>' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div><strong>PROJECT TITLE: ' + project.project_title +
+                                    '</strong> </div>' +
+                                    '<div><strong>LOCATION: ' + project.project_location +
+                                    '</strong></div>' +
+                                    '<div><strong>OWNER: ' + project.project_owner +
+                                    '</strong> </div> <br>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
                                     '</div>';
-
-
                                 // Check if the particular is a moving-in or moving-out
                                 if (particular.particular_name === "MOVING-IN" || particular
                                     .particular_name === "MOVING-OUT") {
@@ -138,9 +149,8 @@
                                         '</div>' +
                                         '</div>';
                                 } else {
-
                                     // Create a new div for each particular name
-                                    var divHTML = '<div class="col-10">' +
+                                    divHTML += '<div class="col-10">' +
                                         '<h5 class="text-left">' + getRomanNumeral(index + 1) +
                                         '. ' +
                                         particular.particular_name +

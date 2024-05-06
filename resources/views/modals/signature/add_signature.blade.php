@@ -29,8 +29,11 @@
                                     id="add_project_signature_role" name="add_project_signature_role" required>
                                     <option value=""></option>
                                     <option value="Prepared by">Prepared by</option>
+                                    <option value="Prepared by (PPMP)">Prepared by (PPMP)</option>
                                     <option value="Checked by">Checked by</option>
                                     <option value="Reviewed by">Reviewed by</option>
+                                    <option value="Reviewed by (ABC & DUPAS)">Reviewed by (ABC & DUPAS)</option>
+                                    <option value="Reviewed by (PPMP)">Reviewed by (PPMP)</option>
                                     <option value="Recommending Approval">Recommending Approval</option>
                                     <option value="Conformed by">Conformed by</option>
                                     <option value="Approved by">Approved by</option>
@@ -43,9 +46,9 @@
                                     id="add_project_signature_position" name="add_project_signature_position" required>
                                     <option value=""></option>
                                     <option value="University President">University President</option>
-                                    <option value="Draftsman, OUPD">Draftsman, OUPD</option>
                                     <option value="Director, OUPD">Director, OUPD</option>
                                     <option value="Engineer, OUPD">Engineer, OUPD</option>
+                                    <option value="Draftsman, OUPD">Draftsman, OUPD</option>
                                 </select>
                             </div>
                         </div>

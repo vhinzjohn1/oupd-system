@@ -74,6 +74,24 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
+            <div class="container" id="projectDetails">
+                <div class="container text-center">
+                    <div class="row mt-4">
+                        <div class="row mt-2">
+                            <div class="d-flex flex-column align-items-start">
+                                <div><strong>PROJECT TITLE : </strong> <span id="projectTitle" style="font-size: 20px;"></span>
+                                </div>
+                                <div><strong>LOCATION : </strong> <span id="projectLocation" style="font-size: 20px;"></span>
+                                </div>
+                                <div><strong>OWNER : </strong> <span id="projectOwner" style="font-size: 20px;"></span></div>
+                                <div><strong>SUBJECT : </strong> <span id="projectSubject" style="font-size: 20px;">Summary of
+                                        Cost</span></div> <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <!-- Project Particulars -->
         <div class="container-fluid">
             <!-- Loop through each particular -->
@@ -116,6 +134,10 @@
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             };
+                            // Populate project details based on the selected project
+                            $('#projectTitle').text(project.project_title);
+                            $('#projectLocation').text(project.project_location);
+                            $('#projectOwner').text(project.project_owner);
 
                             // Initialize variables for totals
                             var matAmount = 0;
@@ -129,25 +151,24 @@
                             var movingIn = 0;
                             var movingOut = 0;
                             var mobCost = 0;
-                            var mobCost = 0;
                             // Create particulars table
                             divHTML +=
-                                '<div class="container text-center">' +
-                                '<div class="row mt-4">' +
-                                '<div class="row mt-2">' +
-                                '<div class="d-flex flex-column align-items-center">' +
-                                '</div>' +
-                                '<div class="d-flex flex-column align-items-start">' +
-                                '<div><strong>PROJECT TITLE: ' + project.project_title +
-                                '</strong> </div>' +
-                                '<div><strong>LOCATION: ' + project.project_location +
-                                '</strong></div>' +
-                                '<div><strong>OWNER: ' + project.project_owner + '</strong> </div>' +
-                                '<div><strong>SUBJECT : Summary of Cost</strong> </div> <br>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
+                                // '<div class="container text-center">' +
+                                // '<div class="row mt-4">' +
+                                // '<div class="row mt-2">' +
+                                // '<div class="d-flex flex-column align-items-center">' +
+                                // '</div>' +
+                                // '<div class="d-flex flex-column align-items-start">' +
+                                // '<div><strong>PROJECT TITLE: ' + project.project_title +
+                                // '</strong> </div>' +
+                                // '<div><strong>LOCATION: ' + project.project_location +
+                                // '</strong></div>' +
+                                // '<div><strong>OWNER: ' + project.project_owner + '</strong> </div>' +
+                                // '<div><strong>SUBJECT : Summary of Cost</strong> </div> <br>' +
+                                // '</div>' +
+                                // '</div>' +
+                                // '</div>' +
+                                // '</div>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +

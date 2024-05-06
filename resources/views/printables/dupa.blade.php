@@ -68,6 +68,25 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
+        <div class="container text-center">
+            <div class="row mt-4">
+                <div class="row mt-2">
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="row mt-">
+                            <h5>DETAILED UNIT PRICE ANALYSIS (DUPA)</h5> <!-- Default -->
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column align-items-start">
+                        <div><strong>PROJECT TITLE:</strong> <span id="projectTitle" style="font-size: 20px;"></span>
+                        </div>
+                        <div><strong>LOCATION:</strong> <span id="projectLocation" style="font-size: 20px;"></span>
+                        </div>
+                        <div><strong>OWNER:</strong> <span id="projectOwner" style="font-size: 20px;"></span></div> <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Project Particulars -->
         <div class="container-fluid">
             <!-- Loop through each particular -->
@@ -99,17 +118,40 @@
                         var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
+                            // Populate project details based on the selected project
+                            $('#projectTitle').text(project.project_title);
+                            $('#projectLocation').text(project.project_location);
+                            $('#projectOwner').text(project.project_owner);
                             var directCostTotal = 0;
 
                             var totalMaterial = 0; // Declare these variables outside the loop
                             var totalLabor = 0;
                             var totalEquipment = 0;
+                            // var divHTML =
+                            //     '<div class="container text-center">' +
+                            //         '<div class="row mt-4">' +
+                            //         '<div class="row mt-2">' +
+                            //         '<div class="d-flex flex-column align-items-center">' +
+                            //         '<div class="row mt-">' +
+                            //         '<h5>DETAILED UNIT PRICE ANALYSIS (DUPA)</h5></div>' +
+                            //         '</div>' +
+                            //         '<div class="d-flex flex-column align-items-start">' +
+                            //         '<div><strong>PROJECT TITLE: ' + project.project_title +
+                            //         '</strong> </div>' +
+                            //         '<div><strong>LOCATION: ' + project.project_location +
+                            //         '</strong></div>' +
+                            //         '<div><strong>OWNER: ' + project.project_owner + '</strong> </div> <br>' +
+                            //         '</div>' +
+                            //         '</div>' +
+                            //         '</div>' +
+                            //         '</div>' ;
                             project.particulars.forEach(function(particular, index) {
                                 var materials = particular.details.Materials || [];
                                 var equipment = particular.details.Equipment || [];
                                 var labor = particular.details.Labor || [];
 
-                                var directCostTotal = particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
+                                var directCostTotal = particular.totalMaterialAmount + particular
+                                    .totalLaborAmount + particular.totalEquipmentAmount;
                                 var ocmTotal = directCostTotal * (particular.ocm / 100);
                                 var cpTotal = directCostTotal * (particular.contractors_profit /
                                     100);
@@ -121,23 +163,6 @@
                                 console.log('vat: ', unitCostTotal)
                                 // Create a new div for each particular name
                                 var divHTML =
-                                '<div class="container text-center">' +
-                                    '<div class="row mt-4">' +
-                                    '<div class="row mt-2">' +
-                                    '<div class="d-flex flex-column align-items-center">' +
-                                    '<div class="row mt-">' +
-                                    '<h5>DETAILED UNIT PRICE ANALYSIS (DUPA)</h5></div>' +
-                                    '</div>' +
-                                    '<div class="d-flex flex-column align-items-start">' +
-                                    '<div><strong>PROJECT TITLE: ' + project.project_title +
-                                    '</strong> </div>' +
-                                    '<div><strong>LOCATION: ' + project.project_location +
-                                    '</strong></div>' +
-                                    '<div><strong>OWNER: ' + project.project_owner + '</strong> </div> <br>' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '</div>' +
                                     '<table class="table table-bordered table-striped">' +
                                     '<thead>' +
                                     '<tr>' +
@@ -156,7 +181,8 @@
                                     '</td>' +
                                     '<td class="text-right">' + particular.quantity + '</td>' +
                                     '<td class="text-center">' + particular.unit + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(unitCostTotal.toFixed(2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(unitCostTotal
+                                        .toFixed(2)) + '</td>' +
                                     '</tr>';
                                 // Create materials table
                                 if (materials.length > 0) {

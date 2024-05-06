@@ -31,11 +31,15 @@
                                     id="edit_project_signature_role" name="edit_project_signature_role" required>
                                     <option value=""></option>
                                     <option value="Prepared by">Prepared by</option>
+                                    <option value="Prepared by (PPMP)">Prepared by (PPMP)</option>
                                     <option value="Checked by">Checked by</option>
                                     <option value="Reviewed by">Reviewed by</option>
+                                    <option value="Reviewed by (ABC & DUPAS)">Reviewed by (ABC & DUPAS)</option>
+                                    <option value="Reviewed by (PPMP)">Reviewed by (PPMP)</option>
                                     <option value="Recommending Approval">Recommending Approval</option>
                                     <option value="Conformed by">Conformed by</option>
-                                    <option value="Approved">Approved</option>
+                                    <option value="Approved by">Approved by</option>
+                                    <option value="Submitted by">Submitted by</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -43,9 +47,10 @@
                                 <select data-placeholder="Select Position" type="text" class="form-control"
                                     id="edit_project_signature_position" name="edit_project_signature_position">
                                     <option value=""></option>
-                                    <option value="CMU President">CMU President</option>
-                                    <option value="Draftsman">Draftsman</option>
-                                    <option value="President">President</option>
+                                    <option value="University President">University President</option>
+                                    <option value="Director, OUPD">Director, OUPD</option>
+                                    <option value="Engineer, OUPD">Engineer, OUPD</option>
+                                    <option value="Draftsman, OUPD">Draftsman, OUPD</option>
                                 </select>
                             </div>
                         </div>

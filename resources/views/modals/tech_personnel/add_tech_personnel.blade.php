@@ -13,12 +13,12 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="add_personnel_no">Personnel No.</label>
-                        <input type="text" class="form-control" id="add_personnel_no" name="add_personnel_no">
+                        <input type="text" class="form-control" id="add_personnel_no" name="personnel_no">
                     </div>
                     <div class="form-group">
                         <label for="add_personnel_description">Description</label>
                         <input type="text" class="form-control" id="add_personnel_description"
-                            name="add_personnel_description" placeholder="Foreman" required>
+                            name="personnel_description" placeholder="Foreman" required>
                     </div>
                 </div>
                 <div class="modal-footer">
