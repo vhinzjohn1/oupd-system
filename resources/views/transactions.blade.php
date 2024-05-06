@@ -10,13 +10,11 @@
                 border: none;
                 box-shadow: none;
             }
-
             .totalFooter {
                 background-color: #e5e5e5d8;
                 height: 43px;
                 font-weight: 630;
             }
-
             .select2Below {
                 top: auto !important;
                 bottom: auto !important;
@@ -342,6 +340,9 @@
 
 
     <script>
+        // Retrieve project_id and project_title from localStorage
+        var selectedProjectID = localStorage.getItem("projectID");
+        var selectedProjectTitle = localStorage.getItem("projectTitle");
         $("#selectProjParticular")
             .select2({
                 theme: "bootstrap-5",
@@ -454,6 +455,13 @@
             let sourceOfFund = $('#add_trans_project_source_of_fund').val();
             let modeOfImplementation = $('#add_trans_project_mode_of_implementation').val();
 
+
+            // Remove the P and commas
+            let removeComma = appropriation.replace('₱', '').replace(/,/g,
+                '');
+            let projectCost = parseFloat(removeComma);
+            console.log('This is the Cost: ', projectCost);
+
             // Make AJAX request to add new material
             $.ajax({
                 url: "{{ route('project.store') }}",
@@ -465,7 +473,7 @@
                     project_description: description,
                     project_contract_duration: contractDuration,
                     project_date_prepared: datePrepared,
-                    project_appropriation: appropriation,
+                    project_appropriation: projectCost,
                     project_source_of_fund: sourceOfFund,
                     project_mode_of_implementation: modeOfImplementation,
                     _token: "{{ csrf_token() }}"
@@ -475,7 +483,6 @@
                     toastr.success('Project Added Successfully!');
                     localStorage.setItem('projectID', response.project_id);
                     localStorage.setItem('projectTitle', response.project_title);
-
                     window.location.reload();
 
                 },
@@ -1975,77 +1982,71 @@
         }
 
         function getProjects() {
-            // Retrieve the selected project ID from localStorage
+            // Retrieve project_id and project_title from localStorage
             var selectedProjectID = localStorage.getItem("projectID");
+            var selectedProjectTitle = localStorage.getItem("projectTitle");
+
+            console.log(selectedProjectID);
+            console.log(selectedProjectTitle);
+
             $.ajax({
                 url: "{{ route('project.index') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
                     console.log("This is the project data:", data);
+
+                    // Check if there are no projects or if selectedProjectID is not found
+                    if (data.length === 0 || !data.find(project => project.project_id === parseInt(
+                            selectedProjectID))) {
+                        console.log('Test if this shows');
+                        $("#projectSelectedTitle").text('No Project Selected');
+                        return;
+                    }
+
                     // Iterate over each project
                     data.forEach(function(project) {
                         // Check if the project ID matches the selected project ID
-                        if (project.project_id == selectedProjectID) {
+                        if (selectedProjectID == parseInt(project.project_id)) {
+                            // Set the values into the specified HTML elements
+                            $("#projectSelectedID").val(selectedProjectID);
+                            $("#projectSelectedTitle").text(selectedProjectTitle);
                             // Populate input fields with project data based on their IDs
                             $("#add_project_id").val(project.project_id);
                             $("#add_project_title").val(project.project_title);
                             $("#add_project_location").val(project.project_location);
                             $("#add_project_owner").val(project.project_owner);
-                            $("#add_project_description").val(
-                                project.project_description
-                            );
-                            $("#add_project_contract_duration").val(
-                                project.project_contract_duration
-                            );
-                            $("#add_project_appropriation").val(
-                                project.project_appropriation
-                            );
-                            $("#add_project_source_of_fund").val(
-                                project.project_source_of_fund
-                            );
-                            $("#add_project_date_prepared").val(
-                                project.project_date_prepared
-                            );
-                            $("#add_project_mode_of_implementation").val(
-                                project.project_mode_of_implementation
-                            );
-                            $("#add_project_ocm").val(
-                                project.ocm
-                            );
-                            $("#add_project_contractProfit").val(
-                                project.contractors_profit
-                            );
-                            $("#add_project_vat").val(
-                                project.vat
-                            );
+                            $("#add_project_description").val(project.project_description);
+                            $("#add_project_contract_duration").val(project.project_contract_duration);
+                            $("#add_project_appropriation").val(project.project_appropriation);
+                            $("#add_project_source_of_fund").val(project.project_source_of_fund);
+                            $("#add_project_date_prepared").val(project.project_date_prepared);
+                            $("#add_project_mode_of_implementation").val(project
+                                .project_mode_of_implementation);
+                            $("#add_project_ocm").val(project.ocm);
+                            $("#add_project_contractProfit").val(project.contractors_profit);
+                            $("#add_project_vat").val(project.vat);
                         }
-                        $("#add_project_source_of_fund").select2({
-                            theme: "bootstrap-5",
-                            placeholder: "Select Project Source of Fund", // Optional placeholder text
-                            // allowClear: true, // Allow clearing the selection
-                        });
-                        $("#add_project_mode_of_implementation").select2({
-                            theme: "bootstrap-5",
-                            placeholder: "Select Project Mode of Implementation", // Optional placeholder text
-                            // allowClear: true, // Allow clearing the selection
-                        });
+                    });
+                    $("#add_project_source_of_fund").select2({
+                        theme: "bootstrap-5",
+                        placeholder: "Select Project Source of Fund", // Optional placeholder text
+                        // allowClear: true, // Allow clearing the selection
+                    });
+                    $("#add_project_mode_of_implementation").select2({
+                        theme: "bootstrap-5",
+                        placeholder: "Select Project Mode of Implementation", // Optional placeholder text
+                        // allowClear: true, // Allow clearing the selection
                     });
                     initializePriceInputs();
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
+                    $("#projectSelectedTitle").text('No Project Selected');
                 },
             });
+
         }
-
-        // Retrieve project_id and project_title from localStorage
-        var selectedProjectID = localStorage.getItem("projectID");
-        var selectedProjectTitle = localStorage.getItem("projectTitle");
-
-        // Set the values into the specified HTML elements
-        $("#projectSelectedID").val(selectedProjectID);
-        $("#projectSelectedTitle").text(selectedProjectTitle);
 
         // Add click event listener to the button
         $("#selectDetailMaterial").click(function() {

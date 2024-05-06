@@ -4,46 +4,6 @@
 
     <head>
 
-        <style>
-            .userLink {
-                cursor: pointer;
-                display: block;
-                padding: 0.5rem 1rem;
-                border: 1px solid #dee2e6;
-                border-radius: 0.25rem;
-                margin-bottom: 0.5rem;
-                color: white;
-                text-decoration: none;
-            }
-
-            .userLink:focus {
-                background-color: #ffc107 !important;
-                /* Change background color when link is clicked */
-                color: black !important;
-                /* Change text color when link is clicked */
-            }
-
-            .btn-success.active {
-                background-color: #ffc107 !important;
-                /* Change background color when link is clicked */
-                color: black !important;
-            }
-
-            /* Adjust checkbox size */
-            input[type="checkbox"] {
-                transform: scale(1.5);
-                /* Increase checkbox size */
-                margin-right: 5px;
-                /* Add spacing between checkbox and label */
-            }
-
-            /* Make text bigger and bold */
-            .form-check-label {
-                font-size: 18px;
-                font-weight: bold;
-            }
-        </style>
-
     </head>
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -60,11 +20,69 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-            <!------- This is the User Permission Section ------>
-            <div class="btn btn-success" id="submitBtn">Submit</div>
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>10</h3>
 
+                            <p>Projects</p>
+                        </div>
+                        <div class="icon">
+                            <i class="nav-icon fas fa-th"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>53</h3>
 
+                            <p>List of Materials</p>
+                        </div>
+                        <div class="icon">
+                            <i class="nav-icon fas fa-tools"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-secondary">
+                        <div class="inner">
+                            <h3>44</h3>
 
+                            <p>Labor Rates</p>
+                        </div>
+                        <div class="icon">
+                            <i class="nav-icon fas fa-hard-hat"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-olive">
+                        <div class="inner">
+                            <h3>65</h3>
+
+                            <p>List of Equipment Rates</p>
+                        </div>
+                        <div class="icon">
+                            <i class="nav-icon fas fa-snowplow"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
         </div>
     </div>
 
@@ -72,7 +90,7 @@
 
     <script>
         $('#submitBtn').click(function() {
-           router.visit('home');
+            router.visit('home');
         })
         // Function to confirm deletion
         function confirmDeletion(id) {

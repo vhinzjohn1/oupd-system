@@ -35,6 +35,7 @@ class GetAllDataController extends Controller
             prt.particular_id,
             prt.particular_name,
             pm.quantity AS material_quantity,
+            pm.price_id as project_particular_material_price_id,
             pr.price AS material_price,
             pr.`quarter` AS material_quarter,
             pr.`year` AS material_year,
@@ -88,7 +89,7 @@ class GetAllDataController extends Controller
         LEFT JOIN
             equipment_rates er ON ppe.equipment_id = er.equipment_id AND er.is_active = 1
         LEFT JOIN
-            prices pr ON m.material_id = pr.material_id
+            prices pr ON pm.price_id = pr.price_id
     ");
 
         $formattedData = [];
@@ -155,7 +156,7 @@ class GetAllDataController extends Controller
                             'material_category_name' => $project->material_category_name,
                             'material_quarter' => $project->material_quarter,
                             'material_quantity' => $project->material_quantity,
-                            'material_price_id' => $project->material_price_id,
+                            'material_price_id' => $project->project_particular_material_price_id,
                             'material_price' => $project->material_price,
                             'material_year' => $project->material_year,
                             'material_unit' => $project->material_unit,
