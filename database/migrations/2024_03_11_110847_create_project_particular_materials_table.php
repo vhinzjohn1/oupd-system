@@ -13,12 +13,14 @@ return new class extends Migration {
         Schema::create('project_particular_materials', function (Blueprint $table) {
             $table->bigIncrements('project_particular_material_id');
             $table->unsignedBigInteger('project_particular_id');
+            $table->unsignedBigInteger('price_id');
             $table->unsignedBigInteger('material_id');
             $table->integer('quantity');
             $table->timestamp('timestamp')->useCurrent();
             // Foreign keys
+            $table->foreign('price_id')->references('price_id')->on('prices')->onDelete('cascade');
             $table->foreign('project_particular_id')->references('project_particular_id')->on('project_particulars')->onDelete('cascade');
-            $table->foreign('material_id')->references('material_id')->on('materials')->onDelete('restrict');
+            $table->foreign('material_id')->references('material_id')->on('materials')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -133,36 +133,69 @@ class LaborController extends Controller
             // Find the labor based on ID
             $labor = Labor::findOrFail($id);
 
+            // Check if the updated labor name and location already exist
+            $existingLabor = Labor::where('labor_name', $validatedData['edit_labor_name'])
+                ->where('location', $validatedData['edit_location'])
+                ->where('labor_id', '!=', $labor->labor_id)
+                ->first();
+
+            if ($existingLabor) {
+                // If a labor with the same name and location already exists, return an error response
+                DB::rollBack();
+                return response()->json(['success' => false, 'message' => 'Labor name and location already exist.']);
+            }
+
             // Update labor details
             $labor->labor_name = $validatedData['edit_labor_name'];
             $labor->location = $validatedData['edit_location'];
 
-            // Retrieve existing price record
-            $rate = $labor->rates()->where([
-                'labor_id' => $labor->labor_id,
-            ])->firstOrFail();
+            // Deactivate existing rates with the same labor_id as the labor
+            DB::table('labor_rates')
+                ->where('labor_id', $labor->labor_id)
+                ->update(['is_active' => false]);
 
-            // Update price attributes
-            $rate->rate = $validatedData['edit_rate'];
+            // Create a new rate instance
+            $newRate = new LaborRate();
+            $newRate->rate = $validatedData['edit_rate'];
+            $newRate->labor_id = $labor->labor_id; // Associate with the labor
 
-            // Save changes
-            $labor->save();
-            $rate->save();
+            $labor->save();  // Save changes to labor table
+            // Save the new rate
+            $newRate->save();
+
             DB::commit();
 
-            return response()->json(['success' => true, 'message' => 'Material updated successfully!']);
+            return response()->json(['success' => true, 'message' => 'Labor updated successfully!']);
         } catch (\Exception $e) {
+            // Rollback the transaction if an exception occurs
             DB::rollBack();
             Log::error('Failed to update labor: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Material update failed. Check logs for details.']);
+            return response()->json(['success' => false, 'message' => 'Labor update failed. Check logs for details.']);
         }
+
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Labor $labor)
+    public function destroy($id)
     {
-        //
+        try {
+            // Find the labor based on ID
+            $labor = Labor::findOrFail($id);
+
+            // Deactivate existing rates related to the labor
+            $labor->rates()->delete();
+
+            // Delete the labor
+            $labor->delete();
+
+            return response()->json(['success' => true, 'message' => 'Labor deleted successfully!']);
+        } catch (\Exception $e) {
+            Log::error('Failed to delete labor: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Labor deletion failed. Check logs for details.']);
+        }
+
     }
 }

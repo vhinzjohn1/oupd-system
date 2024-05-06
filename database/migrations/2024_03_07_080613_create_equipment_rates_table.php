@@ -15,10 +15,10 @@ return new class extends Migration
         Schema::create('equipment_rates', function (Blueprint $table) {
             $table->id('equipment_rate_id');
             $table->decimal('rate', 10, 2);
-            $table->unsignedBigInteger('equipment_id'); // Foreign Key
+            $table->unsignedBigInteger('equipment_id')->nullable(); // Foreign Key
             $table->foreign('equipment_id')
                 ->references('equipment_id')
-                ->on('equipments');
+                ->on('equipments')->onDelete('cascade');
             $table->boolean('is_active')->default(true);
             $table->timestamp('date_effective')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();

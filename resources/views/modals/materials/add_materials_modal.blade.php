@@ -15,15 +15,17 @@
                     <!-- Add form fields for adding a new material -->
                     <div class="row">
                         <div class="col-6">
-                            <div class="form-group">
-                                <label for="add_material_category">Material Category</label>
-                                <input type="text" class="form-control" id="add_material_category"
-                                    name="add_material_category" required>
-                            </div>
+
                             <div class="form-group">
                                 <label for="add_material_name">Material Name</label>
                                 <input type="text" class="form-control" id="add_material_name"
                                     name="add_material_name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="add_material_category">Material Category</label>
+                                <input type="text" class="form-control" id="add_material_category"
+                                    name="add_material_category" required>
                             </div>
 
                             <div class="form-group">
@@ -34,7 +36,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="add_price">Price</label>
-                                <input type="number" class="form-control" id="add_price" name="add_price" required>
+                                <input type="text" class="form-control price-input" id="add_price" name="add_price" required>
                             </div>
                             <div class="form-group">
                                 <label for="add_quarter">Quarter</label>
@@ -42,16 +44,41 @@
                             </div>
                             <div class="form-group">
                                 <label for="add_year">Year</label>
-                                <input type="text" class="form-control" id="add_year" name="add_year" required>
+                                <input type="number" class="form-control" min="1900" max="2099" id="add_year"
+                                    name="add_year" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn bg-success">Save changes</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<script>
+    var yearInput = document.getElementById('add_year');
+    yearInput.addEventListener('input', function(event) {
+        var year = parseInt(event.target.value);
+        if (year < 1900 || year > 2199 || isNaN(year)) {
+            event.target.setCustomValidity('Invalid year');
+        } else {
+            event.target.setCustomValidity('');
+        }
+    });
+
+    const priceInputs = document.querySelectorAll('.price-input');
+    priceInputs.forEach(input => {
+        const mask = IMask(input, {
+            mask: Number,
+            scale: 2,
+            thousandsSeparator: ',',
+            padFractionalZeros: true,
+            normalizeZeros: true,
+            radix: '.',
+            mapToRadix: ['.'],
+            min: 0
+        });
+    });
+</script>

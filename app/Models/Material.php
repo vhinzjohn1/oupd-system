@@ -21,7 +21,7 @@ class Material extends Model
 
     public function prices()
     {
-        return $this->hasMany(Price::class, 'price_id');
+        return $this->hasMany(Price::class, 'material_id');
     }
 
 }

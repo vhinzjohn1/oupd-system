@@ -15,7 +15,6 @@
                     <!-- Add form fields for adding a new Equipment -->
                     <div class="row">
                         <div class="col-6">
-                            
                             <div class="form-group">
                                 <label for="add_equipment_name">Equipment Name</label>
                                 <input type="text" class="form-control" id="add_equipment_name"
@@ -29,28 +28,26 @@
 
                             <div class="form-group">
                                 <label for="add_model">Model</label>
-                                <input type="text" class="form-control" id="add_equipment_model" name="add_model" required>
+                                <input type="text" class="form-control" id="add_equipment_model" name="add_model">
                             </div>
-                            <div class="form-group">
-                                <label for="add_capacity">Capacity</label>
-                                <input type="text" class="form-control" id="add_equipment_capacity" name="add_capacity" required>
-                            </div>
-                            {{-- <div class="form-group">
-                                <label for="add_description">Description</label>
-                                <input type="text" class="form-control" id="add_description" name="add_description" required>
-                            </div> --}}
+
                         </div>
                         <div class="col-6">
                             <div class="form-group">
+                                <label for="add_capacity">Capacity</label>
+                                <input type="text" class="form-control" id="add_equipment_capacity"
+                                    name="add_capacity">
+                            </div>
+                            <div class="form-group">
                                 <label for="add_rate">Rate</label>
-                                <input type="number" class="form-control" id="add_rate" name="add_rate" required>
+                                <input type="number" class="form-control" step="any" id="add_rate" name="add_rate"
+                                    required>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn bg-success">Save changes</button>
                 </div>
             </form>
         </div>

@@ -15,7 +15,7 @@ class LaborRate extends Model
         'date_effective',
     ];
 
-    protected $dates = ['date_effective'];
+    // protected $dates = ['date_effective'];
 
     public function labors()
     {

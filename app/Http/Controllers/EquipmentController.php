@@ -49,8 +49,8 @@ class EquipmentController extends Controller
         $validatedData = $request->validate([
             'equipment_name' => 'required|string',
             'equipment_category' => 'required|string',
-            'equipment_model' => 'required|string',
-            'equipment_capacity' => 'required|string',
+            'equipment_model' => 'nullable|string',
+            'equipment_capacity' => 'nullable|string',
             'rate' => 'required|numeric',
             // 'equipment_category_desc' => 'required|string',
         ]);
@@ -136,13 +136,28 @@ class EquipmentController extends Controller
             'edit_equipment_model' => 'required|string',
             'edit_equipment_capacity' => 'required|string',
             'edit_rate' => 'required|numeric',
-        ]);        
+        ]);
 
         try {
             DB::beginTransaction();
 
             // Find the equipment based on ID
             $equipment = Equipment::findOrFail($id);
+
+            // Check if the updated equipment name and category combination already exists
+            $existingEquipment = Equipment::where('equipment_name', $validatedData['edit_equipment_name'])
+                ->where('equipment_category_id', EquipmentCategory::firstOrCreate([
+                    'equipment_category_name' => $validatedData['edit_equipment_category_name'],
+                ])->equipment_category_id)
+                ->where('equipment_id', '!=', $equipment->equipment_id)
+                ->first();
+
+            if ($existingEquipment) {
+                // If equipment with the same name and category already exists, return an error response
+                DB::rollBack();
+                return response()->json(['success' => false, 'message' => 'Equipment name and category combination already exists.']);
+            }
+
             // Update equipment details
             $equipment->equipment_name = $validatedData['edit_equipment_name'];
             $equipment->equipment_model = $validatedData['edit_equipment_model'];
@@ -152,9 +167,11 @@ class EquipmentController extends Controller
             $equipmentCategory = EquipmentCategory::firstOrCreate([
                 'equipment_category_name' => $validatedData['edit_equipment_category_name'],
             ]);
-            $equipment->category()->associate($equipmentCategory);
 
-            // Deactivate existing rates with the same equipment_id the equipment
+            // Associate the updated category with the equipment
+            $equipment->equipment_category_id = $equipmentCategory->equipment_category_id;
+
+            // Deactivate existing rates with the same equipment_id as the equipment
             DB::table('equipment_rates')
                 ->where('equipment_id', $equipment->equipment_id)
                 ->update(['is_active' => false]);
@@ -163,7 +180,6 @@ class EquipmentController extends Controller
             $newRate = new EquipmentRate();
             $newRate->rate = $validatedData['edit_rate'];
             $newRate->equipment_id = $equipment->equipment_id; // Associate with the equipment
-
 
             $equipment->save();  // Save changes to equipment table
             // Save the new rate
@@ -179,11 +195,26 @@ class EquipmentController extends Controller
         }
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(equipment $equipment)
+    public function destroy($id)
     {
-        //
+        try {
+            // Find the equipment based on ID
+            $equipment = Equipment::findOrFail($id);
+
+            // Deactivate existing rates related to the equipment
+            $equipment->rates()->delete();
+
+            // Comment if you only want to delete it in the table not in the database
+            $equipment->delete();
+
+            return response()->json(['success' => true, 'message' => 'Equipment details deleted successfully!']);
+        } catch (\Exception $e) {
+            Log::error('Failed to delete equipment details: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to delete equipment details. Check logs for details.']);
+        }
     }
 }
