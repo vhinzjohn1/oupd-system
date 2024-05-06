@@ -88,7 +88,7 @@ class GetAllDataController extends Controller
         LEFT JOIN
             equipment_rates er ON ppe.equipment_id = er.equipment_id AND er.is_active = 1
         LEFT JOIN
-            prices pr ON m.material_id = pr.material_id
+            prices pr ON pm.price_id = pr.price_id
     ");
 
         $formattedData = [];
@@ -480,7 +480,6 @@ class GetAllDataController extends Controller
                     // Return error response
                     return response()->json(['success' => false, 'message' => 'Failed to add labor. Please check the logs for details.']);
                 }
-
             }
             // Insert equipment into the project_particular_equipments table if provided
             if ($request->has('equipmentId') && $request->equipmentId !== "empty") {
@@ -554,7 +553,6 @@ class GetAllDataController extends Controller
                     // Return error response
                     return response()->json(['success' => false, 'message' => 'Failed to add equipment. Please check the logs for details.']);
                 }
-
             }
 
             return response()->json(['message' => 'Data submitted successfully']);
@@ -612,7 +610,4 @@ class GetAllDataController extends Controller
             return response()->json(['message' => 'Failed to delete project particular detail', 'error' => $e->getMessage()], 500);
         }
     }
-
-
-
 }

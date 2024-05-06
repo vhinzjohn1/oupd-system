@@ -88,7 +88,7 @@ class PDFController extends Controller
         LEFT JOIN
             equipment_rates er ON ppe.equipment_id = er.equipment_id AND er.is_active = 1
         LEFT JOIN
-            prices pr ON m.material_id = pr.material_id AND pr.is_active = 1
+            prices pr ON pm.price_id = pr.price_id
         LEFT JOIN
             signatures s ON p.project_id = s.project_id
     ");
