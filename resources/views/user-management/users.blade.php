@@ -129,9 +129,6 @@
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
         </div>
-
-
-
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body table-responsive">
@@ -206,6 +203,7 @@
     </div>
 
     @include('modals.user.add_user')
+    @include('modals.user.edit_user')
 
     <script>
         // Sample user data
@@ -461,12 +459,13 @@
         function displayUsers(data) {
             const table = $('#usersTable').DataTable();
             table.clear().draw();
+            console.log('This is the user id: ', data.id);
 
             data.forEach(function(user, index) {
                 const editButton =
-                    `<button type="button" class="btn bg-success mr-2" data-id="${user.user_id}" data-name="${user.first_name}" data-pay-item="${user.middle_name}"><i class="fas fa-edit"></i></button>`;
+                    `<button type="button" class="btn bg-success mr-2" onclick="editUserModal('${user.id}', '${user.first_name}', '${user.middle_name}', '${user.last_name}', '${user.user_name}', '${user.roles}', '${user.email}')"><i class="fas fa-edit"></i></button>`;
                 const deleteButton =
-                    `<button type="button" class="btn bg-danger" data-id="${user.user_id}"><i class="fas fa-trash-alt"></i></button>`;
+                    `<button type="button" class="btn bg-danger" onclick="deleteUser(${user.id})" data-id="${user.user_id}"><i class="fas fa-trash-alt"></i></button>`;
                 const buttonsContainer = '<div class="text-center d-flex">' + editButton + deleteButton + '</div>';
 
                 const newRow = table.row.add([
@@ -484,6 +483,97 @@
             table.draw();
 
         }
+
+        function editUserModal(userId, firstName, middleName, lastName, userName, roles, email) {
+            // Set input values based on the passed user data
+            $('#editUserId').val(userId);
+            $('#edit_first_name').val(firstName);
+            $('#edit_middle_name').val(middleName);
+            $('#edit_last_name').val(lastName);
+            $('#edit_user_name').val(userName);
+            $('#edit_role').val(roles);
+            $('#edit_email').val(email);
+            // Similarly set other input values if needed
+            $('#editUserModal').modal('show');
+        }
+
+        function deleteUser(user_id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this User!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('users') }}/" + user_id,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            toastr.options.progressBar = true;
+                            toastr.success('User Deleted Successfully!');
+                            refreshUsersTable();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText); // Log error response for debugging
+                            toastr.error(
+                                'Error occurred while deleting User'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+
+
+        // Handle Editing of Paticular
+        $('#editUserForm').submit(function(e) {
+            e.preventDefault();
+            // Get form data
+            let userId = $('#editUserId').val();
+            let firstName = $('#edit_first_name').val();
+            let middleName = $('#edit_middle_name').val();
+            let lastName = $('#edit_last_name').val();
+            let userName = $('#edit_user_name').val();
+            let roles = $('#edit_role').val();
+            let email = $('#edit_email').val();
+            let password = $('#edit_password').val();
+
+            // Make AJAX request to update users
+            $.ajax({
+                url: "{{ route('users.update', ['user' => ':user']) }}".replace(':user', userId),
+                type: "PUT",
+                data: {
+                    userId: userId,
+                    firstName: firstName,
+                    middleName: middleName,
+                    lastName: lastName,
+                    userName: userName,
+                    email: email,
+                    role: roles,
+                    password: password,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    toastr.options.progressBar = true;
+                    toastr.success('User Edited Successfully!');
+                    refreshUsersTable();
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    toastr.error('Failed to edit user: ' + 'Name/Email Already Existed');
+                }
+            });
+
+        });
+
+
 
 
 
@@ -510,12 +600,14 @@
                         lastName: lastName,
                         userName: userName,
                         email: email,
+                        role: role,
                         password: password,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        // toastr.options.progressBar = true;
-                        // toastr.success('Project Added Successfully!');
+
+                        toastr.options.progressBar = true;
+                        toastr.success('User Added Successfully!');
                         console.log(response); // Log response for debugging
 
                         if (response) {
@@ -528,7 +620,7 @@
 
                         } else {
                             // Show error message if material addition fails
-                            alert('Failed to add project: ' + response.message);
+                            alert('Failed to add user: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
@@ -538,49 +630,7 @@
                 });
             });
 
-            // Handle Editing of Paticular
-            $('#editParticularForm').submit(function(e) {
-                console.log('Form submit')
-                e.preventDefault();
 
-                // Get form data
-                let particularID = $('#edit_particular_id').val();
-                let particularName = $('#edit_particular_name').val();
-                let description = $('#edit_description').val();
-
-
-                // Make AJAX request to update the project
-                $.ajax({
-                    url: "{{ route('particulars.update', ['id' => ':id']) }}".replace(':id',
-                        particularID),
-                    type: "PUT", // Assuming you are using PUT method for update, change it if needed
-                    data: {
-                        particular_name: particularName,
-                        description: description,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        toastr.options.progressBar = true;
-                        toastr.success('Project Updated Successfully!');
-                        console.log(response); // Log response for debugging
-
-                        if (response) {
-                            // Optionally, you can reset the form and close the modal here
-                            $('#editParticularForm')[0].reset();
-                            $('#editParticularModal').modal('hide');
-
-                            refreshParticularTable(); // Update the materials table
-                        } else {
-                            // Show error message if project update fails
-                            alert('Failed to update project: ' + response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText); // Log error response for debugging
-                        alert('Error occurred. Check console for details.');
-                    }
-                });
-            });
 
             // Add event listener for the button
             $("#logValuesBtn").click(() => {

@@ -11,7 +11,7 @@
                     <i class="nav-icon fa fa-address-book"></i>
                     <p>
                         {{ Auth::user()->first_name }}
-                        {{ Auth::user()->last_name }}
+                        Profile
                     </p>
                 </a>
             </li>
