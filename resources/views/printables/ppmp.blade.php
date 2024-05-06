@@ -122,7 +122,7 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        console.log(response);
+                        console.log('response:',response);
 
                         // Get the selected project ID from localStorage
                         var selectedProjectID = localStorage.getItem("projectID");
@@ -265,6 +265,7 @@
                                         '</div>' +
                                         '</div>';
                                 }
+                                console.log('role : ', signature.role)
                             });
                             divHTML +=
                                 '</div>' +

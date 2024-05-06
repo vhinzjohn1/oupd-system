@@ -29,7 +29,7 @@
                                     id="add_project_signature_role" name="add_project_signature_role" required>
                                     <option value=""></option>
                                     <option value="Prepared by">Prepared by</option>
-                                    <option value="Prepared by (PPMP)">Prepared by (PPMP)</option>
+                                    <option value="(PPMP) Prepared by">(PPMP) Prepared by</option>
                                     <option value="Checked by">Checked by</option>
                                     <option value="Reviewed by">Reviewed by</option>
                                     <option value="Reviewed by (ABC & DUPAS)">Reviewed by (ABC & DUPAS)</option>

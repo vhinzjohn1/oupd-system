@@ -68,6 +68,7 @@ class SignatureController extends Controller
 
             // Retrieve or create project
             $signature = Signature::updateOrCreate(['signature_id' => $signature_id], [
+                'fullname' => $request['fullName'],
                 'degree' => $request['degree'],
                 'position' => $request['position'],
                 'role' => $request['role'],

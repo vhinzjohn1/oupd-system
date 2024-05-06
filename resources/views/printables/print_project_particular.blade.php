@@ -113,30 +113,30 @@
                                 var labor = particular.details.Labor;
                                 var equipment = particular.details.Equipment;
 
-                                var divHTML =
-                                    '<div class="container text-center">' +
-                                    '<div class="row mt-4">' +
-                                    '<div class="row mt-2">' +
-                                    '<div class="d-flex flex-column align-items-center">' +
-                                    '<div class="row mt-">' +
-                                    '<h5>DETAILED UNIT PRICE ANALYSIS (DUPA)</h5></div>' +
-                                    '</div>' +
-                                    '<div class="d-flex flex-column align-items-start">' +
-                                    '<div><strong>PROJECT TITLE: ' + project.project_title +
-                                    '</strong> </div>' +
-                                    '<div><strong>LOCATION: ' + project.project_location +
-                                    '</strong></div>' +
-                                    '<div><strong>OWNER: ' + project.project_owner +
-                                    '</strong> </div> <br>' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '</div>';
+                                // var divHTML =
+                                    // '<div class="container text-center">' +
+                                    // '<div class="row mt-4">' +
+                                    // '<div class="row mt-2">' +
+                                    // '<div class="d-flex flex-column align-items-center">' +
+                                    // '<div class="row mt-">' +
+                                    // '<h5>DETAILED UNIT PRICE ANALYSIS (DUPA)</h5></div>' +
+                                    // '</div>' +
+                                    // '<div class="d-flex flex-column align-items-start">' +
+                                    // '<div><strong>PROJECT TITLE: ' + project.project_title +
+                                    // '</strong> </div>' +
+                                    // '<div><strong>LOCATION: ' + project.project_location +
+                                    // '</strong></div>' +
+                                    // '<div><strong>OWNER: ' + project.project_owner +
+                                    // '</strong> </div> <br>' +
+                                    // '</div>' +
+                                    // '</div>' +
+                                    // '</div>' +
+                                    // '</div>';
                                 // Check if the particular is a moving-in or moving-out
                                 if (particular.particular_name === "MOVING-IN" || particular
                                     .particular_name === "MOVING-OUT") {
                                     // Display only the Roman numeral and the particular name
-                                    divHTML += '<div class="col-10">' +
+                                    var divHTML = '<div class="col-10">' +
                                         '<div class="row">' +
                                         '<div class="col-md-6">' +
                                         '<h5 class="text-left">' + getRomanNumeral(index + 1) +
