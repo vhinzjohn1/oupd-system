@@ -14,7 +14,8 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="add_trans_project_title" class="add_trans_project_title">Project Title</label>
+                                <label for="add_trans_project_title" class="add_trans_project_title">Project
+                                    Title</label>
                                 <input type="text" class="form-control" id="add_trans_project_title"
                                     name="add_trans_project_title" required>
                             </div>
@@ -47,13 +48,15 @@
                             </div>
                             <div class="form-group">
                                 <label for="add_trans_project_appropriation">Project Cost</label>
-                                <input type="number" class="form-control" id="add_trans_project_appropriation"
-                                    name="add_trans_project_appropriation" required>
+                                <input type="text" class="form-control price-input"
+                                    id="add_trans_project_appropriation" name="add_trans_project_appropriation"
+                                    required>
                             </div>
                             <div class="form-group margin-top">
                                 <label for="add_trans_project_source_of_fund">Project Source Of Fund</label>
                                 <select type="text" class="form-control" id="add_trans_project_source_of_fund"
-                                    name="add_trans_project_source_of_fund" placeholder="Project Source of Fund" required>
+                                    name="add_trans_project_source_of_fund" placeholder="Project Source of Fund"
+                                    required>
                                     <option value=""></option>
                                     <option value="General Fund">General Fund</option>
                                     <option value="Trust Fund">Trust Fund</option>
@@ -62,8 +65,10 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="add_trans_project_mode_of_implementation">Project Mode of Implementation</label>
-                                <select type="text" class="form-control" id="add_trans_project_mode_of_implementation"
+                                <label for="add_trans_project_mode_of_implementation">Project Mode of
+                                    Implementation</label>
+                                <select type="text" class="form-control"
+                                    id="add_trans_project_mode_of_implementation"
                                     name="add_trans_project_mode_of_implementation" required>
                                     <option disabled selected></option>
                                     <option value="By Admin">By Admin</option>
@@ -94,4 +99,4 @@
         placeholder: "Select Project Mode of Implementation",
         dropdownParent: $('#addTransProjModal'),
     });
-</script>
+    </script>

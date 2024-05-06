@@ -141,7 +141,6 @@
                                 <th>Middle Name</th>
                                 <th>Last Name</th>
                                 <th>User Name</th>
-                                <th>Roles</th>
                                 <th>Email</th>
                                 <th>Actions</th>
                             </tr>
@@ -278,241 +277,7 @@
                         privileges: ["read", "update", "delete"]
                     },
                 ],
-            },
-            {
-                user_id: 5,
-                role_id: 5,
-                name: "Eva Green",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "update", "delete"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update"]
-                    },
-                ],
-            },
-            {
-                user_id: 6,
-                role_id: 6,
-                name: "Michael Brown",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update", "delete"]
-                    },
-                ],
-            },
-            {
-                user_id: 7,
-                role_id: 7,
-                name: "Sophia Martinez",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update", "delete"]
-                    },
-                ],
-            },
-            {
-                user_id: 8,
-                role_id: 8,
-                name: "William Wilson",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "update", "delete"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update"]
-                    },
-                ],
-            },
-            {
-                user_id: 9,
-                role_id: 9,
-                name: "Emma Taylor",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update", "delete"]
-                    },
-                ],
-            },
-            {
-                user_id: 10,
-                role_id: 10,
-                name: "James Anderson",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "update", "delete"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update"]
-                    },
-                ],
-            },
-            {
-                user_id: 4,
-                role_id: 4,
-                name: "Bob Johnson",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update", "delete"]
-                    },
-                ],
-            },
-            {
-                user_id: 5,
-                role_id: 5,
-                name: "Eva Green",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "update", "delete"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update"]
-                    },
-                ],
-            },
-            {
-                user_id: 6,
-                role_id: 6,
-                name: "Michael Brown",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update", "delete"]
-                    },
-                ],
-            },
-            {
-                user_id: 7,
-                role_id: 7,
-                name: "Sophia Martinez",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update", "delete"]
-                    },
-                ],
-            },
-            {
-                user_id: 8,
-                role_id: 8,
-                name: "William Wilson",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "update", "delete"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update"]
-                    },
-                ],
-            },
-            {
-                user_id: 9,
-                role_id: 9,
-                name: "Emma Taylor",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update", "delete"]
-                    },
-                ],
-            },
-            {
-                user_id: 10,
-                role_id: 10,
-                name: "James Anderson",
-                description: [{
-                        title: "Masterlist",
-                        privileges: ["read", "write"]
-                    },
-                    {
-                        title: "Projects",
-                        privileges: ["read", "update", "delete"]
-                    },
-                    {
-                        title: "Transactions",
-                        privileges: ["read", "update"]
-                    },
-                ],
-            },
+            }
         ];
 
 
@@ -705,7 +470,6 @@
                     user.middle_name,
                     user.last_name,
                     user.user_name,
-                    user.roles,
                     user.email,
                     // user.password,
                     buttonsContainer
@@ -714,19 +478,6 @@
 
             table.draw();
 
-            // Add event listeners for dynamically created buttons
-            // $('#particularTable').on('click', '.editParticularButton', function() {
-            //     const particularId = $(this).data('id');
-            //     const particularName = $(this).data('name');
-
-            //     const payItem = $(this).data('pay-item');
-            //     openParticularModal(particularId, particularName, payItem);
-            // });
-
-            // $('#particularTable').on('click', '.deleteParticularButton', function() {
-            //     const particularId = $(this).data('id');
-            //     deleteParticular(particularId);
-            // });
         }
 
 
@@ -755,7 +506,6 @@
                         userName: userName,
                         email: email,
                         password: password,
-                        roles: role,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
