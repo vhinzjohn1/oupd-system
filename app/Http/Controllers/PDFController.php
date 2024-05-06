@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use App\Models\Project;
-use App\Models\ProjectParticular;
 
 class PDFController extends Controller
 {
@@ -62,7 +58,8 @@ class PDFController extends Controller
             s.fullname,
             s.degree,
             s.position,
-            s.role
+            s.role,
+            s.project_id AS signature_project_id
         FROM
             projects p
         LEFT JOIN
@@ -88,7 +85,7 @@ class PDFController extends Controller
         LEFT JOIN
             equipment_rates er ON ppe.equipment_id = er.equipment_id AND er.is_active = 1
         LEFT JOIN
-            prices pr ON m.material_id = pr.material_id AND pr.is_active = 1
+            prices pr ON pm.price_id = pr.price_id
         LEFT JOIN
             signatures s ON p.project_id = s.project_id
     ");
@@ -118,15 +115,6 @@ class PDFController extends Controller
             $total = $project->total;
             $projectParticularId = $project->project_particular_id;
 
-            // Extract signatures data
-            $signatures = [
-                'project_id' => $projectId,
-                'fullname' => $project->fullname,
-                'degree' => $project->degree,
-                'position' => $project->position,
-                'role' => $project->role,
-            ];
-
             // Group data by project title
             if (!isset($formattedData[$title])) {
                 $formattedData[$title] = [
@@ -143,18 +131,23 @@ class PDFController extends Controller
                     'ocm' => $ocm,
                     'contractors_profit' => $contractors_profit,
                     'vat' => $vat,
-                    'signatures' => [$signatures]
+                    'signatures' => []
                 ];
-            } else {
-                // Check if the signatures data already exists in the array
-                $existingSignatures = array_column($formattedData[$title]['signatures'], 'fullname');
-                if (!in_array($project->fullname, $existingSignatures)) {
-                    $formattedData[$title]['signatures'][] = $signatures;
-                }
+            }
+            // Extract signatures data with the same project ID
+            if ($projectId == $project->signature_project_id) {
+                $formattedData[$title]['signatures'][] = [
+                    'fullname' => $project->fullname,
+                    'degree' => $project->degree,
+                    'position' => $project->position,
+                    'role' => $project->role,
+                    'signature_project_id' => $project->signature_project_id,
+                ];
             }
 
             // If there are particulars associated with the project, add them
             if (!empty($particularName)) {
+
                 // Initialize the particulars array if not already set
                 if (!isset($formattedData[$title]['particulars'])) {
                     $formattedData[$title]['particulars'] = [];
@@ -174,12 +167,13 @@ class PDFController extends Controller
                         'contractors_profit' => $contractors_profit,
                         'vat' => $vat,
                         'details' => [
-                                'Materials' => [],
-                                'Equipment' => [],
-                                'Labor' => [],
-                            ],
+                            'Materials' => [],
+                            'Equipment' => [],
+                            'Labor' => [],
+                        ],
                     ];
                 }
+
 
                 if (!empty($project->material_id) && $project->material_price !== null && $project->material_price !== 0) {
                     // Calculate the amount for the current material
@@ -222,8 +216,10 @@ class PDFController extends Controller
                         true
                     )
                 ) {
+                    // Calculate the amount for the current equipment
+                    $equipAmount = $project->equipment_no_of_units * $project->equipment_work_days * $project->equipment_rate;
                     // Calculate the amount for the current material
-                    $equipAmount = $project->material_price * $project->material_quantity;
+                    $equipmentMandays = $project->equipment_no_of_units * $project->equipment_work_days;
                     // Check if the equipment entry with the same equipment_id exists
                     $existingEquipment = collect($formattedData[$title]['particulars'][$particularName]['details']['Equipment'])
                         ->firstWhere('equipment_id', $project->equipment_id);
@@ -239,15 +235,19 @@ class PDFController extends Controller
                             'equipment_no_of_units' => $project->equipment_no_of_units,
                             'equipment_rate' => $project->equipment_rate,
                             'equipAmount' => $equipAmount,
+                            'equipmentMandays' => $equipmentMandays,
                         ];
                     }
                 }
                 // Calculate the total material amount for this particular
                 $totalEquipmentAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Equipment'])
                     ->sum('equipAmount');
+                $totalEquipMandays = collect($formattedData[$title]['particulars'][$particularName]['details']['Equipment'])
+                    ->sum('equipmentMandays');
 
                 // Assign the total material amount to the 'materialTotalAmount' field for this particular
                 $formattedData[$title]['particulars'][$particularName]['totalEquipmentAmount'] = $totalEquipmentAmount;
+                $formattedData[$title]['particulars'][$particularName]['totalEquipMandays'] = $totalEquipMandays;
 
                 // Add labor details if not already added
                 if (
@@ -260,6 +260,8 @@ class PDFController extends Controller
                 ) {
                     // Calculate the amount for the current material
                     $labAmount = $project->labor_no_of_persons * $project->labor_work_days * $project->labor_rate;
+                    // Calculate the amount for the current material
+                    $laborMandays = $project->labor_no_of_persons * $project->labor_work_days;
                     // Check if the labor entry with the same labor_id exists
                     $existingLabor = collect($formattedData[$title]['particulars'][$particularName]['details']['Labor'])
                         ->firstWhere('labor_id', $project->labor_id);
@@ -276,15 +278,50 @@ class PDFController extends Controller
                             'labor_location' => $project->labor_location,
                             'labor_rate' => $project->labor_rate,
                             'labAmount' => $labAmount,
+                            'laborMandays' => $laborMandays,
                         ];
                     }
                 }
                 // Calculate the total material amount for this particular
                 $totalLaborAmount = collect($formattedData[$title]['particulars'][$particularName]['details']['Labor'])
                     ->sum('labAmount');
+                $totalLabMandays = collect($formattedData[$title]['particulars'][$particularName]['details']['Labor'])
+                    ->sum('laborMandays');
 
                 // Assign the total material amount to the 'materialTotalAmount' field for this particular
                 $formattedData[$title]['particulars'][$particularName]['totalLaborAmount'] = $totalLaborAmount;
+                $formattedData[$title]['particulars'][$particularName]['totalLabMandays'] = $totalLabMandays;
+                // // Loop over all particulars for the current project title
+                // foreach ($formattedData[$title]['particulars'] as &$particular) {
+                //     // Calculate the total material amount for this particular
+                //     $totalMaterialAmount = collect($particular['details']['Materials'])->sum('matAmount');
+
+                //     // Calculate the total equipment amount for this particular
+                //     $totalEquipmentAmount = collect($particular['details']['Equipment'])->sum('equipAmount');
+
+                //     // Calculate the total labor amount for this particular
+                //     $totalLaborAmount = collect($particular['details']['Labor'])->sum('labAmount');
+
+                //     // Calculate the direct cost total
+                //     $directCostTotal = $totalMaterialAmount + $totalEquipmentAmount + $totalLaborAmount;
+
+                //     // Calculate other totals
+                //     $ocmTotal =  $directCostTotal * ($particular['ocm'] / 100);
+                //     $cpTotal =  $directCostTotal * ($particular['contractors_profit'] / 100);
+                //     $indirectCostTotal = $ocmTotal + $cpTotal;
+                //     $vatTotal = ($directCostTotal + $indirectCostTotal) * ($particular['vat'] / 100);
+                //     $totalCostItem = $directCostTotal + $indirectCostTotal + $vatTotal;
+                //     $unitCostTotal = $totalCostItem / $particular['quantity'];
+
+                //     // Assign the calculated values to the particular
+                //     $particular['directCostTotal'] = $directCostTotal;
+                //     $particular['ocmTotal'] = $ocmTotal;
+                //     $particular['cpTotal'] = $cpTotal;
+                //     $particular['indirectCostTotal'] = $indirectCostTotal;
+                //     $particular['vatTotal'] = $vatTotal;
+                //     $particular['totalCostItem'] = $totalCostItem;
+                //     $particular['unitCostTotal'] = $unitCostTotal;
+                // }
             }
         }
 
@@ -297,4 +334,5 @@ class PDFController extends Controller
 
         return response()->json(['projects' => array_values($formattedData)]);
     }
+
 }

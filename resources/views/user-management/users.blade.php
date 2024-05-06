@@ -130,7 +130,8 @@
             </div><!-- /.container-fluid -->
         </div>
 
-        @include('modals.user.add_user')
+
+
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body table-responsive">
@@ -141,6 +142,7 @@
                                 <th>Middle Name</th>
                                 <th>Last Name</th>
                                 <th>User Name</th>
+                                <th>Roles</th>
                                 <th>Email</th>
                                 <th>Actions</th>
                             </tr>
@@ -202,6 +204,8 @@
             </div>
         </div>
     </div>
+
+    @include('modals.user.add_user')
 
     <script>
         // Sample user data
@@ -470,6 +474,7 @@
                     user.middle_name,
                     user.last_name,
                     user.user_name,
+                    user.roles,
                     user.email,
                     // user.password,
                     buttonsContainer

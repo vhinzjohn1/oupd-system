@@ -26,8 +26,7 @@
                     <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>10</h3>
-
+                            <h3 id="projectsCount">0</h3>
                             <p>Projects</p>
                         </div>
                         <div class="icon">
@@ -41,8 +40,7 @@
                     <!-- small box -->
                     <div class="small-box bg-warning">
                         <div class="inner">
-                            <h3>53</h3>
-
+                            <h3 id="materialsCount">0</h3>
                             <p>List of Materials</p>
                         </div>
                         <div class="icon">
@@ -56,8 +54,7 @@
                     <!-- small box -->
                     <div class="small-box bg-secondary">
                         <div class="inner">
-                            <h3>44</h3>
-
+                            <h3 id="laborsCount">0</h3>
                             <p>Labor Rates</p>
                         </div>
                         <div class="icon">
@@ -71,8 +68,7 @@
                     <!-- small box -->
                     <div class="small-box bg-olive">
                         <div class="inner">
-                            <h3>65</h3>
-
+                            <h3 id="equipmentsCount">0</h3>
                             <p>List of Equipment Rates</p>
                         </div>
                         <div class="icon">
@@ -89,6 +85,41 @@
 
 
     <script>
+        refreshDashboard();
+
+        function refreshDashboard() {
+            // Check if data is already cached in localStorage
+            const cachedData = localStorage.getItem('dashboardData');
+
+            if (cachedData) {
+                // If cached data exists, parse and use it
+                displayDashboard(JSON.parse(cachedData));
+            }
+            // Ajax to get the count of Dashboard
+            $.ajax({
+                url: "{{ route('dashboards.index') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Store fetched data in localStorage for future use
+                    localStorage.setItem('dashboardData', JSON.stringify(data));
+                    // Display the fetched data
+                    displayDashboard(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        // Function to display particular data in the DataTable
+        function displayDashboard(data) {
+            $('#projectsCount').text(data.projects);
+            $('#materialsCount').text(data.materials);
+            $('#laborsCount').text(data.labors);
+            $('#equipmentsCount').text(data.equipments);
+        }
+
         $('#submitBtn').click(function() {
             router.visit('home');
         })

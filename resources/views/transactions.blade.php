@@ -10,11 +10,13 @@
                 border: none;
                 box-shadow: none;
             }
+
             .totalFooter {
                 background-color: #e5e5e5d8;
                 height: 43px;
                 font-weight: 630;
             }
+
             .select2Below {
                 top: auto !important;
                 bottom: auto !important;
@@ -621,6 +623,8 @@
             let position = $('#edit_project_signature_position').val();
             let signatureID = $('#editSignatureID').val();
 
+            console.log(signatureID);
+
             // Check if all values are empty
             if (position === null) {
                 toastr.options.progressBar = true;
@@ -642,6 +646,7 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                        console.log(response);
                         toastr.options.progressBar = true;
                         if (response.success) {
                             toastr.success(response.message);

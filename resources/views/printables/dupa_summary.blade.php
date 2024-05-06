@@ -105,71 +105,6 @@
         <div class="" id="preparedBy">
 
         </div>
-        <div class="container">
-            <div class="row mt-4">
-                <div class="col-6">
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="d-flex flex-column align-items-start">
-                            <div>
-                                Prepared: <br><br>
-                                <div style="text-align: center;">
-                                    <b><u>FRITZ MILDRED N. PUABEN</u></b> <br>
-                                    Draftsman I, OUPD
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Reviewed: <br><br>
-                                <div style="text-align: center;">
-                                    <b><u>REYNALDO B. MABELIN</u></b> <br>
-                                    Architect II, OUPD
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Conformed: <br><br>
-                                <div style="text-align: center;">
-                                    <b><u>JOHN D. TAJONES</u></b> <br>
-                                    Dean/End-User
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Recommending Approval: <br><br>
-                                <div style="text-align: center;">
-                                    <b><u>HERMIE P. PAVA</u></b> <br>
-                                    VP for Administration
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="d-flexflex-column align-items-center">
-                        <div class="d-flex flex-column align-items-start">
-                            <div>
-                                Checked: <br><br>
-                                <div style="text-align: center;">
-                                    <b><u>MARIA EILANI N. NON</u></b> <br>
-                                    Engineer II, OUPD
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Submitted: <br><br>
-                                <div style="text-align: center;">
-                                    <b><u>RICHARD J. AQUINO</u></b> <br>
-                                    Director, OUPD
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                Approved: <br><br>
-                                <div style="text-align: center;">
-                                    <b><u>ROLITO G. EBALLE, Ph.D.</u></b> <br>
-                                    University President
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <script>
             // Add an event listener to the button
@@ -185,17 +120,7 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        console.log(response);
-                        // Populate project details
-                        $('#projectTitle').text(response.projects[0].project_title);
-                        $('#projectDate').text(response.projects[0].project_date_prepared);
-                        $('#projectAppropriation').text(response.projects[0].project_appropriation);
-                        $('#projectOwner').text(response.projects[0].project_owner);
-                        $('#projectSOF').text(response.projects[0].project_source_of_fund);
-                        $('#projectLocation').text(response.projects[0].project_location);
-                        $('#projectDuration').text(response.projects[0].project_contract_duration);
-                        $('#projectImplementation').text(response.projects[0]
-                            .project_mode_of_implementation);
+                        console.log('This is the reponse',response);
 
                         // Get the selected project ID from localStorage
                         var selectedProjectID = localStorage.getItem("projectID");
@@ -204,20 +129,50 @@
                         var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
-                            var totMarkUpVal = 0;
-                            var totalDirCost = 0;
-                            var edcTotalAmount = 0;
-                            var dirTotal = 0;
-                            var vatTotal = 0;
                             var totalCostAmount = 0;
-                            var totalAmount = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             };
+                            // Populate project details
+                            $('#projectTitle').text(project.project_title);
+                            $('#projectDate').text(project.project_date_prepared);
+                            $('#projectAppropriation').text(project.project_appropriation);
+                            $('#projectOwner').text(project.project_owner);
+                            $('#projectSOF').text(project.project_source_of_fund);
+                            $('#projectLocation').text(project.project_location);
+                            $('#projectDuration').text(project.project_contract_duration);
+                            $('#projectImplementation').text(project.project_mode_of_implementation);
 
+                            console.log('title', project.project_title)
                             // Create particulars table
                             divHTML +=
+                                // '<table class="table table-borderless" id="projectDetails">' +
+                                // '<tr>' +
+                                // '<th>Name of the Project :</th>' +
+                                // '<th>' + project.project_title + '</th>' +
+                                // '<th>Source of Fund :</th>' +
+                                // '<th>' + project.project_source_of_fund + '</th>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<th>Date Prepared :</th>' +
+                                // '<th>' + project.project_date_prepared + '</th>' +
+                                // '<th>Location :</th>' +
+                                // '<th>' + project.project_location + '</th>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<th>Appropriation :</th>' +
+                                // '<th>' + project.project_appropriation + '</th>' +
+                                // '<th>Contract Duration :</th>' +
+                                // '<th>' + project.project_contract_duration + '</th>' +
+                                // '</tr>' +
+                                // '<tr>' +
+                                // '<th>Owner :</th>' +
+                                // '<th>' + project.project_owned + '</th>' +
+                                // '<th>Mode of Implementation :</th>' +
+                                // '<th>' + project.project_mode_of_implementation + '</th>' +
+                                // '</tr>' +
+                                // '</table>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
@@ -238,17 +193,19 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                edcTotalAmount = particular.totalMaterialAmount + particular
+                                directCostTotal = particular.totalMaterialAmount + particular
                                     .totalLaborAmount + particular.totalEquipmentAmount;
-                                dirTotal += edcTotalAmount;
-                                markUpTotal = project.ocm + project.contractors_profit;
-                                markUpValue = (markUpTotal / 100) * edcTotalAmount;
-                                vatValue = (project.vat / 100) * (markUpValue + edcTotalAmount);
-                                indirCostTotal = markUpValue + vatValue;
-                                totalCost = edcTotalAmount + indirCostTotal;
-                                unitCost = totalCost / particular.quantity;
-                                vatTotal += vatValue;
-                                totalCostAmount += totalCost;
+                                var ocmTotal = directCostTotal * (particular.ocm / 100);
+                                var cpTotal = directCostTotal * (particular.contractors_profit /
+                                    100);
+                                var indirectCostTotal = ocmTotal + cpTotal;
+                                var vatTotal = (directCostTotal + indirectCostTotal) * (particular
+                                    .vat / 100);
+                                var totalCostItem = directCostTotal + indirectCostTotal + vatTotal;
+                                var unitCostTotal = totalCostItem / particular.quantity;
+                                console.log('vat: ', totalCostItem)
+
+                                totalCostAmount += totalCostItem;
                                 // Add row for the particular
                                 divHTML +=
                                     '<tr>' +
@@ -259,9 +216,11 @@
                                     '<td class="text-right">' + numberWithCommas(parseFloat(
                                         particular.quantity).toFixed(2)) +
                                     '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(totalCost.toFixed(
-                                        2)) + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(unitCost.toFixed(
+                                    '<td class="text-right">' + numberWithCommas(totalCostItem
+                                        .toFixed(
+                                            2)) + '</td>' +
+                                    '<td class="text-right">' + numberWithCommas(parseFloat(
+                                        unitCostTotal).toFixed(
                                         2)) +
                                     '</td>' +
                                     '</tr>';
@@ -280,22 +239,128 @@
                                 '</tfoot>' +
                                 '</table>' +
                                 '</div>';
-
-                            const test = project.signatures;
-
-                            const preparedBy = '<div class="card">Prepared by: </div>' + project.signatures[
-                                0].role;
-
-                            console.log(test);
-
-                            if (project.signatures[0].role === "Recommending Approval") {
-                                console.log("hello world");
-                            }
+                            divHTML +=
+                                '<div class="container">' +
+                                '<div class="row mt-4">' +
+                                '<div class="col-6">' +
+                                '<div class="d-flex flex-column align-items-center">' +
+                                '<div class="d-flex flex-column align-items-start">' +
+                                '<div>' +
+                                'Prepared by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Prepared by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname + '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div> <br>';
+                                }
+                            });
+                            divHTML +=
+                                '<div class="mt-3">' +
+                                'Reviewed by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Reviewed by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '<div class="mt-3">' +
+                                'Conformed by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Conformed by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '<div class="mt-3">' +
+                                'Recommending Approval: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Recommending Approval') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="col-6">' +
+                                '<div class="d-flex flex-column align-items-center">' +
+                                '<div class="d-flex flex-column align-items-start">' +
+                                '<div>' +
+                                'Checked by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Checked by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '<div class="mt-3">' +
+                                'Submitted by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Submitted by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '<div class="mt-3">' +
+                                'Approved by: <br><br>';
+                            project.signatures.forEach(function(signature) {
+                                if (signature.role === 'Approved by') {
+                                    divHTML +=
+                                        '<div style="text-align: center;">' +
+                                        '<b><u>' + signature.fullname + ', ' + signature
+                                        .degree +
+                                        '</u></b> <br>' +
+                                        signature.position +
+                                        '</div>' +
+                                        '</div><br>';
+                                }
+                            });
+                            divHTML +=
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
                             // Append the complete table to the container
                             $('#particularsContainer').html(divHTML);
                             $('#preparedBy').html(preparedBy);
                         } else {
-                            console.error('Project with ID ' + projectId + ' not found in the response.');
+                            console.error('Project with ID ' + projectId +
+                                ' not found in the response.');
                         }
                     },
                     error: function(xhr, status, error) {

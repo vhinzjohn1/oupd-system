@@ -5,17 +5,17 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
             <!-- User Profile -->
-            @if (Auth::user()->roles == 'admin')
-                <li class="nav-item dashboard">
-                    <a href="{{ route('profile.show') }}" class="nav-link">
-                        <i class="nav-icon fa fa-address-book"></i>
-                        <p>
-                            {{ Auth::user()->first_name }}
-                            {{ Auth::user()->last_name }}
-                        </p>
-                    </a>
-                </li>
 
+            <li class="nav-item dashboard">
+                <a href="{{ route('profile.show') }}" class="nav-link">
+                    <i class="nav-icon fa fa-address-book"></i>
+                    <p>
+                        {{ Auth::user()->first_name }}
+                        {{ Auth::user()->last_name }}
+                    </p>
+                </a>
+            </li>
+            @if (Auth::user()->roles == 'admin')
                 <li class="nav-item">
                     <a href="{{ route('user-management') }}" class="nav-link">
                         <i class="nav-icon fa fa-address-book"></i>

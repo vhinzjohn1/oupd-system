@@ -121,16 +121,20 @@
 
             data.forEach(function(material, index) {
                 // Assuming each material has a single price associated with it
+                var formattedPrice = parseFloat(material.price).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }); // Format price with commas and two decimal places
                 var newRow = table.row.add([
                     material.material_name,
                     material.material_category_name,
                     material.unit,
-                    material.price,
+                    `<div class="text-right">${formattedPrice}</div>`, // Right-align and format the price
                     material.quarter,
                     material.year,
                     '<div class="text-center d-flex">' +
                     `<button type="button" id="editButton" class="btn bg-success mr-2"
-                        data-material-id="${material.material_id}" data-priceId="${material.price_id}" data-price="${material.price}" data-quarter="${material.quarter}" data-year="${material.year}" data-material-name="${material.material_name}" data-category-name="${material.material_category_name}" data-unit="${material.unit}"><i class="fa fa-edit"></i></button>` +
+            data-material-id="${material.material_id}" data-priceId="${material.price_id}" data-price="${material.price}" data-quarter="${material.quarter}" data-year="${material.year}" data-material-name="${material.material_name}" data-category-name="${material.material_category_name}" data-unit="${material.unit}"><i class="fa fa-edit"></i></button>` +
                     `<button type="button" class="btn btn-danger btn-delete-material" data-id="${material.material_id}"><i class="fa fa-trash-alt"></i></button>` +
                     '</div>'
                 ]).node();
@@ -214,10 +218,9 @@
                 let materialName = $('#add_material_name').val();
                 let materialCategory = $('#add_material_category').val();
                 let unit = $('#add_unit').val();
-                let price = $('#add_price').val();
+                let price = parseFloat($('#add_price').val().replace(/,/g, ''));
                 let quarter = $('#add_quarter').val();
                 let year = $('#add_year').val();
-
 
 
                 // Make AJAX request to add new material
@@ -310,6 +313,20 @@
                         console.error(xhr.responseText); // Log error response for debugging
                         alert('Error occurred. Check console for details.');
                     }
+                });
+            });
+
+            const priceInputs = document.querySelectorAll('.price-input');
+            priceInputs.forEach(input => {
+                const mask = IMask(input, {
+                    mask: Number,
+                    scale: 2,
+                    thousandsSeparator: ',',
+                    padFractionalZeros: true,
+                    normalizeZeros: true,
+                    radix: '.',
+                    mapToRadix: ['.'],
+                    min: 0
                 });
             });
         });

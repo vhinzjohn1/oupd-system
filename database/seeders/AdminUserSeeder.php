@@ -62,13 +62,26 @@ class AdminUserSeeder extends Seeder
         // );
 
         User::firstOrCreate(
-            ['first_name' => 'vhinz john'],
+            ['first_name' => 'admin'],
             [
-                'middle_name' => 'hinoay',
-                'last_name' => 'balinas',
-                'user_name' => 'vhinzjohn1',
-                'email' => 'vhinzjohn43@gmail.com',
+                'middle_name' => 'admin',
+                'last_name' => 'admin',
+                'user_name' => 'admin1',
+                'email' => 'admin@gmail.com',
+                'roles' => 'admin',
                 'password' => bcrypt('admin123'), // Fixed typo: bcrypt instead of bycrpt
+            ]
+        );
+
+        User::firstOrCreate(
+            ['first_name' => 'staff'],
+            [
+                'middle_name' => 'staff',
+                'last_name' => 'staff',
+                'user_name' => 'staff123',
+                'roles' => 'staff',
+                'email' => 'staff@gmail.com',
+                'password' => bcrypt('staff123'), // Fixed typo: bcrypt instead of bycrpt
             ]
         );
 

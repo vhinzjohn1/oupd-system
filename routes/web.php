@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MLEController;
 use App\Http\Controllers\ProjectController;
@@ -27,20 +28,24 @@ Route::get('/', function () {
 
 
 // Make sure only admin can access to this route
-Route::middleware(['auth'])->group(function () {
-    // Routes that only admins can access
-    Route::get('/user-management', function () {
-        return view('user-management.users');
-    })->name('user-management');
-});
-
-// Route::middleware(['auth', 'admin'])->group(function () {
+// Route::middleware(['auth'])->group(function () {
 //     // Routes that only admins can access
 //     Route::get('/user-management', function () {
 //         return view('user-management.users');
 //     })->name('user-management');
 // });
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Routes that only admins can access
+    Route::get('/user-management', function () {
+        return view('user-management.users');
+    })->name('user-management');
+});
 Auth::routes();
+
+
+// Route Resource For Dashboard Count
+Route::resource('dashboards', DashboardController::class);
 
 // Route to Controller Material Labor Equipment Resource
 Route::resource('mle', MLEController::class);

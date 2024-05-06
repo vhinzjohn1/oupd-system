@@ -49,8 +49,8 @@ class EquipmentController extends Controller
         $validatedData = $request->validate([
             'equipment_name' => 'required|string',
             'equipment_category' => 'required|string',
-            'equipment_model' => 'required|string',
-            'equipment_capacity' => 'required|string',
+            'equipment_model' => 'nullable|string',
+            'equipment_capacity' => 'nullable|string',
             'rate' => 'required|numeric',
             // 'equipment_category_desc' => 'required|string',
         ]);
