@@ -165,12 +165,11 @@
                                             divHTML += '<tr>' +
                                                 '<td>' + material.material_name +
                                                 '</td>' +
-                                                '<td>' + material.material_quantity +
+                                                '<td>' + parseFloat(material.material_quantity).toFixed(2) +
                                                 '</td>' +
                                                 '<td>' + material.material_unit +
                                                 '</td>' +
-                                                '<td>' + numberWithCommas(material
-                                                    .material_price) + '</td>' +
+                                                '<td>' + numberWithCommas(parseFloat(material.material_price).toFixed(2)) + '</td>' +
                                                 '<td>' + numberWithCommas(amount
                                                     .toFixed(
                                                         2)) +
@@ -374,11 +373,11 @@
                                 // Append the div to the container
                                 $('#particularsContainer').append(divHTML);
 
-                                $('#projectLocation, #projectOwner, #projectSubject').text(
-                                    function(
-                                        _, text) {
-                                        return text.toUpperCase();
-                                    });
+                                // $('#projectLocation, #projectOwner, #projectSubject').text(
+                                //     function(
+                                //         _, text) {
+                                //         return text.toUpperCase();
+                                //     });
                             });
                         }
 
