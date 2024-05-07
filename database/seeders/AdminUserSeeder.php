@@ -62,84 +62,99 @@ class AdminUserSeeder extends Seeder
         // );
 
         User::firstOrCreate(
-            ['first_name' => 'vhinz john'],
+            ['first_name' => 'admin'],
             [
-                'middle_name' => 'hinoay',
-                'last_name' => 'balinas',
-                'user_name' => 'vhinzjohn1',
-                'email' => 'vhinzjohn43@gmail.com',
+                'middle_name' => 'admin',
+                'last_name' => 'admin',
+                'user_name' => 'admin1',
+                'email' => 'admin@gmail.com',
+                'roles' => 'admin',
                 'password' => bcrypt('admin123'), // Fixed typo: bcrypt instead of bycrpt
             ]
         );
-        // $particulars = [
-        //     'EARTHWORK',
-        //     'COMPACTION',
-        //     'P.P.E',
-        //     'PLAIN AND REINFORCED CONCRETE WORK',
-        //     'FINISHINGS AND OTHER CIVIL WORK',
-        //     'ELECTRICAL WORK',
-        //     'MECHANICAL WORK',
-        //     'MOVING-IN',
-        //     'MOVING-OUT'
-        // ];
 
-        // foreach ($particulars as $particular) {
-        //     Particular::firstOrCreate(['particular_name' => $particular]);
-        // }
-
-        // Project::firstOrCreate([
-        //     'project_title' => 'CISC Construction Pavements',
-        //     'project_location' => 'University Town Musuan Maramag Bukidnon',
-        //     'project_owner' => 'Central Mindanao University',
-        //     'project_description' => 'On going --',
-        //     'project_contract_duration' => '90 CD',
-        //     'project_date_prepared' => date('Y-m-d', strtotime('01/02/2023')), // Convert date format
-        //     'project_appropriation' => (int) '15000000', // Cast as integer
-        //     'project_source_of_fund' => 'General Fund',
-        //     'project_mode_of_implementation' => 'By Admin',
-        // ]);
+        User::firstOrCreate(
+            ['first_name' => 'staff'],
+            [
+                'middle_name' => 'staff',
+                'last_name' => 'staff',
+                'user_name' => 'staff123',
+                'roles' => 'staff',
+                'email' => 'staff@gmail.com',
+                'password' => bcrypt('staff123'), // Fixed typo: bcrypt instead of bycrpt
+            ]
+        );
 
 
-        // // Define material categories
-        // $categories = ['Embankment', 'Aggregate Surface Course', 'Portland Cement'];
+        $particulars = [
+            'EARTHWORK',
+            'COMPACTION',
+            'P.P.E',
+            'PLAIN AND REINFORCED CONCRETE WORK',
+            'FINISHINGS AND OTHER CIVIL WORK',
+            'ELECTRICAL WORK',
+            'MECHANICAL WORK',
+            'Moving-In',
+            'Moving-Out'
+        ];
 
-        // foreach ($categories as $categoryName) {
-        //     // Create or retrieve material category
-        //     $materialCategory = MaterialCategory::firstOrCreate(['material_category_name' => $categoryName]);
+        foreach ($particulars as $particular) {
+            Particular::firstOrCreate(['particular_name' => $particular]);
+        }
 
-        //     // Define materials for each category
-        //     $materials = $this->getMaterialsByCategory($categoryName);
+        Project::firstOrCreate([
+            'project_title' => 'CISC Construction Pavements',
+            'project_location' => 'University Town Musuan Maramag Bukidnon',
+            'project_owner' => 'Central Mindanao University',
+            'project_description' => 'On going --',
+            'project_contract_duration' => '90 CD',
+            'project_date_prepared' => date('Y-m-d', strtotime('01/02/2023')), // Convert date format
+            'project_appropriation' => (int) '15000000', // Cast as integer
+            'project_source_of_fund' => 'General Fund',
+            'project_mode_of_implementation' => 'By Admin',
+        ]);
 
-        //     // Generate materials for each category
-        //     foreach ($materials as $material) {
-        //         $materialName = $material['name'];
-        //         $unit = $material['unit'];
-        //         $price = $material['price'];
-        //         $quarter = $material['quarter'];
-        //         $year = $material['year'];
 
-        //         // Check if material with the same name exists
-        //         $existingMaterial = Material::where('material_name', $materialName)->first();
+        // Define material categories
+        $categories = ['Embankment', 'Aggregate Surface Course', 'Portland Cement'];
 
-        //         if (!$existingMaterial) {
-        //             // If material does not exist, create a new one
-        //             $newMaterial = new Material([
-        //                 'material_name' => $materialName,
-        //                 'unit' => $unit,
-        //             ]);
+        foreach ($categories as $categoryName) {
+            // Create or retrieve material category
+            $materialCategory = MaterialCategory::firstOrCreate(['material_category_name' => $categoryName]);
 
-        //             $newMaterial->category()->associate($materialCategory);
-        //             $newMaterial->save();
+            // Define materials for each category
+            $materials = $this->getMaterialsByCategory($categoryName);
 
-        //             // Create a new price instance
-        //             $newMaterial->prices()->create([
-        //                 'price' => $price,
-        //                 'quarter' => $quarter,
-        //                 'year' => $year,
-        //             ]);
-        //         }
-        //     }
-        // }
+            // Generate materials for each category
+            foreach ($materials as $material) {
+                $materialName = $material['name'];
+                $unit = $material['unit'];
+                $price = $material['price'];
+                $quarter = $material['quarter'];
+                $year = $material['year'];
+
+                // Check if material with the same name exists
+                $existingMaterial = Material::where('material_name', $materialName)->first();
+
+                if (!$existingMaterial) {
+                    // If material does not exist, create a new one
+                    $newMaterial = new Material([
+                        'material_name' => $materialName,
+                        'unit' => $unit,
+                    ]);
+
+                    $newMaterial->category()->associate($materialCategory);
+                    $newMaterial->save();
+
+                    // Create a new price instance
+                    $newMaterial->prices()->create([
+                        'price' => $price,
+                        'quarter' => $quarter,
+                        'year' => $year,
+                    ]);
+                }
+            }
+        }
 
     }
 

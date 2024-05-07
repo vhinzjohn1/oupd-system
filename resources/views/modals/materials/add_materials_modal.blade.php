@@ -36,8 +36,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="add_price">Price</label>
-                                <input type="number" class="form-control" id="add_price" name="add_price"
-                                    step=".01" required>
+                                <input type="text" class="form-control price-input" id="add_price" name="add_price" required>
                             </div>
                             <div class="form-group">
                                 <label for="add_quarter">Quarter</label>
@@ -67,5 +66,19 @@
         } else {
             event.target.setCustomValidity('');
         }
+    });
+
+    const priceInputs = document.querySelectorAll('.price-input');
+    priceInputs.forEach(input => {
+        const mask = IMask(input, {
+            mask: Number,
+            scale: 2,
+            thousandsSeparator: ',',
+            padFractionalZeros: true,
+            normalizeZeros: true,
+            radix: '.',
+            mapToRadix: ['.'],
+            min: 0
+        });
     });
 </script>

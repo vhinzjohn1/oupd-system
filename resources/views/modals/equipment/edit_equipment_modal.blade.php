@@ -32,7 +32,7 @@
                             <div class="form-group">
                                 <label for="edit_equipment_model">Model</label>
                                 <input type="text" class="form-control" id="edit_equipment_model"
-                                    name="edit_equipment_model" required>
+                                    name="edit_equipment_model">
                             </div>
 
                         </div>
@@ -41,7 +41,7 @@
                             <div class="form-group">
                                 <label for="edit_equipment_capacity">Capacity</label>
                                 <input type="text" class="form-control" id="edit_equipment_capacity"
-                                    name="edit_equipment_capacity" required>
+                                    name="edit_equipment_capacity">
                             </div>
                             <div class="form-group">
                                 <label for="edit_rate">Rate</label>

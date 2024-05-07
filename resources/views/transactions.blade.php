@@ -223,31 +223,26 @@
             <div class="d-flex col-12">
                 <!------ Technical Personnel Required ------>
                 <div class="col-6">
-                    <div class="card" id="addNewTechnicalPersonnel">
+                    <div class="card" id="addTechnicalPersonnel">
                         <div class="card-header header-hover col-12" data-toggle="collapse"
-                            data-target="#addTechnicalPersonnel" aria-expanded="false"
-                            aria-controls="addTechnicalPersonnel">
+                            data-target="#addTechnicalPCard" aria-expanded="false">
                             <div class="d-flex justify-content-between col-12">
                                 <h5 id="ProjectHeader">Technical Personnel</h5>
                                 <div class="card-tools">
-                                    <!-- Collapse Button for Technical Personnel -->
+                                    <!-- Collapse Button -->
                                     <button type="button" class="btn btn-tool" data-toggle="collapse"
-                                        data-target="#addTechnicalPersonnel" aria-expanded="false"
-                                        aria-controls="addTechnicalPersonnel">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-
+                                        aria-expanded="false"><i class="fas fa-minus"></i></button>
                                 </div>
                             </div>
                             <!-- /.card-tools -->
                         </div>
                         <!-- /.card-header -->
                         {{-- Project Card Start --}}
-                        <div class="collapse" id="addTechnicalPersonnel">
+                        <div class="collapse" id="addTechnicalPCard">
                             <div class="row p-3">
                                 <div class="col-lg-12">
                                     <div class="text-right mb-3">
-                                        <button type="button" class="btn btn-success" id="addTechnicalPersonnelBtn"><i
+                                        <button type="button" class="btn btn-success" id="addtechnicalPersonnelBtn"><i
                                                 class="fa fa-plus"></i></button>
                                     </div>
                                     <table class="table col-12 table-margin" id="technicalPersonnelTable">
@@ -269,15 +264,14 @@
 
                 <!------ Minimum Equipment Requirement ------>
                 <div class="col-6">
-                    <div class="card" id="addNewMinimumEquipment">
+                    <div class="card" id="addMinEquipReq">
                         <div class="card-header header-hover col-12" data-toggle="collapse"
-                            data-target="#addMinimumEquipment" aria-expanded="false" aria-controls="addMinimumEquipment">
+                            data-target="#addMinEquipReqCard" aria-expanded="false">
                             <div class="d-flex justify-content-between col-12">
                                 <h5 id="ProjectHeader">Minimum Equipment</h5>
                                 <div class="card-tools">
                                     <!-- Collapse Button -->
                                     <button type="button" class="btn btn-tool" data-toggle="collapse"
-                                        data-target="#addMinimumEquipment" aria-controls="addMinimumEquipment"
                                         aria-expanded="false"><i class="fas fa-minus"></i></button>
                                 </div>
                             </div>
@@ -285,14 +279,14 @@
                         </div>
                         <!-- /.card-header -->
                         {{-- Project Card Start --}}
-                        <div class="collapse" id="addMinimumEquipment">
+                        <div class="collapse" id="addMinEquipReqCard">
                             <div class="row p-3">
                                 <div class="col-lg-12">
                                     <div class="text-right mb-3">
-                                        <button type="button" class="btn btn-success" id="addMinimumEquipmentBtn"><i
+                                        <button type="button" class="btn btn-success" id="addMinEquipReqBtn"><i
                                                 class="fa fa-plus"></i></button>
                                     </div>
-                                    <table class="table col-12 table-margin" id="minimumEquipmentTable">
+                                    <table class="table col-12 table-margin" id="addMinEquipReqTable">
                                         <thead>
                                             <tr>
                                                 <th>Description</th>
@@ -326,12 +320,7 @@
             @include('modals.project_particular.edit_projectPart_equipment')
             @include('modals.signature.add_signature')
             @include('modals.signature.edit_signature')
-            @include('modals.tech_personnel.add_tech_personnel')
-            @include('modals.tech_personnel.edit_tech_personnel')
-            @include('modals.min_equipment.add_min_equipment')
-            @include('modals.min_equipment.edit_min_equipment')
 
-        </div>
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
@@ -353,6 +342,9 @@
 
 
     <script>
+        // Retrieve project_id and project_title from localStorage
+        var selectedProjectID = localStorage.getItem("projectID");
+        var selectedProjectTitle = localStorage.getItem("projectTitle");
         $("#selectProjParticular")
             .select2({
                 theme: "bootstrap-5",
@@ -465,6 +457,13 @@
             let sourceOfFund = $('#add_trans_project_source_of_fund').val();
             let modeOfImplementation = $('#add_trans_project_mode_of_implementation').val();
 
+
+            // Remove the P and commas
+            let removeComma = appropriation.replace('₱', '').replace(/,/g,
+                '');
+            let projectCost = parseFloat(removeComma);
+            console.log('This is the Cost: ', projectCost);
+
             // Make AJAX request to add new material
             $.ajax({
                 url: "{{ route('project.store') }}",
@@ -476,7 +475,7 @@
                     project_description: description,
                     project_contract_duration: contractDuration,
                     project_date_prepared: datePrepared,
-                    project_appropriation: appropriation,
+                    project_appropriation: projectCost,
                     project_source_of_fund: sourceOfFund,
                     project_mode_of_implementation: modeOfImplementation,
                     _token: "{{ csrf_token() }}"
@@ -486,7 +485,6 @@
                     toastr.success('Project Added Successfully!');
                     localStorage.setItem('projectID', response.project_id);
                     localStorage.setItem('projectTitle', response.project_title);
-
                     window.location.reload();
 
                 },
@@ -625,6 +623,8 @@
             let position = $('#edit_project_signature_position').val();
             let signatureID = $('#editSignatureID').val();
 
+            console.log(signatureID);
+
             // Check if all values are empty
             if (position === null) {
                 toastr.options.progressBar = true;
@@ -646,6 +646,7 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                        console.log(response);
                         toastr.options.progressBar = true;
                         if (response.success) {
                             toastr.success(response.message);
@@ -791,403 +792,6 @@
             table.draw();
         }
 
-        // Technical Personnel
-        $("#technicalPersonnelTable").DataTable({
-            "responsive": true,
-            "lengthChange": true,
-            "autoWidth": true,
-            "searching": false,
-            "ordering": true,
-            "paging": false,
-        });
-
-        refreshTechnicalPersonnel();
-
-        $('#addTechnicalPersonnelForm').submit(function(e) {
-            e.preventDefault();
-
-            // Get form data
-            var submitProjectID = localStorage.getItem("projectID");
-            let projectId = submitProjectID;
-            let personnelDescription = $('#add_personnel_description').val();
-            let personnelNo = $('#add_personnel_no').val();
-
-            // Make AJAX request to add new technical personnel
-            $.ajax({
-                url: "{{ route('technical_personnels.store') }}",
-                type: "POST",
-                data: {
-                    personnelDescription: personnelDescription,
-                    personnelNo: personnelNo,
-                    projectId: projectId,
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $('#addTechnicalPersonnelForm')[0].reset();
-                        $('#addTechnicalPersonnelModal').modal('hide');
-                        toastr.options.progressBar = true;
-                        toastr.success('Technical Personnel Added Successfully!');
-
-                        refreshTechnicalPersonnel();
-
-                    } else {
-                        toastr.options.progressBar = true;
-                        toastr.error('Failed to Add Technical Personnel!');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText); // Log error response for debugging
-                    alert('Error occurred. Check console for details.');
-                }
-            });
-        });
-
-        // Edit Technical Personnel
-        $('#editTechnicalPersonnelForm').submit(function(e) {
-            e.preventDefault();
-
-            // Get form data
-            var submitProjectID = localStorage.getItem("projectID");
-            let projectId = submitProjectID;
-            let personnelDescription = $('#edit_personnel_description').val();
-            let personnelNo = $('#edit_personnel_no').val();
-            let technicalPersonnelID = $('#editTechnicalPersonnelID').val();
-
-            // Make AJAX request to edit technical personnel
-            $.ajax({
-                url: "{{ route('technical_personnels.update', ['technical_personnel' => ':technical_personnel']) }}"
-                    .replace(':technical_personnel', technicalPersonnelID),
-                type: "PUT",
-                data: {
-                    personnelDescription: personnelDescription,
-                    personnelNo: personnelNo,
-                    projectId: projectId,
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function(response) {
-                    toastr.options.progressBar = true;
-                    if (response.success) {
-                        toastr.success('Technical Personnel Updated Successfully!');
-
-                        $('#editTechnicalPersonnelForm')[0].reset();
-                        $('#editTechnicalPersonnelModal').modal('hide');
-
-                        refreshTechnicalPersonnel();
-                    } else {
-                        toastr.error('Failed to Update Technical Personnel!');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText); // Log error response for debugging
-                    alert('Error occurred. Check console for details.');
-                }
-            });
-        });
-
-        // Delete Technical Personnel
-        function deleteTechnicalPersonnel(technical_personnel_id) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You will not be able to recover this Technical Personnel!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ url('technical_personnels') }}/" + technical_personnel_id,
-                        type: 'DELETE',
-                        data: {
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function(response) {
-                            toastr.options.progressBar = true;
-                            toastr.success('Technical Personnel Deleted Successfully!');
-                            refreshTechnicalPersonnel();
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(xhr.responseText); // Log error response for debugging
-                            toastr.error(
-                                'Error occurred while deleting Technical Personnel. Please check console for details.'
-                            );
-                        }
-                    });
-                }
-            });
-        }
-
-        // Edit Technical Personnel Modal
-        function editTechnicalPersonnelModal(technical_personnel_id, description, number) {
-            $('#edit_personnel_description').val(personnelDescription);
-            $('#edit_personnel_no').val(personnelNo);
-            $('#editTechnicalPersonnelID').val(technicalPersonnelID);
-            $('#editTechnicalPersonnelModal').modal('show');
-        }
-
-        // Refresh Technical Personnel
-        function refreshTechnicalPersonnel() {
-            $('#addTechnicalPersonnelBtn').click(function() {
-                refreshTechnicalPersonnel(); // Fetch updated data
-                console.log("Button clicked!")
-                $('#addTechnicalPersonnelModal').modal('show'); // Show the modal
-            });
-
-            // Check if data is already cached in localStorage
-            var cachedTechnicalPersonnelData = localStorage.getItem('technicalPersonnelData');
-
-            if (cachedTechnicalPersonnelData) {
-                // If cached data exists, parse and use it
-                displayTechnicalPersonnel(JSON.parse(cachedTechnicalPersonnelData));
-            }
-            // If no cached data, fetch new data via AJAX
-            $.ajax({
-                url: "{{ route('technical_personnels.index') }}",
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    // ... (rest of the function logic)
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                    // Handle error gracefully, e.g., display an error message
-                }
-            });
-        }
-
-        // Display the Technical Personnel
-        function displayTechnicalPersonnel(data) {
-            var submitProjectID = localStorage.getItem("projectID");
-
-            // Filter the data to include only technical personnel with matching project_id
-            var filteredData = data.filter(technical_personnel => technical_personnel.project_id == submitProjectID);
-
-            var table = $('#technicalPersonnelTable').DataTable();
-            var existingRows = table.rows().remove().draw(false);
-
-            filteredData.forEach(function(technical_personnel, index) {
-                var newRow = table.row.add([
-                    technical_personnel.personnel_description,
-                    technical_personnel.personnel_no,
-                    '<div class="text-center d-flex">' +
-                    `<button type="button" class="btn bg-success mr-2" data-id="${technical_personnel.project_id}"  onclick="editTechnicalPersonnelModal(${technical_personnel.project_id}, '${technical_personnel.personnel_description}', '${technical_personnel.personnel_no}', '${technical_personnel.technical_personnel_id}')"><i class="fas fa-edit"></i></button>` +
-                    `<button type="button" class="btn bg-danger" data-id="${technical_personnel.particular_id}" onclick="deleteTechnicalPersonnel(${technical_personnel.technical_personnel_id})"><i class="fas fa-trash-alt"></i></button>` +
-                    '</div>'
-                ]).node();
-            });
-
-            table.draw();
-        }
-
-        // minimum equipment
-        // Minimum Equipment
-        $("#minimumEquipmentTable").DataTable({
-            "responsive": true,
-            "lengthChange": true,
-            "autoWidth": true,
-            "searching": false,
-            "ordering": true,
-            "paging": false,
-        });
-
-        $('#addMinimumEquipmentForm').submit(function(e) {
-            e.preventDefault();
-
-            // Get form data
-            var projectId = localStorage.getItem("projectID");
-            let minEquipDescription = $('#add_min_equip_description').val();
-            let minEquipOwned = $('#add_min_equip_owned').val();
-            let minEquipLease = $('#add_min_equip_lease').val();
-            let minEquipTotalUnits = $('#add_min_equip_totalUnits').val();
-
-            console.log(projectId);
-            console.log(minEquipDescription);
-
-            // Make AJAX request to add new minimum equipment
-            $.ajax({
-                url: "{{ route('minimum_equipments.store') }}",
-                type: "POST",
-                data: {
-                    minEquipDescription: minEquipDescription,
-                    minEquipOwned: minEquipOwned,
-                    minEquipLease: minEquipLease,
-                    minEquipTotalUnits: minEquipTotalUnits,
-                    projectId: projectId,
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function(response) {
-                    console.log(response); // Log response for debugging
-
-                    if (response.success) {
-                        $('#addMinimumEquipmentForm')[0].reset();
-                        $('#addMinimumEquipmentModal').modal('hide');
-                        toastr.options.progressBar = true;
-                        toastr.success('Minimum Equipment Added Successfully!');
-
-                        refreshMinimumEquipment();
-
-                    } else {
-                        toastr.options.progressBar = true;
-                        toastr.error('Minimum Equipment Not Added!');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText); // Log error response for debugging
-                    alert('Error occurred. Check console for details.');
-                }
-            });
-        });
-
-        // Edit Minimum Equipment
-        $('#editMinimumEquipmentForm').submit(function(e) {
-            e.preventDefault();
-
-            // Get form data
-            var projectId = localStorage.getItem("projectID");
-            let minEquipDescription = $('#edit_min_equip_description').val();
-            let minEquipOwned = $('#edit_min_equip_owned').val();
-            let minEquipLease = $('#edit_min_equip_lease').val();
-            let minEquipTotalUnits = $('#edit_min_equip_totalUnits').val();
-            let minimumEquipmentID = $('#editMinimumEquipmentID').val();
-
-            refreshMinimumEquipment();
-            // Make AJAX request to edit minimum equipment
-            $.ajax({
-                url: "{{ route('minimum_equipments.update', ['minimum_equipment' => ':minimum_equipment']) }}"
-                    .replace(':minimum_equipment', minimumEquipmentID),
-                type: "PUT",
-                data: {
-                    minEquipDescription: minEquipDescription,
-                    minEquipOwned: minEquipOwned,
-                    minEquipLease: minEquipLease,
-                    minEquipTotalUnits: minEquipTotalUnits,
-                    projectId: projectId,
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function(response) {
-                    toastr.options.progressBar = true;
-                    if (response.success) {
-                        toastr.success(response.message);
-
-                        $('#editMinimumEquipmentForm')[0].reset();
-                        $('#editMinimumEquipmentModal').modal('hide');
-
-                        refreshMinimumEquipment();
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText); // Log error response for debugging
-                    alert('Error occurred. Check console for details.');
-                }
-            });
-        });
-
-        // Delete Minimum Equipment
-        function deleteMinimumEquipment(minimum_equipment_id) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You will not be able to recover this Minimum Equipment!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ url('minimum_equipments') }}/" + minimum_equipment_id,
-                        type: 'DELETE',
-                        data: {
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function(response) {
-                            toastr.options.progressBar = true;
-                            toastr.success('Minimum Equipment Deleted Successfully!');
-                            refreshMinimumEquipment();
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(xhr.responseText); // Log error response for debugging
-                            toastr.error(
-                                'Error occurred while deleting Minimum Equipment. Please check console for details.'
-                            );
-                        }
-                    });
-                }
-            });
-        }
-
-        function editMinimumEquipmentModal(project_id, minEquipDescription, minEquipOwned, minEquipLease,
-            minEquipTotalUnits, minimum_equipment_id) {
-            $('#edit_min_equip_description').val(minEquipDescription);
-            $('#edit_min_equip_owned').val(minEquipOwned);
-            $('#edit_min_equip_lease').val(minEquipLease);
-            $('#edit_min_equip_totalUnits').val(minEquipTotalUnits);
-            $('#editMinimumEquipmentID').val(minimum_equipment_id);
-            $('#editMinimumEquipmentModal').modal('show');
-        }
-
-        function refreshMinimumEquipment() {
-            $('#addMinimumEquipmentBtn').click(function() {
-                refreshMinimumEquipment(); // Fetch updated data
-                console.log("Button clicked!")
-                $('#addMinimumEquipmentModal').modal('show');
-            });
-
-            // Check if data is already cached in localStorage
-            var cachedMinimumEquipmentData = localStorage.getItem('minimumEquipmentData');
-
-            if (cachedMinimumEquipmentData) {
-                // If cached data exists, parse and use it
-                displayMinimumEquipment(JSON.parse(cachedMinimumEquipmentData));
-            }
-            // If no cached data, fetch new data via AJAX
-            $.ajax({
-                url: "{{ route('minimum_equipments.index') }}",
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    console.log(data)
-                    // Store fetched data in localStorage for future use
-                    localStorage.setItem('minimumEquipmentData', JSON.stringify(data));
-                    // Display the fetched data
-                    displayMinimumEquipment(data);
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
-
-        }
-
-        // Display the minimum equipment
-        function displayMinimumEquipment(data) {
-            var submitProjectID = localStorage.getItem("projectID");
-
-            // Filter the data to include only minimum equipment with matching project_id
-            var filteredData = data.filter(minimum_equipment => minimum_equipment.project_id == submitProjectID);
-
-            var table = $('#minimumEquipmentTable').DataTable();
-            var existingRows = table.rows().remove().draw(false);
-
-            filteredData.forEach(function(minimum_equipment, index) {
-                var newRow = table.row.add([
-                    minimum_equipment.min_equip_description,
-                    minimum_equipment.min_equip_owned,
-                    minimum_equipment.min_equip_lease,
-                    minimum_equipment.min_equip_totalUnits,
-                    '<div class="text-center d-flex">' +
-                    `<button type="button" class="btn bg-success mr-2" data-id="${minimum_equipment.project_id}" onclick="editMinimumEquipmentModal(${minimum_equipment.project_id}, '${minimum_equipment.min_equip_description}', '${minimum_equipment.min_equip_owned}', '${minimum_equipment.min_equip_lease}', '${minimum_equipment.min_equip_totalUnits}', ${minimum_equipment.minimum_equipment_id} )"><i class="fas fa-edit"></i></button>` +
-                    `<button type="button" class="btn bg-danger" data-id="${minimum_equipment.particular_id}" onclick="deleteMinimumEquipment(${minimum_equipment.minimum_equipment_id})"><i class="fas fa-trash-alt"></i></button>` +
-                    '</div>'
-                ]).node();
-            });
-
-            table.draw();
-        }
 
 
         function formatNumber(number) {
@@ -2383,77 +1987,71 @@
         }
 
         function getProjects() {
-            // Retrieve the selected project ID from localStorage
+            // Retrieve project_id and project_title from localStorage
             var selectedProjectID = localStorage.getItem("projectID");
+            var selectedProjectTitle = localStorage.getItem("projectTitle");
+
+            console.log(selectedProjectID);
+            console.log(selectedProjectTitle);
+
             $.ajax({
                 url: "{{ route('project.index') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
                     console.log("This is the project data:", data);
+
+                    // Check if there are no projects or if selectedProjectID is not found
+                    if (data.length === 0 || !data.find(project => project.project_id === parseInt(
+                            selectedProjectID))) {
+                        console.log('Test if this shows');
+                        $("#projectSelectedTitle").text('No Project Selected');
+                        return;
+                    }
+
                     // Iterate over each project
                     data.forEach(function(project) {
                         // Check if the project ID matches the selected project ID
-                        if (project.project_id == selectedProjectID) {
+                        if (selectedProjectID == parseInt(project.project_id)) {
+                            // Set the values into the specified HTML elements
+                            $("#projectSelectedID").val(selectedProjectID);
+                            $("#projectSelectedTitle").text(selectedProjectTitle);
                             // Populate input fields with project data based on their IDs
                             $("#add_project_id").val(project.project_id);
                             $("#add_project_title").val(project.project_title);
                             $("#add_project_location").val(project.project_location);
                             $("#add_project_owner").val(project.project_owner);
-                            $("#add_project_description").val(
-                                project.project_description
-                            );
-                            $("#add_project_contract_duration").val(
-                                project.project_contract_duration
-                            );
-                            $("#add_project_appropriation").val(
-                                project.project_appropriation
-                            );
-                            $("#add_project_source_of_fund").val(
-                                project.project_source_of_fund
-                            );
-                            $("#add_project_date_prepared").val(
-                                project.project_date_prepared
-                            );
-                            $("#add_project_mode_of_implementation").val(
-                                project.project_mode_of_implementation
-                            );
-                            $("#add_project_ocm").val(
-                                project.ocm
-                            );
-                            $("#add_project_contractProfit").val(
-                                project.contractors_profit
-                            );
-                            $("#add_project_vat").val(
-                                project.vat
-                            );
+                            $("#add_project_description").val(project.project_description);
+                            $("#add_project_contract_duration").val(project.project_contract_duration);
+                            $("#add_project_appropriation").val(project.project_appropriation);
+                            $("#add_project_source_of_fund").val(project.project_source_of_fund);
+                            $("#add_project_date_prepared").val(project.project_date_prepared);
+                            $("#add_project_mode_of_implementation").val(project
+                                .project_mode_of_implementation);
+                            $("#add_project_ocm").val(project.ocm);
+                            $("#add_project_contractProfit").val(project.contractors_profit);
+                            $("#add_project_vat").val(project.vat);
                         }
-                        $("#add_project_source_of_fund").select2({
-                            theme: "bootstrap-5",
-                            placeholder: "Select Project Source of Fund", // Optional placeholder text
-                            // allowClear: true, // Allow clearing the selection
-                        });
-                        $("#add_project_mode_of_implementation").select2({
-                            theme: "bootstrap-5",
-                            placeholder: "Select Project Mode of Implementation", // Optional placeholder text
-                            // allowClear: true, // Allow clearing the selection
-                        });
+                    });
+                    $("#add_project_source_of_fund").select2({
+                        theme: "bootstrap-5",
+                        placeholder: "Select Project Source of Fund", // Optional placeholder text
+                        // allowClear: true, // Allow clearing the selection
+                    });
+                    $("#add_project_mode_of_implementation").select2({
+                        theme: "bootstrap-5",
+                        placeholder: "Select Project Mode of Implementation", // Optional placeholder text
+                        // allowClear: true, // Allow clearing the selection
                     });
                     initializePriceInputs();
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
+                    $("#projectSelectedTitle").text('No Project Selected');
                 },
             });
+
         }
-
-        // Retrieve project_id and project_title from localStorage
-        var selectedProjectID = localStorage.getItem("projectID");
-        var selectedProjectTitle = localStorage.getItem("projectTitle");
-
-        // Set the values into the specified HTML elements
-        $("#projectSelectedID").val(selectedProjectID);
-        $("#projectSelectedTitle").text(selectedProjectTitle);
 
         // Add click event listener to the button
         $("#selectDetailMaterial").click(function() {

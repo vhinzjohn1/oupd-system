@@ -35,6 +35,7 @@ class GetAllDataController extends Controller
             prt.particular_id,
             prt.particular_name,
             pm.quantity AS material_quantity,
+            pm.price_id as project_particular_material_price_id,
             pr.price AS material_price,
             pr.`quarter` AS material_quarter,
             pr.`year` AS material_year,
@@ -155,7 +156,7 @@ class GetAllDataController extends Controller
                             'material_category_name' => $project->material_category_name,
                             'material_quarter' => $project->material_quarter,
                             'material_quantity' => $project->material_quantity,
-                            'material_price_id' => $project->material_price_id,
+                            'material_price_id' => $project->project_particular_material_price_id,
                             'material_price' => $project->material_price,
                             'material_year' => $project->material_year,
                             'material_unit' => $project->material_unit,
@@ -480,6 +481,7 @@ class GetAllDataController extends Controller
                     // Return error response
                     return response()->json(['success' => false, 'message' => 'Failed to add labor. Please check the logs for details.']);
                 }
+
             }
             // Insert equipment into the project_particular_equipments table if provided
             if ($request->has('equipmentId') && $request->equipmentId !== "empty") {
@@ -553,6 +555,7 @@ class GetAllDataController extends Controller
                     // Return error response
                     return response()->json(['success' => false, 'message' => 'Failed to add equipment. Please check the logs for details.']);
                 }
+
             }
 
             return response()->json(['message' => 'Data submitted successfully']);
@@ -610,4 +613,7 @@ class GetAllDataController extends Controller
             return response()->json(['message' => 'Failed to delete project particular detail', 'error' => $e->getMessage()], 500);
         }
     }
+
+
+
 }

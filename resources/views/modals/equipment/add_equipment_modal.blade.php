@@ -28,8 +28,7 @@
 
                             <div class="form-group">
                                 <label for="add_model">Model</label>
-                                <input type="text" class="form-control" id="add_equipment_model" name="add_model"
-                                    required>
+                                <input type="text" class="form-control" id="add_equipment_model" name="add_model">
                             </div>
 
                         </div>
@@ -37,7 +36,7 @@
                             <div class="form-group">
                                 <label for="add_capacity">Capacity</label>
                                 <input type="text" class="form-control" id="add_equipment_capacity"
-                                    name="add_capacity" required>
+                                    name="add_capacity">
                             </div>
                             <div class="form-group">
                                 <label for="add_rate">Rate</label>

@@ -17,11 +17,11 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!auth()->user()->isAdmin()) {
-            abort(403, 'Unauthorized action.');
+            abort(403, 'User Dont Have Permission');
         }
 
         return $next($request);
     }
 
-    
+
 }

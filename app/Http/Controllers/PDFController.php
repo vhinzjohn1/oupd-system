@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use App\Models\Project;
-use App\Models\ProjectParticular;
 
 class PDFController extends Controller
 {
@@ -62,7 +58,8 @@ class PDFController extends Controller
             s.fullname,
             s.degree,
             s.position,
-            s.role
+            s.role,
+            s.project_id AS signature_project_id
         FROM
             projects p
         LEFT JOIN
@@ -118,15 +115,6 @@ class PDFController extends Controller
             $total = $project->total;
             $projectParticularId = $project->project_particular_id;
 
-            // Extract signatures data
-            $signatures = [
-                'project_id' => $projectId,
-                'fullname' => $project->fullname,
-                'degree' => $project->degree,
-                'position' => $project->position,
-                'role' => $project->role,
-            ];
-
             // Group data by project title
             if (!isset($formattedData[$title])) {
                 $formattedData[$title] = [
@@ -143,14 +131,18 @@ class PDFController extends Controller
                     'ocm' => $ocm,
                     'contractors_profit' => $contractors_profit,
                     'vat' => $vat,
-                    'signatures' => [$signatures]
+                    'signatures' => []
                 ];
-            } else {
-                // Check if the signatures data already exists in the array
-                $existingSignatures = array_column($formattedData[$title]['signatures'], 'fullname');
-                if (!in_array($project->fullname, $existingSignatures)) {
-                    $formattedData[$title]['signatures'][] = $signatures;
-                }
+            }
+            // Extract signatures data with the same project ID
+            if ($projectId == $project->signature_project_id) {
+                $formattedData[$title]['signatures'][] = [
+                    'fullname' => $project->fullname,
+                    'degree' => $project->degree,
+                    'position' => $project->position,
+                    'role' => $project->role,
+                    'signature_project_id' => $project->signature_project_id,
+                ];
             }
 
             // If there are particulars associated with the project, add them
@@ -175,10 +167,10 @@ class PDFController extends Controller
                         'contractors_profit' => $contractors_profit,
                         'vat' => $vat,
                         'details' => [
-                                'Materials' => [],
-                                'Equipment' => [],
-                                'Labor' => [],
-                            ],
+                            'Materials' => [],
+                            'Equipment' => [],
+                            'Labor' => [],
+                        ],
                     ];
                 }
 
@@ -342,4 +334,5 @@ class PDFController extends Controller
 
         return response()->json(['projects' => array_values($formattedData)]);
     }
+
 }
