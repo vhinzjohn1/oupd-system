@@ -115,6 +115,15 @@ class PDFController extends Controller
             $total = $project->total;
             $projectParticularId = $project->project_particular_id;
 
+            // Extract signatures data
+            $signatures = [
+                'project_id' => $projectId,
+                'fullname' => $project->fullname,
+                'degree' => $project->degree,
+                'position' => $project->position,
+                'role' => $project->role,
+            ];
+            
             // Group data by project title
             if (!isset($formattedData[$title])) {
                 $formattedData[$title] = [
@@ -131,19 +140,29 @@ class PDFController extends Controller
                     'ocm' => $ocm,
                     'contractors_profit' => $contractors_profit,
                     'vat' => $vat,
-                    'signatures' => []
+                    'signatures' => [$signatures]
                 ];
+            } else {
+                // Check if the signatures data already exists in the array
+                $existingSignatures = array_column($formattedData[$title]['signatures'], 'fullname');
+                if (!in_array($project->fullname, $existingSignatures)) {
+                    $formattedData[$title]['signatures'][] = $signatures;
+                }
             }
-            // Extract signatures data with the same project ID
-            if ($projectId == $project->signature_project_id) {
-                $formattedData[$title]['signatures'][] = [
-                    'fullname' => $project->fullname,
-                    'degree' => $project->degree,
-                    'position' => $project->position,
-                    'role' => $project->role,
-                    'signature_project_id' => $project->signature_project_id,
-                ];
-            }
+
+            //         'signatures' => []
+            //     ];
+            // }
+            // // Extract signatures data with the same project ID
+            // if ($projectId == $project->signature_project_id) {
+            //     $formattedData[$title]['signatures'][] = [
+            //         'fullname' => $project->fullname,
+            //         'degree' => $project->degree,
+            //         'position' => $project->position,
+            //         'role' => $project->role,
+            //         'signature_project_id' => $project->signature_project_id,
+            //     ];
+            // }
 
             // If there are particulars associated with the project, add them
             if (!empty($particularName)) {

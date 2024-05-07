@@ -149,32 +149,6 @@
                             console.log('title', project.project_title)
                             // Create particulars table
                             divHTML +=
-                                // '<table class="table table-borderless" id="projectDetails">' +
-                                // '<tr>' +
-                                // '<th>Name of the Project :</th>' +
-                                // '<th>' + project.project_title + '</th>' +
-                                // '<th>Source of Fund :</th>' +
-                                // '<th>' + project.project_source_of_fund + '</th>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<th>Date Prepared :</th>' +
-                                // '<th>' + project.project_date_prepared + '</th>' +
-                                // '<th>Location :</th>' +
-                                // '<th>' + project.project_location + '</th>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<th>Appropriation :</th>' +
-                                // '<th>' + project.project_appropriation + '</th>' +
-                                // '<th>Contract Duration :</th>' +
-                                // '<th>' + project.project_contract_duration + '</th>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<th>Owner :</th>' +
-                                // '<th>' + project.project_owned + '</th>' +
-                                // '<th>Mode of Implementation :</th>' +
-                                // '<th>' + project.project_mode_of_implementation + '</th>' +
-                                // '</tr>' +
-                                // '</table>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
@@ -195,6 +169,9 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
                                 directCostTotal = particular.totalMaterialAmount + particular
                                     .totalLaborAmount + particular.totalEquipmentAmount;
                                 var ocmTotal = directCostTotal * (particular.ocm / 100);
@@ -203,8 +180,8 @@
                                 var indirectCostTotal = ocmTotal + cpTotal;
                                 var vatTotal = (directCostTotal + indirectCostTotal) * (particular
                                     .vat / 100);
-                                var totalCostItem = directCostTotal + indirectCostTotal + vatTotal;
-                                var unitCostTotal = totalCostItem / particular.quantity;
+                                var totalCostItem = isMovingParticular ? parseFloat(particular.total) : directCostTotal + indirectCostTotal + vatTotal;
+                                var unitCostTotal = isMovingParticular ? parseFloat(particular.total) : totalCostItem / particular.quantity;
                                 console.log('vat: ', totalCostItem)
 
                                 totalCostAmount += totalCostItem;

@@ -73,32 +73,32 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
-            <table class="table table-borderless" id="projectDetails">
-                <tr>
-                    <td>Name of the Project :</td>
-                    <td><span id="projectTitle"></span></td>
-                    <td>Source of Fund :</td>
-                    <td><span id="projectSOF"></span></td>
-                </tr>
-                <tr>
-                    <td>Date Prepared :</td>
-                    <td><span id="projectDate"></span></td>
-                    <td>Location :</td>
-                    <td><span id="projectLocation"></span></td>
-                </tr>
-                <tr>
-                    <td>Appropriation :</td>
-                    <td><span id="projectAppropriation"></span></td>
-                    <td>Contract Duration :</td>
-                    <td><span id="projectDuration"></span></td>
-                </tr>
-                <tr>
-                    <td>Owner :</td>
-                    <td><span id="projectOwner"></span></td>
-                    <td>Mode of Implementation :</td>
-                    <td><span id="projectImplementation"></span></td>
-                </tr>
-            </table>
+        <table class="table table-borderless" id="projectDetails">
+            <tr>
+                <td>Name of the Project :</td>
+                <td><span id="projectTitle"></span></td>
+                <td>Source of Fund :</td>
+                <td><span id="projectSOF"></span></td>
+            </tr>
+            <tr>
+                <td>Date Prepared :</td>
+                <td><span id="projectDate"></span></td>
+                <td>Location :</td>
+                <td><span id="projectLocation"></span></td>
+            </tr>
+            <tr>
+                <td>Appropriation :</td>
+                <td><span id="projectAppropriation"></span></td>
+                <td>Contract Duration :</td>
+                <td><span id="projectDuration"></span></td>
+            </tr>
+            <tr>
+                <td>Owner :</td>
+                <td><span id="projectOwner"></span></td>
+                <td>Mode of Implementation :</td>
+                <td><span id="projectImplementation"></span></td>
+            </tr>
+        </table>
 
         <!-- Project Particulars -->
         <div class="container-fluid">
@@ -131,13 +131,15 @@
                         var project = response.projects.find(p => p.project_id == selectedProjectID);
 
                         if (project) {
+                            var totalCostAmount = 0;
+                            var totalIndirCost = 0;
+                            var totalVat = 0;
                             var totMarkUpVal = 0;
                             var totalDirCost = 0;
                             var edcTotalAmount = 0;
                             var dirTotal = 0;
                             var vatTotal = 0;
-                            var totalCostAmount = 0;
-                            var totalAmount = 0;
+                            var mobTotal = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -206,16 +208,34 @@
                                 '<tbody>';
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
-                                edcTotalAmount = particular.totalMaterialAmount + particular
-                                    .totalLaborAmount + particular.totalEquipmentAmount;
-                                dirTotal += edcTotalAmount;
-                                markUpTotal = project.ocm + project.contractors_profit;
-                                markUpValue = (markUpTotal / 100) * edcTotalAmount;
-                                vatValue = (project.vat / 100) * (markUpValue + edcTotalAmount);
-                                indirCostTotal = markUpValue + vatValue;
+                                // Check if the particular is MOVING-IN or MOVING-OUT
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+
+                                var mobValue = isMovingParticular ? parseFloat(particular.total) :
+                                    0;
+                                mobTotal += mobValue;
+                                // Calculate values based on the type of particular
+                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) :
+                                    (
+                                        parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                            particular.totalLaborAmount) +
+                                        parseFloat(particular.totalEquipmentAmount));
+                                markUpTotal = isMovingParticular ? 0 : (project.ocm + project
+                                    .contractors_profit);
+                                markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
+                                    edcTotalAmount);
+                                vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                    markUpValue + edcTotalAmount));
+                                indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                    vatValue);
                                 totalCost = edcTotalAmount + indirCostTotal;
                                 unitCost = totalCost / particular.quantity;
+                                dirTotal += edcTotalAmount;
+                                totMarkUpVal += markUpValue;
                                 vatTotal += vatValue;
+                                totalIndirCost += indirCostTotal;
                                 totalCostAmount += totalCost;
                             });
                             // Add row for the particular

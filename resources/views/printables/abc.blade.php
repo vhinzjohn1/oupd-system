@@ -261,9 +261,9 @@
                                             edcTotalAmount)
                                         .toFixed(2)) + '</td>' +
                                     '<td class="text-center">' + (isMovingParticular ? '' : project
-                                        .ocm) + '</td>' +
+                                        .ocm.toFixed(2)) + '</td>' +
                                     '<td class="text-center">' + (isMovingParticular ? '' : project
-                                        .contractors_profit) + '</td>' +
+                                        .contractors_profit.toFixed(2)) + '</td>' +
                                     '<td class="text-right">' + (isMovingParticular ?
                                         numberWithCommas(parseFloat(particular.total)
                                             .toFixed(2)) : '') +

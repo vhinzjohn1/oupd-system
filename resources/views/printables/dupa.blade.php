@@ -146,6 +146,9 @@
                             //         '</div>' +
                             //         '</div>' ;
                             project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
                                 var materials = particular.details.Materials || [];
                                 var equipment = particular.details.Equipment || [];
                                 var labor = particular.details.Labor || [];
@@ -159,8 +162,8 @@
                                 var vatTotal = (directCostTotal + indirectCostTotal) * (particular
                                     .vat / 100);
                                 var totalCostItem = directCostTotal + indirectCostTotal + vatTotal;
-                                var unitCostTotal = totalCostItem / particular.quantity;
-                                console.log('vat: ', unitCostTotal)
+                                var unitCostTotal = isMovingParticular ? parseFloat(particular.total) : totalCostItem / particular.quantity;
+                                console.log('unitcost: ', unitCostTotal)
                                 // Create a new div for each particular name
                                 var divHTML =
                                     '<table class="table table-bordered table-striped">' +

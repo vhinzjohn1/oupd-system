@@ -151,6 +151,7 @@
                             var movingIn = 0;
                             var movingOut = 0;
                             var mobCost = 0;
+                            var dirTotalAmount = 0;
                             // Create particulars table
                             divHTML +=
                                 // '<div class="container text-center">' +
@@ -186,13 +187,16 @@
                                 '</thead>' +
                                 '<tbody>';
                             project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
                                 // Calculate individual totals
                                 matTotal += particular.totalMaterialAmount;
                                 equipTotal += particular.totalEquipmentAmount;
                                 labTotal += particular.totalLaborAmount;
-                                totalAmount = particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
+                                totalAmount = isMovingParticular ? parseFloat(particular.total) : particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
                                 dirTotal += totalAmount;
-                                console.log('total', matAmount)
+                                console.log('total', projectCostTotal)
                                 // Append particular details to the table
                                 divHTML +=
                                     '<tr>' +
@@ -209,15 +213,20 @@
                                     '</tr>';
                             });
                             // Calculate other totals outside the loop
-                            var ocmTotal = dirTotal * (project.ocm / 100);
-                            var cpTotal = dirTotal * (project.contractors_profit / 100);
-                            var vatTotal = (dirTotal + ocmTotal + cpTotal) * (project.vat / 100);
+                            var dirCostAmount = matTotal + labTotal + equipTotal;
+                            var ocmTotal = dirCostAmount * (project.ocm / 100);
+                            var cpTotal = dirCostAmount * (project.contractors_profit / 100);
+                            var vatTotal = (dirCostAmount + ocmTotal + cpTotal) * (project.vat / 100);
                             var totalIndirCost = ocmTotal + cpTotal + vatTotal;
-                            var projectCostTotal = dirTotal + totalIndirCost + mobCost;
-                            var movingIn = (dirTotal * 0.01) / 2;
-                            var movingOut = (dirTotal * 0.01) / 2;
+                            var movingIn = (dirCostAmount * 0.01) / 2;
+                            var movingOut = (dirCostAmount * 0.01) / 2;
                             var mobCost = movingIn + movingOut;
+                            var projectCostTotal = parseFloat(dirCostAmount.toFixed(2)) + parseFloat(totalIndirCost.toFixed(2)) + parseFloat(mobCost.toFixed(2));
                             var amountInWords = convertNumberToWords(projectCostTotal);
+                            console.log('dirCostAmount : ', dirCostAmount);
+                            console.log('dirCostAmount : ', totalIndirCost);
+                            console.log('dirCostAmount : ', mobCost);
+                            console.log('dirCostAmount : ', projectCostTotal);
                             // Close the table and container
                             divHTML +=
                                 '</tbody>' +
@@ -269,7 +278,7 @@
                                 '<td class="text-right">' + numberWithCommas(equipTotal.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + numberWithCommas(dirTotal.toFixed(2)) +
+                                '<td class="text-center">' + numberWithCommas(dirCostAmount.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-center"></td>' +
                                 '</tr>' +
@@ -344,7 +353,7 @@
                                 '<td class="text-left">TOTAL PROJECT COST</td>' +
                                 '<td class="text-right"></td>' +
                                 '<td class="text-center"></td>' +
-                                '<td class="text-center">' + numberWithCommas(projectCostTotal.toFixed(2)) +
+                                '<td class="text-center">' + numberWithCommas(projectCostTotal) +
                                 '</td>' +
                                 '<td class="text-center"></td>' +
                                 '</tr>' +
@@ -353,8 +362,7 @@
                                 amountInWords + '</td>' +
                                 '</tr>' + // totalInWords
                                 '<tr>' +
-                                '<td colspan="5" class="text-center">(' + numberWithCommas(projectCostTotal
-                                    .toFixed(2)) + ')</td>' +
+                                '<td colspan="5" class="text-center">(' + numberWithCommas(projectCostTotal) + ')</td>' +
                                 '</tr>' + // Total cost Item
                                 '</table>' +
                                 '</div>';

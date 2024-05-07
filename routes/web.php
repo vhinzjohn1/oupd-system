@@ -202,6 +202,9 @@ Route::get('/printables/summary_of_cost', function () {
 Route::get('/printables/boq', function () {
     return view('printables.boq');
 })->name('boq');
+Route::get('/printables/ppmp', function () {
+    return view('printables.ppmp');
+})->name('ppmp');
 
 // Project Particular Routes:
 Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');

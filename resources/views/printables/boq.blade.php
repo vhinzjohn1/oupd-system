@@ -282,10 +282,10 @@
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(percent.toFixed(
+                                    '<td class="text-right">' + numberWithCommas(percent.toFixed(
                                         2)) +
                                     '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(parseFloat(
+                                    '<td class="text-right">' + numberWithCommas(parseFloat(
                                         particular.quantity).toFixed(2)) +
                                     '</td>' +
                                     '<td class="text-center">' + particular.unit +
@@ -301,7 +301,7 @@
                                 '<tr>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-right"><strong>Total</strong></td>' +
-                                '<td class="text-center">' + totalPercent + '</td>' +
+                                '<td class="text-right">' + totalPercent + '</td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center"></td>' +
                                 '<td class="text-center">' + "-" + '</td>' +
