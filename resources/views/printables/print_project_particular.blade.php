@@ -130,7 +130,7 @@
                                         '</div>';
                                 } else {
                                     // Create a new div for each particular name
-                                    divHTML += '<div class="col-10">' +
+                                    divHTML = '<div class="col-10">' +
                                         '<h5 class="text-left">' + getRomanNumeral(index + 1) +
                                         '. ' +
                                         particular.particular_name +
@@ -169,10 +169,10 @@
                                                 '</td>' +
                                                 '<td>' + material.material_unit +
                                                 '</td>' +
-                                                '<td>' + numberWithCommas(parseFloat(material.material_price).toFixed(2)) + '</td>' +
-                                                '<td>' + numberWithCommas(amount
+                                                '<td class="text-right">' + numberWithCommas(parseFloat(material.material_price).toFixed(2)) + '</td>' +
+                                                '<td class="text-right">' + numberWithCommas(amount
                                                     .toFixed(
-                                                        2)) +
+                                                        2)) + // ₱ 
                                                 '</td>' +
                                                 '</tr>';
                                         });
@@ -181,7 +181,7 @@
                                             '<tfoot>' +
                                             '<tr>' +
                                             '<td colspan="4" class="text-right"><strong>Total</strong></td>' +
-                                            '<td>' + numberWithCommas(materialTotalAmount
+                                            '<td class="text-right">' + numberWithCommas(materialTotalAmount
                                                 .toFixed(2)) + '</td>' +
 
                                             '</tr>' +
@@ -226,10 +226,10 @@
                                                 '<td>' + lab.labor_no_of_persons +
                                                 '</td>' +
                                                 '<td>' + lab.labor_work_days + '</td>' +
-                                                '<td>' + numberWithCommas(parseFloat(lab
+                                                '<td class="text-right">' + numberWithCommas(parseFloat(lab
                                                     .labor_rate).toFixed(2)) +
                                                 '</td>' +
-                                                '<td>' + numberWithCommas(amount
+                                                '<td class="text-right">' + numberWithCommas(amount
                                                     .toFixed(
                                                         2)) +
                                                 '</td>' +
@@ -240,7 +240,7 @@
                                             '<tfoot>' +
                                             '<tr>' +
                                             '<td colspan="4" class="text-right"><strong>Total</strong></td>' +
-                                            '<td>' + numberWithCommas(laborTotalAmount.toFixed(
+                                            '<td class="text-right">' + numberWithCommas(laborTotalAmount.toFixed(
                                                 2)) +
                                             '</td>' +
                                             '</tr>' +
@@ -297,11 +297,11 @@
                                                 '</td>' +
                                                 '<td>' + equip.equipment_work_days +
                                                 '</td>' +
-                                                '<td>' + numberWithCommas(parseFloat(
+                                                '<td class="text-right">' + numberWithCommas(parseFloat(
                                                     equip
                                                     .equipment_rate).toFixed(2)) +
                                                 '</td>' +
-                                                '<td>' + numberWithCommas(amount
+                                                '<td class="text-right">' + numberWithCommas(amount
                                                     .toFixed(
                                                         2)) +
                                                 '</td>' +
@@ -312,7 +312,7 @@
                                             '<tfoot>' +
                                             '<tr>' +
                                             '<td colspan="4" class="text-right"><strong>Total</strong></td>' +
-                                            '<td>' + numberWithCommas(equipmentTotalAmount
+                                            '<td class="text-right">' + numberWithCommas(equipmentTotalAmount
                                                 .toFixed(
                                                     2)) +
                                             '</td>' +

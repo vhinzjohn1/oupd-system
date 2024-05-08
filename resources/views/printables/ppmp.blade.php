@@ -243,7 +243,7 @@
                                 '<tr>' +
                                 '<td></td>' +
                                 '<td>' + project.project_title + '</td>' +
-                                '<td class="text-center">' + 'METHOD' +
+                                '<td class="text-center">' + 'Public Bidding' +
                                 '</td>' +
                                 '<td class="text-right">' + numberWithCommas(totalCostAmount.toFixed(2)) +
                                 '</td>' +
