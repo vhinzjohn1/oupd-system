@@ -23,19 +23,19 @@ class SignatureController extends Controller
         try {
 
             // Retrieve or create project
-            $signature = Signature::firstOrCreate(
+            $signature = Signature::updateOrCreate(
                 [
-                    'project_id' => $request['projectId'],
+                    'fullname' => $request['fullName'],
                     'role' => $request['role'],
                 ],
                 [
-                    'fullname' => $request['fullName'],
                     'degree' => $request['degree'],
                     'position' => $request['position'],
                     'role' => $request['role'],
                     'project_id' => $request['projectId'],
                 ]
             );
+
             if ($signature->wasRecentlyCreated) {
                 // New record was created
                 return response()->json(['success' => true, 'message' => 'Successfully added Signature']);

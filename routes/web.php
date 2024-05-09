@@ -203,6 +203,11 @@ Route::get('/printables/boq', function () {
     return view('printables.boq');
 })->name('boq');
 
+
+Route::get('/home_test', function () {
+    return view('home_test');
+})->name('home_test');
+
 // Project Particular Routes:
 Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');
 Route::post('/submit-details', [GetAllDataController::class, 'submitDetails'])->name('submit.details');

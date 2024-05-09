@@ -23,11 +23,46 @@
 
     <!-- Main content -->
     <div class="content">
-        <div class="container-fluid">
-           
+        <div class="container-fluid col-12">
+            <table class="table table-bordered" id='testTable'></table>
 
         </div>
 
+    </div>
 
-        <!-- /.content -->
-    @endsection
+    <script>
+        $('#testTable').DataTable({
+            paging: false,
+            searching: false,
+            ordering: false,
+            info: false,
+            columns: [{
+                    title: "Material Name"
+                },
+                {
+                    title: "Category Name"
+                },
+                {
+                    title: "Unit"
+                },
+                {
+                    title: "Price",
+                    className: "text-right"
+                },
+                {
+                    title: "Quarter"
+                },
+                {
+                    title: "Year"
+                },
+                {
+                    title: "Actions",
+                    className: "text-center"
+                }
+            ]
+        });
+    </script>
+
+
+    <!-- /.content -->
+@endsection

@@ -19,8 +19,10 @@ use App\Models\ProjectParticular;
 class GetAllDataController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
+        // Retrieve project ID from the request
+        $projectID = $request->input('projectID');
         // Raw SQL query to fetch data
         $projects = DB::select("
         SELECT
@@ -90,6 +92,8 @@ class GetAllDataController extends Controller
             equipment_rates er ON ppe.equipment_id = er.equipment_id AND er.is_active = 1
         LEFT JOIN
             prices pr ON pm.price_id = pr.price_id
+        WHERE
+            p.project_id = $projectID;
     ");
 
         $formattedData = [];

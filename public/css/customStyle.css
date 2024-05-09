@@ -59,9 +59,7 @@
     color: black !important;
     background-color: #ffc107 !important; /* Change this to your desired color */
 }
-.dataTables_filter {
-    text-align: right !important;
-}
+
 .form-top {
     margin-top: -5px !important;
 }

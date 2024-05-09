@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Project;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::all();
+        // Retrieve project ID from the request
+        $projectID = $request->input('projectID');
+        $projects = DB::select("SELECT * FROM projects");
         if (request()->ajax()) {
             return response()->json($projects);
         } else {

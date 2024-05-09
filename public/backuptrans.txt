@@ -359,6 +359,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
+                    console.log(data)
                     if (Array.isArray(data) && data.length > 0) {
                         var selectedProjID = localStorage.getItem("projectID");
                         var selectElem = $("#selectProjParticular").empty();
@@ -410,6 +411,8 @@
                 dataType: "json",
                 data: requestData,
                 success: function(response) {
+                    // Handle success response
+                    console.log("Project particular successfully stored:", response);
                     // Reload the current page
                     location.reload();
                 },
@@ -459,6 +462,7 @@
             let removeComma = appropriation.replace('₱', '').replace(/,/g,
                 '');
             let projectCost = parseFloat(removeComma);
+            console.log('This is the Cost: ', projectCost);
 
             // Make AJAX request to add new material
             $.ajax({
@@ -751,6 +755,7 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
+                    console.log(data)
                     // Store fetched data in localStorage for future use
                     localStorage.setItem('signatureData', JSON.stringify(data));
                     // Display the fetched data
@@ -1110,6 +1115,7 @@
                         return project.project_id == selectedProjectID;
                     });
 
+
                     // Iterate through each filtered project item
                     sortedProjects.forEach(function(project) {
                         // Iterate through each particular item
@@ -1239,9 +1245,6 @@
 
                             // Formatted Total Amount In a Particular
                             const formattedTotalProjPart = totalProjPart.toLocaleString();
-                            console.log(particular.project_particular_quantity);
-                            console.log(particular.project_particular_unit);
-                            console.log(particular.project_particular_total);
 
                             var form = $('<div class="pd-zero pd-3" id="projectPartDetail_' +
                                     particular.particular_id + '">')
@@ -1250,77 +1253,59 @@
                                     $('<div>').addClass('card-body form-top').append(
                                         $('<div>').addClass('col-12').append(
                                             $('<div>').addClass('row').append(
-
                                                 $('<div>').addClass('col-4').append(
                                                     $('<h6>').text('Quantity: ').append(
-                                                        $('<input>').addClass(
-                                                            'MuiInputBase-input MuiInput-input')
-                                                        .attr({
-                                                            type: 'number',
-                                                            id: 'quantity_' + particular
-                                                                .particular_id,
-                                                            value: particular
-                                                                .project_particular_quantity
-                                                        })
+                                                        $('<span>').attr('id', 'quantity_' +
+                                                            particular.particular_id).text(
+                                                            particular
+                                                            .project_particular_quantity)
                                                     )
                                                 ),
                                                 $('<div>').addClass('col-3').append(
                                                     $('<h6>').text('Unit: ').append(
-                                                        $('<input>').addClass(
-                                                            'MuiInputBase-input MuiInput-input')
-                                                        .attr({
-                                                            type: 'text',
-                                                            id: 'unit_' + particular
-                                                                .particular_id,
-                                                            value: particular
-                                                                .project_particular_unit
-                                                        })
+                                                        $('<span>').attr('id', 'unit_' +
+                                                            particular.particular_id).text(
+                                                            particular.project_particular_unit)
                                                     )
                                                 ),
+
                                                 $('<div>').addClass('col-4').append(
                                                     $('<h6>').text('Total Amount: ').append(
-                                                        $('<input>').addClass(
-                                                            'MuiInputBase-input MuiInput-input')
-                                                        .attr({
-                                                            type: 'number',
-                                                            id: 'total_' + particular
-                                                                .particular_id,
-                                                            value: particular
-                                                                .project_particular_total !=
-                                                                null ?
-                                                                parseFloat(particular
-                                                                    .project_particular_total
-                                                                    ).toLocaleString(
-                                                                    'en-US', {
-                                                                        minimumFractionDigits: 2,
-                                                                        maximumFractionDigits: 2
-                                                                    }) : ''
-                                                        })
+                                                        $('<span>').attr('id', 'total_' +
+                                                            particular.particular_id).text(
+                                                            particular
+                                                            .project_particular_total != null ?
+                                                            parseFloat(particular
+                                                                .project_particular_total)
+                                                            .toLocaleString('en-US', {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }) :
+                                                            ''
+                                                        )
                                                     )
+                                                ),
+
+
+                                                $('<div class="signature-zero">').addClass(
+                                                    'col-1').append(
+                                                    $('<div>').addClass('btn btn-success').attr(
+                                                        'id', 'particularDetail_' + particular
+                                                        .particular_id).append(
+                                                        $('<i>').addClass('fa fa-plus')
+                                                    ).click(function() {
+                                                        editparticularDetail(particular
+                                                            .particular_id, particular
+                                                            .project_particular_quantity,
+                                                            particular
+                                                            .project_particular_unit,
+                                                            particular
+                                                            .project_particular_unitCost,
+                                                            project
+                                                            .project_particular_total
+                                                        );
+                                                    })
                                                 )
-
-
-
-
-                                                // $('<div class="signature-zero">').addClass(
-                                                //     'col-1').append(
-                                                //     $('<div>').addClass('btn btn-success').attr(
-                                                //         'id', 'particularDetail_' + particular
-                                                //         .particular_id).append(
-                                                //         $('<i>').addClass('fa fa-plus')
-                                                //     ).click(function() {
-                                                //         editparticularDetail(particular
-                                                //             .particular_id, particular
-                                                //             .project_particular_quantity,
-                                                //             particular
-                                                //             .project_particular_unit,
-                                                //             particular
-                                                //             .project_particular_unitCost,
-                                                //             project
-                                                //             .project_particular_total
-                                                //         );
-                                                //     })
-                                                // )
                                             )
                                         )
                                     )
@@ -1364,6 +1349,7 @@
                             mainCard.append(cardHeader, cardCollapse);
                             // Append main card to the dynamic content container
                             $("#projectParticularContent").append(mainCard);
+
 
                             // Detail Table Section
                             const materialTable = $(
@@ -1482,13 +1468,13 @@
                                     formattedPrice,
                                     materialAmount, // Calculating amount
                                     `<div class="text-center d-flex">
-                                <button type="button" id="editButton" class="btn bg-success mr-2" onclick="editDetail('material', ${material.project_particular_material_id}, ${material.material_id}, '${material.material_name}', '${material.material_unit}', '${material.material_category_name}', ${material.material_price}, ${material.material_quantity}, ${material.particular_id}, '${material.material_quarter}', ${material.material_year}, ${material.material_price_id})">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-danger btn-delete-material" onclick="deleteDetail('material', ${material.project_particular_material_id})">
-                                    <i class="fa fa-trash-alt"></i>
-                                </button>
-                            </div>`
+                                        <button type="button" id="editButton" class="btn bg-success mr-2" onclick="editDetail('material', ${material.project_particular_material_id}, ${material.material_id}, '${material.material_name}', '${material.material_unit}', '${material.material_category_name}', ${material.material_price}, ${material.material_quantity}, ${material.particular_id}, '${material.material_quarter}', ${material.material_year}, ${material.material_price_id})">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-delete-material" onclick="deleteDetail('material', ${material.project_particular_material_id})">
+                                            <i class="fa fa-trash-alt"></i>
+                                        </button>
+                                    </div>`
                                 ]);
 
                             });
@@ -1512,13 +1498,13 @@
                                     labor.labor_work_days,
                                     amount,
                                     `<div class="text-center d-flex">
-                            <button type="button" id="editButton" class="btn bg-success mr-2" onclick="editDetail('labor', ${labor.labor_id}, ${labor.labor_work_days}, ${labor.labor_no_of_persons}, ${labor.labor_rate}, '${labor.labor_name}', ${labor.particular_id})">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger btn-delete-material" onclick="deleteDetail('labor', ${labor.project_particular_labor_id})">
-                                <i class="fa fa-trash-alt"></i>
-                            </button>
-                        </div>`
+                                    <button type="button" id="editButton" class="btn bg-success mr-2" onclick="editDetail('labor', ${labor.labor_id}, ${labor.labor_work_days}, ${labor.labor_no_of_persons}, ${labor.labor_rate}, '${labor.labor_name}', ${labor.particular_id})">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-delete-material" onclick="deleteDetail('labor', ${labor.project_particular_labor_id})">
+                                        <i class="fa fa-trash-alt"></i>
+                                    </button>
+                                </div>`
                                 ]);
                             });
 
@@ -1540,13 +1526,13 @@
                                     equipment.equipment_work_days,
                                     amount,
                                     `<div class="text-center d-flex">
-                                <button type="button" id="editButton" class="btn bg-success mr-2" onclick="editDetail('equipment', ${equipment.project_particular_equipment_id}, ${equipment.equipment_id}, '${equipment.equipment_name}', '${equipment.equipment_category_name}', '${equipment.equipment_model}', '${equipment.equipment_capacity}', ${equipment.equipment_rate}, ${equipment.equipment_no_of_units}, ${equipment.equipment_work_days}, ${equipment.particular_id})">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-danger btn-delete-material" onclick="deleteDetail('equipment', ${equipment.project_particular_equipment_id})">
-                                    <i class="fa fa-trash-alt"></i>
-                                </button>
-                            </div>`
+                                        <button type="button" id="editButton" class="btn bg-success mr-2" onclick="editDetail('equipment', ${equipment.project_particular_equipment_id}, ${equipment.equipment_id}, '${equipment.equipment_name}', '${equipment.equipment_category_name}', '${equipment.equipment_model}', '${equipment.equipment_capacity}', ${equipment.equipment_rate}, ${equipment.equipment_no_of_units}, ${equipment.equipment_work_days}, ${equipment.particular_id})">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-delete-material" onclick="deleteDetail('equipment', ${equipment.project_particular_equipment_id})">
+                                            <i class="fa fa-trash-alt"></i>
+                                        </button>
+                                    </div>`
                                 ]);
                             });
                             // Redraw DataTable
@@ -1565,7 +1551,6 @@
                 },
             });
         }
-
 
         // Define totalAmountColumn in a scope accessible outside of the function
         var totalAmountColumn;
@@ -1779,6 +1764,7 @@
                     projectID: selectedProjectID,
                 },
                 success: function(data) {
+                    console.log("This is the project data:", data);
 
                     // Check if there are no projects or if selectedProjectID is not found
                     if (data.length === 0 || !data.find(project => project.project_id === parseInt(
@@ -1850,6 +1836,8 @@
             // localStorage.setItem('materialCardVisible', 'true');
         });
 
+        let materialgridApi;
+
         function refreshAllData(particularId, detail_type) {
             const selectedProjectID = localStorage.getItem("projectID");
             $.ajax({
@@ -1860,6 +1848,7 @@
                     projectID: selectedProjectID,
                 },
                 success: function(data) {
+                    console.log('This is the refresh data: ', data);
                     // Get the selected project ID from localStorage
                     var selectedProjectID = localStorage.getItem("projectID");
                     // Filter and sort project items
@@ -1871,13 +1860,8 @@
 
                     // Iterate through each filtered project item
                     sortedProjects.forEach(function(project) {
-                        // Filter the project particulars based on particularId
-                        const sortedParticulars = project.particulars.filter(particular => particular
-                            .particular_id === particularId);
-                        // Sort the filtered particulars
-                        sortedParticulars.sort((a, b) => a.particular_id - b.particular_id);
-                        // Iterate through each sorted particular
-                        sortedParticulars.forEach(particular => {
+                        // Iterate through each particular item
+                        project.particulars.forEach(function(particular) {
 
                             // Filter out details that should not be displayed in the grid
                             const rowDataMaterial = Object.values(
@@ -1948,64 +1932,55 @@
                                     $('<div>').addClass('row').append(
                                         $('<div>').addClass('col-4').append(
                                             $('<h6>').text('Quantity: ').append(
-                                                $('<input>').attr({
-                                                    type: 'number',
-                                                    id: 'quantity_' + particular
-                                                        .particular_id,
-                                                    value: particular
-                                                        .project_particular_quantity
-                                                })
+                                                $('<span>').attr('id', 'quantity_' +
+                                                    particular.particular_id).text(
+                                                    particular
+                                                    .project_particular_quantity)
                                             )
                                         ),
                                         $('<div>').addClass('col-3').append(
                                             $('<h6>').text('Unit: ').append(
-                                                $('<input>').attr({
-                                                    type: 'text',
-                                                    id: 'unit_' + particular
-                                                        .particular_id,
-                                                    value: particular
-                                                        .project_particular_unit
-                                                })
+                                                $('<span>').attr('id', 'unit_' +
+                                                    particular.particular_id).text(
+                                                    particular.project_particular_unit)
                                             )
                                         ),
+
                                         $('<div>').addClass('col-4').append(
                                             $('<h6>').text('Total Amount: ').append(
-                                                $('<input>').attr({
-                                                    type: 'number',
-                                                    id: 'total_' + particular
-                                                        .particular_id,
-                                                    value: particular
-                                                        .project_particular_total !=
-                                                        null ?
-                                                        parseFloat(particular
-                                                            .project_particular_total
-                                                        ).toLocaleString(
-                                                            'en-US', {
-                                                                minimumFractionDigits: 2,
-                                                                maximumFractionDigits: 2
-                                                            }) : ''
-                                                })
+                                                $('<span>').attr('id', 'total_' +
+                                                    particular.particular_id).text(
+                                                    particular
+                                                    .project_particular_total != null ?
+                                                    parseFloat(particular
+                                                        .project_particular_total)
+                                                    .toLocaleString('en-US', {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }) :
+                                                    ''
+                                                )
                                             )
-                                        )
+                                        ),
 
-                                        // $('<div class="signature-zero">').addClass(
-                                        //     'col-1').append(
-                                        //     $('<div>').addClass('btn btn-success').attr(
-                                        //         'id', 'particularDetail_' + particular
-                                        //         .particular_id).append(
-                                        //         $('<i>').addClass('fa fa-plus')
-                                        //     ).click(function() {
-                                        //         editparticularDetail(particular
-                                        //             .particular_id, particular
-                                        //             .project_particular_quantity,
-                                        //             particular
-                                        //             .project_particular_unit,
-                                        //             particular
-                                        //             .project_particular_unitCost,
-                                        //             project.project_particular_total
-                                        //         );
-                                        //     })
-                                        // )
+                                        $('<div class="signature-zero">').addClass(
+                                            'col-1').append(
+                                            $('<div>').addClass('btn btn-success').attr(
+                                                'id', 'particularDetail_' + particular
+                                                .particular_id).append(
+                                                $('<i>').addClass('fa fa-plus')
+                                            ).click(function() {
+                                                editparticularDetail(particular
+                                                    .particular_id, particular
+                                                    .project_particular_quantity,
+                                                    particular
+                                                    .project_particular_unit,
+                                                    particular
+                                                    .project_particular_unitCost,
+                                                    project.project_particular_total
+                                                );
+                                            })
+                                        )
                                     )
                                 )
                             );
@@ -2165,19 +2140,23 @@
                     $("#total_" + particularId).text(parseTotalPartAmount);
                 },
             });
+            // $("#materialCard_" + particularId).removeClass("card");
+            // $("#laborCard_" + particularId).removeClass("card");
+            // $("#equipmentCard_" + particularId).removeClass("card");
         }
 
         function deleteDetail(detailType, partID) {
+            console.log(detailType);
+            console.log(partID);
             // Show confirmation dialog
             Swal.fire({
                 title: "Are you sure?",
                 text: "You are about to delete this record!",
                 icon: "warning",
                 showCancelButton: true,
-                cancelButtonColor: "#353535", // Cancel button color is green
-                confirmButtonColor: "#FF0000", // Confirm button color is red
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
                 confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "cancel"
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Proceed with delete operation
