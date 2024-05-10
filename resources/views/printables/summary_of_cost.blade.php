@@ -74,23 +74,26 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
-            <div class="container" id="projectDetails">
-                <div class="container text-center">
-                    <div class="row mt-4">
-                        <div class="row mt-2">
-                            <div class="d-flex flex-column align-items-start">
-                                <div><strong>PROJECT TITLE : </strong> <span id="projectTitle" style="font-size: 20px;"></span>
-                                </div>
-                                <div><strong>LOCATION : </strong> <span id="projectLocation" style="font-size: 20px;"></span>
-                                </div>
-                                <div><strong>OWNER : </strong> <span id="projectOwner" style="font-size: 20px;"></span></div>
-                                <div><strong>SUBJECT : </strong> <span id="projectSubject" style="font-size: 20px;">Summary of
-                                        Cost</span></div> <br>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="container">
+            <div class="row row-cols-auto">
+                <div class="col-2"><strong>PROJECT TITLE:</strong></div>
+                <div class="col"><span id="projectTitle" style="font-size: 20px;"></span></div>
             </div>
+            <div class="row row-cols-auto">
+                <div class="col-2"><strong>LOCATION:</strong></div>
+                <div class="col"><span id="projectLocation" style="font-size: 20px;"></span></div>
+            </div>
+            <div class="row row-cols-auto">
+                <div class="col-2"><strong>OWNER:</strong></div>
+                <div class="col"><span id="projectOwner" style="font-size: 20px;"></span></div>
+            </div>
+            <div class="row row-cols-auto">
+                <div class="col-2"><strong>SUBJECT:</strong></div>
+                <div class="col"><span id="projectSubject" style="font-size: 20px;">Summary of Cost</span></div>
+            </div>
+        </div>
+
+
 
         <!-- Project Particulars -->
         <div class="container-fluid">
@@ -152,6 +155,7 @@
                             var movingOut = 0;
                             var mobCost = 0;
                             var dirTotalAmount = 0;
+                            var dirCostAmount = 0;
                             // Create particulars table
                             divHTML +=
                                 // '<div class="container text-center">' +
@@ -187,46 +191,60 @@
                                 '</thead>' +
                                 '<tbody>';
                             project.particulars.forEach(function(particular, index) {
-                                var isMovingParticular = (particular.particular_name ===
-                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
 
                                 // Calculate individual totals
                                 matTotal += particular.totalMaterialAmount;
                                 equipTotal += particular.totalEquipmentAmount;
                                 labTotal += particular.totalLaborAmount;
-                                totalAmount = isMovingParticular ? parseFloat(particular.total) : particular.totalMaterialAmount + particular.totalLaborAmount + particular.totalEquipmentAmount;
+                                dirCostAmount = matTotal + labTotal + equipTotal;
+                                movingIn = (dirCostAmount * 0.01) / 2;
+                                movingOut = (dirCostAmount * 0.01) / 2;
+                                console.log();
+                            });
+                            project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+                                totalAmount = isMovingParticular ? movingIn :
+                                    parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                        particular.totalLaborAmount) +
+                                    parseFloat(particular.totalEquipmentAmount);
                                 dirTotal += totalAmount;
-                                console.log('total', projectCostTotal)
+                                console.log('total', dirTotal);
+                                console.log(particular.totalMaterialAmount);
                                 // Append particular details to the table
                                 divHTML +=
                                     '<tr>' +
                                     '<td class="text-center">' + getRomanNumeral(index + 1) +
                                     '</td>' +
                                     '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(particular.totalMaterialAmount.toFixed(
-                                        2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(particular.totalLaborAmount.toFixed(
-                                        2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(particular.totalEquipmentAmount.toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(totalAmount
-                                        .toFixed(2)) + '</td>' +
-                                    '</tr>';
+                                    '<td class="text-center">' + numberWithCommas(particular
+                                        .totalMaterialAmount.toFixed(
+                                            2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(particular
+                                        .totalLaborAmount.toFixed(
+                                            2)) + '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(particular
+                                        .totalEquipmentAmount.toFixed(2)) + '</td>' +
+                                    '<td class="text-center">' + (isMovingParticular ?
+                                        numberWithCommas(movingIn.toFixed(2)) : numberWithCommas(
+                                            totalAmount
+                                            .toFixed(2))) + '</td>'
+                                '</tr>';
                             });
                             // Calculate other totals outside the loop
-                            var dirCostAmount = matTotal + labTotal + equipTotal;
                             var ocmTotal = dirCostAmount * (project.ocm / 100);
                             var cpTotal = dirCostAmount * (project.contractors_profit / 100);
                             var vatTotal = (dirCostAmount + ocmTotal + cpTotal) * (project.vat / 100);
                             var totalIndirCost = ocmTotal + cpTotal + vatTotal;
-                            var movingIn = (dirCostAmount * 0.01) / 2;
-                            var movingOut = (dirCostAmount * 0.01) / 2;
                             var mobCost = movingIn + movingOut;
-                            var projectCostTotal = parseFloat(dirCostAmount.toFixed(2)) + parseFloat(totalIndirCost.toFixed(2)) + parseFloat(mobCost.toFixed(2));
+                            var projectCostTotal = parseFloat(dirCostAmount.toFixed(2)) + parseFloat(
+                                totalIndirCost.toFixed(2)) + parseFloat(mobCost.toFixed(2));
                             var amountInWords = convertNumberToWords(projectCostTotal);
-                            console.log('dirCostAmount : ', dirCostAmount);
-                            console.log('dirCostAmount : ', totalIndirCost);
-                            console.log('dirCostAmount : ', mobCost);
-                            console.log('dirCostAmount : ', projectCostTotal);
+                            console.log('dirCostAmount : ', dirTotal);
+                            console.log('indirCostAmount : ', movingOut);
+                            console.log('mobCostAmount : ', mobCost);
+                            console.log('projCostAmount : ', projectCostTotal);
                             // Close the table and container
                             divHTML +=
                                 '</tbody>' +
@@ -240,7 +258,8 @@
                                 '</td>' +
                                 '<td class="text-center">' + numberWithCommas(equipTotal.toFixed(2)) +
                                 '</td>' +
-                                '<td class="text-center">' + numberWithCommas(dirTotal.toFixed(2)) +
+                                '<td class="text-center">' + numberWithCommas(parseFloat(dirTotal).toFixed(
+                                    2)) +
                                 '</td>' +
                                 '</tr>' +
                                 '</tfoot>' +
@@ -353,16 +372,17 @@
                                 '<td class="text-left">TOTAL PROJECT COST</td>' +
                                 '<td class="text-right"></td>' +
                                 '<td class="text-center"></td>' +
-                                '<td class="text-center">' + numberWithCommas(projectCostTotal) +
+                                '<td class="text-center">' + numberWithCommas(projectCostTotal.toFixed(2)) +
                                 '</td>' +
                                 '<td class="text-center"></td>' +
                                 '</tr>' +
                                 '<tr>' +
-                                '<td colspan="5" class="text-center">TOTAL ESTIMATED COST IS ' +
-                                amountInWords + '</td>' +
+                                '<th colspan="5" class="text-center">TOTAL ESTIMATED COST IS ' +
+                                amountInWords + '</th>' +
                                 '</tr>' + // totalInWords
                                 '<tr>' +
-                                '<td colspan="5" class="text-center">(' + numberWithCommas(projectCostTotal) + ')</td>' +
+                                '<th colspan="5" class="text-center">(' + numberWithCommas(projectCostTotal
+                                    .toFixed(2)) + ')</th>' +
                                 '</tr>' + // Total cost Item
                                 '</table>' +
                                 '</div>';
@@ -479,46 +499,6 @@
                 });
             });
 
-            // function renderSignatures(signatures) {
-            //     console.log('Rendering signatures:', signatures);
-            //     for (var role in signatures) {
-            //         if (signatures.hasOwnProperty(role)) {
-            //             updateSignature(signatures, role, role.toLowerCase()); // Pass role as prefix
-            //         }
-            //     }
-            // }
-
-            // function updateSignature(signatures, role, prefix) {
-            //     console.log('Updating signature for role:', role);
-            //     console.log('Signature details:', signatures[role]);
-
-            //     // Check if the signature for the role exists
-            //     if (signatures.hasOwnProperty(role)) {
-            //         // Update HTML elements with signature details
-            //         console.log('Prefix:', prefix);
-            //         console.log('Fullname:', signatures[role].fullname);
-            //         console.log('Degree:', signatures[role].degree);
-            //         console.log('Position:', signatures[role].position);
-            //         // Retrieve signature details
-            //         var fullname = signatures[role].fullname || '';
-            //         var degree = signatures[role].degree || '';
-            //         var position = signatures[role].position || '';
-
-            //         // Construct element IDs using the provided prefix
-            //         var nameElementId = prefix + 'Name';
-            //         var degreeElementId = prefix + 'Degree';
-            //         var positionElementId = prefix + 'Position';
-
-            //         // Update HTML elements with signature details
-            //         $('#' + nameElementId).text(fullname);
-            //         $('#' + degreeElementId).text(degree);
-            //         $('#' + positionElementId).text(position);
-            //     } else {
-            //         console.log('Signature not found for role:', role);
-            //         // Optionally handle this case, e.g., display a default message or hide elements
-            //     }
-            // }
-
             // Function to convert a number to its English word representation with all letters capitalized
             function convertNumberToWords(number) {
                 const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
@@ -580,15 +560,14 @@
 
                 words = capitalizeWord(integerWords.trim());
 
-                // Convert the decimal part to words
-                if (decimalPart) {
-                    words += ' Point';
-                    for (let digit of decimalPart) {
-                        words += ' ' + capitalizeWord(ones[parseInt(digit, 10)]);
-                    }
+                // Convert the decimal part to fraction
+                if (decimalPart && parseFloat(decimalPart) !== 0) {
+                    words += ` PESOS AND ${decimalPart.padEnd(2, '0')}/100`;
+                } else {
+                    words += ' PESOS ONLY';
                 }
 
-                return words.trim() + ' PESOS ONLY';
+                return words.trim();
             }
 
             // Function to add commas to thousands

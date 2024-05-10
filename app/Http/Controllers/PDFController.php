@@ -144,8 +144,8 @@ class PDFController extends Controller
                 ];
             } else {
                 // Check if the signatures data already exists in the array
-                $existingSignatures = array_column($formattedData[$title]['signatures'], 'fullname');
-                if (!in_array($project->fullname, $existingSignatures)) {
+                $existingSignatures = array_column($formattedData[$title]['signatures'], 'role');
+                if (!in_array($project->role, $existingSignatures)) {
                     $formattedData[$title]['signatures'][] = $signatures;
                 }
             }

@@ -123,6 +123,9 @@
                             var dirTotal = 0;
                             var vatTotal = 0;
                             var mobTotal = 0;
+                            var matTotal = 0;
+                            var equipTotal = 0;
+                            var labTotal = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -192,16 +195,16 @@
                                 '</thead>' +
                                 '<tbody>' +
                                 '<tr>' +
-                                '<td class="text-center">' + +
+                                '<td class="text-center">' + '1' +
                                 '</td>' +
-                                '<td>' + +'</td>' +
-                                '<td colspan="2" class="text-center">' + +
+                                '<td>' + 'Foreman' +'</td>' +
+                                '<td colspan="2" class="text-left">' + 'Backhoe w/ Dozer' +
                                 '</td>' +
-                                '<td class="text-center">' + +
+                                '<td class="text-center">' + '2' +
                                 '</td>' +
-                                '<td class="text-center">' + +
+                                '<td class="text-center">' + '0' +
                                 '</td>' +
-                                '<td class="text-center">' + +'</td>' +
+                                '<td class="text-center">' + '2' +'</td>' +
                                 '</tr>' +
                                 '<tr>' +
                                 '<th colspan="7" class="text-center">ESTIMATED COST OF PROPOSED WORK</th>' +
@@ -219,9 +222,30 @@
                                 var isMovingParticular = (particular.particular_name ===
                                     "MOVING-IN" || particular.particular_name === "MOVING-OUT");
 
+                                // Calculate individual totals
+                                matTotal += particular.totalMaterialAmount;
+                                equipTotal += particular.totalEquipmentAmount;
+                                labTotal += particular.totalLaborAmount;
+                                dirCostAmount = matTotal + labTotal + equipTotal;
+                                movingIn = (dirCostAmount * 0.01) / 2;
+                                movingOut = (dirCostAmount * 0.01) / 2;
+                                console.log('moving in: ', movingIn);
+                            });
+                            project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+                                // // Calculate individual totals
+                                // matTotal += particular.totalMaterialAmount;
+                                // equipTotal += particular.totalEquipmentAmount;
+                                // labTotal += particular.totalLaborAmount;
+                                // dirCostAmount = matTotal + labTotal + equipTotal;
+                                // movingIn = (dirCostAmount * 0.01) / 2;
+                                // movingOut = (dirCostAmount * 0.01) / 2;
+
                                 // Calculate values based on the type of particular
-                                var edcTotalAmount = isMovingParticular ? parseFloat(particular
-                                    .total) : (parseFloat(particular.totalMaterialAmount) +
+                                var edcTotalAmount = isMovingParticular ? movingIn : (parseFloat(
+                                        particular.totalMaterialAmount) +
                                     parseFloat(particular.totalLaborAmount) + parseFloat(
                                         particular.totalEquipmentAmount));
                                 var markUpTotal = isMovingParticular ? 0 : (project.ocm + project
@@ -236,6 +260,8 @@
 
                                 // Accumulate totalCostAmount
                                 totalCostAmount += totalCost;
+                                console.log('total', movingIn);
+                                console.log('total', totalCostAmount);
                             });
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
@@ -243,12 +269,11 @@
                                 var isMovingParticular = (particular.particular_name ===
                                     "MOVING-IN" || particular.particular_name === "MOVING-OUT");
 
-
-                                var mobValue = isMovingParticular ? parseFloat(particular.total) :
+                                var mobValue = isMovingParticular ? movingIn :
                                     0;
                                 mobTotal += mobValue;
                                 // Calculate values based on the type of particular
-                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) :
+                                edcTotalAmount = isMovingParticular ? movingIn :
                                     (
                                         parseFloat(particular.totalMaterialAmount) + parseFloat(
                                             particular.totalLaborAmount) +
@@ -269,11 +294,11 @@
                                 totMarkUpVal += markUpValue;
                                 vatTotal += vatValue;
                                 totalIndirCost += indirCostTotal;
-                                // totalCostAmount += totalCost;
 
                                 // Calculate percent based on accumulated totalCostAmount
                                 var percent = (totalCost / totalCostAmount) * 100;
                                 totalPercent += percent;
+                                // console.log('moving in: ', movingIn);
                                 console.log('total cost: ', totalCost);
                                 console.log('total cost amount: ', totalCostAmount);
                                 console.log('total percent: ', percent);

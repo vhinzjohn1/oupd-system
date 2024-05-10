@@ -140,6 +140,9 @@
                             var dirTotal = 0;
                             var vatTotal = 0;
                             var mobTotal = 0;
+                            var matTotal = 0;
+                            var equipTotal = 0;
+                            var labTotal = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -156,32 +159,6 @@
                             $('#projectImplementation').text(project.project_mode_of_implementation);
                             // Create particulars table
                             divHTML +=
-                                // '<table class="table table-borderless" id="projectDetails">' +
-                                // '<tr>' +
-                                // '<th>Name of the Project :</th>' +
-                                // '<th>' + project.project_title + '</th>' +
-                                // '<th>Source of Fund :</th>' +
-                                // '<th>' + project.project_source_of_fund + '</th>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<th>Date Prepared :</th>' +
-                                // '<th>' + project.project_date_prepared + '</th>' +
-                                // '<th>Location :</th>' +
-                                // '<th>' + project.project_location + '</th>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<th>Appropriation :</th>' +
-                                // '<th>' + project.project_appropriation + '</th>' +
-                                // '<th>Contract Duration :</th>' +
-                                // '<th>' + project.project_contract_duration + '</th>' +
-                                // '</tr>' +
-                                // '<tr>' +
-                                // '<th>Owner :</th>' +
-                                // '<th>' + project.project_owned + '</th>' +
-                                // '<th>Mode of Implementation :</th>' +
-                                // '<th>' + project.project_mode_of_implementation + '</th>' +
-                                // '</tr>' +
-                                // '</table>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
@@ -206,6 +183,19 @@
                                 '</tr>' +
                                 '</thead>' +
                                 '<tbody>';
+                            project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+                                // Calculate individual totals
+                                matTotal += particular.totalMaterialAmount;
+                                equipTotal += particular.totalEquipmentAmount;
+                                labTotal += particular.totalLaborAmount;
+                                dirCostAmount = matTotal + labTotal + equipTotal;
+                                movingIn = (dirCostAmount * 0.01) / 2;
+                                movingOut = (dirCostAmount * 0.01) / 2;
+                                console.log('moving in: ', movingIn);
+                            });
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
                                 // Check if the particular is MOVING-IN or MOVING-OUT
@@ -213,11 +203,11 @@
                                     "MOVING-IN" || particular.particular_name === "MOVING-OUT");
 
 
-                                var mobValue = isMovingParticular ? parseFloat(particular.total) :
+                                var mobValue = isMovingParticular ? movingIn :
                                     0;
                                 mobTotal += mobValue;
                                 // Calculate values based on the type of particular
-                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) :
+                                edcTotalAmount = isMovingParticular ? movingIn :
                                     (
                                         parseFloat(particular.totalMaterialAmount) + parseFloat(
                                             particular.totalLaborAmount) +

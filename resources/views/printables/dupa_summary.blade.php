@@ -132,6 +132,9 @@
 
                         if (project) {
                             var totalCostAmount = 0;
+                            var matTotal = 0;
+                            var equipTotal = 0;
+                            var labTotal = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -167,6 +170,19 @@
                                 '</tr>' +
                                 '</thead>' +
                                 '<tbody>';
+                            project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+                                // Calculate individual totals
+                                matTotal += particular.totalMaterialAmount;
+                                equipTotal += particular.totalEquipmentAmount;
+                                labTotal += particular.totalLaborAmount;
+                                dirCostAmount = matTotal + labTotal + equipTotal;
+                                movingIn = (dirCostAmount * 0.01) / 2;
+                                movingOut = (dirCostAmount * 0.01) / 2;
+                                console.log('moving in: ', movingIn);
+                            });
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
                                 var isMovingParticular = (particular.particular_name ===
@@ -180,8 +196,8 @@
                                 var indirectCostTotal = ocmTotal + cpTotal;
                                 var vatTotal = (directCostTotal + indirectCostTotal) * (particular
                                     .vat / 100);
-                                var totalCostItem = isMovingParticular ? parseFloat(particular.total) : directCostTotal + indirectCostTotal + vatTotal;
-                                var unitCostTotal = isMovingParticular ? parseFloat(particular.total) : totalCostItem / particular.quantity;
+                                var totalCostItem = isMovingParticular ? movingIn : directCostTotal + indirectCostTotal + vatTotal;
+                                var unitCostTotal = isMovingParticular ? movingIn : totalCostItem / particular.quantity;
                                 console.log('vat: ', totalCostItem)
 
                                 totalCostAmount += totalCostItem;
@@ -336,7 +352,6 @@
                                 '</div>';
                             // Append the complete table to the container
                             $('#particularsContainer').html(divHTML);
-                            $('#preparedBy').html(preparedBy);
                         } else {
                             console.error('Project with ID ' + projectId +
                                 ' not found in the response.');

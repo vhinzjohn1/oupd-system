@@ -108,10 +108,27 @@
                             $('#projectLocation').text(project.project_location);
                             $('#projectOwner').text(project.project_owner);
 
+                            var matTotal = 0;
+                            var equipTotal = 0;
+                            var labTotal = 0;
+                            project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+                                // Calculate individual totals
+                                matTotal += particular.totalMaterialAmount;
+                                equipTotal += particular.totalEquipmentAmount;
+                                labTotal += particular.totalLaborAmount;
+                                dirCostAmount = matTotal + labTotal + equipTotal;
+                                movingIn = (dirCostAmount * 0.01) / 2;
+                                movingOut = (dirCostAmount * 0.01) / 2;
+                                console.log('moving in: ', movingIn);
+                            });
                             project.particulars.forEach(function(particular, index) {
                                 var materials = particular.details.Materials;
                                 var labor = particular.details.Labor;
                                 var equipment = particular.details.Equipment;
+
                                 // Check if the particular is a moving-in or moving-out
                                 if (particular.particular_name === "MOVING-IN" || particular
                                     .particular_name === "MOVING-OUT") {
@@ -123,8 +140,7 @@
                                         '. ' + particular.particular_name + '</h5>' +
                                         '</div>' +
                                         '<div class="col-md-6">' +
-                                        '<h5 class="text-right">' + numberWithCommas(parseFloat(
-                                            particular.total).toFixed(2)) + '</h5>' +
+                                        '<h5 class="text-right">' + numberWithCommas(parseFloat(movingIn).toFixed(2)) + '</h5>' +
                                         '</div>' +
                                         '</div>' +
                                         '</div>';

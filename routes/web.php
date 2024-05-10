@@ -8,19 +8,15 @@ use App\Http\Controllers\ProjectParticularController;
 use App\Http\Controllers\SignatureController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Models\MaterialCategory;
-use App\Models\Project;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\GetAllDataController;
 use App\Http\Controllers\ParticularController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
-use App\Models\EquipmentCategory;
-use App\Models\Particular;
-use Dompdf\Adapter\PDFLib;
+use App\Http\Controllers\MinimumEquipmentController;
+use App\Http\Controllers\TechnicalPersonnelController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -50,6 +46,9 @@ Route::resource('dashboards', DashboardController::class);
 // Route to Controller Material Labor Equipment Resource
 Route::resource('mle', MLEController::class);
 Route::resource('signatures', SignatureController::class);
+
+Route::resource('technical_personnels', TechnicalPersonnelController::class);
+Route::resource('minimum_equipments', MinimumEquipmentController::class);
 
 // Materials Routes and Controller
 Route::resource('materials', MaterialController::class);

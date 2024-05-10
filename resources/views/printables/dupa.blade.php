@@ -77,11 +77,20 @@
                         </div>
                     </div>
                     <div class="d-flex flex-column align-items-start">
-                        <div><strong>PROJECT TITLE:</strong> <span id="projectTitle" style="font-size: 20px;"></span>
+                        <div class="row row-cols-auto">
+                            <div><strong>PROJECT TITLE:</strong></div>
+                            <div class="col"><span id="projectTitle" style="font-size: 20px;"></span>
+                            </div>
                         </div>
-                        <div><strong>LOCATION:</strong> <span id="projectLocation" style="font-size: 20px;"></span>
+                        <div class="row row-cols-auto">
+                            <div><strong>LOCATION:</strong></div>
+                            <div class="col"><span id="projectLocation" style="font-size: 20px;"></span>
+                            </div>
                         </div>
-                        <div><strong>OWNER:</strong> <span id="projectOwner" style="font-size: 20px;"></span></div> <br>
+                        <div class="row row-cols-auto">
+                            <div><strong>OWNER:</strong></div>
+                            <div class="col"><span id="projectOwner" style="font-size: 20px;"></span></div> <br>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -127,24 +136,22 @@
                             var totalMaterial = 0; // Declare these variables outside the loop
                             var totalLabor = 0;
                             var totalEquipment = 0;
-                            // var divHTML =
-                            //     '<div class="container text-center">' +
-                            //         '<div class="row mt-4">' +
-                            //         '<div class="row mt-2">' +
-                            //         '<div class="d-flex flex-column align-items-center">' +
-                            //         '<div class="row mt-">' +
-                            //         '<h5>DETAILED UNIT PRICE ANALYSIS (DUPA)</h5></div>' +
-                            //         '</div>' +
-                            //         '<div class="d-flex flex-column align-items-start">' +
-                            //         '<div><strong>PROJECT TITLE: ' + project.project_title +
-                            //         '</strong> </div>' +
-                            //         '<div><strong>LOCATION: ' + project.project_location +
-                            //         '</strong></div>' +
-                            //         '<div><strong>OWNER: ' + project.project_owner + '</strong> </div> <br>' +
-                            //         '</div>' +
-                            //         '</div>' +
-                            //         '</div>' +
-                            //         '</div>' ;
+                            var matTotal = 0;
+                            var equipTotal = 0;
+                            var labTotal = 0;
+                            project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+                                // Calculate individual totals
+                                matTotal += particular.totalMaterialAmount;
+                                equipTotal += particular.totalEquipmentAmount;
+                                labTotal += particular.totalLaborAmount;
+                                dirCostAmount = matTotal + labTotal + equipTotal;
+                                movingIn = (dirCostAmount * 0.01) / 2;
+                                movingOut = (dirCostAmount * 0.01) / 2;
+                                console.log('moving in: ', movingIn);
+                            });
                             project.particulars.forEach(function(particular, index) {
                                 var isMovingParticular = (particular.particular_name ===
                                     "MOVING-IN" || particular.particular_name === "MOVING-OUT");
@@ -162,7 +169,8 @@
                                 var vatTotal = (directCostTotal + indirectCostTotal) * (particular
                                     .vat / 100);
                                 var totalCostItem = directCostTotal + indirectCostTotal + vatTotal;
-                                var unitCostTotal = isMovingParticular ? parseFloat(particular.total) : totalCostItem / particular.quantity;
+                                var unitCostTotal = isMovingParticular ? movingIn : totalCostItem /
+                                    particular.quantity;
                                 console.log('unitcost: ', unitCostTotal)
                                 // Create a new div for each particular name
                                 var divHTML =

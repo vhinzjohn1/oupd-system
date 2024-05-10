@@ -17,7 +17,7 @@ class MinimumEquipmentController extends Controller
     public function store(Request $request)
     {
         try {
-            $minimum_equipment = MinimumEquipment::firstOrCreate(
+            $minimum_equipments = MinimumEquipment::firstOrCreate(
                 ['project_id' => $request->projectId],
                 [
                     'min_equip_description' => $request->minEquipDescription,
@@ -27,7 +27,7 @@ class MinimumEquipmentController extends Controller
                     'project_id' => $request->projectId,
                 ]
             );
-            if ($minimum_equipment->wasRecentlyCreated) {
+            if ($minimum_equipments->wasRecentlyCreated) {
                 return response()->json(['success' => true, 'message' => 'Successfully added Minimum Equipment']);
             } else {
                 return response()->json(['success' => false, 'message' => 'Minimum Equipment already exists in this project']);
@@ -46,7 +46,7 @@ class MinimumEquipmentController extends Controller
     public function update(Request $request, $minimum_equipment_id)
     {
         try {
-            $minimum_equipment = MinimumEquipment::updateOrCreate(
+            $minimum_equipments = MinimumEquipment::updateOrCreate(
                 ['minimum_equipment_id' => $minimum_equipment_id],
                 [
                     'min_equip_owned' => $request['min_equip_owned'],
@@ -55,7 +55,7 @@ class MinimumEquipmentController extends Controller
                     'project_id' => $request['projectId'],
                 ]
             );
-            return response()->json(['success' => true, 'message' => 'Minimum Equipment Edited Successfully', 'minimum_equipment' => $minimum_equipment]);
+            return response()->json(['success' => true, 'message' => 'Minimum Equipment Edited Successfully', 'minimum_equipment' => $minimum_equipments]);
         } catch (\Exception $e) {
             Log::error('Failed to update Minimum Equipment: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Failed to update Minimum Equipment. Please check the logs for details.'], 500);
@@ -65,8 +65,8 @@ class MinimumEquipmentController extends Controller
     public function destroy($minimum_equipment_id)
     {
         try {
-            $minimum_equipment = MinimumEquipment::findOrFail($minimum_equipment_id);
-            $minimum_equipment->delete();
+            $minimum_equipments = MinimumEquipment::findOrFail($minimum_equipment_id);
+            $minimum_equipments->delete();
             return response()->json(['success' => true, 'message' => 'Minimum Equipment details deleted successfully!']);
         } catch (\Exception $e) {
             Log::error('Failed to delete Minimum Equipment details: ' . $e->getMessage());

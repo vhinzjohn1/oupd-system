@@ -73,25 +73,24 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
-        <div class="container text-center">
-            <div class="row mt-4">
-                <div class="row mt-2">
-                    <div class="d-flex flex-column align-items-center">
-                        <div class="text-center">
-                            <h5>APPROVED BUDGET FOR THE CONTRACT</h5> <!-- Default -->
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column align-items-start">
-                        <div><strong>PROJECT TITLE:</strong> <span id="projectTitle" style="font-size: 20px;"></span>
-                        </div>
-                        <div><strong>LOCATION:</strong> <span id="projectLocation" style="font-size: 20px;"></span>
-                        </div>
-                        <div><strong>Contract Duration:</strong> <span id="projectDuration" style="font-size: 20px;"></span>
-                        </div> <br>
-                    </div>
+            <div class="container">
+                <div class="row row-cols-auto">
+                    <div class="col-12"><h5 class="text-center">APPROVED BUDGET FOR THE CONTRACT</h5></div>
+                </div>
+                <div class="row row-cols-auto">
+                    <div class="col-2 text-left"><strong>PROJECT TITLE:</strong></div>
+                    <div class="col"><span id="projectTitle"></span></div>
+                </div>
+                <div class="row row-cols-auto">
+                    <div class="col-2 text-left"><strong>LOCATION:</strong></div>
+                    <div class="col"><span id="projectLocation"></span></div>
+                </div>
+                <div class="row row-cols-auto">
+                    <div class="col-2 text-left"><strong>Contract Duration:</strong></div>
+                    <div class="col"><span id="projectDuration"></span></div>
                 </div>
             </div>
-        </div>
+
 
         <!-- Project Particulars -->
         <div class="container-fluid">
@@ -133,6 +132,9 @@
                             var dirTotal = 0;
                             var vatTotal = 0;
                             var mobTotal = 0;
+                            var matTotal = 0;
+                            var equipTotal = 0;
+                            var labTotal = 0;
                             var divHTML = ''; // Initialize HTML string
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -214,6 +216,19 @@
                                 '<td>(13)</td>' +
                                 '<td>(14)</td>' +
                                 '</tr>';
+                            project.particulars.forEach(function(particular, index) {
+                                var isMovingParticular = (particular.particular_name ===
+                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+
+                                // Calculate individual totals
+                                matTotal += particular.totalMaterialAmount;
+                                equipTotal += particular.totalEquipmentAmount;
+                                labTotal += particular.totalLaborAmount;
+                                dirCostAmount = matTotal + labTotal + equipTotal;
+                                movingIn = (dirCostAmount * 0.01) / 2;
+                                movingOut = (dirCostAmount * 0.01) / 2;
+                                console.log('moving in: ', movingIn);
+                            });
                             // Loop through each particular to add rows to the table
                             project.particulars.forEach(function(particular, index) {
                                 // Check if the particular is MOVING-IN or MOVING-OUT
@@ -221,11 +236,11 @@
                                     "MOVING-IN" || particular.particular_name === "MOVING-OUT");
 
 
-                                var mobValue = isMovingParticular ? parseFloat(particular.total) :
+                                var mobValue = isMovingParticular ? movingIn :
                                     0;
                                 mobTotal += mobValue;
                                 // Calculate values based on the type of particular
-                                edcTotalAmount = isMovingParticular ? parseFloat(particular.total) :
+                                edcTotalAmount = isMovingParticular ? movingIn :
                                     (
                                         parseFloat(particular.totalMaterialAmount) + parseFloat(
                                             particular.totalLaborAmount) +
@@ -264,9 +279,8 @@
                                         .ocm.toFixed(2)) + '</td>' +
                                     '<td class="text-center">' + (isMovingParticular ? '' : project
                                         .contractors_profit.toFixed(2)) + '</td>' +
-                                    '<td class="text-right">' + (isMovingParticular ?
-                                        numberWithCommas(parseFloat(particular.total)
-                                            .toFixed(2)) : '') +
+                                    '<td class="text-right">' + (isMovingParticular ? mobValue
+                                        .toFixed(2) : '') +
                                     '</td>' +
                                     '<td class="text-center">' + (isMovingParticular ? '' :
                                         markUpTotal.toFixed(2)) + '</td>' +
@@ -286,7 +300,8 @@
                                     '</tr>';
                             });
                             // Close the table and container
-                            var amountInWords = convertNumberToWords(totalCostAmount);
+                            var amountInWords = convertNumberToWords(parseFloat(totalCostAmount).toFixed(
+                                2));
                             divHTML +=
                                 '</tbody>' +
                                 '<tfoot>' +
@@ -494,15 +509,14 @@
 
                 words = capitalizeWord(integerWords.trim());
 
-                // Convert the decimal part to words
-                if (decimalPart) {
-                    words += ' Point';
-                    for (let digit of decimalPart) {
-                        words += ' ' + capitalizeWord(ones[parseInt(digit, 10)]);
-                    }
+                // Convert the decimal part to fraction
+                if (decimalPart && parseFloat(decimalPart) !== 0) {
+                    words += ` PESOS AND ${decimalPart.padEnd(2, '0')}/100`;
+                } else {
+                    words += ' PESOS ONLY';
                 }
 
-                return words.trim() + ' PESOS ONLY';
+                return words.trim();
             }
 
             // Function to add commas to thousands
