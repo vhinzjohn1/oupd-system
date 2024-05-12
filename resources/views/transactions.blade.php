@@ -4,7 +4,6 @@
 
     <head>
 
-        <script src="{{ asset('js/ag-grid.js') }}"></script>
         <style>
             .cardNoBorder {
                 border: none;
@@ -33,7 +32,8 @@
                         <input type="hidden" id="projectSelectedID">
                         <h1 id="projectSelectedTitle"></h1>
                     </div>
-                    <div class="btn btn-success" id="newProject" onclick="newProject()">New Project</div>
+                    {{-- <div class="btn btn-success" id="newProject" onclick="newProject()">New Project</div> --}}
+                    <div class=""></div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -42,6 +42,40 @@
 
     <!-- Main content -->
     <div class="content">
+
+        <!------ Floating Button ----->
+        <ul id="menu" class="mfb-component--br mfb-zoomin" data-mfb-toggle="hover">
+            <li class="mfb-component__wrap">
+                <a href="#" class="mfb-component__button--main">
+                    <i class="mfb-component__main-icon--resting ion-plus-round"></i>
+                    <i class="mfb-component__main-icon--active ion-close-round"></i>
+                </a>
+                <ul class="mfb-component__list">
+                    <li>
+                        <a href="https://github.com/nobitagit/material-floating-button/" data-mfb-label="View on Github"
+                            class="mfb-component__button--child">
+                            <i class="mfb-component__child-icon ion-social-github"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/nobitagit" data-mfb-label="Follow me on Github"
+                            class="mfb-component__button--child">
+                            <i class="mfb-component__child-icon ion-social-octocat"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://twitter.com/share?text=Check this material floating button component!&url=http://nobitagit.github.io/material-floating-button/&hashtags=material,design,button,css"
+                            data-mfb-label="Share on Twitter" class="mfb-component__button--child">
+                            <i class="mfb-component__child-icon ion-social-twitter"></i>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul><!------- End of Floating Button ------>
+
+
+
         <div class="container-fluid">
             <div class="card" id="addNewProject">
                 <div class="card-header header-hover" data-toggle="collapse" data-target="#addProject" aria-expanded="false"
@@ -91,6 +125,12 @@
                                             <label for="add_project_appropriation">Project Cost</label>
                                             <input type="text" class="form-control price-input"
                                                 id="add_project_appropriation" name="add_project_appropriation" required>
+                                        </div>
+
+                                        <div class="form-group margin-top">
+                                            <label for="add_project_category">Project Category</label>
+                                            <input type="text" class="form-control" id="add_project_category"
+                                                name="add_project_category" required>
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -216,7 +256,7 @@
                         </div>
                     </div>
                 </div>
-            </div> <!-- ./ Project Card  --->
+            </div> <!-- ./ Signatures Card  --->
 
 
             <!----- Third Column for Required ----->
@@ -259,7 +299,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div> <!-- ./ Project Card  --->
+                    </div> <!-- ./ Technical Personnel Required Card  --->
                 </div>
 
                 <!------ Minimum Equipment Requirement ------>
@@ -302,7 +342,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div> <!-- ./ Project Card  --->
+                    </div> <!-- ./ Minimum Equipment Requirement Card  --->
                 </div>
             </div>
 
@@ -310,7 +350,7 @@
 
             <!-- Your Blade view with JavaScript -->
 
-            @include('modals.project_particular_detail.add_project_particular_detail')
+            {{-- @include('modals.project_particular_detail.add_project_particular_detail')
             @include('modals.project_particular.add_projectPart_material')
             @include('modals.project_particular.add_projectPart_labor')
             @include('modals.project_particular.add_projectPart_equipment')
@@ -319,24 +359,24 @@
             @include('modals.project_particular.edit_projectPart_labor')
             @include('modals.project_particular.edit_projectPart_equipment')
             @include('modals.signature.add_signature')
-            @include('modals.signature.edit_signature')
+            @include('modals.signature.edit_signature') --}}
 
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
-            <div class="d-flex">
+            <div class="d-flex justify-content-between mb-2">
                 <h4>Project Item</h4>
+                <div class="col-2">
+                    <select class="form-control" id="selectProjParticular">
+                    </select>
+                </div>
 
                 {{-- <div class="btn btn-success"></div> --}}
             </div>
             <div id="projectParticularContent" class="container-fluid col-12 d-flex flex-column"></div>
         </div>
 
-        <div class="col-2">
-            <select class="form-control" id="selectProjParticular">
 
-            </select>
-        </div>
 
     </div>
 
@@ -426,15 +466,10 @@
             "responsive": true,
             "lengthChange": true,
             "autoWidth": true,
-            "searching": false,
+            "searching": true,
             "ordering": true,
-            "paging": false,
+            "paging": true,
         });
-
-        function sortProjectParticular() {
-            console.log("Hello World")
-        }
-
         // Adding Project
         function newProject() {
             $("#addTransProjModal").modal("show");
@@ -977,6 +1012,7 @@
                 calculateAmount();
                 // Show the modal
                 $("#editParticularMaterialModal").modal("show");
+                initializePriceInputs();
             } else if (detailType === "labor") {
                 $('#edit_particular_laborID').val(materialPartID);
                 $('#edit_particular_laborName').val(materialCategoryName);
@@ -1254,7 +1290,7 @@
                                                 $('<div>').addClass('col-4').append(
                                                     $('<h6>').text('Quantity: ').append(
                                                         $('<input>').addClass(
-                                                            'MuiInputBase-input MuiInput-input')
+                                                            '')
                                                         .attr({
                                                             type: 'number',
                                                             id: 'quantity_' + particular
@@ -1267,7 +1303,7 @@
                                                 $('<div>').addClass('col-3').append(
                                                     $('<h6>').text('Unit: ').append(
                                                         $('<input>').addClass(
-                                                            'MuiInputBase-input MuiInput-input')
+                                                            '')
                                                         .attr({
                                                             type: 'text',
                                                             id: 'unit_' + particular
@@ -1279,10 +1315,9 @@
                                                 ),
                                                 $('<div>').addClass('col-4').append(
                                                     $('<h6>').text('Total Amount: ').append(
-                                                        $('<input>').addClass(
-                                                            'MuiInputBase-input MuiInput-input')
+                                                        $('<span>').addClass(
+                                                            '')
                                                         .attr({
-                                                            type: 'number',
                                                             id: 'total_' + particular
                                                                 .particular_id,
                                                             value: particular
@@ -1290,7 +1325,7 @@
                                                                 null ?
                                                                 parseFloat(particular
                                                                     .project_particular_total
-                                                                    ).toLocaleString(
+                                                                ).toLocaleString(
                                                                     'en-US', {
                                                                         minimumFractionDigits: 2,
                                                                         maximumFractionDigits: 2
@@ -1623,7 +1658,7 @@
                 addDetailBtn(particular_id, detailType);
             }).append('<i class="fa fa-plus"></i>');
 
-            var cardBody = $('<div>', {});
+            var cardBody = $('<div class="">', {});
             var headerName = `Total ${detailType} Amount: ${totalAmounts}`;
 
             var footerCard = $('<div>', {
@@ -1668,11 +1703,11 @@
             cardBodyFooter.append(footerGridDiv);
             footerCard.append(cardBodyFooter);
 
-            cardBody.append(footerCard);
-            collapse.append(cardBody);
+            collapse.append(cardBody, footerCard); // Append footer directly to collapse
             card.append(cardHeader, collapse);
 
             return card;
+
         }
 
 
@@ -1779,7 +1814,7 @@
                     projectID: selectedProjectID,
                 },
                 success: function(data) {
-
+                    console.log('This is the Data: ', data);
                     // Check if there are no projects or if selectedProjectID is not found
                     if (data.length === 0 || !data.find(project => project.project_id === parseInt(
                             selectedProjectID))) {
@@ -1787,7 +1822,6 @@
                         $("#projectSelectedTitle").text('No Project Selected');
                         return;
                     }
-
                     // Iterate over each project
                     data.forEach(function(project) {
                         // Check if the project ID matches the selected project ID
@@ -1803,6 +1837,7 @@
                             $("#add_project_description").val(project.project_description);
                             $("#add_project_contract_duration").val(project.project_contract_duration);
                             $("#add_project_appropriation").val(project.project_appropriation);
+                            $("#add_project_category").val(project.project_category);
                             $("#add_project_source_of_fund").val(project.project_source_of_fund);
                             $("#add_project_date_prepared").val(project.project_date_prepared);
                             $("#add_project_mode_of_implementation").val(project
@@ -1948,7 +1983,9 @@
                                     $('<div>').addClass('row').append(
                                         $('<div>').addClass('col-4').append(
                                             $('<h6>').text('Quantity: ').append(
-                                                $('<input>').attr({
+                                                $('<input>').addClass(
+                                                    '')
+                                                .attr({
                                                     type: 'number',
                                                     id: 'quantity_' + particular
                                                         .particular_id,
@@ -1959,7 +1996,9 @@
                                         ),
                                         $('<div>').addClass('col-3').append(
                                             $('<h6>').text('Unit: ').append(
-                                                $('<input>').attr({
+                                                $('<input>').addClass(
+                                                    '')
+                                                .attr({
                                                     type: 'text',
                                                     id: 'unit_' + particular
                                                         .particular_id,
@@ -1970,8 +2009,9 @@
                                         ),
                                         $('<div>').addClass('col-4').append(
                                             $('<h6>').text('Total Amount: ').append(
-                                                $('<input>').attr({
-                                                    type: 'number',
+                                                $('<span>').addClass(
+                                                    '')
+                                                .attr({
                                                     id: 'total_' + particular
                                                         .particular_id,
                                                     value: particular
@@ -2313,6 +2353,8 @@
             if (laborId === "") {
                 laborId = "empty";
             }
+
+            let laborRateID = $("#add_particular_labor_rateID").val();
             let data = {
                 projectId: projectId,
                 particularId: particularId,
@@ -2322,6 +2364,7 @@
                 laborLocation: "maramag",
                 noOfPerson: noOfPerson,
                 workDays: workDays,
+                laborRateID: laborRateID,
                 _token: "{{ csrf_token() }}",
             }
             if (laborId !== "empty") {
@@ -2382,6 +2425,7 @@
                 let equipmentWorkDays = $(
                     "#add_particular_EquipmentWorkDays"
                 ).val();
+                let equipmentRateID = $("#add_particular_equipmentRateID").val();
 
                 let data = {
                     projectId: projectId,
@@ -2394,6 +2438,7 @@
                     equipmentCapacity: equipmentCapacity,
                     noOfUnit: noOfUnit,
                     equipmentWorkDays: equipmentWorkDays,
+                    equipmentRateID: equipmentRateID,
                     // Add more form data fields here if needed
                     _token: "{{ csrf_token() }}",
                 };
@@ -2537,8 +2582,7 @@
                     type: "GET",
                     dataType: "json",
                     success: function(response) {
-
-                        var labors = response.labors; // Extract labor data from the AJAX response
+                        var labors = response.labors;
 
                         // Get the select element and empty it
                         var laborSelect = $("#add_particular_laborName").empty();
@@ -2594,6 +2638,9 @@
                                     );
                                     $("#add_particular_laborWorkDays").val(
                                         selectedLabor.labor_workdays
+                                    );
+                                    $("#add_particular_labor_rateID").val(
+                                        selectedLabor.labor_rate_id
                                     );
 
                                     // Chnage readonly attributte of the form
@@ -2674,6 +2721,8 @@
                                         selectedEquipment.equipment_capacity);
                                     $("#add_particular_EquipmentID").val(
                                         selectedEquipment.equipment_id);
+                                    $("#add_particular_equipmentRateID").val(
+                                        selectedEquipment.equipment_rate_id);
                                     // Chnage readonly attributte of the form
                                     $("#add_particular_EquipmentRate").prop('readonly', true);
                                     $("#add_particular_EquipmentCategory").prop('readonly', true);

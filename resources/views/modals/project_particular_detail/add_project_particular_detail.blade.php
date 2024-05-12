@@ -42,10 +42,10 @@
                     <div class="modal-footer d-flex justify-content-center">
                         <button type="submit" class="btn bg-success">Save changes</button>
                     </div>
+                </div>
             </form>
         </div>
     </div>
-</div>
 </div>
 
 <script>

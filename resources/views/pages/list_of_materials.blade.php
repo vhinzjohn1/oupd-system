@@ -115,7 +115,6 @@
 
         // Function to display materials data in the DataTable
         function displayMaterials(data) {
-            console.log(data);
             var table = $('#materialTable').DataTable();
             var existingRows = table.rows().remove().draw(false);
 
@@ -134,7 +133,11 @@
                     material.year,
                     '<div class="text-center d-flex">' +
                     `<button type="button" id="editButton" class="btn bg-success mr-2"
-            data-material-id="${material.material_id}" data-priceId="${material.price_id}" data-price="${material.price}" data-quarter="${material.quarter}" data-year="${material.year}" data-material-name="${material.material_name}" data-category-name="${material.material_category_name}" data-unit="${material.unit}"><i class="fa fa-edit"></i></button>` +
+                        data-material-id="${material.material_id}" data-priceId="${material.price_id}"
+                        data-price="${material.price}" data-quarter="${material.quarter}" data-year="${material.year}"
+                        data-material-name="${material.material_name}" data-category-name="${material.material_category_name}"
+                        data-unit="${material.unit}"><i class="fa fa-edit"></i>
+                        </button>` +
                     `<button type="button" class="btn btn-danger btn-delete-material" data-id="${material.material_id}"><i class="fa fa-trash-alt"></i></button>` +
                     '</div>'
                 ]).node();
@@ -152,9 +155,6 @@
                 const materialName = $(this).data('material-name');
                 const materialCategory = $(this).data('category-name');
                 const unit = $(this).data('unit');
-
-                console.log(materialName);
-                console.log(materialCategory);
                 openEditMaterialModal(materialID, priceID, price, quarter, year, materialName, materialCategory,
                     unit);
             });

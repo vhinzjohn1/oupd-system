@@ -248,7 +248,9 @@
             localStorage.setItem('projectTitle', project_title);
 
 
-            refreshProjectParticularTable();
+            let projectID = project_id;
+
+
             // Show SweetAlert2 popup
             Swal.fire({
                 title: `${project_title}  Selected`,
@@ -257,121 +259,36 @@
             }).then((result) => {
                 // Redirect to the home page after the user clicks "OK"
                 if (result.isConfirmed) {
-                    window.location.href = '/transactions';
-                }
-            });
-        }
+                    $.ajax({
+                        url: "{{ route('setProject.store') }}",
+                        type: "POST",
+                        data: {
+                            projectID: projectID,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            toastr.options.progressBar = true;
+                            toastr.success('Project Added Successfully!');
+                            console.log(response); // Log response for debugging
 
+                            if (response) {
+                                $('#addProjectForm')[0].reset();
+                                $('#addProjectModal').modal('hide');
 
-        function refreshProjectParticularTable() {
-            // Retrieve project_id from localStorage
-            var project_id = localStorage.getItem('projectID');
-            var project_title = localStorage.getItem('projectTitle');
+                                refreshProjectsTable();
 
-            // Make sure project_id is not null or undefined
-            if (project_id === null || project_id === undefined) {
-                console.error("Project ID not found in localStorage");
-                return;
-            }
-            // Make an AJAX request to fetch the formatted data
-            $.ajax({
-                url: '/formatted-data',
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    var table = $('#projectParticularTable');
-                    table.empty();
-
-                    // Loop through the JSON data and filter for project with project_id = 1
-                    var filteredProjects = response.projects.filter(function(project) {
-                        return project.project_id === parseInt(project_id);
-                    });
-                    // Loop through the JSON data and populate the table
-                    filteredProjects.forEach(function(project) {
-                        var projectHeaderRow = $(
-                            '<tr class="" style="background-color: #00491E; color: white;"><th class="text-center col-12" colspan="3">' +
-                            project
-                            .project_title + '</th></tr>');
-                        table.append(projectHeaderRow);
-
-                        project.particulars.forEach(function(particular) {
-                            var particularHeaderRow = $(
-                                '<tr class="dark-gray"><th class="text-center col-12" colspan="3">' +
-                                (particular.particular_name ? particular.particular_name :
-                                    "Not Set") +
-                                '</th></tr>');
-                            table.append(particularHeaderRow);
-
-
-                            // Create header row for Materials, Labor, and Equipment
-                            var headerRow = $('<tr class="bg-olive"></tr>');
-                            headerRow.append(
-                                '<td><div class="header-column d-flex justify-content-between bg-olive"><span>Materials</span><span>Qty</span></div></td>'
-                            );
-                            headerRow.append(
-                                '<td class="td-width"><div class="header-column d-flex justify-content-between bg-olive"><span>Labor</span><span>Days</span></div></td>'
-                            );
-                            headerRow.append(
-                                '<td><div class="header-column d-flex justify-content-between bg-olive"><span>Equipment</span><span>Days</span></div></td>'
-                            );
-                            table.append(headerRow);
-
-
-                            // Iterate over details and add rows for each value
-                            var maxValues = Math.max(particular.details.Materials.length,
-                                particular.details.Labor
-                                .length, particular.details.Equipment.length);
-                            for (var i = 0; i < maxValues; i++) {
-                                var detailRow = $('<tr></tr>');
-                                var materialsSpan = '<span>' + ((particular.details.Materials[
-                                        i] && particular
-                                    .details.Materials[i].material_name) || '') + '</span>';
-                                var laborSpan = '<span>' + ((particular.details.Labor[i] &&
-                                        particular.details.Labor[i].labor_name) || '') +
-                                    ((particular.details.Labor[i] && particular.details.Labor[i]
-                                        .labor_location) ? (' (' + particular.details.Labor[
-                                            i]
-                                        .labor_location + ')') : '') + '</span>';
-                                var equipmentSpan = '<span>' + ((particular.details.Equipment[
-                                        i] && particular
-                                    .details.Equipment[i].equipment_name) || '') + '</span>';
-                                var materialsQtySpan = '<span>' + ((particular.details
-                                        .Materials[i] && particular
-                                        .details.Materials[i].material_quantity) || '') +
-                                    '</span>';
-                                var laborHrsSpan = '<span>' + ((particular.details.Labor[i] &&
-                                    particular.details
-                                    .Labor[i].labor_work_days) || '') + '</span>';
-                                var equipmentHrsSpan = '<span>' + ((particular.details
-                                        .Equipment[i] && particular
-                                        .details.Equipment[i].equipment_work_days) || '') +
-                                    '</span>';
-                                var materialsDiv =
-                                    '<div class="d-flex justify-content-between header-column">' +
-                                    materialsSpan +
-                                    materialsQtySpan + '</div>';
-                                var laborDiv =
-                                    '<div class="d-flex justify-content-between header-column">' +
-                                    laborSpan +
-                                    laborHrsSpan + '</div>';
-                                var equipmentDiv =
-                                    '<div class="d-flex justify-content-between header-column">' +
-                                    equipmentSpan +
-                                    equipmentHrsSpan + '</div>';
-
-                                detailRow.append('<td>' + materialsDiv + '</td>');
-                                detailRow.append('<td>' + laborDiv + '</td>');
-                                detailRow.append('<td>' + equipmentDiv + '</td>');
-                                table.append(detailRow);
+                            } else {
+                                // Show error message if material addition fails
+                                alert('Failed to add project: ' + response.message);
                             }
-
-                        });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText); // Log error response for debugging
+                            alert('Error occurred. Check console for details.');
+                        }
                     });
 
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-
+                    window.location.href = '/transactions';
                 }
             });
         }
@@ -421,10 +338,9 @@
                     project.project_location,
                     project.project_contract_duration,
                     '<div class="text-center d-flex">' +
-                    `<button type="button" id="editProjectButton" class="btn bg-success mr-2" data-id="${project.project_id}" onclick="viewProjectModal(${project.project_id}, '${project.project_title}', '${project.project_location}', '${project.project_owner}', '${project.project_description}', '${project.project_contract_duration}', '${project.project_date_prepared}', '${project.project_target_start_date}', '${project.project_appropriation}', '${project.project_source_of_fund}', '${project.project_mode_of_implementation}')"><i class="fas fa-edit" aria-hidden="true"></i></button>` +
+                    `<button type="button" id="editProjectButton" class="btn bg-success mr-2" data-id="${project.project_id}" onclick="viewProjectModal(${project.project_id}, '${project.project_title}', '${project.project_location}', '${project.project_owner}', '${project.project_description}', '${project.project_contract_duration}', '${project.project_date_prepared}', '${project.project_target_start_date}', '${project.project_appropriation}', '${project.project_source_of_fund}', '${project.project_mode_of_implementation}', '${project.project_category}')"><i class="fas fa-edit" aria-hidden="true"></i></button>` +
                     `<button type="button" id="deleteProject" class="btn btn-danger mr-2" data-id="${project.project_id}" onclick="deleteProject(${project.project_id})" ><i class="fa fa-trash-alt"></i></button>` +
                     `<button type="button" id="selectProjectButton" class="btn btn-success mr-2" data-id="${project.project_id}" onclick="selectProject(${project.project_id}, '${project.project_title}')" > Select </button>` +
-                    // ... (add your delete button logic here) +
                     '</div>'
                 ]).node();
             });
@@ -469,7 +385,7 @@
         function viewProjectModal(project_id, projectTitle, projectLocation, projectOwner,
             projectDescription,
             projectContractDuration, projectDatePrepared, projectTargetStartDate, projectAppropriation, projectSourceOfFund,
-            projectModeOfImplementation) {
+            projectModeOfImplementation, projectCategory) {
             console.log(project_id)
             // Populate modal fields with passed values
             $('#view_project_id').val(project_id);
@@ -482,6 +398,8 @@
             $('#view_project_appropriation').val(projectAppropriation);
             $('#view_project_source_of_fund').val(projectSourceOfFund);
             $('#view_project_mode_of_implementation').val(projectModeOfImplementation);
+            $('#view_project_category').val(projectCategory === null || projectCategory === "null" ? '' : projectCategory);
+
 
             $("#view_project_source_of_fund").select2({
                 theme: "bootstrap-5",
@@ -512,6 +430,7 @@
                 let appropriation = $('#add_project_appropriation').val();
                 let sourceOfFund = $('#add_project_source_of_fund').val();
                 let modeOfImplementation = $('#add_project_mode_of_implementation').val();
+                let projectCategory = $('#add_project_category').val();
 
                 // Make AJAX request to add new material
                 $.ajax({
@@ -527,6 +446,7 @@
                         project_appropriation: appropriation,
                         project_source_of_fund: sourceOfFund,
                         project_mode_of_implementation: modeOfImplementation,
+                        project_category: projectCategory,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
@@ -567,6 +487,7 @@
                 let appropriation = $('#view_project_appropriation').val();
                 let sourceOfFund = $('#view_project_source_of_fund').val();
                 let modeOfImplementation = $('#view_project_mode_of_implementation').val();
+                let projectCategory = $('#view_project_category').val();
 
                 // Make AJAX request to update the project
                 $.ajax({
@@ -583,6 +504,7 @@
                         project_appropriation: appropriation,
                         project_source_of_fund: sourceOfFund,
                         project_mode_of_implementation: modeOfImplementation,
+                        project_category: projectCategory,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
@@ -608,311 +530,6 @@
                 });
             });
 
-        });
-
-
-        // Initialized Tom Select To Materials
-        const materialSelect = new TomSelect('#add_project_particular_material_name', {
-            plugins: ['clear_button'],
-            duplicates: true,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            render: {
-                item: function(data, escape) {
-                    return `<div><span class="material-item-index"></span><span class="item-text"> : ${escape(data.text)}</span> </div>`;
-                }
-            }
-        });
-
-        const materialQuantitySelect = new TomSelect('#add_project_particular_material_quantity', {
-            plugins: ['clear_button'],
-            create: true,
-            duplicates: true,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            render: {
-                item: function(data, escape) {
-                    return `<div><span class="material-quantity-item-index"></span><span class="item-text">  : ${escape(data.text)} </span></div>`;
-                }
-            },
-
-        });
-        // End Initialized Tom Select To Materials
-
-
-        // Initialized Tom Select To labors
-        const laborSelect = new TomSelect('#add_project_particular_labor_name', {
-            plugins: ['clear_button'],
-            duplicates: true,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            render: {
-                item: function(data, escape) {
-                    return `<div><span class="labor-item-index"></span> <span class="item-text">  : ${escape(data.text)}</span> </div>`;
-                }
-            }
-        });
-
-        const laborNopSelect = new TomSelect('#add_project_particular_labor_no_of_person', {
-            plugins: ['clear_button'],
-            create: true,
-            duplicates: true,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            render: {
-                item: function(data, escape) {
-                    return `<div><span class="labor-nop-item-index"></span> <span class="item-text">  : ${escape(data.text)}</span></div>`;
-                }
-            }
-        });
-
-        const laborWorkDaysSelect = new TomSelect('#add_project_particular_labor_work_days', {
-            plugins: ['clear_button'],
-            create: true,
-            duplicates: true,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            render: {
-                item: function(data, escape) {
-                    return `<div><span class="labor-workDays-item-index"></span> <span class="item-text"> : ${escape(data.text)}</span> </div>`;
-                }
-            }
-        });
-        // End of Labor Initialized Tom Select
-
-
-        // Initialized Equipment Tom Select
-        const equipmentSelect = new TomSelect('#add_project_particular_equipment_name', {
-            plugins: ['clear_button'],
-            // create: true,
-            duplicates: true,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            render: {
-                item: function(data, escape) {
-                    return `<div><span class="equipment-item-index"></span><span class="item-text"> : ${escape(data.text)}</span> </div>`;
-                }
-            }
-        });
-
-        const equipmentNoUSelect = new TomSelect('#add_project_particular_equipment_no_of_units', {
-            plugins: ['clear_button'],
-            create: true,
-            duplicates: true,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            render: {
-                item: function(data, escape) {
-                    return `<div><span class="equipment-Nou-item-index"></span><span class="item-text"> : ${escape(data.text)}</span> </div>`;
-                }
-            }
-        });
-
-        const equipmentWorkDaysSelect = new TomSelect('#add_project_particular_equipment_work_days', {
-            plugins: ['clear_button'],
-            create: true,
-            duplicates: true,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            render: {
-                item: function(data, escape) {
-                    return `<div><span class="equipment-workDays-item-index"></span><span class="item-text"> : ${escape(data.text)}</span> </div>`;
-                }
-            }
-        });
-
-        // Function to Dynamically Change Index Material
-        function updateMaterialItemIndices() {
-            const itemElements = document.querySelectorAll('.material-item-index');
-            itemElements.forEach((itemElement, index) => {
-                itemElement.textContent = `Item ${index + 1} : `;
-            });
-        }
-
-        function updateMaterialQuantityItemIndices() {
-            const itemElements = document.querySelectorAll('.material-quantity-item-index');
-            itemElements.forEach((itemElement, index) => {
-                itemElement.textContent = `Item ${index + 1} :  `;
-            });
-        }
-        // End Function to Dynamically Change Index Material
-
-
-        // Function to Dynamically Change Index Labor
-        function updateLaborItemIndices() {
-            const itemElements = document.querySelectorAll('.labor-item-index');
-            itemElements.forEach((itemElement, index) => {
-                itemElement.textContent = `Item ${index + 1} : `;
-            });
-        }
-
-        function updateLaborNopItemIndices() {
-            const itemElements = document.querySelectorAll('.labor-nop-item-index');
-            itemElements.forEach((itemElement, index) => {
-                itemElement.textContent = `Item ${index + 1} : `;
-            });
-        }
-
-        function updateLaborWorkDaysItemIndices() {
-            const itemElements = document.querySelectorAll('.labor-workDays-item-index');
-            itemElements.forEach((itemElement, index) => {
-                itemElement.textContent = `Item ${index + 1} : `;
-            });
-        }
-        // End Function to Dynamically Change Index Labor
-
-        // Function to Dynamimcaly Change Index Equipments
-        function updateEquipmentItemIndices() {
-            const itemElements = document.querySelectorAll('.equipment-item-index');
-            itemElements.forEach((itemElement, index) => {
-                itemElement.textContent = `Item ${index + 1} : `;
-            });
-        }
-
-        function updateEquipmentNouItemIndices() {
-            const itemElements = document.querySelectorAll('.equipment-Nou-item-index');
-            itemElements.forEach((itemElement, index) => {
-                itemElement.textContent = `Item ${index + 1} : `;
-            });
-        }
-
-        function updateEquipmentWorkDaysItemIndices() {
-            const itemElements = document.querySelectorAll('.equipment-workDays-item-index');
-            itemElements.forEach((itemElement, index) => {
-                itemElement.textContent = `Item ${index + 1} : `;
-            });
-        }
-
-        // Material Select Event listener
-        materialSelect.on('item_add', updateMaterialItemIndices);
-        materialSelect.on('item_remove', updateMaterialItemIndices);
-
-        materialQuantitySelect.on('item_add', updateMaterialQuantityItemIndices);
-        materialQuantitySelect.on('item_remove', updateMaterialQuantityItemIndices);
-        // End of Material Select Event Listener
-
-        //  Labor Select Event Listener
-        laborSelect.on('item_add', updateLaborItemIndices);
-        laborSelect.on('item_remove', updateLaborItemIndices);
-
-        laborNopSelect.on('item_add', updateLaborNopItemIndices);
-        laborNopSelect.on('item_remove', updateLaborNopItemIndices);
-
-        laborWorkDaysSelect.on('item_add', updateLaborWorkDaysItemIndices);
-        laborWorkDaysSelect.on('item_remove', updateLaborWorkDaysItemIndices);
-        // End of Labor Select Event Listener
-
-
-        // Equipment Select Event Listener
-        equipmentSelect.on('item_add', updateEquipmentItemIndices);
-        equipmentSelect.on('item_remove', updateEquipmentItemIndices);
-
-        equipmentNoUSelect.on('item_add', updateEquipmentNouItemIndices);
-        equipmentNoUSelect.on('item_remove', updateEquipmentNouItemIndices);
-
-        equipmentWorkDaysSelect.on('item_add', updateEquipmentWorkDaysItemIndices);
-        equipmentWorkDaysSelect.on('item_remove', updateEquipmentWorkDaysItemIndices);
-
-
-
-        // Event listener for the Combine Values button
-        document.getElementById('CombineValuesButton').addEventListener('click', function() {
-            const selectedValuesMaterial = materialSelect.getValue(); // Get the selected values for materials
-            const selectedMaterials = selectedValuesMaterial.map((value, index) => {
-                const item = materialSelect.options[value];
-                const quantityValue = materialQuantitySelect.getValue()[
-                    index]; // Get the quantity value based on index
-                return {
-                    material_id: item.value,
-                    material_name: item.text,
-                    quantity: quantityValue ? quantityValue :
-                        null // Include quantity in the selected material object
-                };
-            });
-
-            const selectedValuesLabor = laborSelect.getValue(); // Get the selected values for labor
-            const selectedLabor = selectedValuesLabor.map((value, index) => {
-                const item = laborSelect.options[value];
-                const nopValue = laborNopSelect.getValue()[
-                    index]; // Get the number of persons value based on index
-                const workDaysValue = laborWorkDaysSelect.getValue()[
-                    index]; // Get the work days value based on index
-                return {
-                    labor_id: item.value,
-                    labor_name: item.text,
-                    number_of_persons: nopValue ? nopValue : null,
-                    work_days: workDaysValue ? workDaysValue : null
-                };
-            });
-
-            const selectedValuesEquipment = equipmentSelect.getValue(); // Get the selected values for equipment
-            const selectedEquipment = selectedValuesEquipment.map((value, index) => {
-                const item = equipmentSelect.options[value];
-                const nouValue = equipmentNoUSelect.getValue()[
-                    index]; // Get the number of units value based on index
-                const workDaysValue = equipmentWorkDaysSelect.getValue()[
-                    index]; // Get the work days value based on index
-                return {
-                    equipment_id: item.value,
-                    equipment_name: item.text,
-                    number_of_units: nouValue ? nouValue : null,
-                    work_days: workDaysValue ? workDaysValue : null
-                };
-            });
-
-            // Retrieve project_id from localStorage
-            var project_id = localStorage.getItem('projectID');
-            let particular_id = document.getElementById('add_project_particular_name').value;
-
-            // Combine all selected values into one object
-            const combinedValues = {
-                project_id: project_id,
-                particular_id: particular_id,
-                materials: selectedMaterials,
-                labors: selectedLabor,
-                equipments: selectedEquipment,
-                _token: "{{ csrf_token() }}"
-            };
-
-            console.log(combinedValues);
-
-            // AJAX request to submit the combined values to the server
-            $.ajax({
-                url: '/submit-data',
-                type: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: JSON.stringify(combinedValues),
-                success: function(response) {
-                    refreshProjectParticularTable();
-
-                    toastr.options.progressBar = true;
-                    toastr.success('Project Added Successfully!');
-
-                    $('#addProjectParticularForm')[0].reset();
-                    $('#addProjectParticularModal').modal('hide');
-                },
-                error: function(xhr, status, error) {
-                    // Handle error response
-                    console.error(xhr.responseText);
-                }
-            });
         });
     </script>
 @endsection

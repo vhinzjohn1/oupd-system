@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', config('app.name', 'Laravel'))</title>
 
-
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -16,6 +15,12 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/customStyle.css') }}">
+
+
+    <!------ Floating Button ------>
+    <link rel="stylesheet" href="{{ asset('css/mfb.css') }}">
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+
 
     <!-- SweetAlert2 -->
     {{-- <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css"> --}}
@@ -39,10 +44,10 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css">
 
 
-    {{-- script for number format --}}
     {{-- <script src="{{ asset('js/autonumeric.js') }}"></script> --}}
-    <script src="https://unpkg.com/imask"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/7.6.0/imask.min.js"
+        integrity="sha512-nTNcq3y76KV0waC+4blkE81acF83+Q0wmdNlDfpXgzpswh6FbhemEYoIV3TH+tOhadNeviCA+WPD5FEuXeF6mQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     {{-- Script for sortable js --}}
     <script src="{{ asset('js/sortableJS.min.js') }}"></script>
@@ -75,10 +80,6 @@
     {{-- Latest Bootstrap 5.3 CSS --}}
     <link rel="stylesheet" href="{{ asset('plugins/tom-select/bootstrap.min.css') }}">
 
-
-
-    <!----- ag Grid For Tables Assets ---->
-    {{-- <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script> --}}
 
 
     <style>
@@ -156,12 +157,16 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-light-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="/" class="brand-link text-center text-light text-decoration-none">
-                <span class="brand-text">OUPD System</span>
-            </a>
+            {{-- <img src="{{ asset('img/oupd-Logo.png') }}" alt="Example Image">
+            <a href="dashboard" class="brand-link text-center text-light text-decoration-none">
+                <span class="brand-text">OUPD</span>
+            </a> --}}
+
+
 
             @include('layouts.navigation')
         </aside>
+
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -198,17 +203,11 @@
     <!-- AdminLTE App -->
     <script src="{{ asset('js/adminlte.min.js') }}"></script>
 
-    {{-- <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }, function(err) {
-                    console.error('ServiceWorker registration failed: ', err);
-                });
-            });
-        }
-    </script> --}}
+    <script>
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
+    </script>
     @yield('scripts')
     @livewireScripts
 </body>

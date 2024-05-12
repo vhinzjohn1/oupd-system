@@ -15,6 +15,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <input type="hidden" id="add_particular_materialID">
+                                <input type="hidden" id="add_materialProjectPartID">
                                 <label for="add_particular_material">Material Name</label>
                                 <select type="text" class="form-control" id="add_particular_material"
                                     name="add_particular_material" required>
@@ -23,8 +24,9 @@
                             </div>
                             <div class="form-group">
                                 <label for="add_particular_materialQuantity">Quantity</label>
-                                <input type="number" class="form-control" id="add_particular_materialQuantity"
-                                    name="add_particular_materialQuantity" required>
+                                <input type="text" class="form-control quantity-input"
+                                    id="add_particular_materialQuantity" name="add_particular_materialQuantity"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="add_particular_category">Category Name</label>
@@ -70,7 +72,6 @@
         </div>
     </div>
 </div>
-</div>
 <script>
     // JavaScript/jQuery
     $(document).ready(function() {
@@ -83,7 +84,7 @@
         function calculateAmount() {
             var quantity = parseFloat($('#add_particular_materialQuantity')
                 .val()); // Remove commas before parsing
-            var price = parseFloat($('#add_particular_materialPrice').val()); // Remove commas before parsing
+            var price = parseFloat($("#add_particular_materialPrice").val().replace('₱', '').replace(/,/g, ''));
             var amount = quantity * price;
             $('#add_particular_materialAmount').val(formatNumberWithCommas(amount.toFixed(2)));
         }

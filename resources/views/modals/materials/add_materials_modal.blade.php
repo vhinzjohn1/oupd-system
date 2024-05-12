@@ -36,11 +36,19 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="add_price">Price</label>
-                                <input type="text" class="form-control price-input" id="add_price" name="add_price" required>
+                                <input type="text" class="form-control price-input" id="add_price" name="add_price"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="add_quarter">Quarter</label>
-                                <input type="text" class="form-control" id="add_quarter" name="add_quarter" required>
+                                <select type="text" class="form-control" id="add_quarter" name="add_quarter"
+                                    required>
+                                    <option value=""></option>
+                                    <option value="1st">1st</option>
+                                    <option value="2nd">2nd</option>
+                                    <option value="3rd">3rd</option>
+                                    <option value="4th">4th</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="add_year">Year</label>

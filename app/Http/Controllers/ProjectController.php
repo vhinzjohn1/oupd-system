@@ -210,6 +210,7 @@ class ProjectController extends Controller
             'project_appropriation' => 'required|string',
             'project_source_of_fund' => 'required|string',
             'project_mode_of_implementation' => 'required|string',
+            'project_category' => 'required|string',
         ]);
 
         try {
@@ -227,6 +228,7 @@ class ProjectController extends Controller
                 'project_appropriation' => $validatedData['project_appropriation'],
                 'project_source_of_fund' => $validatedData['project_source_of_fund'],
                 'project_mode_of_implementation' => $validatedData['project_mode_of_implementation'],
+                'project_category' => $validatedData['project_category'],
             ]);
 
 
@@ -261,6 +263,7 @@ class ProjectController extends Controller
             'project_appropriation' => 'required|string',
             'project_source_of_fund' => 'required|string',
             'project_mode_of_implementation' => 'required|string',
+            'project_category' => 'required|string',
         ]);
 
         try {
@@ -281,6 +284,7 @@ class ProjectController extends Controller
                 'project_appropriation' => $validatedData['project_appropriation'],
                 'project_source_of_fund' => $validatedData['project_source_of_fund'],
                 'project_mode_of_implementation' => $validatedData['project_mode_of_implementation'],
+                'project_category' => $validatedData['project_category'],
             ]);
 
             // Commit the transaction

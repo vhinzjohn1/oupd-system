@@ -63,6 +63,7 @@ class GetAllDataController extends Controller
             l.labor_id,
             l.labor_name,
             lr.rate AS labor_rate,
+            lr.labor_rate_id AS labor_rate_id,
             l.location AS labor_location
         FROM
             projects p
@@ -222,6 +223,7 @@ class GetAllDataController extends Controller
                             'labor_no_of_persons' => $project->labor_no_of_persons,
                             'labor_location' => $project->labor_location,
                             'labor_rate' => $project->labor_rate,
+                            'labor_rate_id' => $project->labor_rate_id,
                         ];
                     }
                 }
@@ -303,6 +305,7 @@ class GetAllDataController extends Controller
             l.labor_id,
             l.labor_name,
             lr.rate AS labor_rate,
+            lr.labor_rate_id AS labor_rate_id,
             l.location AS labor_location
         FROM
             labors l
@@ -323,7 +326,8 @@ class GetAllDataController extends Controller
             e.equipment_capacity,
             e.equipment_category_id,
             ec.equipment_category_name,
-            er.rate AS equipment_rate
+            er.rate AS equipment_rate,
+            er.equipment_rate_id AS equipment_rate_id
         FROM
             equipments e
         LEFT JOIN
@@ -441,6 +445,7 @@ class GetAllDataController extends Controller
                 ], [
                     'no_of_persons' => $request->noOfPerson,
                     'work_days' => $request->workDays,
+                    'labor_rate_id' => $request->laborRateID,
                 ]);
             } else if ($request->laborId === "empty") {
                 try {
@@ -457,18 +462,24 @@ class GetAllDataController extends Controller
                     ]);
 
                     // Update or create a record in the project_particular_labors table
-                    $projectParticular->labors()->updateOrCreate([
+                    $projectParticularLabor = $projectParticular->labors()->updateOrCreate([
                         'labor_id' => $labor->labor_id, // Use the newly created labor's ID
                     ], [
                         'no_of_persons' => $request->noOfPerson,
                         'work_days' => $request->workDays,
                     ]);
 
-                    // Create a new labor rate instance
-                    $rate = new LaborRate();
-                    $rate->rate = $request->laborRate;
-                    $rate->labor_id = $labor->labor_id; // Use the newly created labor's ID
-                    $rate->save();
+                    // Get the labor rate associated with the labor
+                    $laborRate = $labor->laborRate()->where('is_active', 1)->first();
+
+                    // If labor rate doesn't exist, create a new one
+                    if (!$laborRate) {
+                        // Handle the case where there's no active labor rate
+                        throw new \Exception("No active labor rate found for the labor with ID: {$labor->labor_id}");
+                    }
+
+                    // Associate labor rate with project particular labor
+                    $projectParticularLabor->update(['labor_rate_id' => $laborRate->id]);
 
                     // Commit the transaction
                     DB::commit();
@@ -495,6 +506,7 @@ class GetAllDataController extends Controller
                 ], [
                     'work_days' => $request->equipmentWorkDays,
                     'no_of_units' => $request->noOfUnit,
+                    'equipment_rate_id' => $request->equipmentRateID,
                 ]);
             } else if ($request->equipmentId === "empty") {
                 try {

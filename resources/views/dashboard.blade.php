@@ -32,7 +32,8 @@
                         <div class="icon">
                             <i class="nav-icon fas fa-th"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('projects') }}" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -46,7 +47,8 @@
                         <div class="icon">
                             <i class="nav-icon fas fa-tools"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('list_of_materials') }}" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -60,7 +62,8 @@
                         <div class="icon">
                             <i class="nav-icon fas fa-hard-hat"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('list_of_labors') }}" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -74,12 +77,14 @@
                         <div class="icon">
                             <i class="nav-icon fas fa-snowplow"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('list_of_equipments') }}" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
             </div>
         </div>
+
     </div>
 
 
@@ -119,10 +124,6 @@
             $('#laborsCount').text(data.labors);
             $('#equipmentsCount').text(data.equipments);
         }
-
-        $('#submitBtn').click(function() {
-            router.visit('home');
-        })
         // Function to confirm deletion
         function confirmDeletion(id) {
             // Show SweetAlert confirmation dialog

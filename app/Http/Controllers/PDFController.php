@@ -115,6 +115,14 @@ class PDFController extends Controller
             $total = $project->total;
             $projectParticularId = $project->project_particular_id;
 
+
+            $signatures = [
+                'project_id' => $projectId,
+                'fullname' => $project->fullname,
+                'degree' => $project->degree,
+                'position' => $project->position,
+                'role' => $project->role,
+            ];
             // Group data by project title
             if (!isset($formattedData[$title])) {
                 $formattedData[$title] = [
@@ -131,17 +139,7 @@ class PDFController extends Controller
                     'ocm' => $ocm,
                     'contractors_profit' => $contractors_profit,
                     'vat' => $vat,
-                    'signatures' => []
-                ];
-            }
-            // Extract signatures data with the same project ID
-            if ($projectId == $project->signature_project_id) {
-                $formattedData[$title]['signatures'][] = [
-                    'fullname' => $project->fullname,
-                    'degree' => $project->degree,
-                    'position' => $project->position,
-                    'role' => $project->role,
-                    'signature_project_id' => $project->signature_project_id,
+                    'signatures' => [$signatures]
                 ];
             }
 

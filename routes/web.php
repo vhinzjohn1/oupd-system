@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MLEController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectParticularController;
+use App\Http\Controllers\SetProject;
 use App\Http\Controllers\SignatureController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -13,9 +15,11 @@ use App\Models\Project;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\GetAllDataController;
+use App\Http\Controllers\MinimumEquipmentController;
 use App\Http\Controllers\ParticularController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TechnicalPersonnelController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Models\EquipmentCategory;
@@ -42,7 +46,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     })->name('user-management');
 });
 Auth::routes();
+Route::resource('technical_personnels', TechnicalPersonnelController::class);
+Route::resource('minimum_equipments', MinimumEquipmentController::class);
 
+//Route Resourec for SetProject
+Route::resource('setProject', SetProject::class);
+
+// Route Resource for TestController
+Route::resource('tests', TestController::class);
 
 // Route Resource For Dashboard Count
 Route::resource('dashboards', DashboardController::class);
@@ -80,9 +91,9 @@ Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/home', function () {
-        return view('home');
-    })->name('home');
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
     // Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
     Route::get('/generate-pdf', function () {
@@ -204,9 +215,9 @@ Route::get('/printables/boq', function () {
 })->name('boq');
 
 
-Route::get('/home_test', function () {
-    return view('home_test');
-})->name('home_test');
+Route::get('home_test', [TestController::class, 'index'])->name('tests.index');
+
+
 
 // Project Particular Routes:
 Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');

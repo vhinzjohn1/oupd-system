@@ -22,6 +22,10 @@
                     display: none;
                 }
 
+                .mfb-zoomin {
+                    display: none;
+                }
+
                 table {
                     margin-bottom: 10px;
                     border-color: black !important;
@@ -59,6 +63,24 @@
     </head>
 
     <body>
+        <!------ Floating Button ----->
+        {{-- <ul id="menu" class="mfb-component--br mfb-zoomin" id="floatBtn" data-mfb-toggle="hover">
+            <li class="mfb-component__wrap">
+                <a href="#" class="mfb-component__button--main">
+                    <i class="mfb-component__main-icon--resting ion-plus-round"></i>
+                    <i class="mfb-component__main-icon--active ion-close-round"></i>
+                </a>
+                <ul class="mfb-component__list">
+                    <li>
+                        <a href="#" id="printView" data-mfb-label="Print" class="mfb-component__button--child">
+                            <i class="mfb-component__child-icon"><span class="material-symbols-outlined">
+                                    print
+                                </span></i></i>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul><!------- End of Floating Button ------> --}}
         <div class="btn hideBtn btn-right btn-lg btn-outline-dark" id="printView">Print</div>
 
 
@@ -120,7 +142,7 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        console.log('This is the reponse',response);
+                        console.log('This is the reponse', response);
 
                         // Get the selected project ID from localStorage
                         var selectedProjectID = localStorage.getItem("projectID");

@@ -39,8 +39,8 @@
                             <div class="form-group">
                                 <input type="hidden" id="editMaterialPriceID">
                                 <label for="edit_particular_materialPrice">Price</label>
-                                <input type="text" class="form-control" id="edit_particular_materialPrice"
-                                    name="edit_particular_materialPrice" readonly>
+                                <input type="text" class="form-control price-input"
+                                    id="edit_particular_materialPrice" name="edit_particular_materialPrice" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="edit_particular_materialQuarter">Quarter</label>
@@ -68,7 +68,6 @@
         </div>
     </div>
 </div>
-</div>
 <script>
     // Function to format number with commas for thousands
     function formatNumberWithCommas(number) {
@@ -79,7 +78,7 @@
     function calculateAmount() {
         var quantity = parseFloat($('#edit_particular_materialQuantity')
             .val()); // Remove commas before parsing
-        var price = parseFloat($('#edit_particular_materialPrice').val()); // Remove commas before parsing
+        var price = parseFloat($("#edit_particular_materialPrice").val().replace('₱', '').replace(/,/g, ''));
         var amount = quantity * price;
         $('#edit_particular_materialAmount').val(formatNumberWithCommas(amount.toFixed(2)));
     }

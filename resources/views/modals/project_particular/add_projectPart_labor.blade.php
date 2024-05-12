@@ -37,6 +37,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
+                                <input type="hidden" id="add_particular_labor_rateID">
                                 <label for="add_particular_laborRate">Rate</label>
                                 <input type="text" class="form-control" id="add_particular_laborRate"
                                     name="add_particular_laborRate" readonly required>

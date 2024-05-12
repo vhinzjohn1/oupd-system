@@ -34,13 +34,13 @@
                                 <input type="text" class="form-control" id="view_project_description"
                                     name="view_project_description" required>
                             </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="view_project_contract_duration">Contract Duration</label>
                                 <input type="text" class="form-control" id="view_project_contract_duration"
                                     name="view_project_contract_duration" required>
                             </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="view_project_date_prepared">Project Date Prepared</label>
                                 <input type="date" class="form-control" id="view_project_date_prepared"
@@ -50,6 +50,11 @@
                                 <label for="view_project_appropriation">Project Appropriation</label>
                                 <input type="number" class="form-control" id="view_project_appropriation"
                                     name="view_project_appropriation" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="view_project_category">Project Category</label>
+                                <input type="text" class="form-control" id="view_project_category"
+                                    name="view_project_category" required>
                             </div>
                             <div class="form-group margin-top">
                                 <label for="view_project_source_of_fund">Project Source Of Fund</label>

@@ -11,6 +11,7 @@ class Project extends Model
         'project_title',
         'project_location',
         'project_owner',
+        'project_category',
         'project_description',
         'project_contract_duration',
         'project_date_prepared',

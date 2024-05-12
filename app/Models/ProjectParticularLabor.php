@@ -16,6 +16,7 @@ class ProjectParticularLabor extends Model
         'labor_id',
         'no_of_persons',
         'work_days',
+        'labor_rate_id',
     ];
 
     public function particular()

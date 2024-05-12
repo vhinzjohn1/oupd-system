@@ -1,5 +1,11 @@
 <!-- Sidebar -->
-<div class="sidebar">
+<div class="sidebar" style="position: fixed; height: 100vh; overflow-y: auto;">
+    <!-- Brand Logo -->
+    <a href="dashboard" class="brand-link text-light text-decoration-none">
+        <img src="{{ asset('img/oupd-Logo.png') }}" alt="OUPD Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">
+        <span class="brand-text">OUPD System</span>
+    </a>
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -29,7 +35,7 @@
 
             <!-- Dashboard -->
             <li class="nav-item dashboard">
-                <a href="{{ route('home') }}" class="nav-link" id="dashboard">
+                <a href="{{ route('dashboard') }}" class="nav-link" id="dashboard">
                     <i class="nav-icon fas fa-home"></i>
                     <p>{{ __('Dashboard') }}</p>
                 </a>
@@ -151,6 +157,16 @@
 <!-- /.sidebar -->
 <script>
     $(document).ready(function() {
+
+        $('.sidebar').on('scroll', function() {
+            var scrollTop = $(this).scrollTop();
+            var maxScrollTop = $(this).prop('scrollHeight') - $(this).innerHeight();
+
+            // Prevent the sidebar from scrolling past a certain point (adjust as needed)
+            if (scrollTop > maxScrollTop - 50) {
+                $(this).scrollTop(maxScrollTop);
+            }
+        });
         // Add 'active' class to 'Dashboard', 'Projects', and 'Master List' sections if any of their children are active
         var path = window.location.href;
         $('ul.nav-sidebar a').each(function() {

@@ -11,7 +11,7 @@ class ProjectParticularEquipment extends Model
     protected $table = 'project_particular_equipments';
     protected $primaryKey = 'project_particular_equipment_id';
 
-    protected $fillable = ['project_particular_id', 'equipment_id', 'no_of_units', 'work_days'];
+    protected $fillable = ['project_particular_id', 'equipment_id', 'no_of_units', 'work_days', 'equipment_rate_id'];
 
     public function projectParticular()
     {

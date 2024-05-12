@@ -14,10 +14,12 @@ return new class extends Migration {
             $table->bigIncrements('project_particular_labor_id');
             $table->unsignedBigInteger('project_particular_id');
             $table->unsignedBigInteger('labor_id');
+            $table->unsignedBigInteger('labor_rate_id');
             $table->integer('no_of_persons');
             $table->unsignedInteger('work_days');
             $table->foreign('project_particular_id')->references('project_particular_id')->on('project_particulars')->onDelete('cascade');
             $table->foreign('labor_id')->references('labor_id')->on('labors')->onDelete('cascade');
+            $table->foreign('labor_rate_id')->references('labor_rate_id')->on('labor_rates')->onDelete('cascade');
             $table->timestamps();
         });
     }

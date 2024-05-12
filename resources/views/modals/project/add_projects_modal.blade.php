@@ -50,6 +50,12 @@
                                 <input type="number" class="form-control" id="add_project_appropriation"
                                     name="add_project_appropriation" required>
                             </div>
+
+                            <div class="form-group">
+                                <label for="add_project_category">Project Category</label>
+                                <input type="text" class="form-control" id="add_project_category"
+                                    name="add_project_category" required>
+                            </div>
                             <div class="form-group margin-top">
                                 <label for="add_project_source_of_fund">Project Source Of Fund</label>
                                 <select type="text" class="form-control" id="add_project_source_of_fund"

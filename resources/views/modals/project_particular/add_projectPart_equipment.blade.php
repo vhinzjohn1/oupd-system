@@ -44,6 +44,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
+                                <input type="hidden" id="add_particular_equipmentRateID">
                                 <label for="add_particular_EquipmentRate">Rate</label>
                                 <input type="text" class="form-control" id="add_particular_EquipmentRate"
                                     name="add_particular_EquipmentRate" readonly required>

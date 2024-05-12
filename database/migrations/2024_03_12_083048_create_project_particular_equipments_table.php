@@ -13,11 +13,13 @@ return new class extends Migration {
         Schema::create('project_particular_equipments', function (Blueprint $table) {
             $table->bigIncrements('project_particular_equipment_id');
             $table->unsignedBigInteger('project_particular_id');
-            $table->foreign('project_particular_id')->references('project_particular_id')->on('project_particulars')->onDelete('cascade');
             $table->unsignedBigInteger('equipment_id');
-            $table->foreign('equipment_id')->references('equipment_id')->on('equipments')->onDelete('cascade');
+            $table->unsignedBigInteger('equipment_rate_id');
             $table->integer('no_of_units');
             $table->integer('work_days');
+            $table->foreign('project_particular_id')->references('project_particular_id')->on('project_particulars')->onDelete('cascade');
+            $table->foreign('equipment_id')->references('equipment_id')->on('equipments')->onDelete('cascade');
+            $table->foreign('equipment_rate_id')->references('equipment_rate_id')->on('equipment_rates')->onDelete('cascade');
             $table->timestamps();
         });
 
