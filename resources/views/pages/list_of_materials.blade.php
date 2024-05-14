@@ -1,6 +1,12 @@
 @extends('layouts.app')
 @section('title', 'List of Materials')
 @section('content')
+
+<head>
+    <style>
+        
+    </style>
+</head>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">

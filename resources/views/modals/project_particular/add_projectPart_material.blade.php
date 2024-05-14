@@ -16,6 +16,7 @@
                             <div class="form-group">
                                 <input type="hidden" id="add_particular_materialID">
                                 <input type="hidden" id="add_materialProjectPartID">
+                                <input type="hidden" id="add_projectParticularID">
                                 <label for="add_particular_material">Material Name</label>
                                 <select type="text" class="form-control" id="add_particular_material"
                                     name="add_particular_material" required>
@@ -83,16 +84,60 @@
         // Function to calculate amount
         function calculateAmount() {
             var quantity = parseFloat($('#add_particular_materialQuantity')
-                .val()); // Remove commas before parsing
+        .val()); // Remove commas before parsing
             var price = parseFloat($("#add_particular_materialPrice").val().replace('₱', '').replace(/,/g, ''));
             var amount = quantity * price;
-            $('#add_particular_materialAmount').val(formatNumberWithCommas(amount.toFixed(2)));
+
+            // Update the value and apply IMask
+            $('#add_particular_materialAmount').val(amount.toFixed(2));
+
+            // Apply IMask to the amount input
+            const amountInput = document.getElementById('add_particular_materialAmount');
+            IMask(amountInput, {
+                mask: '₱num',
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: ',',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: '.',
+                        mapToRadix: ['.'],
+                        min: 0,
+                        scale: 2
+                    }
+                }
+            });
         }
 
         // Event listener for quantity input change
-        $('#add_particular_materialQuantity').on('input', function() {
+        $('#add_particular_materialQuantity, #add_particular_materialPrice').on('input', function() {
             calculateAmount();
         });
 
+        // Function to initialize price inputs
+        function initializePriceInputs() {
+            const priceInputs = document.querySelectorAll('.price-input');
+            priceInputs.forEach(input => {
+                IMask(input, {
+                    mask: '₱num',
+                    blocks: {
+                        num: {
+                            mask: Number,
+                            thousandsSeparator: ',',
+                            padFractionalZeros: true,
+                            normalizeZeros: true,
+                            radix: '.',
+                            mapToRadix: ['.'],
+                            min: 0,
+                            scale: 2
+                        }
+                    }
+                });
+            });
+        }
+
+        // Initialize price inputs on document ready
+        initializePriceInputs();
     });
 </script>

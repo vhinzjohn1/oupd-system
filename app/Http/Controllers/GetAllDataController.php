@@ -10,6 +10,9 @@ use App\Models\LaborRate;
 use App\Models\Material;
 use App\Models\MaterialCategory;
 use App\Models\Price;
+use App\Models\ProjectParticularEquipment;
+use App\Models\ProjectParticularLabor;
+use App\Models\ProjectParticularMaterial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -356,19 +359,31 @@ class GetAllDataController extends Controller
     public function submitDetails(Request $request)
     {
         try {
-            // Create or find project particular
-            $projectParticular = ProjectParticular::firstOrCreate([
-                'project_id' => $request->projectId, // Change 'project_id' to 'projectId'
-                'particular_id' => $request->particularId, // Change 'particular_id' to 'particularId'
-            ]);
+            if ($request->has('editProjectMaterialId') && $request->has('materialQuantity')) {
 
-            if ($request->has('materialId') && $request->materialId !== "empty") {
-                // Update or create a record in the project_particular_materials table
-                // Submit if it is alreadt on the masterlist
-                $projectParticular->materials()->updateOrCreate([
-                    'material_id' => $request->materialId,
-                ], [
+                $projectParticularMaterial = ProjectParticularMaterial::findOrFail($request->editProjectMaterialId);
+
+                $projectParticularMaterial->update([
                     'quantity' => $request->materialQuantity,
+                ]);
+            }
+            if ($request->has('editLaborID') && $request->has('noOfPerson')) {
+                $projectParticularLabor = ProjectParticularLabor::findOrFail($request->editLaborID);
+
+                $projectParticularLabor->update([
+                    'no_of_persons' => $request->noOfPerson,
+                    'work_days' => $request->workDays,
+                ]);
+            }
+            if ($request->has('materialId') && $request->materialId !== "empty") {
+                // Submit if it is alreadt on the masterlist
+                ProjectParticularMaterial::updateOrCreate([
+                    'material_id' => $request->materialId,
+                    'project_particular_id' => $request->particularId
+                ], [
+                    'material_id' => $request->materialId,
+                    'quantity' => $request->materialQuantity,
+                    'project_particular_id' => $request->particularId,
                     'price_id' => $request->materialPriceID,
                 ]);
             } elseif ($request->materialId === "empty") {
@@ -407,17 +422,11 @@ class GetAllDataController extends Controller
                     // Save the price
                     $price->save();
 
-                    // Add the newly created material to the ProjectParticular
-                    $projectParticular = ProjectParticular::firstOrCreate([
-                        'project_id' => $request->projectId,
-                        'particular_id' => $request->particularId,
-                    ]);
 
-                    $projectParticular->materials()->updateOrCreate([
+                    ProjectParticularMaterial::updateOrCreate([
                         'material_id' => $material->material_id,
                     ], [
-                        'quantity' => $request->materialQuantity,
-                        'price_id' => $price->price_id,
+                        'quantity' => $request->materialQuantity
                     ]);
 
                     // Commit the transaction
@@ -440,12 +449,15 @@ class GetAllDataController extends Controller
             // Insert labor into the project_particular_labors table if provided
             if ($request->has('laborId') && $request->laborId !== "empty") {
                 // Update or create a record in the project_particular_labors table
-                $projectParticular->labors()->updateOrCreate([
+                ProjectParticularLabor::updateOrCreate([
                     'labor_id' => $request->laborId,
+                    'project_particular_id' => $request->particularId
                 ], [
+                    'labor_id' => $request->laborId,
                     'no_of_persons' => $request->noOfPerson,
                     'work_days' => $request->workDays,
                     'labor_rate_id' => $request->laborRateID,
+                    'project_particular_id' => $request->particularId,
                 ]);
             } else if ($request->laborId === "empty") {
                 try {
@@ -501,12 +513,16 @@ class GetAllDataController extends Controller
             // Insert equipment into the project_particular_equipments table if provided
             if ($request->has('equipmentId') && $request->equipmentId !== "empty") {
                 // Update or create a record in the project_particular_equipments table
-                $projectParticular->equipments()->updateOrCreate([
+                ProjectParticularEquipment::updateOrCreate([
                     'equipment_id' => $request->equipmentId,
+                    'project_particular_id' => $request->projectParticularID,
+
                 ], [
-                    'work_days' => $request->equipmentWorkDays,
-                    'no_of_units' => $request->noOfUnit,
+                    'equipment_id' => $request->equipmentId,
+                    'project_particular_id' => $request->projectParticularID,
                     'equipment_rate_id' => $request->equipmentRateID,
+                    'work_days' => $request->equipmentWorkDays,
+                    'no_of_units' => $request->noOfUnit
                 ]);
             } else if ($request->equipmentId === "empty") {
                 try {

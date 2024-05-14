@@ -26,7 +26,7 @@ class TestController extends Controller
         $particulars = ProjectParticular::select('project_particulars.*', 'particulars.particular_name', 'particulars.pay_item')
             ->leftJoin('particulars', 'project_particulars.particular_id', '=', 'particulars.particular_id')
             ->where('project_id', $projectId)
-            ->paginate(10);
+            ->paginate(8);
 
         // Fetch materials associated with each particular and include MaterialCategory and Price
         foreach ($particulars as $particular) {
@@ -90,19 +90,50 @@ class TestController extends Controller
     }
 
 
+    public function destroy(Request $request)
+    {
+        try {
+            $detailType = $request->input('detailType');
 
+            // Check if the detailType is equal to "material"
+            if ($detailType === 'material') {
+                $particularMaterialId = $request->input('partID');
 
-    // if (request()->ajax()) {
-    //     return response()->json(['projects' => array_values($formattedData)]);
-    // } else {
-    //     return view('home_test', compact('formattedData'));
-    // }
+                // Delete the record from the project_particular_materials table
+                DB::table('project_particular_materials')
+                    ->where('project_particular_material_id', $particularMaterialId)
+                    ->delete();
 
+                // Return a success response
+                return response()->json(['message' => 'Project particular material deleted successfully'], 200);
+            } elseif ($detailType === 'labor') {
+                $particularLaborId = $request->input('partID');
 
-    // public function index()
-    // {
-    //     $materials = Material::paginate(10);
-    //     return view('home_test', compact('materials'));
-    // }
+                // Delete the record from the project_particular_labor table
+                DB::table('project_particular_labors')
+                    ->where('project_particular_labor_id', $particularLaborId)
+                    ->delete();
+
+                // Return a success response
+                return response()->json(['message' => 'Project particular labor deleted successfully'], 200);
+            } elseif ($detailType === 'equipment') {
+                $particularEquipmentId = $request->input('partID');
+
+                // Delete the record from the project_particular_equipment table
+                DB::table('project_particular_equipments')
+                    ->where('project_particular_equipment_id', $particularEquipmentId)
+                    ->delete();
+
+                // Return a success response
+                return response()->json(['message' => 'Project particular equipment deleted successfully'], 200);
+            } else {
+                // Return an error response if the detailType is invalid
+                return response()->json(['message' => 'Invalid detailType'], 400);
+            }
+        } catch (\Exception $e) {
+            // Return an error response if deletion fails
+            return response()->json(['message' => 'Failed to delete project particular detail', 'error' => $e->getMessage()], 500);
+        }
+    }
 
 }

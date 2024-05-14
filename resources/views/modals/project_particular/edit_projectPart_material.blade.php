@@ -37,7 +37,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <input type="hidden" id="editMaterialPriceID">
+                                <input type="hidden" id="editParticularId">
                                 <label for="edit_particular_materialPrice">Price</label>
                                 <input type="text" class="form-control price-input"
                                     id="edit_particular_materialPrice" name="edit_particular_materialPrice" readonly>
@@ -69,27 +69,75 @@
     </div>
 </div>
 <script>
-    // Function to format number with commas for thousands
-    function formatNumberWithCommas(number) {
-        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
+    $(document).ready(function() {
+        // Function to format number with commas for thousands
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
 
-    // Function to calculate amount
-    function calculateAmount() {
-        var quantity = parseFloat($('#edit_particular_materialQuantity')
-            .val()); // Remove commas before parsing
-        var price = parseFloat($("#edit_particular_materialPrice").val().replace('₱', '').replace(/,/g, ''));
-        var amount = quantity * price;
-        $('#edit_particular_materialAmount').val(formatNumberWithCommas(amount.toFixed(2)));
-    }
+        // Function to calculate amount
+        function calculateAmount() {
+            var quantity = parseFloat($('#edit_particular_materialQuantity')
+        .val()); // Remove commas before parsing
+            var price = parseFloat($("#edit_particular_materialPrice").val().replace('₱', '').replace(/,/g,
+            ''));
+            var amount = quantity * price;
 
-    // Event listener for quantity input change
-    $('#edit_particular_materialQuantity').on('input', function() {
-        calculateAmount();
-    });
+            // Update the value and apply IMask
+            $('#edit_particular_materialAmount').val(amount.toFixed(2));
 
-    // Event listener for modal shown
-    $('#editParticularMaterialModal').on('shown.bs.modal', function() {
-        $('#edit_particular_materialQuantity').focus(); // Focus on the Quantity input field
+            // Apply IMask to the amount input
+            const amountInput = document.getElementById('edit_particular_materialAmount');
+            IMask(amountInput, {
+                mask: '₱num',
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: ',',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: '.',
+                        mapToRadix: ['.'],
+                        min: 0,
+                        scale: 2
+                    }
+                }
+            });
+        }
+
+        // Event listener for quantity input change
+        $('#edit_particular_materialQuantity, #edit_particular_materialPrice').on('input', function() {
+            calculateAmount();
+        });
+
+        // Event listener for modal shown
+        $('#editParticularMaterialModal').on('shown.bs.modal', function() {
+            $('#edit_particular_materialQuantity').focus(); // Focus on the Quantity input field
+        });
+
+        // Function to initialize price inputs
+        function initializePriceInputs() {
+            const priceInputs = document.querySelectorAll('.price-input');
+            priceInputs.forEach(input => {
+                IMask(input, {
+                    mask: '₱num',
+                    blocks: {
+                        num: {
+                            mask: Number,
+                            thousandsSeparator: ',',
+                            padFractionalZeros: true,
+                            normalizeZeros: true,
+                            radix: '.',
+                            mapToRadix: ['.'],
+                            min: 0,
+                            scale: 2
+                        }
+                    }
+                });
+            });
+        }
+
+        // Initialize price inputs on document ready
+        initializePriceInputs();
     });
 </script>

@@ -2231,7 +2231,7 @@
                         type: "DELETE",
                         data: data,
                         success: function(response) {
-                            console.log(response.message);
+                            console.log(response);
                             refreshAllData(parseInt(partID), detailType);
                             // Show success toast with delay
                             toastr.options.progressBar = true;

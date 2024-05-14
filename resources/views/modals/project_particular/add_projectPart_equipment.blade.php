@@ -14,7 +14,9 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <input type="hidden" id="add_particular_EquipmentID">
+                                <input type="text" id="add_particular_EquipmentID">
+                                <input type="text" id="add_projectParticularIdEquipment">
+                                <input type="text" id="add_particularIdEquipment">
                                 <label for="add_particular_EquipmentName">Equipment Name</label>
                                 <select type="text" class="form-control" id="add_particular_EquipmentName"
                                     name="add_particular_EquipmentName" required>
@@ -44,7 +46,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <input type="hidden" id="add_particular_equipmentRateID">
+                                <input type="text" id="add_particular_equipmentRateID">
                                 <label for="add_particular_EquipmentRate">Rate</label>
                                 <input type="text" class="form-control" id="add_particular_EquipmentRate"
                                     name="add_particular_EquipmentRate" readonly required>

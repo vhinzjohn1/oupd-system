@@ -15,6 +15,8 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <input type="hidden" id="add_particular_laborID">
+                                <input type="hidden" id="add_projectParticularLaborId">
+                                <input type="hidden" id="add_projectParticularIDLabor">
                                 <label for="add_particular_laborName">Labor Name</label>
                                 <select type="text" class="form-control" id="add_particular_laborName"
                                     name="add_particular_laborName" required>
@@ -39,13 +41,13 @@
                             <div class="form-group">
                                 <input type="hidden" id="add_particular_labor_rateID">
                                 <label for="add_particular_laborRate">Rate</label>
-                                <input type="text" class="form-control" id="add_particular_laborRate"
+                                <input type="text" class="form-control price-input" id="add_particular_laborRate"
                                     name="add_particular_laborRate" readonly required>
                             </div>
 
                             <div class="form-group">
                                 <label for="add_particular_laborAmount">Amount</label>
-                                <input type="text" class="form-control" id="add_particular_laborAmount"
+                                <input type="text" class="form-control price-input" id="add_particular_laborAmount"
                                     name="add_particular_laborAmount" readonly required>
                             </div>
                         </div>
@@ -68,20 +70,62 @@
 
         // Function to calculate amount
         function calculateAmount() {
-
-            var workDays = parseFloat($('#add_particular_laborWorkDays')
-                .val()); // Remove commas before parsing
-            var rate = parseFloat($('#add_particular_laborRate').val());
+            var workDays = parseFloat($('#add_particular_laborWorkDays').val()); // Remove commas before parsing
+            var rate = parseFloat($('#add_particular_laborRate').val().replace('₱', '').replace(/,/g, ''));
             var noOfPerson = parseFloat($('#add_particular_noOfPerson').val());
             var totalRate = rate * noOfPerson;
 
             var amount = totalRate * workDays;
-            $('#add_particular_laborAmount').val(formatNumberWithCommas(amount.toFixed(2)));
+
+            // Update the value and apply IMask
+            $('#add_particular_laborAmount').val(amount.toFixed(2));
+
+            // Apply IMask to the amount input
+            const amountInput = document.getElementById('add_particular_laborAmount');
+            IMask(amountInput, {
+                mask: '₱num',
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: ',',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: '.',
+                        mapToRadix: ['.'],
+                        min: 0,
+                        scale: 2
+                    }
+                }
+            });
         }
 
         // Event listener for quantity input change
         $('#add_particular_laborWorkDays, #add_particular_laborRate, #add_particular_noOfPerson').on('input',
             calculateAmount);
 
+        // Function to initialize price inputs
+        function initializePriceInputs() {
+            const priceInputs = document.querySelectorAll('.price-input');
+            priceInputs.forEach(input => {
+                IMask(input, {
+                    mask: '₱num',
+                    blocks: {
+                        num: {
+                            mask: Number,
+                            thousandsSeparator: ',',
+                            padFractionalZeros: true,
+                            normalizeZeros: true,
+                            radix: '.',
+                            mapToRadix: ['.'],
+                            min: 0,
+                            scale: 2
+                        }
+                    }
+                });
+            });
+        }
+
+        // Initialize price inputs on document ready
+        initializePriceInputs();
     });
 </script>

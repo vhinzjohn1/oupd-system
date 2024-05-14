@@ -15,6 +15,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <input type="hidden" id="edit_particular_laborID">
+                                <input type="hidden" id="edit_particularIdLabor">
                                 <label for="edit_particular_laborName">Labor Name</label>
                                 <input type="text" class="form-control" id="edit_particular_laborName"
                                     name="edit_particular_laborName" required readonly>
@@ -42,7 +43,7 @@
 
                             <div class="form-group">
                                 <label for="edit_particular_laborAmount">Amount</label>
-                                <input type="text" class="form-control" id="edit_particular_laborAmount"
+                                <input type="text" class="form-control price-input" id="edit_particular_laborAmount"
                                     name="edit_particular_laborAmount" readonly required>
                             </div>
                         </div>
@@ -65,15 +66,33 @@
 
         // Function to calculate amount
         function calculateLaborAmount() {
-
             var workDays = parseFloat($('#edit_particular_laborWorkDays')
                 .val()); // Remove commas before parsing
-            var rate = parseFloat($('#edit_particular_laborRate').val());
+            var rate = parseFloat($('#edit_particular_laborRate').val().replace('₱', '').replace(/,/g, ''));
             var noOfPerson = parseFloat($('#edit_particular_noOfPerson').val());
             var totalRate = rate * noOfPerson;
-
             var amount = totalRate * workDays;
-            $('#edit_particular_laborAmount').val(formatNumberWithCommas(amount.toFixed(2)));
+
+            // Update the value and apply IMask
+            $('#edit_particular_laborAmount').val(amount.toFixed(2));
+
+            // Apply IMask to the amount input
+            const amountInput = document.getElementById('edit_particular_laborAmount');
+            IMask(amountInput, {
+                mask: '₱num',
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: ',',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: '.',
+                        mapToRadix: ['.'],
+                        min: 0,
+                        scale: 2
+                    }
+                }
+            });
         }
 
         // Event listener for input change
@@ -82,5 +101,29 @@
                 calculateLaborAmount();
             });
 
+        // Function to initialize price inputs
+        function initializePriceInputs() {
+            const priceInputs = document.querySelectorAll('.price-input');
+            priceInputs.forEach(input => {
+                IMask(input, {
+                    mask: '₱num',
+                    blocks: {
+                        num: {
+                            mask: Number,
+                            thousandsSeparator: ',',
+                            padFractionalZeros: true,
+                            normalizeZeros: true,
+                            radix: '.',
+                            mapToRadix: ['.'],
+                            min: 0,
+                            scale: 2
+                        }
+                    }
+                });
+            });
+        }
+
+        // Initialize price inputs on document ready
+        initializePriceInputs();
     });
 </script>
