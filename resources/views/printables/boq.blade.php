@@ -130,315 +130,652 @@
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             };
-
-                            // Create particulars table
-                            divHTML +=
-                                '<div class="container">' +
-                                '<table class="table table-bordered table-striped">' +
-                                '<thead>' +
-                                '<tr>' +
-                                '<th colspan="7" class="text-center">Republic  of the Phillipines <br>CENTRAL MINDANAO UNIVERSITY<br> University Town, Musuan, Bukidnon<br><h3>INDIVIDUAL PROJECT PROGRAM OF WORK</h3><br><p class="text-right"><u>04/22/2024</u><br>date</p></th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="4" class="text-center">NAME OF THE PROJECT/LOCATION:</th>' +
-                                '<th colspan="2" class="text-center">Appropriation Php</th>' +
-                                '<th class="text-center">' + project.project_appropriation + '</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th rowspan="3" colspan="4" class="text-center">' + project.project_title +
-                                '</th>' +
-                                '<th colspan="2" class="text-center">Source of Funds</th>' +
-                                '<th class="text-center">' + project.project_source_of_fund + '</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="2" class="text-center">Issue Obligated Authority</th>' +
-                                '<th class="text-center"></th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="2" class="text-center">Released</th>' +
-                                '<th class="text-center"></th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="4" class="text-center">PROJECT CATEGORY:</th>' +
-                                '<th colspan="2" class="text-center">Duration</th>' +
-                                '<th class="text-center">' + project.project_contract_duration + '</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th rowspan="2" colspan="4" class="text-center">PROJECT CATEGORY</th>' +
-                                '<th colspan="2" class="text-center">Desirable Starting Date</th>' +
-                                '<th class="text-center"></th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="2" class="text-center">Mode of Implementation</th>' +
-                                '<th class="text-center">' + project.project_mode_of_implementation +
-                                '</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="7" class="text-center">PROJECT DESCRIPTION:</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="7" class="text-center">' + project.project_description +
-                                '</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="2" class="text-center">TECHNICAL PERSONNEL REQUIRED</th>' +
-                                '<th colspan="5" class="text-center">MINIMUM EQUIPMENT REQUIREMENT</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th class="text-center">No.</th>' +
-                                '<th class="text-center">DESCRIPTION</th>' +
-                                '<th colspan="2" class="text-center">DESCRIPTION</th>' +
-                                '<th class="text-center">#Owned</th>' +
-                                '<th class="text-center">#Lease</th>' +
-                                '<th class="text-center">Total # of units</th>' +
-                                '</tr>' +
-                                '</thead>' +
-                                '<tbody>' +
-                                '<tr>' +
-                                '<td class="text-center">' + '1' +
-                                '</td>' +
-                                '<td>' + 'Foreman' +'</td>' +
-                                '<td colspan="2" class="text-left">' + 'Backhoe w/ Dozer' +
-                                '</td>' +
-                                '<td class="text-center">' + '2' +
-                                '</td>' +
-                                '<td class="text-center">' + '0' +
-                                '</td>' +
-                                '<td class="text-center">' + '2' +'</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="7" class="text-center">ESTIMATED COST OF PROPOSED WORK</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th scope="col" class="text-center">Item No.</th>' +
-                                '<th scope="col" class="text-center">Description</th>' +
-                                '<th scope="col" class="text-center">% TOTAL</th>' +
-                                '<th scope="col" class="text-center">QUANTITY</th>' +
-                                '<th scope="col" class="text-center">UNIT</th>' +
-                                '<th scope="col" class="text-center">TOTAL ESTIMATED COST</th>' +
-                                '<th scope="col" class="text-center">UNIT COST</th>' +
-                                '</tr>';
-                            project.particulars.forEach(function(particular, index) {
-                                var isMovingParticular = (particular.particular_name ===
-                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
-
-                                // Calculate individual totals
-                                matTotal += particular.totalMaterialAmount;
-                                equipTotal += particular.totalEquipmentAmount;
-                                labTotal += particular.totalLaborAmount;
-                                dirCostAmount = matTotal + labTotal + equipTotal;
-                                movingIn = (dirCostAmount * 0.01) / 2;
-                                movingOut = (dirCostAmount * 0.01) / 2;
-                                console.log('moving in: ', movingIn);
-                            });
-                            project.particulars.forEach(function(particular, index) {
-                                var isMovingParticular = (particular.particular_name ===
-                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
-
-                                // // Calculate individual totals
-                                // matTotal += particular.totalMaterialAmount;
-                                // equipTotal += particular.totalEquipmentAmount;
-                                // labTotal += particular.totalLaborAmount;
-                                // dirCostAmount = matTotal + labTotal + equipTotal;
-                                // movingIn = (dirCostAmount * 0.01) / 2;
-                                // movingOut = (dirCostAmount * 0.01) / 2;
-
-                                // Calculate values based on the type of particular
-                                var edcTotalAmount = isMovingParticular ? movingIn : (parseFloat(
-                                        particular.totalMaterialAmount) +
-                                    parseFloat(particular.totalLaborAmount) + parseFloat(
-                                        particular.totalEquipmentAmount));
-                                var markUpTotal = isMovingParticular ? 0 : (project.ocm + project
-                                    .contractors_profit);
-                                var markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
-                                    edcTotalAmount);
-                                var vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
-                                    markUpValue + edcTotalAmount));
-                                var indirCostTotal = isMovingParticular ? 0 : (markUpValue +
-                                    vatValue);
-                                var totalCost = edcTotalAmount + indirCostTotal;
-
-                                // Accumulate totalCostAmount
-                                totalCostAmount += totalCost;
-                                console.log('total', movingIn);
-                                console.log('total', totalCostAmount);
-                            });
-                            // Loop through each particular to add rows to the table
-                            project.particulars.forEach(function(particular, index) {
-                                // Check if the particular is MOVING-IN or MOVING-OUT
-                                var isMovingParticular = (particular.particular_name ===
-                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
-
-                                var mobValue = isMovingParticular ? movingIn :
-                                    0;
-                                mobTotal += mobValue;
-                                // Calculate values based on the type of particular
-                                edcTotalAmount = isMovingParticular ? movingIn :
-                                    (
-                                        parseFloat(particular.totalMaterialAmount) + parseFloat(
-                                            particular.totalLaborAmount) +
-                                        parseFloat(particular.totalEquipmentAmount));
-                                markUpTotal = isMovingParticular ? 0 : (project.ocm + project
-                                    .contractors_profit);
-                                markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
-                                    edcTotalAmount);
-                                vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
-                                    markUpValue + edcTotalAmount));
-                                indirCostTotal = isMovingParticular ? 0 : (markUpValue +
-                                    vatValue);
-                                totalCost = edcTotalAmount + indirCostTotal;
-                                unitCost = totalCost / particular.quantity;
-
-                                // Accumulate totals
-                                dirTotal += edcTotalAmount;
-                                totMarkUpVal += markUpValue;
-                                vatTotal += vatValue;
-                                totalIndirCost += indirCostTotal;
-
-                                // Calculate percent based on accumulated totalCostAmount
-                                var percent = (totalCost / totalCostAmount) * 100;
-                                totalPercent += percent;
-                                // console.log('moving in: ', movingIn);
-                                console.log('total cost: ', totalCost);
-                                console.log('total cost amount: ', totalCostAmount);
-                                console.log('total percent: ', percent);
+                            if (project.project_mode_of_implementation === 'By Admin') {
+                                // Create particulars table
                                 divHTML +=
+                                    '<div class="container">' +
+                                    '<table class="table table-bordered table-striped">' +
+                                    '<thead>' +
                                     '<tr>' +
-                                    '<td class="text-center">' + getRomanNumeral(index + 1) +
+                                    '<th colspan="7" class="text-center">Republic  of the Phillipines <br>CENTRAL MINDANAO UNIVERSITY<br> University Town, Musuan, Bukidnon<br><h3>INDIVIDUAL PROJECT PROGRAM OF WORK</h3><br><p class="text-right"><u>04/22/2024</u><br>date</p></th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="4" class="text-center">NAME OF THE PROJECT/LOCATION:</th>' +
+                                    '<th colspan="2" class="text-center">Appropriation Php</th>' +
+                                    '<th class="text-center">' + project.project_appropriation + '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th rowspan="3" colspan="4" class="text-center">' + project
+                                    .project_title +
+                                    '</th>' +
+                                    '<th colspan="2" class="text-center">Source of Funds</th>' +
+                                    '<th class="text-center">' + project.project_source_of_fund + '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="2" class="text-center">Issue Obligated Authority</th>' +
+                                    '<th class="text-center"></th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="2" class="text-center">Released</th>' +
+                                    '<th class="text-center"></th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="4" class="text-center">PROJECT CATEGORY:</th>' +
+                                    '<th colspan="2" class="text-center">Duration</th>' +
+                                    '<th class="text-center">' + project.project_contract_duration +
+                                    '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th rowspan="2" colspan="4" class="text-center">PROJECT CATEGORY</th>' +
+                                    '<th colspan="2" class="text-center">Desirable Starting Date</th>' +
+                                    '<th class="text-center"></th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="2" class="text-center">Mode of Implementation</th>' +
+                                    '<th class="text-center">' + project.project_mode_of_implementation +
+                                    '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="7" class="text-center">PROJECT DESCRIPTION:</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="7" class="text-center">' + project.project_description +
+                                    '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="2" class="text-center">TECHNICAL PERSONNEL REQUIRED</th>' +
+                                    '<th colspan="5" class="text-center">MINIMUM EQUIPMENT REQUIREMENT</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th class="text-center">No.</th>' +
+                                    '<th class="text-center">DESCRIPTION</th>' +
+                                    '<th colspan="2" class="text-center">DESCRIPTION</th>' +
+                                    '<th class="text-center">#Owned</th>' +
+                                    '<th class="text-center">#Lease</th>' +
+                                    '<th class="text-center">Total # of units</th>' +
+                                    '</tr>' +
+                                    '</thead>' +
+                                    '<tbody>' +
+                                    '<tr>' +
+                                    '<td class="text-center">' + '1' +
                                     '</td>' +
-                                    '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(percent.toFixed(
-                                        2)) +
+                                    '<td>' + 'Foreman' + '</td>' +
+                                    '<td colspan="2" class="text-left">' + 'Backhoe w/ Dozer' +
                                     '</td>' +
-                                    '<td class="text-right">' + numberWithCommas(parseFloat(
-                                        particular.quantity).toFixed(2)) +
+                                    '<td class="text-center">' + '2' +
                                     '</td>' +
-                                    '<td class="text-center">' + particular.unit +
+                                    '<td class="text-center">' + '0' +
                                     '</td>' +
-                                    '<td class="text-center"></td>' +
-                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center">' + '2' + '</td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="7" class="text-center">ESTIMATED COST OF PROPOSED WORK</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th scope="col" class="text-center">Item No.</th>' +
+                                    '<th scope="col" class="text-center">Description</th>' +
+                                    '<th scope="col" class="text-center">% TOTAL</th>' +
+                                    '<th scope="col" class="text-center">QUANTITY</th>' +
+                                    '<th scope="col" class="text-center">UNIT</th>' +
+                                    '<th scope="col" class="text-center">TOTAL ESTIMATED COST</th>' +
+                                    '<th scope="col" class="text-center">UNIT COST</th>' +
                                     '</tr>';
-                            });
-                            // Close the table and container
-                            divHTML +=
-                                '</tbody>' +
-                                '<tfoot>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-right"><strong>Total</strong></td>' +
-                                '<td class="text-right">' + totalPercent + '</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center">' + "-" + '</td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '</tfoot>' +
-                                '</table>' +
-                                '</div>';
-                            divHTML +=
-                                '<div class="container">' +
-                                '<div class="row mt-4">' +
-                                '<div class="col-6">' +
-                                '<div class="d-flex flex-column align-items-center">' +
-                                '<div class="d-flex flex-column align-items-start">' +
-                                '<div>' +
-                                'Prepared by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Prepared by') {
+                                project.particulars.forEach(function(particular, index) {
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
+
+                                    // Calculate individual totals
+                                    matTotal += particular.totalMaterialAmount;
+                                    equipTotal += particular.totalEquipmentAmount;
+                                    labTotal += particular.totalLaborAmount;
+                                    dirCostAmount = matTotal + labTotal + equipTotal;
+                                    movingIn = (dirCostAmount * 0.01) / 2;
+                                    movingOut = (dirCostAmount * 0.01) / 2;
+                                    console.log('moving in: ', movingIn);
+                                });
+                                project.particulars.forEach(function(particular, index) {
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
+
+                                    // // Calculate individual totals
+                                    // matTotal += particular.totalMaterialAmount;
+                                    // equipTotal += particular.totalEquipmentAmount;
+                                    // labTotal += particular.totalLaborAmount;
+                                    // dirCostAmount = matTotal + labTotal + equipTotal;
+                                    // movingIn = (dirCostAmount * 0.01) / 2;
+                                    // movingOut = (dirCostAmount * 0.01) / 2;
+
+                                    // Calculate values based on the type of particular
+                                    var edcTotalAmount = isMovingParticular ? movingIn : (
+                                        parseFloat(
+                                            particular.totalMaterialAmount) +
+                                        parseFloat(particular.totalLaborAmount) + parseFloat(
+                                            particular.totalEquipmentAmount));
+                                    // var markUpTotal = isMovingParticular ? 0 : (project.ocm + project
+                                    //     .contractors_profit);
+                                    // var markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
+                                    //     edcTotalAmount);
+                                    // var vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                    //     markUpValue + edcTotalAmount));
+                                    // var indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                    //     vatValue);
+                                    var totalCost = edcTotalAmount;
+
+                                    // Accumulate totalCostAmount
+                                    totalCostAmount += totalCost;
+                                    // console.log('total', movingIn);
+                                    // console.log('total', totalCostAmount);
+                                });
+                                // Loop through each particular to add rows to the table
+                                project.particulars.forEach(function(particular, index) {
+                                    // Check if the particular is MOVING-IN or MOVING-OUT
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
+
+                                    // var mobValue = isMovingParticular ? movingIn :
+                                    //     0;
+                                    // mobTotal += mobValue;
+                                    // Calculate values based on the type of particular
+                                    edcTotalAmount = isMovingParticular ? movingIn :
+                                        (
+                                            parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                                particular.totalLaborAmount) +
+                                            parseFloat(particular.totalEquipmentAmount));
+                                    // markUpTotal = isMovingParticular ? 0 : (project.ocm + project
+                                    //     .contractors_profit);
+                                    // markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
+                                    //     edcTotalAmount);
+                                    // vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                    //     markUpValue + edcTotalAmount));
+                                    // indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                    //     vatValue);
+                                    totalCost = edcTotalAmount;
+                                    unitCost = totalCost / particular.quantity;
+
+                                    // Accumulate totals
+                                    // dirTotal += edcTotalAmount;
+                                    // totMarkUpVal += markUpValue;
+                                    // vatTotal += vatValue;
+                                    // totalIndirCost += indirCostTotal;
+
+                                    // Calculate percent based on accumulated totalCostAmount
+                                    var percent = (totalCost / totalCostAmount) * 100;
+                                    totalPercent += percent;
+                                    // console.log('moving in: ', movingIn);
+                                    // console.log('total cost: ', totalCost);
+                                    // console.log('total cost amount: ', totalCostAmount);
+                                    // console.log('total percent: ', percent);
                                     divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname + '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div> <br>';
-                                }
-                            });
-                            divHTML +=
-                                '<div class="mt-3">' +
-                                'Submitted by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Submitted by') {
+                                        '<tr>' +
+                                        '<td class="text-center">' + getRomanNumeral(index + 1) +
+                                        '</td>' +
+                                        '<td>' + particular.particular_name + '</td>' +
+                                        '<td class="text-right">' + numberWithCommas((percent ===
+                                            null || isNaN(percent)) ? '-' : percent.toFixed(
+                                            2)) +
+                                        '</td>' +
+                                        '<td class="text-right">' + numberWithCommas((particular
+                                                .quantity === null || isNaN(particular.quantity)) ?
+                                            '<span style="color: red;">Please Input a valid value</span>' :
+                                            parseFloat(
+                                                particular.quantity).toFixed(2)) +
+                                        '</td>' +
+                                        '<td class="text-center">' + ((particular.unit === null ||
+                                                isNaN(particular.unit)) ?
+                                            '<span style="color: red;">Please Input a valid value</span>' :
+                                            particular.unit) +
+                                        '</td>' +
+                                        '<td class="text-center"></td>' +
+                                        '<td class="text-center"></td>' +
+                                        '</tr>';
+                                });
+                                // Close the table and container
+                                divHTML +=
+                                    '</tbody>' +
+                                    '<tfoot>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-right"><strong>Total</strong></td>' +
+                                    '<td class="text-right">' + ((totalPercent === null || isNaN(
+                                        totalPercent)) ? '-' : totalPercent) + '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center">' + "-" + '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '</tfoot>' +
+                                    '</table>' +
+                                    '</div>';
+                                divHTML +=
+                                    '<div class="container">' +
+                                    '<div class="row mt-4">' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Prepared by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Prepared by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div> <br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Submitted by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Submitted by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Conformed by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Conformed by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Checked by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Checked by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Recommending Approval: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Recommending Approval') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Approved by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Approved by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + ', ' + signature
+                                            .degree +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                // Append the complete table to the container
+                                $('#particularsContainer').html(divHTML);
+                            } else {
+                                // Create particulars table
+                                divHTML +=
+                                    '<div class="container">' +
+                                    '<table class="table table-bordered table-striped">' +
+                                    '<thead>' +
+                                    '<tr>' +
+                                    '<th colspan="7" class="text-center">Republic  of the Phillipines <br>CENTRAL MINDANAO UNIVERSITY<br> University Town, Musuan, Bukidnon<br><h3>INDIVIDUAL PROJECT PROGRAM OF WORK</h3><br><p class="text-right"><u>04/22/2024</u><br>date</p></th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="4" class="text-center">NAME OF THE PROJECT/LOCATION:</th>' +
+                                    '<th colspan="2" class="text-center">Appropriation Php</th>' +
+                                    '<th class="text-center">' + project.project_appropriation + '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th rowspan="3" colspan="4" class="text-center">' + project
+                                    .project_title +
+                                    '</th>' +
+                                    '<th colspan="2" class="text-center">Source of Funds</th>' +
+                                    '<th class="text-center">' + project.project_source_of_fund + '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="2" class="text-center">Issue Obligated Authority</th>' +
+                                    '<th class="text-center"></th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="2" class="text-center">Released</th>' +
+                                    '<th class="text-center"></th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="4" class="text-center">PROJECT CATEGORY:</th>' +
+                                    '<th colspan="2" class="text-center">Duration</th>' +
+                                    '<th class="text-center">' + project.project_contract_duration +
+                                    '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th rowspan="2" colspan="4" class="text-center">PROJECT CATEGORY</th>' +
+                                    '<th colspan="2" class="text-center">Desirable Starting Date</th>' +
+                                    '<th class="text-center"></th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="2" class="text-center">Mode of Implementation</th>' +
+                                    '<th class="text-center">' + project.project_mode_of_implementation +
+                                    '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="7" class="text-center">PROJECT DESCRIPTION:</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="7" class="text-center">' + project.project_description +
+                                    '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="2" class="text-center">TECHNICAL PERSONNEL REQUIRED</th>' +
+                                    '<th colspan="5" class="text-center">MINIMUM EQUIPMENT REQUIREMENT</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th class="text-center">No.</th>' +
+                                    '<th class="text-center">DESCRIPTION</th>' +
+                                    '<th colspan="2" class="text-center">DESCRIPTION</th>' +
+                                    '<th class="text-center">#Owned</th>' +
+                                    '<th class="text-center">#Lease</th>' +
+                                    '<th class="text-center">Total # of units</th>' +
+                                    '</tr>' +
+                                    '</thead>' +
+                                    '<tbody>' +
+                                    '<tr>' +
+                                    '<td class="text-center">' + '1' +
+                                    '</td>' +
+                                    '<td>' + 'Foreman' + '</td>' +
+                                    '<td colspan="2" class="text-left">' + 'Backhoe w/ Dozer' +
+                                    '</td>' +
+                                    '<td class="text-center">' + '2' +
+                                    '</td>' +
+                                    '<td class="text-center">' + '0' +
+                                    '</td>' +
+                                    '<td class="text-center">' + '2' + '</td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="7" class="text-center">ESTIMATED COST OF PROPOSED WORK</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th scope="col" class="text-center">Item No.</th>' +
+                                    '<th scope="col" class="text-center">Description</th>' +
+                                    '<th scope="col" class="text-center">% TOTAL</th>' +
+                                    '<th scope="col" class="text-center">QUANTITY</th>' +
+                                    '<th scope="col" class="text-center">UNIT</th>' +
+                                    '<th scope="col" class="text-center">TOTAL ESTIMATED COST</th>' +
+                                    '<th scope="col" class="text-center">UNIT COST</th>' +
+                                    '</tr>';
+                                project.particulars.forEach(function(particular, index) {
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
+
+                                    // Calculate individual totals
+                                    matTotal += particular.totalMaterialAmount;
+                                    equipTotal += particular.totalEquipmentAmount;
+                                    labTotal += particular.totalLaborAmount;
+                                    dirCostAmount = matTotal + labTotal + equipTotal;
+                                    movingIn = (dirCostAmount * 0.01) / 2;
+                                    movingOut = (dirCostAmount * 0.01) / 2;
+                                    console.log('moving in: ', movingIn);
+                                });
+                                project.particulars.forEach(function(particular, index) {
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
+
+                                    // // Calculate individual totals
+                                    // matTotal += particular.totalMaterialAmount;
+                                    // equipTotal += particular.totalEquipmentAmount;
+                                    // labTotal += particular.totalLaborAmount;
+                                    // dirCostAmount = matTotal + labTotal + equipTotal;
+                                    // movingIn = (dirCostAmount * 0.01) / 2;
+                                    // movingOut = (dirCostAmount * 0.01) / 2;
+
+                                    // Calculate values based on the type of particular
+                                    var edcTotalAmount = isMovingParticular ? movingIn : (
+                                        parseFloat(
+                                            particular.totalMaterialAmount) +
+                                        parseFloat(particular.totalLaborAmount) + parseFloat(
+                                            particular.totalEquipmentAmount));
+                                    var markUpTotal = isMovingParticular ? 0 : (project.ocm +
+                                        project
+                                        .contractors_profit);
+                                    var markUpValue = isMovingParticular ? 0 : ((markUpTotal /
+                                        100) *
+                                        edcTotalAmount);
+                                    var vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                        markUpValue + edcTotalAmount));
+                                    var indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                        vatValue);
+                                    var totalCost = edcTotalAmount + indirCostTotal;
+
+                                    // Accumulate totalCostAmount
+                                    totalCostAmount += totalCost;
+                                    console.log('total', movingIn);
+                                    console.log('total', totalCostAmount);
+                                });
+                                // Loop through each particular to add rows to the table
+                                project.particulars.forEach(function(particular, index) {
+                                    // Check if the particular is MOVING-IN or MOVING-OUT
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
+
+                                    var mobValue = isMovingParticular ? movingIn :
+                                        0;
+                                    mobTotal += mobValue;
+                                    // Calculate values based on the type of particular
+                                    edcTotalAmount = isMovingParticular ? movingIn :
+                                        (
+                                            parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                                particular.totalLaborAmount) +
+                                            parseFloat(particular.totalEquipmentAmount));
+                                    markUpTotal = isMovingParticular ? 0 : (project.ocm + project
+                                        .contractors_profit);
+                                    markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
+                                        edcTotalAmount);
+                                    vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                        markUpValue + edcTotalAmount));
+                                    indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                        vatValue);
+                                    totalCost = edcTotalAmount + indirCostTotal;
+                                    unitCost = totalCost / particular.quantity;
+
+                                    // Accumulate totals
+                                    dirTotal += edcTotalAmount;
+                                    totMarkUpVal += markUpValue;
+                                    vatTotal += vatValue;
+                                    totalIndirCost += indirCostTotal;
+
+                                    // Calculate percent based on accumulated totalCostAmount
+                                    var percent = (parseFloat(totalCost) / parseFloat(totalCostAmount)) * 100;
+                                    totalPercent += percent;
+                                    // console.log('moving in: ', movingIn);
+                                    console.log('total cost: ', totalCost);
+                                    console.log('total cost amount: ', totalCostAmount);
+                                    console.log('total percent: ', percent);
                                     divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '<div class="mt-3">' +
-                                'Conformed by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Conformed by') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="col-6">' +
-                                '<div class="d-flex flex-column align-items-center">' +
-                                '<div class="d-flex flex-column align-items-start">' +
-                                '<div>' +
-                                'Checked by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Checked by') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '<div class="mt-3">' +
-                                'Recommending Approval: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Recommending Approval') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '<div class="mt-3">' +
-                                'Approved by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Approved by') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname + ', ' + signature
-                                        .degree +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>';
-                            // Append the complete table to the container
-                            $('#particularsContainer').html(divHTML);
+                                        '<tr>' +
+                                        '<td class="text-center">' + getRomanNumeral(index + 1) +
+                                        '</td>' +
+                                        '<td>' + particular.particular_name + '</td>' +
+                                        '<td class="text-right">' + numberWithCommas((percent ===
+                                            null || isNaN(percent)) ? '-' : percent.toFixed(
+                                            2)) +
+                                        '</td>' +
+                                        '<td class="text-right">' + numberWithCommas((particular
+                                                .quantity === null || isNaN(particular.quantity)) ?
+                                            '-' : parseFloat(
+                                                particular.quantity).toFixed(2)) +
+                                        '</td>' +
+                                        '<td class="text-center">' + ((particular.unit === null ||
+                                            isNaN(particular.unit)) ? '-' : particular.unit) +
+                                        '</td>' +
+                                        '<td class="text-center"></td>' +
+                                        '<td class="text-center"></td>' +
+                                        '</tr>';
+                                });
+                                // Close the table and container
+                                divHTML +=
+                                    '</tbody>' +
+                                    '<tfoot>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-right"><strong>Total</strong></td>' +
+                                    '<td class="text-right">' + ((totalPercent === null || isNaN(
+                                        totalPercent)) ? '-' : totalPercent) + '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center">' + "-" + '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '</tfoot>' +
+                                    '</table>' +
+                                    '</div>';
+                                divHTML +=
+                                    '<div class="container">' +
+                                    '<div class="row mt-4">' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Prepared by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Prepared by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div> <br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Submitted by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Submitted by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Conformed by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Conformed by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Checked by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Checked by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Recommending Approval: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Recommending Approval') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Approved by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Approved by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + ', ' + signature
+                                            .degree +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                // Append the complete table to the container
+                                $('#particularsContainer').html(divHTML);
+                            }
                         } else {
                             console.error('Project with ID ' + projectId + ' not found in the response.');
                         }

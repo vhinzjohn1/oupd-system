@@ -73,32 +73,22 @@
                 <img src="{{ asset('/img/cmu.png') }}" class="cmuLogo" />
             </div> --}}
 
-        <table class="table table-borderless" id="projectDetails">
-            <tr>
-                <td>Name of the Project :</td>
-                <td><span id="projectTitle"></span></td>
-                <td>Source of Fund :</td>
-                <td><span id="projectSOF"></span></td>
-            </tr>
-            <tr>
-                <td>Date Prepared :</td>
-                <td><span id="projectDate"></span></td>
-                <td>Location :</td>
-                <td><span id="projectLocation"></span></td>
-            </tr>
-            <tr>
-                <td>Appropriation :</td>
-                <td><span id="projectAppropriation"></span></td>
-                <td>Contract Duration :</td>
-                <td><span id="projectDuration"></span></td>
-            </tr>
-            <tr>
-                <td>Owner :</td>
-                <td><span id="projectOwner"></span></td>
-                <td>Mode of Implementation :</td>
-                <td><span id="projectImplementation"></span></td>
-            </tr>
-        </table>
+        <div class="container text-center">
+            <div class="row mt-4">
+                <div class="row mt-2">
+                    <div class="d-flex flex-column align-items-start">
+                        <div class="row row-cols-auto">
+                            <div><strong>Name of the Project :</strong></div>
+                            <div class="col"><span id="projectTitle" style="font-size: 20px;"></span></div>
+                        </div>
+                        <div class="row row-cols-auto">
+                            <div><strong>Location :</strong></div>
+                            <div class="col"><span id="projectLocation" style="font-size: 20px;"></span></div>
+                        </div> <br>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Project Particulars -->
         <div class="container-fluid">
@@ -158,163 +148,329 @@
                             $('#projectDuration').text(project.project_contract_duration);
                             $('#projectImplementation').text(project.project_mode_of_implementation);
                             // Create particulars table
-                            divHTML +=
-                                '<div class="container">' +
-                                '<table class="table table-bordered table-striped">' +
-                                '<thead>' +
-                                '<tr>' +
-                                '<th colspan="11" class="text-center">' +
-                                '<h5>PROJECT PROCUREMENT MANAGEMENT PLAN</h5>' +
-                                '</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th class="text-center">Ref.</th>' +
-                                '<th class="text-center">Contract Package (Description)</th>' +
-                                '<th class="text-center">Procurement Method</th>' +
-                                '<th class="text-center">ABC</th>' +
-                                '<th class="text-center">Pre-Procurement Conference</th>' +
-                                '<th class="text-center">Advertisement</th>' +
-                                '<th class="text-center">Eligibility Screening</th>' +
-                                '<th class="text-center">Submission and Receipt of Bids</th>' +
-                                '<th class="text-center">Bid Evaluation</th>' +
-                                '<th class="text-center">Post-Qualification</th>' +
-                                '<th class="text-center">Award of Contract</th>' +
+                            if (project.project_mode_of_implementation === 'By Admin') {
+                                divHTML +=
+                                    '<div class="container">' +
+                                    '<table class="table table-bordered table-striped">' +
+                                    '<thead>' +
+                                    '<tr>' +
+                                    '<th colspan="11" class="text-center">' +
+                                    '<h5>PROJECT PROCUREMENT MANAGEMENT PLAN</h5>' +
+                                    '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th class="text-center">Ref.</th>' +
+                                    '<th class="text-center">Contract Package (Description)</th>' +
+                                    '<th class="text-center">Procurement Method</th>' +
+                                    '<th class="text-center">ABC</th>' +
+                                    '<th class="text-center">Pre-Procurement Conference</th>' +
+                                    '<th class="text-center">Advertisement</th>' +
+                                    '<th class="text-center">Eligibility Screening</th>' +
+                                    '<th class="text-center">Submission and Receipt of Bids</th>' +
+                                    '<th class="text-center">Bid Evaluation</th>' +
+                                    '<th class="text-center">Post-Qualification</th>' +
+                                    '<th class="text-center">Award of Contract</th>' +
 
-                                '</tr>' +
-                                '</thead>' +
-                                '<tbody>';
-                            project.particulars.forEach(function(particular, index) {
-                                var isMovingParticular = (particular.particular_name ===
-                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+                                    '</tr>' +
+                                    '</thead>' +
+                                    '<tbody>';
+                                project.particulars.forEach(function(particular, index) {
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
 
-                                // Calculate individual totals
-                                matTotal += particular.totalMaterialAmount;
-                                equipTotal += particular.totalEquipmentAmount;
-                                labTotal += particular.totalLaborAmount;
-                                dirCostAmount = matTotal + labTotal + equipTotal;
-                                movingIn = (dirCostAmount * 0.01) / 2;
-                                movingOut = (dirCostAmount * 0.01) / 2;
-                                console.log('moving in: ', movingIn);
-                            });
-                            // Loop through each particular to add rows to the table
-                            project.particulars.forEach(function(particular, index) {
-                                // Check if the particular is MOVING-IN or MOVING-OUT
-                                var isMovingParticular = (particular.particular_name ===
-                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
+                                    // Calculate individual totals
+                                    matTotal += particular.totalMaterialAmount;
+                                    equipTotal += particular.totalEquipmentAmount;
+                                    labTotal += particular.totalLaborAmount;
+                                    dirCostAmount = matTotal + labTotal + equipTotal;
+                                    movingIn = (dirCostAmount * 0.01) / 2;
+                                    movingOut = (dirCostAmount * 0.01) / 2;
+                                    console.log('moving in: ', movingIn);
+                                });
+                                // Loop through each particular to add rows to the table
+                                project.particulars.forEach(function(particular, index) {
+                                    // Check if the particular is MOVING-IN or MOVING-OUT
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
 
 
-                                var mobValue = isMovingParticular ? movingIn :
-                                    0;
-                                mobTotal += mobValue;
-                                // Calculate values based on the type of particular
-                                edcTotalAmount = isMovingParticular ? movingIn :
-                                    (
-                                        parseFloat(particular.totalMaterialAmount) + parseFloat(
-                                            particular.totalLaborAmount) +
-                                        parseFloat(particular.totalEquipmentAmount));
-                                markUpTotal = isMovingParticular ? 0 : (project.ocm + project
-                                    .contractors_profit);
-                                markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
-                                    edcTotalAmount);
-                                vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
-                                    markUpValue + edcTotalAmount));
-                                indirCostTotal = isMovingParticular ? 0 : (markUpValue +
-                                    vatValue);
-                                totalCost = edcTotalAmount + indirCostTotal;
-                                unitCost = totalCost / particular.quantity;
-                                dirTotal += edcTotalAmount;
-                                totMarkUpVal += markUpValue;
-                                vatTotal += vatValue;
-                                totalIndirCost += indirCostTotal;
-                                totalCostAmount += totalCost;
-                            });
-                            // Add row for the particular
-                            divHTML +=
-                                '<tr>' +
-                                '<td></td>' +
-                                '<td>' + project.project_title + '</td>' +
-                                '<td class="text-center">' + 'Public Bidding' +
-                                '</td>' +
-                                '<td class="text-right">' + numberWithCommas(totalCostAmount.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-right"></td>' +
-                                '</tr>';
+                                    // var mobValue = isMovingParticular ? movingIn :
+                                    //     0;
+                                    // mobTotal += mobValue;
+                                    // Calculate values based on the type of particular
+                                    edcTotalAmount = isMovingParticular ? movingIn :
+                                        (
+                                            parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                                particular.totalLaborAmount) +
+                                            parseFloat(particular.totalEquipmentAmount));
+                                    // markUpTotal = isMovingParticular ? 0 : (project.ocm + project
+                                    //     .contractors_profit);
+                                    // markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
+                                    //     edcTotalAmount);
+                                    // vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                    //     markUpValue + edcTotalAmount));
+                                    // indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                    //     vatValue);
+                                    totalCost = edcTotalAmount;
+                                    unitCost = totalCost / particular.quantity;
+                                    // dirTotal += edcTotalAmount;
+                                    // totMarkUpVal += markUpValue;
+                                    // vatTotal += vatValue;
+                                    // totalIndirCost += indirCostTotal;
+                                    totalCostAmount += totalCost;
+                                });
+                                // Add row for the particular
+                                divHTML +=
+                                    '<tr>' +
+                                    '<td></td>' +
+                                    '<td>' + project.project_title + '</td>' +
+                                    '<td class="text-center">' + 'Public Bidding' +
+                                    '</td>' +
+                                    '<td class="text-right">' + '₱' + numberWithCommas(totalCostAmount.toFixed(
+                                        2)) +
+                                    '</td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '</tr>';
 
-                            // Close the table and container
-                            divHTML +=
-                                '</tbody>' +
-                                '<tfoot>' +
-                                '<tr>' +
-                                '<td></td>' +
-                                '<td colspan="2"><strong>Total Budget Amount</strong></td>' +
-                                '<td colspan="9" class="text-left">' + numberWithCommas(totalCostAmount
-                                    .toFixed(2)) +
-                                '</td>' +
-                                '</tr>' +
-                                '</tfoot>' +
-                                '</table>' +
-                                '</div>';
-                            divHTML +=
-                                '<div class="container">' +
-                                '<div class="row mt-4">' +
-                                '<div class="col d-inline-block me-1">' +
-                                '<div style="white-space: nowrap;">' +
-                                'Prepared by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Prepared by (PPMP)') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname + '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div>';
-                                }
-                            });
-                            divHTML +=
-                                '</div>' +
-                                '<div class="col d-inline-block me-1">' +
-                                '<div style="white-space: nowrap;">' +
-                                'Checked by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Reviewed by (PPMP)') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div>';
-                                }
-                            });
-                            divHTML +=
-                                '</div>' +
-                                '<div class="col d-inline-block me-1">' +
-                                '<div style="white-space: nowrap;">' +
-                                'Submitted by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Approved by') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname + ', ' + signature
-                                        .degree +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div>';
-                                }
-                            });
-                            divHTML +=
-                                '</div>' +
-                                '</div>' +
-                                '</div>';
-                            // Append the complete table to the container
-                            $('#particularsContainer').html(divHTML);
+                                // Close the table and container
+                                divHTML +=
+                                    '</tbody>' +
+                                    '<tfoot>' +
+                                    '<tr>' +
+                                    '<td></td>' +
+                                    '<td colspan="2"><strong>Total Budget Amount</strong></td>' +
+                                    '<td colspan="9" class="text-left">' + '₱' + numberWithCommas(totalCostAmount
+                                        .toFixed(2)) +
+                                    '</td>' +
+                                    '</tr>' +
+                                    '</tfoot>' +
+                                    '</table>' +
+                                    '</div>';
+                                divHTML +=
+                                    '<div class="container">' +
+                                    '<div class="row mt-4">' +
+                                    '<div class="col d-inline-block me-1">' +
+                                    '<div style="white-space: nowrap;">' +
+                                    'Prepared by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Prepared by (PPMP)') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '<div class="col d-inline-block me-1">' +
+                                    '<div style="white-space: nowrap;">' +
+                                    'Checked by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Reviewed by (PPMP)') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '<div class="col d-inline-block me-1">' +
+                                    '<div style="white-space: nowrap;">' +
+                                    'Submitted by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Approved by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + ', ' + signature
+                                            .degree +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                // Append the complete table to the container
+                                $('#particularsContainer').html(divHTML);
+                            } else {
+                                divHTML +=
+                                    '<div class="container">' +
+                                    '<table class="table table-bordered table-striped">' +
+                                    '<thead>' +
+                                    '<tr>' +
+                                    '<th colspan="11" class="text-center">' +
+                                    '<h5>PROJECT PROCUREMENT MANAGEMENT PLAN</h5>' +
+                                    '</th>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th class="text-center">Ref.</th>' +
+                                    '<th class="text-center">Contract Package (Description)</th>' +
+                                    '<th class="text-center">Procurement Method</th>' +
+                                    '<th class="text-center">ABC</th>' +
+                                    '<th class="text-center">Pre-Procurement Conference</th>' +
+                                    '<th class="text-center">Advertisement</th>' +
+                                    '<th class="text-center">Eligibility Screening</th>' +
+                                    '<th class="text-center">Submission and Receipt of Bids</th>' +
+                                    '<th class="text-center">Bid Evaluation</th>' +
+                                    '<th class="text-center">Post-Qualification</th>' +
+                                    '<th class="text-center">Award of Contract</th>' +
+
+                                    '</tr>' +
+                                    '</thead>' +
+                                    '<tbody>';
+                                project.particulars.forEach(function(particular, index) {
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
+
+                                    // Calculate individual totals
+                                    matTotal += particular.totalMaterialAmount;
+                                    equipTotal += particular.totalEquipmentAmount;
+                                    labTotal += particular.totalLaborAmount;
+                                    dirCostAmount = matTotal + labTotal + equipTotal;
+                                    movingIn = (dirCostAmount * 0.01) / 2;
+                                    movingOut = (dirCostAmount * 0.01) / 2;
+                                    console.log('moving in: ', movingIn);
+                                });
+                                // Loop through each particular to add rows to the table
+                                project.particulars.forEach(function(particular, index) {
+                                    // Check if the particular is MOVING-IN or MOVING-OUT
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
+
+
+                                    var mobValue = isMovingParticular ? movingIn :
+                                        0;
+                                    mobTotal += mobValue;
+                                    // Calculate values based on the type of particular
+                                    edcTotalAmount = isMovingParticular ? movingIn :
+                                        (
+                                            parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                                particular.totalLaborAmount) +
+                                            parseFloat(particular.totalEquipmentAmount));
+                                    markUpTotal = isMovingParticular ? 0 : (project.ocm + project
+                                        .contractors_profit);
+                                    markUpValue = isMovingParticular ? 0 : ((markUpTotal / 100) *
+                                        edcTotalAmount);
+                                    vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
+                                        markUpValue + edcTotalAmount));
+                                    indirCostTotal = isMovingParticular ? 0 : (markUpValue +
+                                        vatValue);
+                                    totalCost = edcTotalAmount + indirCostTotal;
+                                    unitCost = totalCost / particular.quantity;
+                                    dirTotal += edcTotalAmount;
+                                    totMarkUpVal += markUpValue;
+                                    vatTotal += vatValue;
+                                    totalIndirCost += indirCostTotal;
+                                    totalCostAmount += totalCost;
+                                });
+                                // Add row for the particular
+                                divHTML +=
+                                    '<tr>' +
+                                    '<td></td>' +
+                                    '<td>' + project.project_title + '</td>' +
+                                    '<td class="text-center">' + 'Public Bidding' +
+                                    '</td>' +
+                                    '<td class="text-right">' + '₱' + numberWithCommas(totalCostAmount.toFixed(
+                                        2)) +
+                                    '</td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-right"></td>' +
+                                    '</tr>';
+
+                                // Close the table and container
+                                divHTML +=
+                                    '</tbody>' +
+                                    '<tfoot>' +
+                                    '<tr>' +
+                                    '<td></td>' +
+                                    '<td colspan="2"><strong>Total Budget Amount</strong></td>' +
+                                    '<td colspan="9" class="text-left">' + '₱' + numberWithCommas(totalCostAmount
+                                        .toFixed(2)) +
+                                    '</td>' +
+                                    '</tr>' +
+                                    '</tfoot>' +
+                                    '</table>' +
+                                    '</div>';
+                                divHTML +=
+                                    '<div class="container">' +
+                                    '<div class="row mt-4">' +
+                                    '<div class="col d-inline-block me-1">' +
+                                    '<div style="white-space: nowrap;">' +
+                                    'Prepared by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Prepared by (PPMP)') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '<div class="col d-inline-block me-1">' +
+                                    '<div style="white-space: nowrap;">' +
+                                    'Checked by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Reviewed by (PPMP)') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '<div class="col d-inline-block me-1">' +
+                                    '<div style="white-space: nowrap;">' +
+                                    'Submitted by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Approved by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + ', ' + signature
+                                            .degree +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                // Append the complete table to the container
+                                $('#particularsContainer').html(divHTML);
+                            }
                         } else {
                             console.error('Project with ID ' + projectId +
                                 ' not found in the response.');

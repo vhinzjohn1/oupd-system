@@ -166,9 +166,10 @@
                 text: 'You will not be able to recover this Equipment Entry!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({

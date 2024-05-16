@@ -59,7 +59,7 @@
         </form>
 
         @if (Route::has('password.request'))
-            <p class="mb-1">
+            <p class="mb-1 --gray">
                 <a href="{{ route('password.request') }}">{{ __('Forgot Your Password?') }}</a>
             </p>
         @endif

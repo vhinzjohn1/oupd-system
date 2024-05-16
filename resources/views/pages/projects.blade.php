@@ -1,6 +1,17 @@
 @extends('layouts.app')
 @section('title', 'Projects')
 @section('content')
+
+    <head>
+        <style>
+            .custom-confirm-button {
+                background-color: #00491e !important;
+                /* Change this color as needed */
+                border-color: #00491e !important;
+                /* Change this color as needed */
+            }
+        </style>
+    </head>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -253,7 +264,10 @@
             Swal.fire({
                 title: `${project_title}  Selected`,
                 icon: 'success',
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
+                customClass: {
+                    confirmButton: 'custom-confirm-button'
+                }
             }).then((result) => {
                 // Redirect to the home page after the user clicks "OK"
                 if (result.isConfirmed) {
@@ -438,9 +452,10 @@
                 text: 'You will not be able to recover this Project!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({

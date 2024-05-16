@@ -680,9 +680,10 @@
                 text: 'You will not be able to recover this Signature!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -926,9 +927,10 @@
                 text: 'You will not be able to recover this Technical Personnel!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -1183,9 +1185,10 @@
                 text: 'You will not be able to recover this Minimum Equipment!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -3296,9 +3299,10 @@
                 text: "You are about to delete this record!",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, delete it!",
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Proceed with delete operation
@@ -3897,9 +3901,10 @@
                 text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     // If user confirms, proceed with deletion

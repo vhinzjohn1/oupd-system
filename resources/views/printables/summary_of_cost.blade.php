@@ -156,24 +156,9 @@
                             var mobCost = 0;
                             var dirTotalAmount = 0;
                             var dirCostAmount = 0;
+                            if (project.project_mode_of_implementation === 'By Admin') {
                             // Create particulars table
                             divHTML +=
-                                // '<div class="container text-center">' +
-                                // '<div class="row mt-4">' +
-                                // '<div class="row mt-2">' +
-                                // '<div class="d-flex flex-column align-items-center">' +
-                                // '</div>' +
-                                // '<div class="d-flex flex-column align-items-start">' +
-                                // '<div><strong>PROJECT TITLE: ' + project.project_title +
-                                // '</strong> </div>' +
-                                // '<div><strong>LOCATION: ' + project.project_location +
-                                // '</strong></div>' +
-                                // '<div><strong>OWNER: ' + project.project_owner + '</strong> </div>' +
-                                // '<div><strong>SUBJECT : Summary of Cost</strong> </div> <br>' +
-                                // '</div>' +
-                                // '</div>' +
-                                // '</div>' +
-                                // '</div>' +
                                 '<div class="container">' +
                                 '<table class="table table-bordered table-striped">' +
                                 '<thead>' +
@@ -190,305 +175,645 @@
                                 '</tr>' +
                                 '</thead>' +
                                 '<tbody>';
-                            project.particulars.forEach(function(particular, index) {
+                            
+                                project.particulars.forEach(function(particular, index) {
+                                    // Calculate individual totals
+                                    matTotal += particular.totalMaterialAmount;
+                                    equipTotal += particular.totalEquipmentAmount;
+                                    labTotal += particular.totalLaborAmount;
+                                    dirCostAmount = matTotal + labTotal + equipTotal;
+                                    movingIn = (dirCostAmount * 0.01) / 2;
+                                    movingOut = (dirCostAmount * 0.01) / 2;
+                                    // console.log();
+                                });
+                                project.particulars.forEach(function(particular, index) {
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
 
-                                // Calculate individual totals
-                                matTotal += particular.totalMaterialAmount;
-                                equipTotal += particular.totalEquipmentAmount;
-                                labTotal += particular.totalLaborAmount;
-                                dirCostAmount = matTotal + labTotal + equipTotal;
-                                movingIn = (dirCostAmount * 0.01) / 2;
-                                movingOut = (dirCostAmount * 0.01) / 2;
-                                console.log();
-                            });
-                            project.particulars.forEach(function(particular, index) {
-                                var isMovingParticular = (particular.particular_name ===
-                                    "MOVING-IN" || particular.particular_name === "MOVING-OUT");
-
-                                totalAmount = isMovingParticular ? movingIn :
-                                    parseFloat(particular.totalMaterialAmount) + parseFloat(
-                                        particular.totalLaborAmount) +
-                                    parseFloat(particular.totalEquipmentAmount);
-                                dirTotal += totalAmount;
-                                console.log('total', dirTotal);
-                                console.log(particular.totalMaterialAmount);
-                                // Append particular details to the table
+                                    totalAmount = isMovingParticular ? movingIn :
+                                        parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                            particular.totalLaborAmount) +
+                                        parseFloat(particular.totalEquipmentAmount);
+                                    dirTotal += totalAmount;
+                                    // console.log('total', dirTotal);
+                                    // console.log(particular.totalMaterialAmount);
+                                    // Append particular details to the table
+                                    divHTML +=
+                                        '<tr>' +
+                                        '<td class="text-center">' + getRomanNumeral(index + 1) +
+                                        '</td>' +
+                                        '<td>' + particular.particular_name + '</td>' +
+                                        '<td class="text-center">' + numberWithCommas(particular
+                                            .totalMaterialAmount === 0 ? ' ' : '₱' + particular
+                                            .totalMaterialAmount.toFixed(
+                                                2)) + '</td>' +
+                                        '<td class="text-center">' + numberWithCommas(particular
+                                            .totalLaborAmount === 0 ? ' ' : '₱' + particular
+                                            .totalLaborAmount.toFixed(
+                                                2)) + '</td>' +
+                                        '<td class="text-center">' + numberWithCommas(particular
+                                            .totalEquipmentAmount === 0 ? ' ' : '₱' + particular
+                                            .totalEquipmentAmount.toFixed(2)) + '</td>' +
+                                        '<td class="text-center">' + (isMovingParticular ? '₱' +
+                                            numberWithCommas(movingIn.toFixed(2)) : '₱' +
+                                            numberWithCommas(
+                                                totalAmount
+                                                .toFixed(2))) + '</td>'
+                                    '</tr>';
+                                });
+                                // Calculate other totals outside the loop
+                                // var ocmTotal = dirCostAmount * (project.ocm / 100);
+                                // var cpTotal = dirCostAmount * (project.contractors_profit / 100);
+                                // var vatTotal = (dirCostAmount + ocmTotal + cpTotal) * (project.vat / 100);
+                                // var totalIndirCost = ocmTotal + cpTotal + vatTotal;
+                                // var mobCost = movingIn + movingOut;
+                                // var projectCostTotal = parseFloat(dirCostAmount.toFixed(2)) + parseFloat(
+                                //     totalIndirCost.toFixed(2)) + parseFloat(mobCost.toFixed(2));
+                                var amountInWords = convertNumberToWords(dirCostAmount);
+                                // console.log('dirCostAmount : ', dirTotal);
+                                // console.log('indirCostAmount : ', movingOut);
+                                // console.log('mobCostAmount : ', mobCost);
+                                // console.log('projCostAmount : ', projectCostTotal);
+                                // Close the table and container
                                 divHTML +=
+                                    '</tbody>' +
+                                    '<tfoot>' +
                                     '<tr>' +
-                                    '<td class="text-center">' + getRomanNumeral(index + 1) +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-right"><strong>Total</strong></td>' +
+                                    '<td class="text-center">' + '₱' + numberWithCommas(matTotal.toFixed(2)) +
                                     '</td>' +
-                                    '<td>' + particular.particular_name + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(particular
-                                        .totalMaterialAmount.toFixed(
-                                            2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(particular
-                                        .totalLaborAmount.toFixed(
-                                            2)) + '</td>' +
-                                    '<td class="text-center">' + numberWithCommas(particular
-                                        .totalEquipmentAmount.toFixed(2)) + '</td>' +
-                                    '<td class="text-center">' + (isMovingParticular ?
-                                        numberWithCommas(movingIn.toFixed(2)) : numberWithCommas(
-                                            totalAmount
-                                            .toFixed(2))) + '</td>'
-                                '</tr>';
-                            });
-                            // Calculate other totals outside the loop
-                            var ocmTotal = dirCostAmount * (project.ocm / 100);
-                            var cpTotal = dirCostAmount * (project.contractors_profit / 100);
-                            var vatTotal = (dirCostAmount + ocmTotal + cpTotal) * (project.vat / 100);
-                            var totalIndirCost = ocmTotal + cpTotal + vatTotal;
-                            var mobCost = movingIn + movingOut;
-                            var projectCostTotal = parseFloat(dirCostAmount.toFixed(2)) + parseFloat(
-                                totalIndirCost.toFixed(2)) + parseFloat(mobCost.toFixed(2));
-                            var amountInWords = convertNumberToWords(projectCostTotal);
-                            console.log('dirCostAmount : ', dirTotal);
-                            console.log('indirCostAmount : ', movingOut);
-                            console.log('mobCostAmount : ', mobCost);
-                            console.log('projCostAmount : ', projectCostTotal);
-                            // Close the table and container
-                            divHTML +=
-                                '</tbody>' +
-                                '<tfoot>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-right"><strong>Total</strong></td>' +
-                                '<td class="text-center">' + numberWithCommas(matTotal.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center">' + numberWithCommas(labTotal.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center">' + numberWithCommas(equipTotal.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center">' + numberWithCommas(parseFloat(dirTotal).toFixed(
+                                    '<td class="text-center">' + '₱' + numberWithCommas(labTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center">' + '₱' + numberWithCommas(equipTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center">' + '₱' + numberWithCommas(parseFloat(dirTotal)
+                                        .toFixed(
+                                            2)) +
+                                    '</td>' +
+                                    '</tr>' +
+                                    '</tfoot>' +
+                                    '</table>' +
+                                    '<table class="table table-borderless">' +
+                                    '<tr>' +
+                                    '<td class="text-left">I. Direct Cost</td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">Materials</td>' +
+                                    '<td class="text-right">' + '₱' + numberWithCommas(matTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">Labor</td>' +
+                                    '<td class="text-right">' + '₱' + numberWithCommas(labTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">Equipment Rental</td>' +
+                                    '<td class="text-right">' + '₱' + numberWithCommas(equipTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center">=</td>' +
+                                    '<td class="text-center">' + '₱' + numberWithCommas(dirCostAmount.toFixed(
                                     2)) +
-                                '</td>' +
-                                '</tr>' +
-                                '</tfoot>' +
-                                '</table>' +
-                                '<table class="table table-borderless">' +
-                                '<tr>' +
-                                '<td class="text-left">I. Direct Cost</td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Materials</td>' +
-                                '<td class="text-right">' + numberWithCommas(matTotal.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Labor</td>' +
-                                '<td class="text-right">' + numberWithCommas(labTotal.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Equipment Rental</td>' +
-                                '<td class="text-right">' + numberWithCommas(equipTotal.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + numberWithCommas(dirCostAmount.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-left">II. Indirect Cost</td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">OCM (' + project.ocm + '% of Direct Cost)</td>' +
-                                '<td class="text-right">' + numberWithCommas(ocmTotal.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">CP (' + project.contractors_profit +
-                                '% of Direct Cost)</td>' +
-                                '<td class="text-right">' + numberWithCommas(cpTotal.toFixed(2)) + '</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">VAT (' + project.vat +
-                                '% of Total above Cost)</td>' +
-                                '<td class="text-right">' + numberWithCommas(vatTotal.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + numberWithCommas(totalIndirCost.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-left">III. Mobilization Cost</td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                // moving in/moving out =
-                                // direct cost + 0.01 / 2
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Moving-in</td>' +
-                                '<td class="text-right">' + numberWithCommas(movingIn.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">Moving-out</td>' +
-                                '<td class="text-right">' + numberWithCommas(movingOut.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center">=</td>' +
-                                '<td class="text-center">' + numberWithCommas(mobCost.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-left">TOTAL PROJECT COST</td>' +
-                                '<td class="text-right"></td>' +
-                                '<td class="text-center"></td>' +
-                                '<td class="text-center">' + numberWithCommas(projectCostTotal.toFixed(2)) +
-                                '</td>' +
-                                '<td class="text-center"></td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<th colspan="5" class="text-center">TOTAL ESTIMATED COST IS ' +
-                                amountInWords + '</th>' +
-                                '</tr>' + // totalInWords
-                                '<tr>' +
-                                '<th colspan="5" class="text-center">(' + numberWithCommas(projectCostTotal
-                                    .toFixed(2)) + ')</th>' +
-                                '</tr>' + // Total cost Item
-                                '</table>' +
-                                '</div>';
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    // '<tr>' +
+                                    // '<td class="text-left">II. Indirect Cost</td>' +
+                                    // '<td class="text-right"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '</tr>' +
+                                    // '<tr>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-left">OCM (' + project.ocm + '% of Direct Cost)</td>' +
+                                    // '<td class="text-right">' + numberWithCommas(ocmTotal.toFixed(2)) +
+                                    // '</td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '</tr>' +
+                                    // '<tr>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-left">CP (' + project.contractors_profit +
+                                    // '% of Direct Cost)</td>' +
+                                    // '<td class="text-right">' + numberWithCommas(cpTotal.toFixed(2)) +
+                                    // '</td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '</tr>' +
+                                    // '<tr>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-left">VAT (' + project.vat +
+                                    // '% of Total above Cost)</td>' +
+                                    // '<td class="text-right">' + numberWithCommas(vatTotal.toFixed(2)) +
+                                    // '</td>' +
+                                    // '<td class="text-center">=</td>' +
+                                    // '<td class="text-center">' + numberWithCommas(totalIndirCost.toFixed(
+                                    // 2)) +
+                                    // '</td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '</tr>' +
+                                    // '<tr>' +
+                                    // '<td class="text-left">III. Mobilization Cost</td>' +
+                                    // '<td class="text-right"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '</tr>' +
+                                    // // moving in/moving out =
+                                    // // direct cost + 0.01 / 2
+                                    // '<tr>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-left">Moving-in</td>' +
+                                    // '<td class="text-right">' + numberWithCommas(movingIn.toFixed(2)) +
+                                    // '</td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '</tr>' +
+                                    // '<tr>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '<td class="text-left">Moving-out</td>' +
+                                    // '<td class="text-right">' + numberWithCommas(movingOut.toFixed(2)) +
+                                    // '</td>' +
+                                    // '<td class="text-center">=</td>' +
+                                    // '<td class="text-center">' + numberWithCommas(mobCost.toFixed(2)) +
+                                    // '</td>' +
+                                    // '<td class="text-center"></td>' +
+                                    // '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">TOTAL PROJECT COST</td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center">' + '₱' + numberWithCommas(dirCostAmount.toFixed(
+                                        2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="5" class="text-center">TOTAL ESTIMATED COST IS ' +
+                                    amountInWords + '</th>' +
+                                    '</tr>' + // totalInWords
+                                    '<tr>' +
+                                    '<th colspan="5" class="text-center">(Php ' + numberWithCommas(
+                                        dirCostAmount
+                                        .toFixed(2)) + ')</th>' +
+                                    '</tr>' + // Total cost Item
+                                    '</table>' +
+                                    '</div>';
+                                divHTML +=
+                                    '<div class="container">' +
+                                    '<div class="row mt-4">' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Prepared by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Prepared by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div> <br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Reviewed by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Reviewed by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Conformed by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Conformed by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Checked by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Checked by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Recommending Approval: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Recommending Approval') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Approved by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Approved by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + ', ' + signature
+                                            .degree +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                $('#particularsContainer').html(divHTML);
+                            } else {
+                                // Create particulars table
                             divHTML +=
                                 '<div class="container">' +
-                                '<div class="row mt-4">' +
-                                '<div class="col-6">' +
-                                '<div class="d-flex flex-column align-items-center">' +
-                                '<div class="d-flex flex-column align-items-start">' +
-                                '<div>' +
-                                'Prepared by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Prepared by') {
+                                '<table class="table table-bordered table-striped">' +
+                                '<thead>' +
+                                '<tr>' +
+                                '<th colspan="6" class="text-center">SUMMARY</th>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<th scope="col" class="text-center">Item No.</th>' +
+                                '<th scope="col" class="text-center">Description</th>' +
+                                '<th scope="col" class="text-center">Materials</th>' +
+                                '<th scope="col" class="text-center">Labor</th>' +
+                                '<th scope="col" class="text-center">Equipment</th>' +
+                                '<th scope="col" class="text-center">Total</th>' +
+                                '</tr>' +
+                                '</thead>' +
+                                '<tbody>';
+                                project.particulars.forEach(function(particular, index) {
+                                    // Calculate individual totals
+                                    matTotal += particular.totalMaterialAmount;
+                                    equipTotal += particular.totalEquipmentAmount;
+                                    labTotal += particular.totalLaborAmount;
+                                    dirCostAmount = matTotal + labTotal + equipTotal;
+                                    movingIn = (dirCostAmount * 0.01) / 2;
+                                    movingOut = (dirCostAmount * 0.01) / 2;
+                                    console.log();
+                                });
+                                project.particulars.forEach(function(particular, index) {
+                                    var isMovingParticular = (particular.particular_name ===
+                                        "MOVING-IN" || particular.particular_name ===
+                                        "MOVING-OUT");
+
+                                    totalAmount = isMovingParticular ? movingIn :
+                                        parseFloat(particular.totalMaterialAmount) + parseFloat(
+                                            particular.totalLaborAmount) +
+                                        parseFloat(particular.totalEquipmentAmount);
+                                    dirTotal += totalAmount;
+                                    console.log('total', dirTotal);
+                                    console.log(particular.totalMaterialAmount);
+                                    // Append particular details to the table
                                     divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname + '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div> <br>';
-                                }
-                            });
-                            divHTML +=
-                                '<div class="mt-3">' +
-                                'Reviewed by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Reviewed by') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '<div class="mt-3">' +
-                                'Conformed by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Conformed by') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="col-6">' +
-                                '<div class="d-flex flex-column align-items-center">' +
-                                '<div class="d-flex flex-column align-items-start">' +
-                                '<div>' +
-                                'Checked by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Checked by') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '<div class="mt-3">' +
-                                'Recommending Approval: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Recommending Approval') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '<div class="mt-3">' +
-                                'Approved by: <br><br>';
-                            project.signatures.forEach(function(signature) {
-                                if (signature.role === 'Approved by') {
-                                    divHTML +=
-                                        '<div style="text-align: center;">' +
-                                        '<b><u>' + signature.fullname + ', ' + signature
-                                        .degree +
-                                        '</u></b> <br>' +
-                                        signature.position +
-                                        '</div>' +
-                                        '</div><br>';
-                                }
-                            });
-                            divHTML +=
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>';
-                            $('#particularsContainer').html(divHTML);
+                                        '<tr>' +
+                                        '<td class="text-center">' + getRomanNumeral(index + 1) +
+                                        '</td>' +
+                                        '<td>' + particular.particular_name + '</td>' +
+                                        '<td class="text-center">' + numberWithCommas(particular
+                                            .totalMaterialAmount === 0 ? ' ' : particular
+                                            .totalMaterialAmount.toFixed(
+                                                2)) + '</td>' +
+                                        '<td class="text-center">' + numberWithCommas(particular
+                                            .totalLaborAmount === 0 ? ' ' : particular
+                                            .totalLaborAmount.toFixed(
+                                                2)) + '</td>' +
+                                        '<td class="text-center">' + numberWithCommas(particular
+                                            .totalEquipmentAmount === 0 ? ' ' : particular
+                                            .totalEquipmentAmount.toFixed(2)) + '</td>' +
+                                        '<td class="text-center">' + (isMovingParticular ?
+                                            numberWithCommas(movingIn.toFixed(2)) :
+                                            numberWithCommas(
+                                                totalAmount
+                                                .toFixed(2))) + '</td>'
+                                    '</tr>';
+                                });
+                                // Calculate other totals outside the loop
+                                var ocmTotal = dirCostAmount * (project.ocm / 100);
+                                var cpTotal = dirCostAmount * (project.contractors_profit / 100);
+                                var vatTotal = (dirCostAmount + ocmTotal + cpTotal) * (project.vat / 100);
+                                var totalIndirCost = ocmTotal + cpTotal + vatTotal;
+                                var mobCost = movingIn + movingOut;
+                                var projectCostTotal = parseFloat(dirCostAmount.toFixed(2)) + parseFloat(
+                                    totalIndirCost.toFixed(2)) + parseFloat(mobCost.toFixed(2));
+                                var amountInWords = convertNumberToWords(projectCostTotal);
+                                console.log('dirCostAmount : ', dirTotal);
+                                console.log('indirCostAmount : ', movingOut);
+                                console.log('mobCostAmount : ', mobCost);
+                                console.log('projCostAmount : ', projectCostTotal);
+                                // Close the table and container
+                                divHTML +=
+                                    '</tbody>' +
+                                    '<tfoot>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-right"><strong>Total</strong></td>' +
+                                    '<td class="text-center">' + numberWithCommas(matTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(labTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(equipTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center">' + numberWithCommas(parseFloat(dirTotal)
+                                        .toFixed(
+                                            2)) +
+                                    '</td>' +
+                                    '</tr>' +
+                                    '</tfoot>' +
+                                    '</table>' +
+                                    '<table class="table table-borderless">' +
+                                    '<tr>' +
+                                    '<td class="text-left">I. Direct Cost</td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">Materials</td>' +
+                                    '<td class="text-right">' + numberWithCommas(matTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">Labor</td>' +
+                                    '<td class="text-right">' + numberWithCommas(labTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">Equipment Rental</td>' +
+                                    '<td class="text-right">' + numberWithCommas(equipTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center">=</td>' +
+                                    '<td class="text-center">' + numberWithCommas(dirCostAmount.toFixed(
+                                    2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-left">II. Indirect Cost</td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">OCM (' + project.ocm + '% of Direct Cost)</td>' +
+                                    '<td class="text-right">' + numberWithCommas(ocmTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">CP (' + project.contractors_profit +
+                                    '% of Direct Cost)</td>' +
+                                    '<td class="text-right">' + numberWithCommas(cpTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">VAT (' + project.vat +
+                                    '% of Total above Cost)</td>' +
+                                    '<td class="text-right">' + numberWithCommas(vatTotal.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center">=</td>' +
+                                    '<td class="text-center">' + numberWithCommas(totalIndirCost.toFixed(
+                                    2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-left">III. Mobilization Cost</td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    // moving in/moving out =
+                                    // direct cost + 0.01 / 2
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">Moving-in</td>' +
+                                    '<td class="text-right">' + numberWithCommas(movingIn.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">Moving-out</td>' +
+                                    '<td class="text-right">' + numberWithCommas(movingOut.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center">=</td>' +
+                                    '<td class="text-center">' + numberWithCommas(mobCost.toFixed(2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-left">TOTAL PROJECT COST</td>' +
+                                    '<td class="text-right"></td>' +
+                                    '<td class="text-center"></td>' +
+                                    '<td class="text-center">' + numberWithCommas(projectCostTotal.toFixed(
+                                        2)) +
+                                    '</td>' +
+                                    '<td class="text-center"></td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<th colspan="5" class="text-center">TOTAL ESTIMATED COST IS ' +
+                                    amountInWords + '</th>' +
+                                    '</tr>' + // totalInWords
+                                    '<tr>' +
+                                    '<th colspan="5" class="text-center">(Php ' + numberWithCommas(
+                                        projectCostTotal
+                                        .toFixed(2)) + ')</th>' +
+                                    '</tr>' + // Total cost Item
+                                    '</table>' +
+                                    '</div>';
+                                divHTML +=
+                                    '<div class="container">' +
+                                    '<div class="row mt-4">' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Prepared by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Prepared by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div> <br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Reviewed by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Reviewed by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Conformed by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Conformed by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="col-6">' +
+                                    '<div class="d-flex flex-column align-items-center">' +
+                                    '<div class="d-flex flex-column align-items-start">' +
+                                    '<div>' +
+                                    'Checked by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Checked by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Recommending Approval: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Recommending Approval') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '<div class="mt-3">' +
+                                    'Approved by: <br><br>';
+                                project.signatures.forEach(function(signature) {
+                                    if (signature.role === 'Approved by') {
+                                        divHTML +=
+                                            '<div style="text-align: center;">' +
+                                            '<b><u>' + signature.fullname + ', ' + signature
+                                            .degree +
+                                            '</u></b> <br>' +
+                                            signature.position +
+                                            '</div>' +
+                                            '</div><br>';
+                                    }
+                                });
+                                divHTML +=
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                                $('#particularsContainer').html(divHTML);
+                            }
                         } else {
                             console.error('Project with ID ' + projectId + ' not found in the response.');
                         }
