@@ -31,7 +31,7 @@
                         <div class="card-body table-responsive">
                             <table class="table col-12" id="particularTable">
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                    <buwtton type="button" class="btn btn-success" data-toggle="modal"
                                         id="addParticularButton">
                                         Add Item
                                     </button>

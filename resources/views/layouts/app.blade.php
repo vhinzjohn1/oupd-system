@@ -11,7 +11,7 @@
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
     <!-- Font Awesome -->
-    {{-- <link rel="stylesheet" href="{{ asset('css/fontawesome.min.css') }}"> --}}
+    <link rel="stylesheet" href="{{ asset('css/fontawesome.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/customStyle.css') }}">
@@ -69,9 +69,9 @@
     <!-- Select2 Scripts -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
 
-    {{-- Tom select Plugins --}}
+    {{-- Tom select Plugins
     <link rel="stylesheet" href="{{ asset('plugins/tom-select/tomcss.css') }}">
-    <script src="{{ asset('plugins/tom-select/tomjs.js') }}"></script>
+    <script src="{{ asset('plugins/tom-select/tomjs.js') }}"></script> --}}
 
     <!-- Bootstrap 4 -->
     <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
