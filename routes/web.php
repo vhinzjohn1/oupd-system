@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CalculateTotalAmount;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MaterialController;
@@ -75,6 +76,7 @@ Route::resource('getAllData', GetAllDataController::class)->except(['show']);
 
 Route::resource('users', UserController::class);
 
+Route::resource('calculateTotalAmount', CalculateTotalAmount::class);
 // Define the route for the masterList function
 Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']);
 

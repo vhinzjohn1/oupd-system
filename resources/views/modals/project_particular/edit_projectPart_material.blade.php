@@ -76,11 +76,11 @@
         }
 
         // Function to calculate amount
-        function calculateAmount() {
+        function calculateEquipmentAmount() {
             var quantity = parseFloat($('#edit_particular_materialQuantity')
-        .val()); // Remove commas before parsing
+                .val()); // Remove commas before parsing
             var price = parseFloat($("#edit_particular_materialPrice").val().replace('₱', '').replace(/,/g,
-            ''));
+                ''));
             var amount = quantity * price;
 
             // Update the value and apply IMask
@@ -107,7 +107,7 @@
 
         // Event listener for quantity input change
         $('#edit_particular_materialQuantity, #edit_particular_materialPrice').on('input', function() {
-            calculateAmount();
+            calculateEquipmentAmount();
         });
 
         // Event listener for modal shown

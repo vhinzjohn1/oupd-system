@@ -359,6 +359,8 @@ class GetAllDataController extends Controller
     public function submitDetails(Request $request)
     {
         try {
+
+            // Editing of Project Material
             if ($request->has('editProjectMaterialId') && $request->has('materialQuantity')) {
 
                 $projectParticularMaterial = ProjectParticularMaterial::findOrFail($request->editProjectMaterialId);
@@ -367,12 +369,24 @@ class GetAllDataController extends Controller
                     'quantity' => $request->materialQuantity,
                 ]);
             }
+            // Editing of Project Labor
             if ($request->has('editLaborID') && $request->has('noOfPerson')) {
                 $projectParticularLabor = ProjectParticularLabor::findOrFail($request->editLaborID);
 
                 $projectParticularLabor->update([
                     'no_of_persons' => $request->noOfPerson,
                     'work_days' => $request->workDays,
+                ]);
+            }
+            // Editing of Project Equipment
+            if ($request->has(['EditEquipmentId', 'equipmentWorkDays'])) {
+                // Find the equipment by ID
+                $projectParticularEquipment = ProjectParticularEquipment::findOrFail($request->EditEquipmentId);
+
+                // Update the equipment details
+                $projectParticularEquipment->update([
+                    'no_of_units' => $request->noOfUnits,
+                    'work_days' => $request->equipmentWorkDays,
                 ]);
             }
             if ($request->has('materialId') && $request->materialId !== "empty") {
@@ -510,6 +524,7 @@ class GetAllDataController extends Controller
                 }
 
             }
+
             // Insert equipment into the project_particular_equipments table if provided
             if ($request->has('equipmentId') && $request->equipmentId !== "empty") {
                 // Update or create a record in the project_particular_equipments table

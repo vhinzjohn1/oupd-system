@@ -84,7 +84,7 @@
         // Function to calculate amount
         function calculateAmount() {
             var quantity = parseFloat($('#add_particular_materialQuantity')
-        .val()); // Remove commas before parsing
+                .val()); // Remove commas before parsing
             var price = parseFloat($("#add_particular_materialPrice").val().replace('₱', '').replace(/,/g, ''));
             var amount = quantity * price;
 
@@ -113,6 +113,10 @@
         // Event listener for quantity input change
         $('#add_particular_materialQuantity, #add_particular_materialPrice').on('input', function() {
             calculateAmount();
+        });
+
+        $('#addParticularMaterial').on('shown.bs.modal', function() {
+            $('#add_particular_material').focus(); // Focus on the Quantity input field
         });
 
         // Function to initialize price inputs

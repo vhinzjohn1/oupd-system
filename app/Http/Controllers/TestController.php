@@ -20,7 +20,7 @@ class TestController extends Controller
     public function index(Request $request)
     {
         // Retrieve project ID from the request
-        $projectId = session('projectID'); // Assuming you're hardcoding the project ID for now
+        $projectId = session('projectID');
 
         // Fetch particulars data using Eloquent with pagination
         $particulars = ProjectParticular::select('project_particulars.*', 'particulars.particular_name', 'particulars.pay_item')

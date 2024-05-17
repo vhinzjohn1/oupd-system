@@ -8,6 +8,7 @@ use App\Models\ProjectParticular;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use App\Events\RefreshProjectItem;
 
 class ParticularController extends Controller
 {
@@ -74,6 +75,7 @@ class ParticularController extends Controller
             // Commit the transaction
             DB::commit();
 
+            event(new RefreshProjectItem());
             // Return success response
             return response()->json($particular);
         } catch (\Exception $e) {
@@ -122,6 +124,8 @@ class ParticularController extends Controller
             // Commit the transaction
             DB::commit();
 
+            event(new RefreshProjectItem());
+
             // Return success response
             return response()->json($particular);
         } catch (\Exception $e) {
@@ -144,6 +148,8 @@ class ParticularController extends Controller
 
             // Delete the particular
             $particular->delete();
+
+            event(new RefreshProjectItem());
 
             // Return success response
             return response()->json(['success' => true, 'message' => 'Particular deleted successfully']);

@@ -14,9 +14,9 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <input type="text" id="add_particular_EquipmentID">
-                                <input type="text" id="add_projectParticularIdEquipment">
-                                <input type="text" id="add_particularIdEquipment">
+                                <input type="hidden" id="add_particular_EquipmentID">
+                                <input type="hidden" id="add_projectParticularIdEquipment">
+                                <input type="hidden" id="add_particularIdEquipment">
                                 <label for="add_particular_EquipmentName">Equipment Name</label>
                                 <select type="text" class="form-control" id="add_particular_EquipmentName"
                                     name="add_particular_EquipmentName" required>
@@ -46,9 +46,9 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <input type="text" id="add_particular_equipmentRateID">
+                                <input type="hidden" id="add_particular_equipmentRateID">
                                 <label for="add_particular_EquipmentRate">Rate</label>
-                                <input type="text" class="form-control" id="add_particular_EquipmentRate"
+                                <input type="text" class="form-control price-input" id="add_particular_EquipmentRate"
                                     name="add_particular_EquipmentRate" readonly required>
                             </div>
 
@@ -67,8 +67,9 @@
 
                             <div class="form-group">
                                 <label for="add_particular_EquipmentAmount">Amount</label>
-                                <input type="text" class="form-control" id="add_particular_EquipmentAmount"
-                                    name="add_particular_EquipmentAmount" readonly required>
+                                <input type="text" class="form-control price-input"
+                                    id="add_particular_EquipmentAmount" name="add_particular_EquipmentAmount" readonly
+                                    required>
                             </div>
                         </div>
                     </div>
@@ -90,21 +91,70 @@
 
         // Function to calculate amount
         function calculateAmount() {
-
-            var workDays = parseFloat($('#add_particular_EquipmentWorkDays')
-                .val()); // Remove commas before parsing
-            var rate = parseFloat($('#add_particular_EquipmentRate').val());
-            var noOfUnit = parseFloat($('#add_particular_noOfUnit').val());
+            var workDays = parseFloat($('#add_particular_EquipmentWorkDays').val().replace(/,/g,
+                '')); // Remove commas before parsing
+            var rate = parseFloat($('#add_particular_EquipmentRate').val().replace('₱', '').replace(/,/g, ''));
+            var noOfUnit = parseFloat($('#add_particular_noOfUnit').val().replace(/,/g, ''));
             var totalRate = rate * noOfUnit;
 
             var amount = totalRate * workDays;
-            $('#add_particular_EquipmentAmount').val(formatNumberWithCommas(amount.toFixed(2)));
+            $('#add_particular_EquipmentAmount').val(amount.toFixed(2));
+
+            // Apply IMask to the amount input
+            const amountInput = document.getElementById('add_particular_EquipmentAmount');
+            IMask(amountInput, {
+                mask: '₱num',
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: ',',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: '.',
+                        mapToRadix: ['.'],
+                        min: 0,
+                        scale: 2
+                    }
+                }
+            });
         }
 
-        // Event listener for quantity input change
-        $('#add_particular_EquipmentWorkDays').on('input', function() {
-            calculateAmount();
+        // Event listener for input changes
+        $('#add_particular_EquipmentWorkDays, #add_particular_EquipmentRate, #add_particular_noOfUnit').on(
+            'input',
+            function() {
+                calculateAmount();
+            });
+
+
+        // Event to Focus After opening Modal
+        $('#addPartEquipmentModal').on('shown.bs.modal', function() {
+            $('#add_particular_EquipmentName').focus(); // Focus on the Quantity input field
         });
 
+        // Function to initialize rate inputs
+        function initializeRateInputs() {
+            const rateInputs = document.querySelectorAll('.rate-input');
+            rateInputs.forEach(input => {
+                IMask(input, {
+                    mask: '₱num',
+                    blocks: {
+                        num: {
+                            mask: Number,
+                            thousandsSeparator: ',',
+                            padFractionalZeros: true,
+                            normalizeZeros: true,
+                            radix: '.',
+                            mapToRadix: ['.'],
+                            min: 0,
+                            scale: 2
+                        }
+                    }
+                });
+            });
+        }
+
+        // Initialize rate inputs on document ready
+        initializeRateInputs();
     });
 </script>

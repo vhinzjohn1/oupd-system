@@ -103,6 +103,11 @@
         $('#add_particular_laborWorkDays, #add_particular_laborRate, #add_particular_noOfPerson').on('input',
             calculateAmount);
 
+        // Event to Focus After opening Modal
+        $('#addPartLaborModal').on('shown.bs.modal', function() {
+            $('#add_particular_laborName').focus(); // Focus on the Quantity input field
+        });
+
         // Function to initialize price inputs
         function initializePriceInputs() {
             const priceInputs = document.querySelectorAll('.price-input');

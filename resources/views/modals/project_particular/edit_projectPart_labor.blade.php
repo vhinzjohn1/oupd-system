@@ -101,6 +101,10 @@
                 calculateLaborAmount();
             });
 
+        $('#editPartLaborModal').on('shown.bs.modal', function() {
+            $('#edit_particular_noOfPerson').focus(); // Focus on the Quantity input field
+        });
+
         // Function to initialize price inputs
         function initializePriceInputs() {
             const priceInputs = document.querySelectorAll('.price-input');

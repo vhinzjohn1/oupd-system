@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('title', 'List of Items')
 @section('content')
+
+    <head>
+        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    </head>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -51,6 +55,18 @@
     </div>
     @include('modals.particular.edit_particular_modal');
     <script>
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('f66fdb7ac89412032960', {
+            cluster: 'ap1'
+        });
+
+        var channel = pusher.subscribe('my-channel');
+        channel.bind('form-submitted', function(data) {
+            realtimeRefresh();
+        });
+
         $(document).ready(function() {
             // Initialize DataTable
             $("#particularTable").DataTable({
@@ -72,6 +88,69 @@
 
 
         });
+
+        function realtimeRefresh() {
+            // If no cached data, fetch new data via AJAX
+            $.ajax({
+                url: "{{ route('particulars.index') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+
+                    toastr.options.progressBar = true;
+                    toastr.success('Particular Refreshed!');
+
+                    const table = $('#particularTable').DataTable();
+                    table.clear().draw();
+
+                    data.forEach(function(particular, index) {
+                        const editButton =
+                            `<button type="button" class="btn bg-success mr-2 editParticularButton" data-id="${particular.particular_id}" data-name="${particular.particular_name}" data-pay-item="${particular.pay_item}"><i class="fas fa-edit"></i></button>`;
+                        const deleteButton =
+                            `<button type="button" class="btn bg-danger deleteParticularButton" data-id="${particular.particular_id}"><i class="fas fa-trash-alt"></i></button>`;
+                        const buttonsContainer = '<div class="text-center d-flex">' + editButton +
+                            deleteButton + '</div>';
+
+
+                        const particularName = particular.particular_name;
+                        const payItem = particular.pay_item;
+
+                        const newRow = table.row.add([
+                            particularName,
+                            payItem,
+                            buttonsContainer
+                        ]).node();
+                    });
+
+                    table.draw();
+
+                    // Add event listeners for dynamically created buttons
+                    $('#particularTable').on('click', '.editParticularButton', function() {
+                        const particularId = $(this).data('id');
+                        const particularName = $(this).data('name');
+
+                        const payItem = $(this).data('pay-item');
+                        openParticularModal(particularId, particularName, payItem);
+                    });
+
+                    $('#particularTable').on('click', '.deleteParticularButton', function() {
+                        const particularId = $(this).data('id');
+                        deleteParticular(particularId);
+                    });
+
+                    $('#editParticularForm')[0].reset();
+                    $('#editParticularModal').modal('hide');
+
+
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+
+
+        }
 
         // Populate the Table and Refresh at the same time
         function refreshParticularTable() {
@@ -214,8 +293,8 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        toastr.options.progressBar = true;
-                        toastr.success('Project Added Successfully!');
+                        // toastr.options.progressBar = true;
+                        // toastr.success('Project Added Successfully!');
                         console.log(response); // Log response for debugging
 
                         if (response) {
@@ -260,8 +339,8 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        toastr.options.progressBar = true;
-                        toastr.success('Project Updated Successfully!');
+                        // toastr.options.progressBar = true;
+                        // toastr.success('Project Updated Successfully!');
                         console.log(response); // Log response for debugging
 
                         if (response) {

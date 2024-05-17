@@ -449,21 +449,24 @@
                                                                             data-projectParticularid="{{ $particular['project_particular_id'] }}">
                                                                             <i class="fa fa-edit"></i>
                                                                         </button>
-                                                                        <button class="btn btn-danger"><i
-                                                                                class="fa fa-trash-alt"
-                                                                                onclick="deleteDetail('material', {{ $material['project_particular_material_id'] }}, {{ $particular['particular_id'] }})"></i></button>
+                                                                        <button class="btn btn-danger"
+                                                                            onclick="deleteDetail('material', {{ $material['project_particular_material_id'] }}, {{ $particular['particular_id'] }})"><i
+                                                                                class="fa fa-trash-alt"></i></button>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
+
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th colspan="7" style="text-align:right">Total:</th>
+                                                                <th class="text-right"
+                                                                    id="totalMaterialAmount_{{ $particular['project_particular_id'] }}">
+                                                                    Loading..
+                                                                </th>
+                                                            </tr>
+                                                        </tfoot>
                                                     </table>
-                                                    <div class="card totalFooter">
-                                                        <div class="card-body col-11">
-                                                            <div class="text-right" style="margin-top: -10px;">
-                                                                <span class="total-text">Total Material Amount: </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -535,14 +538,13 @@
                                                                             <i class="fa fa-edit"></i>
                                                                         </button>
 
-                                                                        <button class="btn btn-danger"><i
-                                                                                class="fa fa-trash-alt"
-                                                                                onclick="deleteDetail('labor', {{ $labor['project_particular_labor_id'] }}, {{ $particular['particular_id'] }})"></i></button>
+                                                                        <button class="btn btn-danger"
+                                                                            onclick="deleteDetail('labor', {{ $labor['project_particular_labor_id'] }}, {{ $particular['particular_id'] }})"><i
+                                                                                class="fa fa-trash-alt"></i></button>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
-
                                                     </table>
                                                     <div class="card totalFooter">
                                                         <div class="card-body col-11">
@@ -592,6 +594,7 @@
                                                         class="table table-bordered" style="width: 100%;">
                                                         <thead>
                                                             <th>Equipment Name</th>
+                                                            <th>Category Name</th>
                                                             <th>No of Units</th>
                                                             <th>Work Days</th>
                                                             <th>Equipment Rate</th>
@@ -603,15 +606,31 @@
                                                             @foreach ($particular['equipments'] as $equipment)
                                                                 <tr>
                                                                     <td>{{ $equipment['equipment_name'] }}</td>
+                                                                    <td>{{ $equipment['equipment_category_name'] }}</td>
                                                                     <td>{{ $equipment['no_of_units'] }}</td>
                                                                     <td>{{ $equipment['work_days'] }}</td>
-                                                                    <td>{{ $equipment['rate'] }}</td>
-                                                                    <td>{{ $equipment['no_of_units'] * $equipment['rate'] * $equipment['work_days'] }}
+                                                                    <td class="text-right">
+                                                                        ₱{{ number_format($equipment['rate'], 2) }}</td>
+                                                                    <td class="text-right">
+                                                                        ₱{{ number_format($equipment['no_of_units'] * $equipment['rate'] * $equipment['work_days'], 2) }}
                                                                     </td>
                                                                     <td>
-                                                                        <button class="btn btn-success"><i
-                                                                                class="fa fa-edit"></i></button>
-                                                                        <button class="btn btn-danger"><i
+                                                                        <button class="btn btn-success"
+                                                                            onclick="editEquipment(
+                                                                                {{ $equipment['project_particular_equipment_id'] }},
+                                                                                '{{ $equipment['equipment_category_name'] }}',
+                                                                                '{{ addslashes($equipment['equipment_name']) }}',
+                                                                                {{ $equipment['no_of_units'] }},
+                                                                                {{ $equipment['work_days'] }},
+                                                                                {{ $equipment['rate'] }},
+                                                                                {{ $particular['particular_id'] }},
+                                                                                '{{ $equipment['equipment_model'] }}',
+                                                                                {{ $equipment['equipment_capacity'] }},
+                                                                            )">
+                                                                            <i class="fa fa-edit"></i>
+                                                                        </button>
+                                                                        <button class="btn btn-danger"
+                                                                            onclick="deleteDetail('equipment', {{ $equipment['project_particular_equipment_id'] }}, {{ $particular['particular_id'] }})"><i
                                                                                 class="fa fa-trash-alt"></i></button>
                                                                     </td>
                                                                 </tr>
@@ -829,31 +848,30 @@
                     // Refresh Equipment Row
                     equipmentsArrays.forEach(function(equipmentArray) { // Loop through the outer array
                         equipmentArray.forEach(function(equipment) {
-                            const noOfPerson = parseFloat(labor.no_of_persons).toFixed(2);
-                            const rate = currencyFormatter.format(labor.rate);
-                            const workDays = currencyFormatter.format(labor.work_days);
-                            const amount = currencyFormatter.format(labor.rate * labor
-                                .work_days * labor.no_of_persons);
+                            const rate = currencyFormatter.format(equipment.rate);
+                            const amount = currencyFormatter.format(equipment.rate * equipment
+                                .work_days * equipment.no_of_units);
 
-                            const newRow = laborTable.row.add([
-                                labor.labor_name,
-                                labor.no_of_persons,
-                                labor.work_days,
+                            const newRow = equipmentTable.row.add([
+                                equipment.equipment_name,
+                                equipment.equipment_category_name,
+                                equipment.no_of_units,
+                                equipment.work_days,
                                 '<div class="text-right">' + rate + '</div>',
                                 '<div class="text-right">' + amount + '</div>',
                                 '<div class="text-center d-flex">' +
-                                `<button type="button" class="btn bg-success mr-2" onclick="editLabor(${labor.project_particular_labor_id}, '${labor.labor_name}', ${labor.no_of_persons}, ${labor.work_days}, ${labor.rate}, ${particularId} )"><i class="fas fa-edit"></i></button>` +
-                                `<button type="button" class="btn btn-danger" onclick="deleteDetail('labor', ${labor.project_particular_labor_id}, ${particularId})"><i class="fa fa-trash-alt"></i></button>` +
+                                `<button type="button" class="btn bg-success mr-2" onclick="editEquipment(${equipment.project_particular_equipment_id}, '${equipment.equipment_name}', '${equipment.equipment_category_name}', ${equipment.no_of_units}, ${equipment.work_days}, ${equipment.rate}, ${particularId}, '${equipment.equipment_model}', ${equipment.equipment_capacity} )"><i class="fas fa-edit"></i></button>` +
+                                `<button type="button" class="btn btn-danger" onclick="deleteDetail('equipment', ${equipment.project_particular_equipment_id}, ${particularId})"><i class="fa fa-trash-alt"></i></button>` +
                                 '</div>'
                             ]).draw(false).node();
 
                         });
 
                     });
-                    laborTable.draw();
+                    equipmentTable.draw();
 
 
-
+                    calculateTotalAmount();
 
                 },
                 error: function(xhr, status, error) {
@@ -1137,9 +1155,7 @@
                                         projPartId
                                     );
 
-
-
-
+                                    initializePriceInputs();
                                     // Chnage readonly attributte of the form
                                     $("#add_particular_EquipmentRate").prop('readonly', true);
                                     $("#add_particular_EquipmentCategory").prop('readonly', true);
@@ -1156,6 +1172,8 @@
                             }
                         });
 
+                        initializePriceInputs();
+
                         // Open Add Particular Equipment Modal
                         $("#addPartEquipmentModal").modal("show");
                     },
@@ -1167,6 +1185,131 @@
                 // Handle other cases
             }
         }
+
+        function editMaterial(projMaterialId, materialName, materialCategoryName, unit, quarter, year, quantity,
+            price,
+            amount, particularId) {
+            $("#edit_particular_material_id").val(projMaterialId);
+            $("#edit_particular_material").val(materialName);
+            $("#edit_particular_materialQuantity").val(quantity);
+            $("#edit_particular_category").val(materialCategoryName);
+            $("#edit_particular_materialUnit").val(unit);
+            $("#edit_particular_materialPrice").val(price);
+            $("#edit_particular_materialQuarter").val(quarter);
+            $("#edit_particular_materialYear").val(year);
+            $("#editParticularId").val(particularId);
+
+            // Show Edit Project Particular Material Modal
+            $("#editParticularMaterialModal").modal('show');
+
+        }
+
+        function editLabor(projPartLaborID, laborName, noOfPerson, workDays, rate, particularID) {
+
+            $("#edit_particular_laborID").val(projPartLaborID);
+            $("#edit_particular_laborName").val(laborName);
+            $("#edit_particular_noOfPerson").val(noOfPerson);
+            $("#edit_particular_laborWorkDays").val(workDays);
+            $("#edit_particular_laborRate").val(rate);
+            $("#edit_particular_laborAmount").val(rate * workDays * noOfPerson);
+            $("#edit_particularIdLabor").val(particularID);
+
+
+            IMask($("#edit_particular_laborRate")[0], {
+                mask: '₱num',
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: ',',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: '.',
+                        mapToRadix: ['.'],
+                        min: 0,
+                        scale: 2
+                    }
+                }
+            });
+
+            // Show Edit Project Particular Material Modal
+            $("#editPartLaborModal").modal('show');
+        }
+
+        function editEquipment(ProjPartEquipId, EquipmentName, EquipmentCategoryName, NoOfUnits, WorkDays, Rate,
+            ParticularId, EquipmentModel, EquipmentCapacity) {
+            $("#edit_particular_EquipmentID").val(ProjPartEquipId);
+            $("#edit_particular_EquipmentName").val(EquipmentName);
+            $("#edit_particular_EquipmentCategory").val(EquipmentCategoryName);
+            $("#edit_particular_EquipmentModel").val(EquipmentModel);
+            $("#edit_particular_EquipmentCapacity").val(EquipmentCapacity);
+            $("#edit_particular_EquipmentRate").val(Rate);
+            $("#edit_particular_noOfUnit").val(NoOfUnits);
+            $("#edit_particular_EquipmentWorkDays").val(WorkDays);
+            $("#edit_particular_EquipmentParticularId").val(ParticularId);
+
+            IMask($("#edit_particular_EquipmentRate")[0], {
+                mask: '₱num',
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: ',',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: '.',
+                        mapToRadix: ['.'],
+                        min: 0,
+                        scale: 2
+                    }
+                }
+            });
+
+            $("#editPartEquipmentModal").modal('show');
+        }
+        // Delete Detail
+        function deleteDetail(detailType, partID, projectPartId) {
+            console.log('This is the partId: ', partID);
+            // Show confirmation dialog
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You are about to delete this record!",
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonColor: "#353535",
+                confirmButtonColor: "#FF0000",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Proceed with delete operation
+                    const data = {
+                        _token: "{{ csrf_token() }}",
+                        detailType: detailType,
+                        partID: partID,
+                    };
+                    $.ajax({
+                        url: "{{ url('delete-datails') }}",
+                        type: "DELETE",
+                        data: data,
+                        success: function(response) {
+                            console.log(response.message);
+                            refreshProjectItem(parseInt(projectPartId));
+                            // Show success toast with delay
+                            toastr.options.progressBar = true;
+                            setTimeout(function() {
+                                toastr.success("Deleted Successfully!");
+                            }, 1000);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                            // Handle error response
+                        },
+                    });
+                }
+            });
+        }
+
+
+
 
         // Get Particular Material Values
         document.addEventListener("DOMContentLoaded", function() {
@@ -1533,87 +1676,61 @@
                     });
                 }
             );
-        });
 
+            // Submit the Particular Equipment Modal Form
+            $("#editProjectPartEquipmentForm").on("submit", function(event) {
+                event.preventDefault();
+                // Get form data
+                let detail_type = 'Labor';
+                let noOfUnits = $(
+                    "#edit_particular_noOfUnit"
+                ).val();
+                let workDays = $(
+                    "#edit_particular_EquipmentWorkDays"
+                ).val();
 
+                let particularId = $(
+                    "#edit_particular_EquipmentParticularId"
+                ).val();
 
+                let equipmentId = $("#edit_particular_EquipmentID").val();
 
-        function editMaterial(projMaterialId, materialName, materialCategoryName, unit, quarter, year, quantity, price,
-            amount, particularId) {
-            console.log(particularId)
-            $("#edit_particular_material_id").val(projMaterialId);
-            $("#edit_particular_material").val(materialName);
-            $("#edit_particular_materialQuantity").val(quantity);
-            $("#edit_particular_category").val(materialCategoryName);
-            $("#edit_particular_materialUnit").val(unit);
-            $("#edit_particular_materialPrice").val(price);
-            $("#edit_particular_materialQuarter").val(quarter);
-            $("#edit_particular_materialYear").val(year);
-            $("#editParticularId").val(particularId);
+                console.log('This is the Rqui', equipmentId);
 
-            // Show Edit Project Particular Material Modal
-            $("#editParticularMaterialModal").modal('show');
-
-        }
-
-        function editLabor(projPartLaborID, laborName, noOfPerson, workDays, rate, particularID) {
-
-            $("#edit_particular_laborID").val(projPartLaborID);
-            $("#edit_particular_laborName").val(laborName);
-            $("#edit_particular_noOfPerson").val(noOfPerson);
-            $("#edit_particular_laborWorkDays").val(workDays);
-            $("#edit_particular_laborRate").val(rate);
-            $("#edit_particular_laborAmount").val(rate * workDays * noOfPerson);
-            $("#edit_particularIdLabor").val(particularID);
-
-            initializePriceInputs();
-            // Show Edit Project Particular Material Modal
-            $("#editPartLaborModal").modal('show');
-        }
-        // Delete Detail
-        function deleteDetail(detailType, partID, projectPartId) {
-
-            console.log('This is the partId: ', partID);
-            // Show confirmation dialog
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You are about to delete this record!",
-                icon: "warning",
-                showCancelButton: true,
-                cancelButtonColor: "#353535",
-                confirmButtonColor: "#FF0000",
-                confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "cancel"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Proceed with delete operation
-                    const data = {
+                // AJAX request
+                $.ajax({
+                    url: "/submit-details",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        particularId: particularId,
+                        EditEquipmentId: equipmentId,
+                        noOfUnits: noOfUnits,
+                        equipmentWorkDays: workDays,
                         _token: "{{ csrf_token() }}",
-                        detailType: detailType,
-                        partID: partID,
-                    };
-                    $.ajax({
-                        url: "{{ url('delete-datails') }}",
-                        type: "DELETE",
-                        data: data,
-                        success: function(response) {
-                            console.log(response.message);
-                            refreshProjectItem(parseInt(projectPartId));
-                            // Show success toast with delay
-                            toastr.options.progressBar = true;
-                            setTimeout(function() {
-                                toastr.success("Deleted Successfully!");
-                            }, 1000);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(xhr.responseText);
-                            // Handle error response
-                        },
-                    });
-                }
-            });
-        }
+                        // Add more form data fields here if needed
+                    },
+                    success: function(response) {
+                        $("#editProjectPartEquipmentForm")[0].reset();
+                        $("#editPartEquipmentModal").modal("hide");
 
+                        refreshProjectItem(parseInt(particularId));
+
+                        toastr.options.progressBar = true;
+                        toastr.success("Equipment Update Successfully!");
+
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response from the server
+                        console.error(
+                            "Error submitting form data:",
+                            xhr.responseText
+                        );
+                    },
+                });
+            });
+
+        });
 
         // Input Price Library
         function initializePriceInputs() {
@@ -1638,7 +1755,7 @@
             });
         }
 
-
+        // Initialized QuantituInputs Imask
         function initializeQuantityInputs() {
             const quantityInputs = document.querySelectorAll('.quantity-input');
             quantityInputs.forEach(input => {
@@ -1654,6 +1771,44 @@
                 });
             });
         }
+
+        // Function to Calculate the total value of each Project Particular Detail
+        function calculateTotalAmount() {
+            $.ajax({
+                url: "{{ route('calculateTotalAmount.index') }}",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    // Loop through each project particular object in the data
+                    for (const particular of data) {
+                        const projectParticularId = particular.project_particular_id;
+                        let totalMaterialAmount = 0;
+
+                        // Check if materials exist for the current project particular
+                        if (particular.materials && particular.materials.length > 0) {
+                            // Loop through each material in the 'materials' array
+                            for (const material of particular.materials) {
+                                const materialPrice = parseFloat(material.material_price.replace(/,/g,
+                                    '')); // Parse price, remove commas
+                                const quantity = material.quantity || 0; // Handle null quantity
+                                totalMaterialAmount += materialPrice * quantity;
+                            }
+                        }
+
+                        // Update the corresponding total material amount span with comma separators
+                        $(`#totalMaterialAmount_${projectParticularId}`).text(
+                            `${totalMaterialAmount.toLocaleString('en-US', { style: 'currency', currency: 'PHP' })}`
+                        );
+                    }
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                },
+            });
+        }
+
+        calculateTotalAmount();
     </script>
 
 
