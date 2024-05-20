@@ -137,7 +137,7 @@
 }
 
 .margin-top {
-    margin-top: -20px !important;
+    margin-top: -10px !important;
 }
 
 .select2-container--bootstrap-5.select2-container--focus .select2-selection,
@@ -165,3 +165,5 @@
     ) {
     background-color: grey !important;
 }
+
+/* Swal fire Custom Style */

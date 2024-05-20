@@ -3,7 +3,99 @@
 @section('content')
 
     <head>
+        <style>
+            /* Custom CSS to change link color */
+            .user-link {
+                color: black !important;
+                text-decoration: none;
+                position: relative;
+            }
 
+            .user-link::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                bottom: -5px;
+                width: 0%;
+                height: 2px;
+                background-color: #012F12;
+                transition: width 0.3s ease, left 0.3s ease;
+                /* Added left transition */
+            }
+
+            .user-link.click::after {
+                width: 100%;
+                left: 0;
+                /* Reset position */
+            }
+
+            .userLink {
+                cursor: pointer;
+                display: block;
+                padding: 0.5rem 1rem;
+                border: 1px solid #dee2e6;
+                border-radius: 0.25rem;
+                margin-bottom: 0.5rem;
+                color: white;
+                text-decoration: none;
+            }
+
+            .userLink:focus {
+                background-color: #ffc107 !important;
+                /* Change background color when link is clicked */
+                color: black !important;
+                /* Change text color when link is clicked */
+            }
+
+            .btn-success {
+                border: none !important;
+            }
+
+            .btn-success.active {
+                border: none;
+                background-color: #ffc107 !important;
+                /* Change background color when link is clicked */
+                color: black !important;
+            }
+
+            /* Adjust checkbox size */
+            input[type="checkbox"] {
+                transform: scale(1.5);
+                /* Increase checkbox size */
+                margin-right: 5px;
+                border: none;
+                /* Add spacing between checkbox and label */
+            }
+
+            /* Make text bigger and bold */
+            .form-check-label {
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            /* Hide content by default */
+            .user-content {
+                display: none;
+            }
+
+            /* Slide animation */
+            .user-content.show {
+                display: block;
+                animation: slideIn 0.5s ease forwards;
+            }
+
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>
     </head>
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -85,7 +177,63 @@
             </div>
         </div>
 
+
+        {{-- <div class="wrapper" id="wrapperId">
+            <div class="card" id="testId">
+                <div class="h2">Test</div>
+            </div>
+            <div class="card" id="testId">
+                <div class="h2">Test</div>
+            </div>
+            <div class="card" id="testId">
+                <div class="h2">Test</div>
+            </div>
+        </div> --}}
     </div>
+
+
+    <script>
+        // new Sortable(wrapperId, {
+        //     animation: 150,
+        //     ghostClass: 'blue-background-class'
+        // });
+
+
+        function toggleUnderline(event, element) {
+            event.preventDefault(); // Prevent default link behavior
+
+            // Remove 'click' class from all links
+            document.querySelectorAll('.user-link').forEach(link => {
+                link.classList.remove('click');
+            });
+
+            // Add 'click' class to the clicked link
+            element.classList.add('click');
+        }
+
+        function toggleContent(contentId) {
+            // Hide all form groups initially
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.style.display = 'none';
+            });
+
+            // Show specific form groups based on the contentId
+            if (contentId === 'laborManual') {
+                document.querySelectorAll('.manual-input, .shared-input').forEach(group => {
+                    group.style.display = 'block';
+                });
+            } else if (contentId === 'laborPercent') {
+                document.querySelectorAll('.percent-input, .shared-input').forEach(group => {
+                    group.style.display = 'block';
+                });
+            }
+        }
+
+        // Initialize to show 'Manual' fields by default
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleContent('laborManual');
+        });
+    </script>
 
 
     <script>

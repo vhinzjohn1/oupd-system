@@ -165,22 +165,22 @@ class AdminUserSeeder extends Seeder
         switch ($categoryName) {
             case 'Embankment':
                 $materials = [
-                    ['name' => 'Common Borrow', 'unit' => 'cu.m', 'price' => 715.00, 'quarter' => 'Q1', 'year' => 2020],
-                    ['name' => 'Selected Borrow', 'unit' => 'cu.m', 'price' => 550.00, 'quarter' => 'Q2', 'year' => 2021],
+                    ['name' => 'Common Borrow', 'unit' => 'cu.m', 'price' => 715.00, 'quarter' => '2nd', 'year' => 2020],
+                    ['name' => 'Selected Borrow', 'unit' => 'cu.m', 'price' => 550.00, 'quarter' => '2nd', 'year' => 2021],
                     // Add more predefined materials for Embankment category as needed
                 ];
                 break;
             case 'Aggregate Surface Course':
                 $materials = [
-                    ['name' => 'Crushed Grading A', 'unit' => 'cu.m', 'price' => 760.00, 'quarter' => 'Q3', 'year' => 2022],
-                    ['name' => 'Uncrushed Grading B', 'unit' => 'cu.m', 'price' => 860.00, 'quarter' => 'Q4', 'year' => 2023],
+                    ['name' => 'Crushed Grading A', 'unit' => 'cu.m', 'price' => 760.00, 'quarter' => '2nd', 'year' => 2022],
+                    ['name' => 'Uncrushed Grading B', 'unit' => 'cu.m', 'price' => 860.00, 'quarter' => '2nd', 'year' => 2023],
                     // Add more predefined materials for Aggregate Surface Course category as needed
                 ];
                 break;
             case 'Portland Cement':
                 $materials = [
-                    ['name' => 'Ready Mix Concrete 3000psi @ 28 Days', 'unit' => 'cu.m', 'price' => 4600.00, 'quarter' => 'Q1', 'year' => 2020],
-                    ['name' => 'Curing Compound', 'unit' => 'kg', 'price' => 78.00, 'quarter' => 'Q2', 'year' => 2021],
+                    ['name' => 'Ready Mix Concrete 3000psi @ 28 Days', 'unit' => 'cu.m', 'price' => 4600.00, 'quarter' => '2nd', 'year' => 2020],
+                    ['name' => 'Curing Compound', 'unit' => 'kg', 'price' => 78.00, 'quarter' => '2nd', 'year' => 2021],
                     // Add more predefined materials for Portland Cement category as needed
                 ];
                 break;

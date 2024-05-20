@@ -24,6 +24,37 @@
     <!-- Main content -->
 
     <div class="content">
+
+        <!------ Floating Button ----->
+        <ul id="menu" class="mfb-component--br mfb-zoomin" data-mfb-toggle="hover">
+            <li class="mfb-component__wrap">
+                <a href="#" class="mfb-component__button--main">
+                    <i class="mfb-component__main-icon--resting ion-plus-round"></i>
+                    <i class="mfb-component__main-icon--active ion-close-round"></i>
+                </a>
+                <ul class="mfb-component__list">
+                    <li>
+                        <a href="https://github.com/nobitagit/material-floating-button/" data-mfb-label="View on Github"
+                            class="mfb-component__button--child">
+                            <i class="mfb-component__child-icon ion-social-github"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/nobitagit" data-mfb-label="Follow me on Github"
+                            class="mfb-component__button--child">
+                            <i class="mfb-component__child-icon ion-social-octocat"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="http://twitter.com/share?text=Check this material floating button component!&url=http://nobitagit.github.io/material-floating-button/&hashtags=material,design,button,css"
+                            data-mfb-label="Share on Twitter" class="mfb-component__button--child">
+                            <i class="mfb-component__child-icon ion-social-twitter"></i>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul><!------- End of Floating Button ------>
         <div class="container-fluid">
             <!----- Project Card Section ---->
             <div class="card" id="addNewProject">
@@ -337,7 +368,6 @@
                         <!------- Card Body Section ----->
                         <div class="collapse" id="projectPart{{ $particular['particular_id'] }}">
                             <div class="card-body">
-
                                 <!---- Row Section --->
                                 <div class="row">
                                     <div class="pd-zero pd-3 card"
@@ -360,7 +390,8 @@
                                                     <div class="col-4">
                                                         <h6>
                                                             Total Amount:
-                                                            <span id="total_{{ $particular['particular_id'] }}"></span>
+                                                            <span
+                                                                id="total_{{ $particular['project_particular_id'] }}"></span>
                                                         </h6>
                                                     </div>
                                                 </div>
@@ -371,7 +402,6 @@
 
                                     <!------ Material, Labor, Equipment Card Section ----->
                                     <div class="col-12">
-
                                         <!------ Materila Card ---->
                                         <div class="card card-refresh"
                                             id="materialCard_{{ $particular['particular_id'] }}">
@@ -386,7 +416,9 @@
                                                     <div class="d-flex justify-content-between col-4">
                                                         <div style="font-weight: 500; opacity: 0;"
                                                             id="materialCardTotal_{{ $particular['particular_id'] }}">
-                                                            <div>Total Material Amount:</div>
+                                                            <div>Total Material Amount: <span
+                                                                    id="materialCardAmount_{{ $particular['project_particular_id'] }}"></span>
+                                                            </div>
                                                         </div>
                                                         <div class="">
                                                             <div class="btn btn-success btn-header"
@@ -484,7 +516,9 @@
                                                     <div class="d-flex justify-content-between col-4">
                                                         <div style="font-weight: 500; opacity: 0;"
                                                             id="laborCardTotal_{{ $particular['particular_id'] }}">
-                                                            <div>Total Labor Amount:</div>
+                                                            <div>Total Labor Amount: <span
+                                                                    id="laborCardAmount_{{ $particular['project_particular_id'] }}"></span>
+                                                            </div>
                                                         </div>
                                                         <div class="">
                                                             <div class="btn btn-success btn-header"
@@ -545,14 +579,19 @@
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th colspan="4" style="text-align:right">Total:</th>
+                                                                <th class="text-right"
+                                                                    id="totalLaborAmount_{{ $particular['project_particular_id'] }}">
+                                                                    Loading..
+                                                                </th>
+                                                                <th class="text-left"
+                                                                    id="laborPercent_{{ $particular['project_particular_id'] }}">
+                                                                    Loading</th>
+                                                            </tr>
+                                                        </tfoot>
                                                     </table>
-                                                    <div class="card totalFooter">
-                                                        <div class="card-body col-11">
-                                                            <div class="text-right" style="margin-top: -10px;">
-                                                                <span class="total-text">Total Labor Amount: </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -571,7 +610,9 @@
                                                     <div class="d-flex justify-content-between col-4">
                                                         <div style="font-weight: 500; opacity: 0;"
                                                             id="equipmentCardTotal_{{ $particular['particular_id'] }}">
-                                                            <div>Total Equipment Amount:</div>
+                                                            <div>Total Equipment Amount: <span
+                                                                    id="equipmentCardAmount_{{ $particular['project_particular_id'] }}"></span>
+                                                            </div>
                                                         </div>
                                                         <div class="">
                                                             <div class="btn btn-success btn-header"
@@ -637,14 +678,24 @@
                                                             @endforeach
                                                         </tbody>
 
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th colspan="5" style="text-align:right">Total:</th>
+                                                                <th class="text-right"
+                                                                    id="totalEquipmentAmount_{{ $particular['project_particular_id'] }}">
+                                                                    Loading..
+                                                                </th>
+                                                            </tr>
+                                                        </tfoot>
+
                                                     </table>
-                                                    <div class="card totalFooter">
+                                                    {{-- <div class="card totalFooter">
                                                         <div class="card-body col-11">
                                                             <div class="text-right" style="margin-top: -10px;">
                                                                 <span class="total-text">Total Labor Amount: </span>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -668,7 +719,50 @@
 
     </div>
 
+
     <script>
+        let totalMaterial = 231250;
+        let rate = 910;
+        let percent = 35 / 100;
+        let targetAmount = percent * totalMaterial;
+
+        function findBestCombination(targetAmount, rate, maxPersons, maxDays) {
+            let bestCombination = {
+                noOfPerson: 0,
+                workDays: 0,
+                amount: 0
+            };
+            let minDifference = Infinity;
+
+            for (let noOfPerson = 1; noOfPerson <= maxPersons; noOfPerson++) {
+                let workDays = Math.ceil(targetAmount / (noOfPerson * rate));
+                if (workDays <= maxDays) {
+                    let amount = noOfPerson * rate * workDays;
+                    let difference = Math.abs(amount - targetAmount);
+                    if (difference < minDifference) {
+                        minDifference = difference;
+                        bestCombination = {
+                            noOfPerson,
+                            workDays,
+                            amount
+                        };
+                        if (difference === 0) return bestCombination; // Stop if exact match is found
+                    }
+                }
+            }
+            return bestCombination;
+        }
+
+        let maxPersons = 50;
+        let maxDays = 50;
+
+        let result = findBestCombination(targetAmount, rate, maxPersons, maxDays);
+        console.log(`Best combination: ${result.noOfPerson} person(s) for ${result.workDays} work day(s)`);
+        console.log(`Amount: ${result.amount.toFixed(2)}`);
+    </script>
+
+    <script>
+        UniqueParticularID = 0;
         // For Data table script
         const particulars = {!! json_encode($particulars) !!};
         console.log(particulars);
@@ -880,6 +974,9 @@
             });
         }
 
+        const [year, quarter] = [(new Date()).getFullYear(), ["1st", "2nd", "3rd", "4th"][Math.floor(((new Date())
+            .getMonth() % 12) / 3)]];
+
 
         // Adding Of Detail Buttons
         function addDetailBtn(projPartId, detailType, particularID) {
@@ -924,59 +1021,51 @@
 
                         // Open Add Particular Material Modal
                         $("#addParticularMaterial").modal("show");
+                        UniqueParticularID = projPartId;
 
+                        $("#add_materialProjectPartID").val(particularID);
 
                         // Add change event listener to the material select element
                         $("#add_particular_material").on("change", function() {
                             // Get the selected material id
-                            var selectedMaterialId = parseInt($(this).val()); // Convert to integer
+                            var selectedMaterialId = $(this).val();
 
-                            // Check if a material is selected
-                            if (!isNaN(selectedMaterialId)) { // Check if it's a valid number
-                                // Find the selected material data
-                                var selectedMaterial = materials.find(function(material) {
-                                    return material.material_id === selectedMaterialId;
-                                });
+                            // Check if a material is selected and it's in the materials list
+                            var selectedMaterial = materials.find(function(material) {
+                                return material.material_id == selectedMaterialId;
+                            });
 
-                                // Check if selectedMaterial is defined
-                                if (selectedMaterial) {
-                                    // Populate category, unit, and price fields
-                                    $("#add_particular_category").val(selectedMaterial
-                                        .material_category_name);
-                                    $("#add_particular_materialID").val(selectedMaterial
-                                        .material_id);
-                                    $("#add_particular_materialUnit").val(selectedMaterial
-                                        .material_unit);
-                                    $("#add_particular_materialPrice").val(selectedMaterial
-                                        .material_price);
-                                    $("#add_particular_materialQuarter").val(selectedMaterial
-                                        .material_quarter);
-                                    $("#add_particular_materialYear").val(selectedMaterial
-                                        .material_year);
-                                    $("#add_particular_priceID").val(selectedMaterial
-                                        .material_price_id);
-                                    $("#add_materialProjectPartID").val(projPartId);
-                                    $("#add_projectParticularID").val(particularID);
+                            if (selectedMaterial) {
+                                // Populate category, unit, and price fields
+                                $("#add_particular_category").val(selectedMaterial
+                                    .material_category_name);
+                                $("#add_particular_materialID").val(selectedMaterial.material_id);
+                                $("#add_particular_materialUnit").val(selectedMaterial.material_unit);
+                                $("#add_particular_materialPrice").val(selectedMaterial.material_price);
+                                $("#add_particular_materialQuarter").val(selectedMaterial
+                                    .material_quarter);
+                                $("#add_particular_materialYear").val(selectedMaterial.material_year);
+                                $("#add_particular_priceID").val(selectedMaterial.material_price_id);
 
-                                    initializePriceInputs();
+                                $("#add_projectParticularID").val(particularID);
 
-                                    // Chnage readonly attributte of the form
-                                    $("#add_particular_category").prop("readonly", true);
-                                    $("#add_particular_materialUnit").prop("readonly", true);
-                                    $("#add_particular_materialPrice").prop("readonly", true);
-                                    $("#add_particular_materialQuarter").prop("readonly", true);
-                                    $("#add_particular_materialYear").prop("readonly", true);
-                                }
+                                initializePriceInputs();
+
+                                // Change readonly attribute of the form
+                                $("#add_particular_category").prop("readonly", true);
+                                $("#add_particular_materialUnit").prop("readonly", true);
+                                $("#add_particular_materialPrice").prop("readonly", true);
+                                $("#add_particular_materialQuarter").prop("readonly", true);
+                                $("#add_particular_materialYear").prop("readonly", true);
                             } else {
+                                // Reset and enable fields for a new material
                                 $("#add_particular_materialID").val("");
-                                // remove readonly attribute from category, unit, and price fields
-                                $("#add_particular_category").prop("readonly", false);
-                                $("#add_particular_materialUnit").prop("readonly", false);
-                                $("#add_particular_materialPrice").prop("readonly", false);
-                                $("#add_particular_materialQuarter").prop("readonly", false);
-                                $("#add_particular_materialYear").prop("readonly", false);
-                                $("#add_particular_materialQuarter").val(quarter);
-                                $("#add_particular_materialYear").val(year);
+                                $("#add_particular_category").prop("readonly", false).val("");
+                                $("#add_particular_materialUnit").prop("readonly", false).val("");
+                                $("#add_particular_materialPrice").prop("readonly", false).val("");
+                                $("#add_particular_materialQuarter").prop("readonly", false).val(
+                                    quarter);
+                                $("#add_particular_materialYear").prop("readonly", false).val(year);
                             }
                         });
 
@@ -1032,47 +1121,46 @@
 
                         // Add change event listener to the labor select element
                         $("#add_particular_laborName").on("change", function() {
-                            var selectedLaborId = parseInt($(this).val());
+                            var selectedLaborId = $(this).val();
 
-                            if (!isNaN(selectedLaborId)) {
-                                var selectedLabor = labors.find(function(labor) {
-                                    return labor.labor_id == selectedLaborId;
-                                });
+                            // Chech if Values are on the labors list
+                            var selectedLabor = labors.find(function(labor) {
+                                return labor.labor_id == selectedLaborId;
+                            });
 
-                                if (selectedLabor) {
-                                    // Populate fields with selected labor data
-                                    $("#add_particular_laborLocation").val(
-                                        selectedLabor.labor_location
-                                    );
-                                    $("#add_particular_laborID").val(
-                                        selectedLabor.labor_id
-                                    );
-                                    $("#add_particular_laborRate").val(
-                                        selectedLabor.labor_rate
-                                    );
-                                    $("#add_particular_laborWorkDays").val(
-                                        selectedLabor.labor_workdays
-                                    );
-                                    $("#add_particular_labor_rateID").val(
-                                        selectedLabor.labor_rate_id
-                                    );
-                                    $("#add_projectParticularLaborId").val(
-                                        particularID
-                                    );
-                                    $("#add_projectParticularIDLabor").val(
-                                        projPartId
-                                    );
+                            if (selectedLabor) {
+                                // Populate fields with selected labor data
+                                $("#add_particular_laborLocation").val(
+                                    selectedLabor.labor_location
+                                );
+                                $("#add_particular_laborID").val(
+                                    selectedLabor.labor_id
+                                );
+                                $("#add_particular_laborRate").val(
+                                    selectedLabor.labor_rate
+                                );
+                                $("#add_particular_laborWorkDays").val(
+                                    selectedLabor.labor_workdays
+                                );
+                                $("#add_particular_labor_rateID").val(
+                                    selectedLabor.labor_rate_id
+                                );
+                                $("#add_projectParticularLaborId").val(
+                                    particularID
+                                );
+                                $("#add_projectParticularIDLabor").val(
+                                    projPartId
+                                );
 
-                                    initializePriceInputs();
+                                initializePriceInputs();
 
-                                    // Chnage readonly attributte of the form
-                                    $("#add_particular_laborRate").prop("readonly", true);
-                                }
+                                // Chnage readonly attributte of the form
+                                $("#add_particular_laborRate").prop("readonly", true);
+
                             } else {
                                 $("#add_particular_laborID").val("");
                                 $("#add_particular_laborRate").prop("readonly", false);
                             }
-                            // You may need to adjust the above lines based on the actual structure of your labor data
                         });
 
                         initializePriceInputs();
@@ -1124,44 +1212,44 @@
 
                         // Add change event listener to the labor select element
                         $("#add_particular_EquipmentName").on("change", function() {
-                            var selectedEquipmentId = parseInt($(this).val());
+                            var selectedEquipmentId = $(this).val();
 
-                            if (!isNaN(selectedEquipmentId)) {
-                                var selectedEquipment = equipments.find(function(
-                                    equipment
-                                ) {
-                                    return equipment.equipment_id == selectedEquipmentId;
-                                });
+                            var selectedEquipment = equipments.find(function(
+                                equipment
+                            ) {
+                                return equipment.equipment_id == selectedEquipmentId;
+                            });
 
-                                if (selectedEquipment) {
-                                    // Populate fields with selected labor data
-                                    $("#add_particular_EquipmentRate").val(
-                                        selectedEquipment.equipment_rate);
-                                    $("#add_particular_EquipmentCategory").val(
-                                        selectedEquipment.equipment_category_name);
-                                    $("#add_particular_EquipmentModel").val(
-                                        selectedEquipment.equipment_model);
-                                    $("#add_particular_EquipmentCapacity").val(
-                                        selectedEquipment.equipment_capacity);
-                                    $("#add_particular_EquipmentID").val(
-                                        selectedEquipment.equipment_id);
-                                    $("#add_particular_equipmentRateID").val(
-                                        selectedEquipment.equipment_rate_id);
 
-                                    $("#add_projectParticularIdEquipment").val(
-                                        particularID
-                                    );
-                                    $("#add_particularIdEquipment").val(
-                                        projPartId
-                                    );
+                            if (selectedEquipment) {
+                                // Populate fields with selected labor data
+                                $("#add_particular_EquipmentRate").val(
+                                    selectedEquipment.equipment_rate);
+                                $("#add_particular_EquipmentCategory").val(
+                                    selectedEquipment.equipment_category_name);
+                                $("#add_particular_EquipmentModel").val(
+                                    selectedEquipment.equipment_model);
+                                $("#add_particular_EquipmentCapacity").val(
+                                    selectedEquipment.equipment_capacity);
+                                $("#add_particular_EquipmentID").val(
+                                    selectedEquipment.equipment_id);
+                                $("#add_particular_equipmentRateID").val(
+                                    selectedEquipment.equipment_rate_id);
 
-                                    initializePriceInputs();
-                                    // Chnage readonly attributte of the form
-                                    $("#add_particular_EquipmentRate").prop('readonly', true);
-                                    $("#add_particular_EquipmentCategory").prop('readonly', true);
-                                    $("#add_particular_EquipmentModel").prop('readonly', true);
-                                    $("#add_particular_EquipmentCapacity").prop('readonly', true);
-                                }
+                                $("#add_projectParticularIdEquipment").val(
+                                    particularID
+                                );
+                                $("#add_particularIdEquipment").val(
+                                    projPartId
+                                );
+
+                                initializePriceInputs();
+                                // Chnage readonly attributte of the form
+                                $("#add_particular_EquipmentRate").prop('readonly', true);
+                                $("#add_particular_EquipmentCategory").prop('readonly', true);
+                                $("#add_particular_EquipmentModel").prop('readonly', true);
+                                $("#add_particular_EquipmentCapacity").prop('readonly', true);
+
                             } else {
                                 $("#add_particular_EquipmentID").val("");
                                 // Populate fields with selected labor data
@@ -1333,52 +1421,6 @@
                 });
             });
 
-            // Submit the Particular Material Modal Form
-            $("#editProjectPartMaterialForm").on("submit", function(event) {
-                event.preventDefault();
-                let detail_type = 'Material';
-                let editProjectMaterialId = $("#edit_particular_material_id").val();
-                let materialQuantity = $(
-                    "#edit_particular_materialQuantity"
-                ).val();
-                let particularID = $(
-                    "#editParticularId"
-                ).val();
-
-                // AJAX request
-                $.ajax({
-                    url: "/submit-details",
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        editProjectMaterialId: editProjectMaterialId,
-                        materialQuantity: materialQuantity,
-                        particularID: particularID,
-                        _token: "{{ csrf_token() }}",
-                        // Add more form data fields here if needed
-                    },
-                    success: function(response) {
-                        $("#editProjectPartMaterialForm")[0].reset();
-                        $("#editParticularMaterialModal").modal("hide");
-
-                        // Refresh The Project Item
-                        refreshProjectItem(particularID);
-
-                        toastr.options.progressBar = true;
-                        toastr.success("Material Update Successfully!");
-
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error response from the server
-                        console.error(
-                            "Error submitting form data:",
-                            xhr.responseText
-                        );
-
-                    },
-                });
-            });
-
             // Prevent form submission
             $("#addProjectPartMaterialForm").on("submit", function(event) {
                 event.preventDefault(); // Prevent the default form submission behavior
@@ -1430,12 +1472,15 @@
                     "#add_projectParticularID"
                 ).val();
 
+                console.log('IS this empty?: ', materialId);
+
 
 
                 // Remove materialId from the data object if it's "empty"
                 let data = {
                     materialId: materialId,
                     particularId: projectParticularID,
+                    projectParticularId: particularId,
                     materialName: materialName,
                     materialCategory: materialCategory,
                     materialUnit: materialUnit,
@@ -1468,7 +1513,7 @@
                         console.log(response);
                         toastr.success("Material Added Successfully!");
 
-                        refreshProjectItem(particularId);
+                        refreshProjectItem(UniqueParticularID);
                     },
                     error: function(xhr, status, error) {
                         // Handle error response from the server
@@ -1476,6 +1521,52 @@
                             "Error submitting form data:",
                             xhr.responseText
                         );
+                    },
+                });
+            });
+
+            // Submit the Particular Material Modal Form
+            $("#editProjectPartMaterialForm").on("submit", function(event) {
+                event.preventDefault();
+                let detail_type = 'Material';
+                let editProjectMaterialId = $("#edit_particular_material_id").val();
+                let materialQuantity = $(
+                    "#edit_particular_materialQuantity"
+                ).val();
+                let particularID = $(
+                    "#editParticularId"
+                ).val();
+
+                // AJAX request
+                $.ajax({
+                    url: "/submit-details",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        editProjectMaterialId: editProjectMaterialId,
+                        materialQuantity: materialQuantity,
+                        particularID: particularID,
+                        _token: "{{ csrf_token() }}",
+                        // Add more form data fields here if needed
+                    },
+                    success: function(response) {
+                        $("#editProjectPartMaterialForm")[0].reset();
+                        $("#editParticularMaterialModal").modal("hide");
+
+                        // Refresh The Project Item
+                        refreshProjectItem(particularID);
+
+                        toastr.options.progressBar = true;
+                        toastr.success("Material Update Successfully!");
+
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response from the server
+                        console.error(
+                            "Error submitting form data:",
+                            xhr.responseText
+                        );
+
                     },
                 });
             });
@@ -1779,10 +1870,13 @@
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
+                    console.log('This is the totals: ', data)
                     // Loop through each project particular object in the data
                     for (const particular of data) {
                         const projectParticularId = particular.project_particular_id;
                         let totalMaterialAmount = 0;
+                        let totalLaborAmount = 0;
+                        let totalEquipmentAmount = 0;
 
                         // Check if materials exist for the current project particular
                         if (particular.materials && particular.materials.length > 0) {
@@ -1794,11 +1888,78 @@
                                 totalMaterialAmount += materialPrice * quantity;
                             }
                         }
+                        // Check if labors exist for the current project particular
+                        if (particular.labors && particular.labors.length > 0) {
+                            // Loop through each labor in the 'labors' array
+                            for (const labor of particular.labors) {
+                                const laborRate = parseFloat(labor.rate.replace(/,/g,
+                                    '')); // Parse rate, remove commas
+                                const noOfPerson = labor.no_of_persons || 0; // Handle null quantity
+                                const workDays = labor.work_days || 0;
+                                totalLaborAmount += laborRate * noOfPerson * workDays;
+                            }
+                        }
+                        // Check if Equipment exist for the current project particular
+                        if (particular.equipments && particular.equipments.length > 0) {
+                            // Loop through each equipment in the 'equipments' array
+                            for (const equipment of particular.equipments) {
+                                const equipmentRate = parseFloat(equipment.equipment_rate.replace(/,/g,
+                                    '')); // Parse rate, remove commas
+                                const noOfUnits = equipment.no_of_units || 0; // Handle null quantity
+                                const workDays = equipment.work_days || 0;
+                                totalEquipmentAmount += equipmentRate * noOfUnits * workDays;
+                            }
+                        }
 
                         // Update the corresponding total material amount span with comma separators
                         $(`#totalMaterialAmount_${projectParticularId}`).text(
                             `${totalMaterialAmount.toLocaleString('en-US', { style: 'currency', currency: 'PHP' })}`
                         );
+                        // Material Toggle
+                        $(`#materialCardAmount_${projectParticularId}`).text(
+                            `${totalMaterialAmount.toLocaleString('en-US', { style: 'currency', currency: 'PHP' })}`
+                        );
+
+                        // Update The Total Labor Amount
+                        $(`#totalLaborAmount_${projectParticularId}`).text(
+                            `${totalLaborAmount.toLocaleString('en-US', { style: 'currency', currency: 'PHP' })}`
+                        );
+
+                        // Labor Toggle
+                        $(`#laborCardAmount_${projectParticularId}`).text(
+                            `${totalLaborAmount.toLocaleString('en-US', { style: 'currency', currency: 'PHP' })}`
+                        );
+
+                        // Update The Total Equipment Amount
+                        $(`#totalEquipmentAmount_${projectParticularId}`).text(
+                            `${totalEquipmentAmount.toLocaleString('en-US', { style: 'currency', currency: 'PHP' })}`
+                        );
+
+                        // Equipment Toggle
+                        $(`#equipmentCardAmount_${projectParticularId}`).text(
+                            `${totalEquipmentAmount.toLocaleString('en-US', { style: 'currency', currency: 'PHP' })}`
+                        );
+
+                        // Update the Total Amount of Each Project Item
+                        let TotalProjectItemAmount = 0;
+
+                        TotalProjectItemAmount += totalMaterialAmount + totalLaborAmount +
+                            totalEquipmentAmount;
+
+                        $(`#total_${projectParticularId}`).text(
+                            `${TotalProjectItemAmount.toLocaleString('en-US', { style: 'currency', currency: 'PHP' })}`
+                        );
+
+
+                        // Calculate labor amount as a percentage of total material amount
+                        let laborAmountPercent = ((totalLaborAmount / totalMaterialAmount) * 100).toFixed(2);
+
+                        $(`#laborPercent_${projectParticularId}`).text(
+                            `(${laborAmountPercent}%) of Material`
+                        );
+
+
+
                     }
 
                 },

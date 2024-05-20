@@ -93,6 +93,9 @@ Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']
 
 Route::middleware('auth')->group(function () {
 
+    Route::get('/transactions', [TestController::class, 'index'])->name('transactions');
+
+
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -105,9 +108,9 @@ Route::middleware('auth')->group(function () {
         return view('pages.projects');
     })->name('projects');
 
-    Route::get('/transactions', function () {
-        return view('transactions');
-    })->name('transactions');
+    // Route::get('/transactions', function () {
+    //     return view('transactions');
+    // })->name('transactions');
 
     Route::get('/printables/generate-pdf', function () {
         return view('printables.print_project_particular');
@@ -215,9 +218,6 @@ Route::get('/printables/summary_of_cost', function () {
 Route::get('/printables/boq', function () {
     return view('printables.boq');
 })->name('boq');
-
-
-Route::get('home_test', [TestController::class, 'index'])->name('tests.index');
 
 
 

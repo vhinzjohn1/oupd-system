@@ -1,6 +1,22 @@
 @extends('layouts.app')
 @section('title', 'Projects')
 @section('content')
+
+    <head>
+
+        @if (isset($message))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!: Unable to Proceed to Transactions',
+                    html: '<div style="font-size: 24px; color: #00491e;">{{ $message }}</div>'
+                });
+            </script>
+        @endif
+
+
+
+    </head>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -250,47 +266,32 @@
 
             let projectID = project_id;
 
-
             // Show SweetAlert2 popup
             Swal.fire({
-                title: `${project_title}  Selected`,
+                title: `${project_title} Selected`,
                 icon: 'success',
                 confirmButtonText: 'OK'
-            }).then((result) => {
-                // Redirect to the home page after the user clicks "OK"
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('setProject.store') }}",
-                        type: "POST",
-                        data: {
-                            projectID: projectID,
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function(response) {
-                            toastr.options.progressBar = true;
-                            toastr.success('Project Added Successfully!');
-                            console.log(response); // Log response for debugging
+            });
 
-                            if (response) {
-                                $('#addProjectForm')[0].reset();
-                                $('#addProjectModal').modal('hide');
-
-                                refreshProjectsTable();
-
-                            } else {
-                                // Show error message if material addition fails
-                                alert('Failed to add project: ' + response.message);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(xhr.responseText); // Log error response for debugging
-                            alert('Error occurred. Check console for details.');
-                        }
-                    });
-
+            // Perform AJAX request immediately after showing the popup
+            $.ajax({
+                url: "{{ route('setProject.store') }}",
+                type: "POST",
+                data: {
+                    projectID: projectID,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
                     window.location.href = '/transactions';
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText); // Log error response for debugging
+                    alert('Error occurred. Check console for details.');
                 }
             });
+
+
+
         }
 
 
@@ -384,7 +385,8 @@
 
         function viewProjectModal(project_id, projectTitle, projectLocation, projectOwner,
             projectDescription,
-            projectContractDuration, projectDatePrepared, projectTargetStartDate, projectAppropriation, projectSourceOfFund,
+            projectContractDuration, projectDatePrepared, projectTargetStartDate, projectAppropriation,
+            projectSourceOfFund,
             projectModeOfImplementation, projectCategory) {
             console.log(project_id)
             // Populate modal fields with passed values
@@ -398,7 +400,8 @@
             $('#view_project_appropriation').val(projectAppropriation);
             $('#view_project_source_of_fund').val(projectSourceOfFund);
             $('#view_project_mode_of_implementation').val(projectModeOfImplementation);
-            $('#view_project_category').val(projectCategory === null || projectCategory === "null" ? '' : projectCategory);
+            $('#view_project_category').val(projectCategory === null || projectCategory === "null" ? '' :
+                projectCategory);
 
 
             $("#view_project_source_of_fund").select2({

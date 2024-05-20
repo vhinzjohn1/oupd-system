@@ -16,11 +16,19 @@ use App\Models\MaterialCategory;
 
 class TestController extends Controller
 {
-
     public function index(Request $request)
     {
         // Retrieve project ID from the request
         $projectId = session('projectID');
+
+        // Check if project ID exists in the session
+        if (!$projectId) {
+            return response()->view('pages.projects', ['message' => 'Please select a project first'], 400);
+        }
+
+
+        // Retrieve project details using the project ID
+        $projectDetail = Project::where('project_id', $projectId)->first();
 
         // Fetch particulars data using Eloquent with pagination
         $particulars = ProjectParticular::select('project_particulars.*', 'particulars.particular_name', 'particulars.pay_item')
@@ -49,7 +57,7 @@ class TestController extends Controller
                 ->get();
         }
 
-        return view('home_test', compact('particulars'));
+        return view('transactions', compact('particulars', 'projectDetail'));
     }
 
 

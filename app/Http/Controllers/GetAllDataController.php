@@ -440,7 +440,9 @@ class GetAllDataController extends Controller
                     ProjectParticularMaterial::updateOrCreate([
                         'material_id' => $material->material_id,
                     ], [
-                        'quantity' => $request->materialQuantity
+                        'quantity' => $request->materialQuantity,
+                        'project_particular_id' => $request->projectParticularId,
+                        'price_id' => $price->price_id
                     ]);
 
                     // Commit the transaction
