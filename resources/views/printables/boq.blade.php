@@ -55,6 +55,14 @@
                 border-radius: 50%;
                 width: 150px;
             }
+
+            .center-inside {
+                display: inline-block;
+                width: 100%;
+                /* text-align: center; */
+                transform: translateX(-2%);
+                /* Adjust the percentage as needed */
+            }
         </style>
     </head>
 
@@ -130,6 +138,7 @@
                             var numberWithCommas = function(x) {
                                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             };
+
                             if (project.project_mode_of_implementation === 'By Admin') {
                                 // Create particulars table
                                 divHTML +=
@@ -137,7 +146,9 @@
                                     '<table class="table table-bordered table-striped">' +
                                     '<thead>' +
                                     '<tr>' +
-                                    '<th colspan="7" class="text-center">Republic  of the Phillipines <br>CENTRAL MINDANAO UNIVERSITY<br> University Town, Musuan, Bukidnon<br><h3>INDIVIDUAL PROJECT PROGRAM OF WORK</h3><br><p class="text-right"><u>04/22/2024</u><br>date</p></th>' +
+                                    '<th colspan="7" class="text-center">Republic  of the Phillipines <br>CENTRAL MINDANAO UNIVERSITY<br> University Town, Musuan, Bukidnon<br><h3>INDIVIDUAL PROJECT PROGRAM OF WORK</h3><br><p class="text-right"><u>' +
+                                    project.project_date_prepared +
+                                    '</u><br><span class="center-inside">date</span></p></th>' +
                                     '</tr>' +
                                     '<tr>' +
                                     '<th colspan="4" class="text-center">NAME OF THE PROJECT/LOCATION:</th>' +
@@ -580,7 +591,7 @@
                                         project
                                         .contractors_profit);
                                     var markUpValue = isMovingParticular ? 0 : ((markUpTotal /
-                                        100) *
+                                            100) *
                                         edcTotalAmount);
                                     var vatValue = isMovingParticular ? 0 : ((project.vat / 100) * (
                                         markUpValue + edcTotalAmount));
@@ -627,7 +638,8 @@
                                     totalIndirCost += indirCostTotal;
 
                                     // Calculate percent based on accumulated totalCostAmount
-                                    var percent = (parseFloat(totalCost) / parseFloat(totalCostAmount)) * 100;
+                                    var percent = (parseFloat(totalCost) / parseFloat(
+                                        totalCostAmount)) * 100;
                                     totalPercent += percent;
                                     // console.log('moving in: ', movingIn);
                                     console.log('total cost: ', totalCost);
@@ -786,6 +798,9 @@
                 });
             });
 
+            const project = {
+                project_date_prepared: '02/14/2024' // Preformatted date
+            };
             // Function to add commas to thousands
             function numberWithCommas(x) {
                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

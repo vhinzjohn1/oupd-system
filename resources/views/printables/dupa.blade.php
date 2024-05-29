@@ -205,13 +205,11 @@
                                         '<td class="text-center">' + (particular.unit === null ?
                                             '<span style="color: red;">Please Input a valid value</span>' :
                                             particular.unit) + '</td>' +
-                                        '<td class="text-right">' + numberWithCommas((
-                                                unitCostTotal ===
-                                                null || isNaN(unitCostTotal)) || !isFinite(
+                                        '<td class="text-right">' + (!isFinite(
                                                 unitCostTotal) ?
-                                            '-' : '₱' +
-                                            unitCostTotal
-                                            .toFixed(2)) + '</td>' +
+                                            '-' : numberWithCommas( '₱' +
+                                            unitCostTotal 
+                                            .toFixed(2))) + '</td>' +
                                         '</tr>';
                                     // Create materials table
                                     if (materials.length > 0) {

@@ -154,7 +154,7 @@
         </div>
         <div class="container">
             <div class="about-img">
-                <img src="http://172.16.0.69/weljoLaravel/assets/adminlte/dist/img/cmupic.jpg" alt="">
+                <img src="{{ asset('img/cmuadmin.png') }}" alt="cmu admin">
             </div>
             <div class="about-text">
                 <h2>MISSION</h2>
@@ -173,14 +173,14 @@
 
             </div>
             <div class="about-img">
-                <img src="http://172.16.0.69/weljoLaravel/assets/adminlte/dist/img/cmupic.jpg" alt="">
+                <img src="{{ asset('img/main_gate.png') }}" alt="cmu maingate">
             </div>
 
         </div>
     </section>
 
     <section class="contact" id="contact">
-        <div class="social">
+        {{-- <div class="social">
             <a href="#"><i class="bx bxl-twitter"></i></a>
             <a href="#"><i class="bx bxl-facebook"></i></a>
             <a href="#"><i class="bx bxl-instagram"> </i></a>
@@ -189,7 +189,7 @@
             <a href="#">Privacy Policy</a>
             <a href="#">Terms of Use</a>
             <a href="#">Our Company</a>
-        </div>
+        </div> --}}
         <p>
             &#169; Software Development Department 2024. All Rights Reserved.
         </p>
