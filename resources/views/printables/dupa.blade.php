@@ -590,8 +590,7 @@
                                         '<th class="text-right">' + (isMovingParticular ?
                                             numberWithCommas(movingIn
                                                 .toFixed(2)) :
-                                            (unitCostTotal1 ===
-                                                null || isNaN(unitCostTotal1)) || !isFinite(
+                                            !isFinite(
                                                 unitCostTotal1) ? '-' : '₱' +
                                             numberWithCommas(unitCostTotal1
                                                 .toFixed(2))) +
@@ -722,18 +721,14 @@
                                             '<span style="color: red;">Please Input a valid value</span>' :
                                             particular.quantity) +
                                         '</td>' +
-                                        '<td class="text-center">' + ((particular.unit === null ||
-                                                isNaN(
-                                                    particular.unit)) ?
+                                        '<td class="text-center">' + (particular.unit === null ?
                                             '<span style="color: red;">Please Input a valid value</span>' :
                                             particular.unit) + '</td>' +
-                                        '<td class="text-right">' + numberWithCommas((
-                                                unitCostTotal ===
-                                                null || isNaN(unitCostTotal)) ?
-                                            '<span style="color: red;">Please Input a valid value</span>' :
-                                            '₱' +
-                                            unitCostTotal
-                                            .toFixed(2)) + '</td>' +
+                                        '<td class="text-right">' + (!isFinite(
+                                                unitCostTotal) ?
+                                            '-' : numberWithCommas( '₱' +
+                                            unitCostTotal 
+                                            .toFixed(2))) + '</td>' +
                                         '</tr>';
                                     // Create materials table
                                     if (materials.length > 0) {
@@ -1119,12 +1114,12 @@
                                     divHTML +=
                                         '<tr>' +
                                         '<th colspan="4" class="text-start">H. UNIT COST (TOTAL COST OF ITEM/QUANTITY)</th>' +
-                                        '<th class="text-right">' + (
-                                            (unitCostTotal1 ===
-                                                null || isNaN(unitCostTotal1)) ? '-' :
-                                            isMovingParticular ? '₱' + numberWithCommas(
-                                                unitCostTotal
-                                                .toFixed(2)) : '₱' + numberWithCommas(unitCostTotal1
+                                        '<th class="text-right">' + (isMovingParticular ?
+                                            numberWithCommas(movingIn
+                                                .toFixed(2)) :
+                                            !isFinite(
+                                                unitCostTotal1) ? '-' : '₱' +
+                                            numberWithCommas(unitCostTotal1
                                                 .toFixed(2))) +
                                         //nakabold dapat ni
                                         '</th>' +

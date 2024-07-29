@@ -428,8 +428,7 @@
                                         '<tr>' +
                                         '<td>' + getRomanNumeral(index + 1) + '</td>' +
                                         '<td>' + particular.particular_name + '</td>' +
-                                        '<td class="text-center">' + ((particular.unit === null ||
-                                            isNaN(particular.unit)) ? '-' : particular.unit) +
+                                        '<td class="text-center">' + (particular.unit === null ? '-' : particular.unit) +
                                         '</td>' +
                                         '<td class="text-right">' + numberWithCommas((particular
                                                 .quantity === null || isNaN(particular.quantity)) ?
