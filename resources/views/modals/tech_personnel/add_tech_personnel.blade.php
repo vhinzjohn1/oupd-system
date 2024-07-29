@@ -20,7 +20,7 @@
                         <input type="text" class="form-control" id="add_personnel_description"
                             name="add_personnel_description" placeholder="Foreman" required>
                     </div>
-                </div>
+                </div>  
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-success">Save changes</button>

@@ -347,20 +347,6 @@
             </div>
 
 
-
-            <!-- Your Blade view with JavaScript -->
-
-            {{-- @include('modals.project_particular_detail.add_project_particular_detail')
-            @include('modals.project_particular.add_projectPart_material')
-            @include('modals.project_particular.add_projectPart_labor')
-            @include('modals.project_particular.add_projectPart_equipment')
-            @include('modals.project_particular.edit_projectPart_material')
-            @include('modals.transactionals.add_trans_proj_modal')
-            @include('modals.project_particular.edit_projectPart_labor')
-            @include('modals.project_particular.edit_projectPart_equipment')
-            @include('modals.signature.add_signature')
-            @include('modals.signature.edit_signature') --}}
-
         </div>
         {{-- For testing purposess --}}
         <div class="container-fluid mt-3" id="dynamicContent">
@@ -586,7 +572,6 @@
             });
 
         $("#add_project_signature_role").on("change", function() {
-
             const value = $("#add_project_signature_role").val();
             console.log(value)
         });

@@ -8,11 +8,20 @@ use Illuminate\Support\Facades\Log;
 
 class MinimumEquipmentController extends Controller
 {
+
+
     public function index()
     {
-        $minimum_equipments = MinimumEquipment::all();
-        return $minimum_equipments;
+        // Retrieve project ID from the request
+        $projectId = session('projectID');
+
+        // Correcting the query to use where clause properly
+        $minimum_equipments = MinimumEquipment::where('project_id', $projectId)->get();
+
+        // Returning JSON response with the data
+        return response()->json($minimum_equipments);
     }
+
 
     public function store(Request $request)
     {

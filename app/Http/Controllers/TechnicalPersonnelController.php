@@ -13,12 +13,23 @@ class TechnicalPersonnelController extends Controller
      */
     public function index()
     {
-        $technical_personnel = TechnicalPersonnel::all();
+        // Retrieve project ID from the request
+        $projectId = session('projectID');
+
+        // Retrieve technical personnel where 'project_id' is $projectId and sort them
+        $technical_personnel = TechnicalPersonnel::where('project_id', $projectId)
+            ->orderBy('personnel_description')
+            ->get();
+
         return $technical_personnel;
     }
 
+
     public function store(Request $request)
     {
+        // Retrieve project ID from the request
+        $projectId = session('projectID');
+
         try {
             // Create or update technical personnel
             $technical_personnel = TechnicalPersonnel::updateOrCreate(
@@ -26,7 +37,7 @@ class TechnicalPersonnelController extends Controller
                 [
                     'personnel_description' => $request->personnelDescription,
                     'personnel_no' => $request->personnelNo,
-                    'project_id' => $request->projectId,
+                    'project_id' => $projectId,
                 ]
             );
             return response()->json(['success' => true, 'message' => 'Technical Personnel Added Successfully']);

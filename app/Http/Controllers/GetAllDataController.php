@@ -261,6 +261,7 @@ class GetAllDataController extends Controller
                     'project_date_prepared' => $requestData['add_project_date_prepared'],
                     'project_appropriation' => floatval(str_replace(',', '', $requestData['add_project_appropriation'])),
                     'project_source_of_fund' => $requestData['add_project_source_of_fund'],
+                    'project_category' => $requestData['add_project_category'],
                     'project_mode_of_implementation' => $requestData['add_project_mode_of_implementation'],
                     'ocm' => $requestData['add_project_ocm'],
                     'contractors_profit' => $requestData['add_project_cp'],
@@ -467,47 +468,42 @@ class GetAllDataController extends Controller
                 // Update or create a record in the project_particular_labors table
                 ProjectParticularLabor::updateOrCreate([
                     'labor_id' => $request->laborId,
-                    'project_particular_id' => $request->particularId
+                    'project_particular_id' => $request->projectParticularID
                 ], [
                     'labor_id' => $request->laborId,
                     'no_of_persons' => $request->noOfPerson,
                     'work_days' => $request->workDays,
                     'labor_rate_id' => $request->laborRateID,
-                    'project_particular_id' => $request->particularId,
+                    'project_particular_id' => $request->projectParticularID,
                 ]);
             } else if ($request->laborId === "empty") {
                 try {
-                    // Start a database transaction
-                    DB::beginTransaction();
+                    // Create or get a labor record
+                    $labor = Labor::firstOrCreate([
+                        'labor_name' => $request->laborName,
+                        'location' => $request->laborLocation
+                    ]);
 
-                    // Create a new labor
-                    $labor = Labor::firstOrCreate(['labor_name' => $request->laborName, 'location' => $request->laborLocation]);
-
-                    // Add the newly created labor to the ProjectParticular
+                    // Create or get a project particular record
                     $projectParticular = ProjectParticular::firstOrCreate([
                         'project_id' => $request->projectId,
                         'particular_id' => $request->particularId,
                     ]);
 
+                    // Create a new labor rate
+                    $laborRate = new LaborRate();
+                    $laborRate->rate = $request->laborRate;
+                    $laborRate->labor_id = $labor->labor_id; // Assuming 'id' is the primary key for Labor
+                    $laborRate->save();
+
                     // Update or create a record in the project_particular_labors table
-                    $projectParticularLabor = $projectParticular->labors()->updateOrCreate([
-                        'labor_id' => $labor->labor_id, // Use the newly created labor's ID
+                    $projectParticular->labors()->updateOrCreate([
+                        'labor_id' => $labor->labor_id,
                     ], [
+                        'labor_rate_id' => $laborRate->labor_rate_id, // Assuming 'id' is the primary key for LaborRate
                         'no_of_persons' => $request->noOfPerson,
                         'work_days' => $request->workDays,
                     ]);
-
-                    // Get the labor rate associated with the labor
-                    $laborRate = $labor->laborRate()->where('is_active', 1)->first();
-
-                    // If labor rate doesn't exist, create a new one
-                    if (!$laborRate) {
-                        // Handle the case where there's no active labor rate
-                        throw new \Exception("No active labor rate found for the labor with ID: {$labor->labor_id}");
-                    }
-
-                    // Associate labor rate with project particular labor
-                    $projectParticularLabor->update(['labor_rate_id' => $laborRate->id]);
 
                     // Commit the transaction
                     DB::commit();
@@ -567,14 +563,7 @@ class GetAllDataController extends Controller
                     // Add the newly created material to the ProjectParticular
                     $projectParticular = ProjectParticular::firstOrCreate([
                         'project_id' => $request->projectId,
-                        'particular_id' => $request->particularId,
-                    ]);
-
-                    $projectParticular->equipments()->updateOrCreate([
-                        'equipment_id' => $equipment->equipment_id,
-                    ], [
-                        'work_days' => $request->equipmentWorkDays,
-                        'no_of_units' => $request->noOfUnit,
+                        'particular_id' => $request->particularID,
                     ]);
 
                     DB::table('equipment_rates')
@@ -588,6 +577,14 @@ class GetAllDataController extends Controller
 
                     // Save the rate
                     $rate->save();
+
+                    $projectParticular->equipments()->updateOrCreate([
+                        'equipment_id' => $equipment->equipment_id,
+                    ], [
+                        'equipment_rate_id' => $rate->equipment_rate_id,
+                        'work_days' => $request->equipmentWorkDays,
+                        'no_of_units' => $request->noOfUnit,
+                    ]);
 
                     // Commit the transaction
                     DB::commit();

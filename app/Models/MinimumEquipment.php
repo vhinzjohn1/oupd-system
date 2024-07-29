@@ -15,7 +15,6 @@ class MinimumEquipment extends Model
         'min_equip_lease',
         'min_equip_totalUnits',
         'project_id',
-
     ];
 
     public function project()

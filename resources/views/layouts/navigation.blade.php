@@ -43,13 +43,11 @@
 
             <!-- Transactionals -->
             <li class="nav-item transaction">
-                <a href="{{ route('transactions') }}" class="nav-link" id="transaction">
+                <a href="{{ route('transactions.index') }}" class="nav-link">
                     <i class="nav-icon fas fa-pencil-ruler"></i>
                     <p>{{ __('Transaction') }}</p>
                 </a>
             </li>
-
-
 
             <!-- Projects -->
             <li class="nav-item projects">
@@ -119,31 +117,31 @@
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a wire:navigate href="{{ route('dupa') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('dupa') }}" class="nav-link">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate DUPA') }}</p>
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a wire:navigate href="{{ route('dupa_summary') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('dupa_summary') }}" class="nav-link">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate DUPA SUMMARY') }}</p>
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a wire:navigate href="{{ route('summary_of_cost') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('summary_of_cost') }}" class="nav-link">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate SUMMARY OF COST') }}</p>
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a wire:navigate href="{{ route('abc') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('abc') }}" class="nav-link">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate ABC') }}</p>
                         </a>
                     </li>
                     <li class="nav-item printables">
-                        <a wire:navigate href="{{ route('boq') }}" class="nav-link" id="transaction">
+                        <a wire:navigate href="{{ route('boq') }}" class="nav-link">
                             <i class="nav-icon fas fa-pencil-ruler"></i>
                             <p>{{ __('Generate BOQ') }}</p>
                         </a>

@@ -2,11 +2,11 @@
 @section('title', 'List of Materials')
 @section('content')
 
-<head>
-    <style>
-        
-    </style>
-</head>
+    <head>
+        <style>
+
+        </style>
+    </head>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -334,6 +334,13 @@
                     mapToRadix: ['.'],
                     min: 0
                 });
+            });
+
+            $('#addMaterialModal').on('shown.bs.modal', function() {
+                $('#add_material_name').focus();
+            });
+            $('#editMaterialModal').on('shown.bs.modal', function() {
+                $('#edit_material_name').focus();
             });
         });
     </script>

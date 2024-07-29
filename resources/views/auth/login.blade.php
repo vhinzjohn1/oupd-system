@@ -5,7 +5,7 @@
         Login
     </title>
 
-    <div>
+    <div class="loginCard">
         <p class="login-box-msg">{{ __('Login to your Account') }}</p>
 
         <form action="{{ route('login') }}" method="post">
@@ -59,7 +59,7 @@
         </form>
 
         @if (Route::has('password.request'))
-            <p class="mb-1">
+            <p class="mb-1 forgot-password">
                 <a href="{{ route('password.request') }}">{{ __('Forgot Your Password?') }}</a>
             </p>
         @endif

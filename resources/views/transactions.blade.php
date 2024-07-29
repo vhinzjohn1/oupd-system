@@ -54,12 +54,11 @@
                 </a>
                 <ul class="mfb-component__list">
                     <li>
-                        <a href="https://github.com/nobitagit/material-floating-button/" data-mfb-label="View on Github"
-                            class="mfb-component__button--child">
-                            <i class="mfb-component__child-icon ion-social-github"></i>
+                        <a data-mfb-label="Add Project Item" class="mfb-component__button--child" id="addProjectItemModal">
+                            <i class="mfb-component__child-icon fa fa-list"></i>
                         </a>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a href="https://github.com/nobitagit" data-mfb-label="Follow me on Github"
                             class="mfb-component__button--child">
                             <i class="mfb-component__child-icon ion-social-octocat"></i>
@@ -71,7 +70,7 @@
                             data-mfb-label="Share on Twitter" class="mfb-component__button--child">
                             <i class="mfb-component__child-icon ion-social-twitter"></i>
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
             </li>
         </ul><!------- End of Floating Button ------>
@@ -83,7 +82,7 @@
                 <div class="card-header header-hover" data-toggle="collapse" data-target="#addProject" aria-expanded="false"
                     aria-controls="addProject">
                     <div class="d-flex justify-content-between col-12">
-                        <h5 id="ProjectHeader">Add Project</h5>
+                        <h5 id="ProjectHeader">Project Details</h5>
                         <div class="card-tools">
                             <!-- Collapse Button -->
                             <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#addProject"
@@ -264,7 +263,7 @@
                             <div class="text-right mb-3">
                                 <div class="btn btn-success" id="addSignatureBtn"><i class="fa fa-plus"></i></div>
                             </div>
-                            <table class="table col-12 table-margin" id="signatureTable">
+                            <table class="table col-12 table-margin" id="signatureTable" style="width: 100%;">
                                 <thead>
                                     <tr>
                                         <th>Full Name</th>
@@ -307,10 +306,10 @@
                             <div class="row p-3">
                                 <div class="col-lg-12">
                                     <div class="text-right mb-3">
-                                        <button type="button" class="btn btn-success" id="addtechnicalPersonnelBtn"><i
-                                                class="fa fa-plus"></i></button>
+                                        <button type="button" class="btn btn-success" id="addtechnicalPersonnelBtn"
+                                            onclick=""><i class="fa fa-plus"></i></button>
                                     </div>
-                                    <table class="table col-12 table-margin" id="technicalPersonnelTable">
+                                    <table class="table table-margin" id="technicalPersonnelTable" style="width: 100%">
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
@@ -319,6 +318,24 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach ($tech_personnels as $tech_personnel)
+                                                <tr>
+                                                    <td>{{ $tech_personnel->personnel_no }}</td>
+                                                    <td>{{ $tech_personnel->personnel_description }}</td>
+                                                    <td class="text-center d-flex">
+                                                        <button type="button" class="btn bg-success mr-2"
+                                                            data-id="{{ $tech_personnel->personnel_no }}"
+                                                            onclick="editTechnicalPersonnel({{ $tech_personnel->personnel_no }}, '{{ $tech_personnel->personnel_description }}')">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" class="btn bg-danger"
+                                                            data-id="{{ $tech_personnel->personnel_no }}"
+                                                            onclick="deleteTechnicalPersonnel({{ $tech_personnel->personnel_no }})">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -334,6 +351,7 @@
                             data-target="#addMinEquipReqCard" aria-expanded="false">
                             <div class="d-flex justify-content-between col-12">
                                 <h5 id="ProjectHeader">Minimum Equipment</h5>
+
                                 <div class="card-tools">
                                     <!-- Collapse Button -->
                                     <button type="button" class="btn btn-tool" data-toggle="collapse"
@@ -348,7 +366,7 @@
                             <div class="row p-3">
                                 <div class="col-lg-12">
                                     <div class="text-right mb-3">
-                                        <button type="button" class="btn btn-success" id="addMinEquipReqBtn"><i
+                                        <button type="button" class="btn btn-success" id="addMinimumEquipmentBtn"><i
                                                 class="fa fa-plus"></i></button>
                                     </div>
                                     <table class="table col-12 table-margin" id="addMinEquipReqTable">
@@ -362,6 +380,13 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach ($minimum_equipments as $equipment)
+                                                <td>{{ $equipment->min_equip_description }}</td>
+                                                <td>{{ $equipment->min_equip_owned }}</td>
+                                                <td>{{ $equipment->min_equip_lease }}
+                                                </td>
+                                                <td>{{ $equipment->min_equip_totalUnits }}</td>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -395,10 +420,11 @@
 
                             <div class="d-flex justify-content-between">
                                 <h5 class="numeralPartName" id="{{ $particular['particular_id'] }}">
-                                    <span>{{ $particular['particular_name'] }}</span>
+                                    <span>{{ $particular['particular_name'] }}{{ empty($particular['pay_item']) ? '' : ' - ' . $particular['pay_item'] }}</span>
                                 </h5>
                                 <div class="card-tools">
-                                    <button type="button" class="btn btn-danger">
+                                    <button type="button" class="btn btn-danger" id="deleteProjectItem"
+                                        onclick="deleteProjectItem({{ $particular->project_particular_id }}, '{{ $particular->particular_name }}')">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                     <button type="button" class="btn btn-tool">
@@ -418,17 +444,15 @@
                                         <div class="card-body form-top">
                                             <div class="col-12">
                                                 <div class="row">
-                                                    <div class="col-4">
-                                                        <h6>Quantity:
-                                                            <input type="number" id="quantity_8">
-                                                        </h6>
+                                                    <div class="col-4 d-flex gap-1">
+                                                        <h6>Quantity: </h6>
+                                                        <input class="form-control-sm form-control" type="number"
+                                                            id="quantity_{{ $particular['particular_id'] }}">
                                                     </div>
-                                                    <div class="col-3">
-                                                        <h6>
-                                                            Unit:
-                                                            <input type="text"
-                                                                id="unit_{{ $particular['particular_id'] }}">
-                                                        </h6>
+                                                    <div class="col-3 d-flex gap-1">
+                                                        <h6>Unit: </h6>
+                                                        <input class="form-control-sm form-control" type="text"
+                                                            id="unit_{{ $particular['particular_id'] }}">
                                                     </div>
                                                     <div class="col-4">
                                                         <h6>
@@ -764,6 +788,90 @@
 
 
     <script>
+        $("#selectProjParticular")
+            .select2({
+                theme: "bootstrap-5",
+                placeholder: "Add Project Item",
+                dropdownPosition: 'below'
+            });
+
+
+        refreshParticularTable();
+        // Adding of Project Item Section
+        function refreshParticularTable() {
+            $.ajax({
+                url: "{{ route('getParticulars') }}",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+
+                    console.log('Particular Array: ', data);
+                    if (Array.isArray(data) && data.length > 0) {
+                        var selectedProjID = localStorage.getItem("projectID");
+                        var selectElem = $("#selectProjParticular").empty();
+
+                        // Filter data for the selected project ID
+                        var selectedProject = data.find(function(project) {
+                            return project.project_id == selectedProjID;
+                        });
+
+                        // If selected project is found
+                        if (selectedProject && selectedProject.particulars_available) {
+                            // Add a blank option
+                            selectElem.append('<option value=""></option>');
+
+                            selectedProject.particulars_available.forEach(function(particular) {
+                                let optionText = particular.particular_name;
+                                if (particular.pay_item) {
+                                    optionText += ' - ' + particular.pay_item;
+                                }
+                                selectElem.append('<option value="' + particular.particular_id + '">' +
+                                    optionText + '</option>');
+                            });
+                        } else {
+                            console.error(
+                                "Selected project or particulars available data not found or invalid.");
+                        }
+                    } else {
+                        console.error("No data or invalid data received.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                },
+            });
+        }
+
+        // Event handler for select2 select event
+        $('#selectProjParticular').on('select2:select', function(e) {
+            var selectedParticularId = e.params.data.id;
+            var selectedProjID = localStorage.getItem("projectID");
+
+            // Prepare data for AJAX request
+            var requestData = {
+                project_id: selectedProjID, // Assuming selectedProjectID is defined
+                particular_id: selectedParticularId,
+                _token: "{{ csrf_token() }}",
+            };
+
+            // Send AJAX request to store the project particular
+            $.ajax({
+                url: "{{ route('projectParticulars.store') }}",
+                type: "POST",
+                dataType: "json",
+                data: requestData,
+                success: function(response) {
+                    // Reload the current page
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error("Error storing project particular:", xhr.responseText);
+                }
+            });
+        }); // --- End Of Project Item Section
+
+
         let totalMaterial = 231250;
         let rate = 910;
         let percent = 35 / 100;
@@ -811,12 +919,9 @@
         console.log(particulars);
 
         const projectDetail = {!! json_encode($projectDetail) !!};
-        console.log(projectDetail);
 
         // Extracting particular_id from each object in the data array
         const particularIds = particulars.data.map(particular => particular.particular_id);
-        console.log(particularIds);
-
         // Loop through each particular_id and apply the action
         particularIds.forEach(particularId => {
             $('#materialTable_' + particularId).DataTable({
@@ -833,9 +938,11 @@
         });
         //.. End of Data table script
 
+        refreshSignature();
+
 
         // Start of Lazy Loading Project Item Script
-        var ENDPOINT = "{{ route('tests.index') }}";
+        var ENDPOINT = "{{ route('transactions.index') }}";
         var page = 1;
         var isLoading = false;
 
@@ -901,12 +1008,10 @@
             let projPartId = parseInt(projPartIdInt);
             // Ajax to get the Get the Data of ProjectItem
             $.ajax({
-                url: "{{ route('tests.create') }}",
+                url: "{{ route('transactions.create') }}",
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    console.log('This is the data', data)
-
                     // Filter the data where particular_id is equal to 8
                     const filteredData = data.filter(item => item.particular_id === projPartId);
 
@@ -1024,6 +1129,42 @@
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
+                }
+            });
+        }
+
+        // Delete Project Item
+        function deleteProjectItem(projectParticularId, particularName) {
+            // Display confirmation dialog
+            Swal.fire({
+                title: 'Confirm Deletion of Project Item',
+                text: "'" + particularName + "'" + " Will Be Deleted",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If user confirms, proceed with deletion
+                    $.ajax({
+                        url: "{{ url('projectParticulars') }}/" + projectParticularId,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            // Refresh the page
+                            window.location.reload();
+
+                            // Show toastr notification for successful deletion
+                            toastr.success('Project particular deleted successfully.');
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error response
+                            alert("Error: " + error);
+                        }
+                    });
                 }
             });
         }
@@ -1173,6 +1314,13 @@
                         // Open Add Particular Labor Modal
                         $("#addPartLaborModal").modal("show");
 
+                        $("#add_projectParticularLaborId").val(
+                            particularID
+                        );
+                        $("#add_projectParticularIDLabor").val(
+                            projPartId
+                        );
+
                         // Add change event listener to the labor select element
                         $("#add_particular_laborName").on("change", function() {
                             var selectedLaborId = $(this).val();
@@ -1199,12 +1347,7 @@
                                 $("#add_particular_labor_rateID").val(
                                     selectedLabor.labor_rate_id
                                 );
-                                $("#add_projectParticularLaborId").val(
-                                    particularID
-                                );
-                                $("#add_projectParticularIDLabor").val(
-                                    projPartId
-                                );
+
 
                                 initializePriceInputs();
 
@@ -1274,6 +1417,13 @@
                                 return equipment.equipment_id == selectedEquipmentId;
                             });
 
+                            $("#add_projectParticularIdEquipment").val(
+                                particularID
+                            );
+                            $("#add_particularIdEquipment").val(
+                                projPartId
+                            );
+
 
                             if (selectedEquipment) {
                                 // Populate fields with selected labor data
@@ -1289,13 +1439,6 @@
                                     selectedEquipment.equipment_id);
                                 $("#add_particular_equipmentRateID").val(
                                     selectedEquipment.equipment_rate_id);
-
-                                $("#add_projectParticularIdEquipment").val(
-                                    particularID
-                                );
-                                $("#add_particularIdEquipment").val(
-                                    projPartId
-                                );
 
                                 initializePriceInputs();
                                 // Chnage readonly attributte of the form
@@ -1409,7 +1552,6 @@
         }
         // Delete Detail
         function deleteDetail(detailType, partID, projectPartId) {
-            console.log('This is the partId: ', partID);
             // Show confirmation dialog
             Swal.fire({
                 title: "Are you sure?",
@@ -1433,7 +1575,6 @@
                         type: "DELETE",
                         data: data,
                         success: function(response) {
-                            console.log(response.message);
                             refreshProjectItem(parseInt(projectPartId));
                             // Show success toast with delay
                             toastr.options.progressBar = true;
@@ -1455,6 +1596,10 @@
 
         // Get Particular Material Values
         document.addEventListener("DOMContentLoaded", function() {
+
+            $('#addProjectItemModal').click(function() {
+                $("#addProjPartItemModal").modal("show");
+            });
 
             // Get the Data from the edit material
             document.querySelectorAll('.edit-material').forEach(item => {
@@ -1526,10 +1671,6 @@
                     "#add_projectParticularID"
                 ).val();
 
-                console.log('IS this empty?: ', materialId);
-
-
-
                 // Remove materialId from the data object if it's "empty"
                 let data = {
                     materialId: materialId,
@@ -1551,8 +1692,6 @@
                     data.materialId = "empty"; // or assign any other appropriate value
                 }
 
-                console.log(data);
-
                 // AJAX request
                 $.ajax({
                     url: "/submit-details",
@@ -1564,7 +1703,6 @@
                         $("#addParticularMaterial").modal("hide");
 
                         toastr.options.progressBar = true;
-                        console.log(response);
                         toastr.success("Material Added Successfully!");
 
                         refreshProjectItem(UniqueParticularID);
@@ -1647,7 +1785,8 @@
                 let laborRateID = $("#add_particular_labor_rateID").val();
                 let data = {
                     projectId: projectId,
-                    particularId: projectParticularID,
+                    projectParticularID: projectParticularID,
+                    particularId: particularID,
                     laborId: laborId,
                     laborRate: laborRate,
                     laborName: laborName,
@@ -1662,8 +1801,6 @@
                 } else if (laborId === "empty") {
                     data.laborId = "empty";
                 }
-
-                console.log('This is the Labor Data: ', data);
 
                 // AJAX request to submit labor details
                 $.ajax({
@@ -1766,7 +1903,9 @@
                     let projectParticularID = $(
                         "#add_projectParticularIdEquipment"
                     ).val();
-                    let equipmentRate = $("#add_particular_EquipmentRate").val();
+                    let equipmentRateComma = $("#add_particular_EquipmentRate").val();
+                    let equipmentRate = parseFloat(equipmentRateComma.replace('₱', '').replace(/,/g, ''));
+
                     let equipmentCategory = $("#add_particular_EquipmentCategory").val();
                     let equipmentModel = $("#add_particular_EquipmentModel").val();
                     let equipmentCapacity = $("#add_particular_EquipmentCapacity").val();
@@ -1777,6 +1916,8 @@
                     let equipmentRateID = $("#add_particular_equipmentRateID").val();
 
                     let data = {
+                        projectId: projectId,
+                        particularID: particularID,
                         projectParticularID: projectParticularID,
                         equipmentId: equipmentId,
                         equipmentName: equipmentName,
@@ -1795,6 +1936,9 @@
                     } else if (equipmentId === "empty") {
                         data.equipmentId = "empty";
                     }
+
+
+                    console.log('This is the Equipment Data: ', data);
 
 
                     // AJAX request to submit equipment details
@@ -1875,7 +2019,321 @@
                 });
             });
 
+            // Edit the Project Details Form
+            $("#projectDetailsForm").submit(function(event) {
+                // Prevent default form submission
+                event.preventDefault();
+                var submitProjectID = localStorage.getItem("projectID");
+
+                let projectId = submitProjectID;
+
+                // Gather form data
+                let projectTitle = $("#add_project_title").val();
+                let projectLocation = $("#add_project_location").val();
+                let projectOwner = $("#add_project_owner").val();
+                let projectDescription = $("#add_project_description").val();
+                let contactDuration = $("#add_project_contract_duration").val();
+                let appropriation = $("#add_project_appropriation").val();
+                let sourceOfFund = $("#add_project_source_of_fund").val();
+                let datePrepared = $("#add_project_date_prepared").val();
+                let projectCategory = $("#add_project_category").val();
+                let modeOfImplementation = $("#add_project_mode_of_implementation").val();
+                let ocm = $("#add_project_ocm").val();
+                let cp = $("#add_project_contractProfit").val();
+                let vat = $("#add_project_vat").val();
+
+                // Remove the P and commas
+                let projectCostCleaned = appropriation.replace('₱', '').replace(/,/g,
+                    '');
+                let projectCost = parseFloat(projectCostCleaned);
+                // Send Ajax request
+                $.ajax({
+                    url: "{{ route('getAllData.store') }}",
+                    type: "POST",
+                    data: {
+                        add_project_id: projectId,
+                        add_project_title: projectTitle,
+                        add_project_location: projectLocation,
+                        add_project_owner: projectOwner,
+                        add_project_description: projectDescription,
+                        add_project_contract_duration: contactDuration,
+                        add_project_appropriation: projectCost,
+                        add_project_source_of_fund: sourceOfFund,
+                        add_project_date_prepared: datePrepared,
+                        add_project_category: projectCategory,
+                        add_project_mode_of_implementation: modeOfImplementation,
+                        add_project_ocm: ocm,
+                        add_project_cp: cp,
+                        add_project_vat: vat,
+                        _token: "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        // Reset the form
+                        // $("#projectDetailsForm")[0].reset();
+                        // getProjects();
+
+                        toastr.options.progressBar = true;
+                        toastr.success("Project Updated Successfully!");
+                        // Request succeeded, do something with the response if needed
+                        console.log("Success Response:", response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Request failed
+                        console.error("Request failed. Status:", status);
+                        console.error("Error:", error);
+                        console.error("Response Text:", xhr.responseText);
+                    },
+                });
+            });
+
+            $('#addSignatureBtn').click(function() {
+                $('#addProjectSignatureModal').modal('show');
+            });
+
+            $("#add_project_signature_role, #add_project_signature_position").select2({
+                theme: "bootstrap-5",
+                tags: true,
+                dropdownParent: $("#addProjectSignatureModal"),
+            });
+            $("#edit_project_signature_role, #edit_project_signature_position")
+                .select2({
+                    theme: "bootstrap-5",
+                    tags: true,
+                    dropdownParent: $("#editProjectSignatureModal"),
+                });
+
+            // Adding of Signature Form
+            $('#addSignatureForm').submit(function(e) {
+                e.preventDefault();
+
+                // Get form data
+                var submitProjectID = localStorage.getItem("projectID");
+                let projectId = submitProjectID;
+                let fullName = $('#add_project_signature_fullName').val();
+                let degree = $('#add_signature_degree').val();
+                let role = $('#add_project_signature_role').val();
+                let position = $('#add_project_signature_position').val();
+                let projectID = $('#signature_projectID').val();
+
+                console.log(projectId);
+                console.log(fullName);
+
+                // Make AJAX request to add new paticular
+                $.ajax({
+                    url: "{{ route('signatures.store') }}",
+                    type: "POST",
+                    data: {
+                        fullName: fullName,
+                        degree: degree,
+                        role: role,
+                        position: position,
+                        projectId: projectId,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+
+                        console.log(response); // Log response for debugging
+
+                        if (response.success) {
+                            $('#addSignatureForm')[0].reset();
+                            $('#addProjectSignatureModal').modal('hide');
+                            toastr.options.progressBar = true;
+                            toastr.success('Signature Added Successfully!');
+
+                            refreshSignature();
+                        } else {
+                            toastr.options.progressBar = true;
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText); // Log error response for debugging
+                        alert('Error occurred. Check console for details.');
+                    }
+                });
+            });
+
+            // Edit Signature
+            $('#editSignatureForm').submit(function(e) {
+                e.preventDefault();
+
+                // Get form data
+                var submitProjectID = localStorage.getItem("projectID");
+                let projectId = submitProjectID;
+                let fullName = $('#edit_project_signature_fullName').val();
+                let degree = $('#edit_signature_degree').val();
+                let role = $('#edit_project_signature_role').val();
+                let position = $('#edit_project_signature_position').val();
+                let signatureID = $('#editSignatureID').val();
+
+                console.log(signatureID);
+
+                // Check if all values are empty
+                if (position === null) {
+                    toastr.options.progressBar = true;
+                    toastr.error('Position is Required');
+                } else {
+                    // Make AJAX request to add new paticular
+                    $.ajax({
+                        url: "{{ route('signatures.update', ['signature' => ':signature']) }}"
+                            .replace(
+                                ':signature',
+                                signatureID),
+                        type: "PUT",
+                        data: {
+                            fullName: fullName,
+                            degree: degree,
+                            signature_id: signatureID,
+                            role: role,
+                            position: position,
+                            projectId: projectId,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            toastr.options.progressBar = true;
+                            if (response.success) {
+                                toastr.success(response.message);
+
+                                $('#editSignatureForm')[0].reset();
+                                $('#editProjectSignatureModal').modal('hide');
+
+                                refreshSignature();
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText); // Log error response for debugging
+                            alert('Error occurred. Check console for details.');
+                        }
+                    });
+                }
+            });
+
         });
+
+        function refreshSignature() {
+
+            // Check if data is already cached in localStorage
+            var cachedSignatureData = localStorage.getItem('signatureData');
+
+            if (cachedSignatureData) {
+                // If cached data exists, parse and use it
+                displaySignature(JSON.parse(cachedSignatureData));
+            }
+            // If no cached data, fetch new data via AJAX
+            $.ajax({
+                url: "{{ route('signatures.index') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Store fetched data in localStorage for future use
+                    localStorage.setItem('signatureData', JSON.stringify(data));
+                    // Display the fetched data
+                    displaySignature(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+
+        }
+
+        // Display the signature
+        function displaySignature(data) {
+            var submitProjectID = localStorage.getItem("projectID");
+
+            // Filter the data to include only signatures with matching project_id
+            var filteredData = data.filter(signature => signature.project_id == submitProjectID);
+
+            var table = $('#signatureTable').DataTable();
+            var existingRows = table.rows().remove().draw(false);
+
+            filteredData.forEach(function(signature, index) {
+                var newRow = table.row.add([
+                    signature.fullname,
+                    signature.degree,
+                    signature.role,
+                    signature.position,
+                    '<div class="text-center d-flex">' +
+                    `<button type="button" class="btn bg-success mr-2" data-id="${signature.project_id}" onclick="editSignatureModal(${signature.project_id}, '${signature.fullname}', '${signature.degree}', '${signature.position}', '${signature.role}', ${signature.signature_id} )"><i class="fas fa-edit"></i></button>` +
+                    `<button type="button" class="btn bg-danger" data-id="${signature.particular_id}" onclick="deleteSignature(${signature.signature_id})"><i class="fas fa-trash-alt"></i></button>` +
+                    '</div>'
+                ]).node();
+            });
+
+            table.draw();
+        }
+
+        // Edit Signature Modal
+        function editSignatureModal(project_id, fullname, degree, position, role, signature_id) {
+            $('#edit_project_signature_fullName').val(fullname)
+
+            if (degree === "null") {
+                degree = "";
+                $('#edit_signature_degree').val(degree)
+            } else {
+                $('#edit_signature_degree').val(degree)
+            }
+
+
+            function updateOrAppendOption($select, value) {
+                // Check if the option already exists
+                var optionExists = $select.find('option[value="' + value + '"]').length > 0;
+
+                if (optionExists) {
+                    // Update the existing option's text and value
+                    $select.val(value).trigger('change');
+                } else {
+                    // Create a new option element
+                    var newOption = new Option(value, value, true, true);
+
+                    // Append the new option to the Select2 input
+                    $select.append(newOption).trigger('change');
+                }
+            }
+
+            // Usage
+            updateOrAppendOption($('#edit_project_signature_role'), role);
+            updateOrAppendOption($('#edit_project_signature_position'), position);
+
+            $('#editSignatureID').val(signature_id)
+            $('#editProjectSignatureModal').modal('show');
+        }
+        // Delete Signature
+        function deleteSignature(signature_id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this Signature!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('signatures') }}/" + signature_id,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            toastr.options.progressBar = true;
+                            toastr.success('Signature Deleted Successfully!');
+                            refreshSignature();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText); // Log error response for debugging
+                            toastr.error(
+                                'Error occurred while deleting Signature. Please check console for details.'
+                            );
+                        }
+                    });
+                }
+            });
+        }
 
         // Input Price Library
         function initializePriceInputs() {
@@ -1924,7 +2382,6 @@
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
-                    console.log('This is the totals: ', data)
                     // Loop through each project particular object in the data
                     for (const particular of data) {
                         const projectParticularId = particular.project_particular_id;
@@ -2025,8 +2482,106 @@
 
         calculateTotalAmount();
 
+        // Edit Technical Personnel
+        function editTechnicalPersonnel(personnelId, personnelIdDescription) {
+            console.log(personnelId);
+        }
+
 
         document.addEventListener("DOMContentLoaded", function() {
+            // Initialized DataTables
+            var techPersonnelTable = $('#technicalPersonnelTable').DataTable();
+
+            $('#addMinimumEquipmentBtn').click(function() {
+                $("#addMinimumEquipmentModal").modal("show");
+            });
+            $('#addtechnicalPersonnelBtn').click(function() {
+                $("#addTechnicalPersonnelModal").modal("show");
+            });
+
+            $('#addTechnicalPersonnelForm').submit(function(e) {
+                e.preventDefault();
+
+                // Get form data
+                let personnel_no = $('#add_personnel_no').val();
+                let description = $('#add_personnel_description').val();
+
+                // Make AJAX request to add new material
+                $.ajax({
+                    url: "{{ route('technical_personnels.store') }}",
+                    type: "POST",
+                    data: {
+                        personnelDescription: description,
+                        personnelNo: personnel_no,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        toastr.options.progressBar = true;
+                        toastr.success('Technical Personnel Added Successfully!');
+                        refreshTechnicalPersonnel();
+
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText); // Log error response for debugging
+                        alert('Error occurred. Check console for details.');
+                    }
+                });
+            });
+
+
+            function refreshTechnicalPersonnel() {
+                var techPersonnelTable = $('#technicalPersonnelTable').DataTable();
+                techPersonnelTable.clear(); // Clear existing data
+
+                $.ajax({
+                    url: "{{ route('technical_personnels.index') }}",
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var rows = [];
+
+                        data.forEach(function(tech_personnel) {
+                            rows.push([
+                                tech_personnel.personnel_no,
+                                tech_personnel.personnel_description,
+                                `<div class="text-center d-flex">
+                        <button type="button" class="btn bg-success mr-2" data-id="${tech_personnel.personnel_id}" onclick="editTechnicalPersonnel(${tech_personnel.personnel_id}, '${tech_personnel.personnel_description}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn bg-danger" data-id="${tech_personnel.personnel_id}" onclick="deleteTechnicalPersonnel(${tech_personnel.personnel_id})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>`
+                            ]);
+                        });
+
+                        techPersonnelTable.rows.add(rows).draw(); // Add new rows and redraw the table
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
+
+            // minimum_equipments
+
+            function refreshMinimumEquipment() {
+                $.ajax({
+                    url: "{{ route('minimum_equipments.index') }}",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        console.log('Minimun Equipments: ', data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    },
+                });
+            }
+            refreshMinimumEquipment();
+
             // Code to execute when the DOM is fully loaded
             // const sortable = new Sortable(document.getElementById('projectParticularContent'), {
             //     group: 'shared', // set both lists to the same group
@@ -2140,6 +2695,11 @@
     @include('modals.project_particular.edit_projectPart_equipment')
     @include('modals.signature.add_signature')
     @include('modals.signature.edit_signature')
+    @include('modals.transactionals.add_project_item_modal')
+    @include('modals.min_equipment.add_min_equipment')
+    @include('modals.min_equipment.edit_min_equipment')
+    @include('modals.tech_personnel.add_tech_personnel')
+    @include('modals.tech_personnel.edit_tech_personnel')
 
 
     <!-- /.content -->

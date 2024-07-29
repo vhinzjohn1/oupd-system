@@ -25,7 +25,7 @@ class DashboardController extends Controller
             'equipments' => $equipmentsCount,
         ];
 
-        return response()->json($counts);
+        return view('dashboard', compact('counts'));
     }
 
 

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'List of Items')
+@section('title', 'List of Project Items')
 @section('content')
 
     <head>
@@ -34,14 +34,14 @@
                                     <buwtton type="button" class="btn btn-success" data-toggle="modal"
                                         id="addParticularButton">
                                         Add Item
-                                    </button>
+                                        </button>
                                 </div>
                                 @include('modals.particular.add_particular_modal');
                                 <thead>
                                     <tr>
                                         <th>Project Item Name</th>
-                                        <th>Project Item (Number)</th>
-                                        <th>Actions</th>
+                                        <th class="text-center">Project Item (Number)</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,6 +84,15 @@
             // Trigger to open Particular Modal Manually
             document.getElementById('addParticularButton').addEventListener('click', function() {
                 $('#addParticularModal').modal('show');
+
+
+            });
+
+            $('#addParticularModal').on('shown.bs.modal', function() {
+                $('#add_particular_name').focus(); // Focus on the Quantity input field
+            });
+            $('#editParticularModal').on('shown.bs.modal', function() {
+                $('#edit_particular_name').focus(); // Focus on the Quantity input field
             });
 
 
@@ -108,7 +117,8 @@
                             `<button type="button" class="btn bg-success mr-2 editParticularButton" data-id="${particular.particular_id}" data-name="${particular.particular_name}" data-pay-item="${particular.pay_item}"><i class="fas fa-edit"></i></button>`;
                         const deleteButton =
                             `<button type="button" class="btn bg-danger deleteParticularButton" data-id="${particular.particular_id}"><i class="fas fa-trash-alt"></i></button>`;
-                        const buttonsContainer = '<div class="text-center d-flex">' + editButton +
+                        const buttonsContainer = '<div class="d-flex justify-content-end">' +
+                            editButton +
                             deleteButton + '</div>';
 
 
@@ -141,15 +151,11 @@
                     $('#editParticularForm')[0].reset();
                     $('#editParticularModal').modal('hide');
 
-
-
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
                 }
             });
-
-
         }
 
         // Populate the Table and Refresh at the same time

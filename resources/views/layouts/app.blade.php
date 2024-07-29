@@ -81,6 +81,11 @@
     <link rel="stylesheet" href="{{ asset('plugins/tom-select/bootstrap.min.css') }}">
 
 
+    <!----- AOS Animations ---->
+    <link rel="stylesheet" href="{{ asset('css/aos.css') }}">
+
+    <script src="{{ asset('js/aos.js') }}"></script>
+
 
     <style>
         .mx-auto {
@@ -210,6 +215,8 @@
     </script>
     @yield('scripts')
     @livewireScripts
+
+
 </body>
 
 </html>

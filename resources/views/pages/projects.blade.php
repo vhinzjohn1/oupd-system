@@ -9,7 +9,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops!: Unable to Proceed to Transactions',
-                    html: '<div style="font-size: 24px; color: #00491e;">{{ $message }}</div>'
+                    html: '<div style="font-size: 30px; color: #00491e; font-weight: bold;">{{ $message }}</div>'
                 });
             </script>
         @endif

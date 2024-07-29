@@ -264,6 +264,13 @@
                     }
                 });
             });
+
+            $('#addLaborModal').on('shown.bs.modal', function() {
+                $('#add_labor_name').focus();
+            });
+            $('#editLaborModal').on('shown.bs.modal', function() {
+                $('#edit_labor_name').focus();
+            });
         });
     </script>
 @endsection

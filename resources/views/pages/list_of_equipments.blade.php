@@ -296,6 +296,13 @@
                     }
                 });
             });
+
+            $('#addEquipmentModal').on('shown.bs.modal', function() {
+                $('#add_equipment_name').focus();
+            });
+            $('#editEquipmentModal').on('shown.bs.modal', function() {
+                $('#edit_equipment_name').focus();
+            });
         });
     </script>
 @endsection

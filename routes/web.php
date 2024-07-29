@@ -22,13 +22,18 @@ use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TechnicalPersonnelController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Models\EquipmentCategory;
 use App\Models\Particular;
 use Dompdf\Adapter\PDFLib;
 
 Route::get('/', function () {
-    return view('auth.login');
+    if (Auth::check()) {
+        return redirect()->route('dashboard'); // Redirect to dashboard route
+    } else {
+        return view('auth.login'); // Show login view for non-logged-in users
+    }
 });
 
 
@@ -53,15 +58,13 @@ Route::resource('minimum_equipments', MinimumEquipmentController::class);
 //Route Resourec for SetProject
 Route::resource('setProject', SetProject::class);
 
-// Route Resource for TestController
-Route::resource('tests', TestController::class);
-
 // Route Resource For Dashboard Count
 Route::resource('dashboards', DashboardController::class);
 
 // Route to Controller Material Labor Equipment Resource
 Route::resource('mle', MLEController::class);
 Route::resource('signatures', SignatureController::class);
+
 
 // Materials Routes and Controller
 Route::resource('materials', MaterialController::class);
@@ -93,12 +96,10 @@ Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/transactions', [TestController::class, 'index'])->name('transactions');
+    // Route Resource for TestController
+    Route::resource('transactions', TransactionController::class);
 
-
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
     Route::get('/generate-pdf', function () {
@@ -174,7 +175,7 @@ Route::middleware('auth')->group(function () {
 // Routes for Particulars and Project Particular
 Route::middleware('auth')->group(function () {
     // Routes for Particular
-    Route::get('particular', function () {
+    Route::get('pages/project_items', function () {
         return view('pages.particular.particular');
     })->name('particular');
 

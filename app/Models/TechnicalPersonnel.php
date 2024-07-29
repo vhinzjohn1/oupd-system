@@ -9,11 +9,11 @@ class TechnicalPersonnel extends Model
 {
     protected $primaryKey = 'technical_personnel_id';
 
+    protected $table = 'technical_personnel';
     protected $fillable = [
         'personnel_description',
         'personnel_no',
         'project_id',
-
     ];
 
     public function project()
