@@ -1,13 +1,12 @@
 @extends('layouts.guest')
 
-
 @section('content')
     <title>
         Login
     </title>
 
-    <div class="card-body login-card-body">
-        <p class="login-box-msg">{{ __('Login') }}</p>
+    <div>
+        <p class="login-box-msg">{{ __('Login to your Account') }}</p>
 
         <form action="{{ route('login') }}" method="post">
             @csrf
@@ -53,7 +52,7 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-4">
-                    <button type="submit" class="btn btn-primary btn-block">{{ __('Login') }}</button>
+                    <button type="submit" class="btn btn-success btn-block">{{ __('Login') }}</button>
                 </div>
                 <!-- /.col -->
             </div>

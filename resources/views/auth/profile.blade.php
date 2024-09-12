@@ -1,5 +1,5 @@
     @extends('layouts.app')
-
+    @section('title', 'Profile')
     @section('content')
         <!-- Content Header (Page header) -->
         <div class="content-header">
@@ -80,7 +80,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" name="user_name"
                                             class="form-control @error('user_name') is-invalid @enderror"
-                                            placeholder="{{ __('Middle Name') }}"
+                                            placeholder="{{ __('User Name') }}"
                                             value="{{ old('user_name', auth()->user()->user_name) }}" required>
                                         <div class="input-group-append">
                                             <div class="input-group-text">
@@ -93,8 +93,6 @@
                                             </span>
                                         @enderror
                                     </div>
-
-
 
                                     <div class="input-group mb-3">
                                         <input type="email" name="email"
@@ -145,7 +143,8 @@
 
                                 <div class="d-flex justify-content-center">
                                     <div class="col-6 mb-4">
-                                        <button type="submit" class="btn btn-primary btn-block">{{ __('Submit') }}</button>
+                                        <button type="submit"
+                                            class="btn btn-success btn-block">{{ __('Submit') }}</button>
                                     </div>
                                 </div>
                             </form>
@@ -154,31 +153,31 @@
                 </div>
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
+
+
+
+            {{-- Table for User Management --}}
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-body table-responsive">
+                        <table class="table col-12" id="accountTable">
+                            <thead>
+                                <tr>
+                                    <th>First Name</th>
+                                    <th>Middle Name</th>
+                                    <th>Last Name</th>
+                                    <th>User Name</th>
+                                    <th>Roles</th>
+                                    <th>Email</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /.content -->
-    @endsection
-
-    @section('styles')
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    @endsection
-
-    @section('scripts')
-        @if ($message = Session::get('success'))
-            <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-            <script>
-                toastr.options = {
-                    "closeButton": true,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                }
-
-                toastr.success('{{ $message }}')
-            </script>
-        @endif
     @endsection

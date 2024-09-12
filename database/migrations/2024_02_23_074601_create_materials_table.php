@@ -10,7 +10,7 @@ class CreateMaterialsTable extends Migration
     public function up()
     {
         Schema::create('materials', function (Blueprint $table) {
-            $table->id('material_id');
+            $table->id('material_id')->onDelete('cascade');
             $table->string('material_name');
             $table->string('unit');
             $table->unsignedBigInteger('material_category_id');

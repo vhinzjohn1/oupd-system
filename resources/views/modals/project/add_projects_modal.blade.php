@@ -1,3 +1,11 @@
+{{-- <style>
+    /* Media Query for Tablets Ipads portrait mode */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .add_project_title {
+            font-size: 0.8rem;
+        }
+    }
+</style> --}}
 <div class="modal fade preview-modal" id="addProjectModal" tabindex="-1" role="dialog"
     aria-labelledby="addProjectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-height: 75vh;">
@@ -12,9 +20,9 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="add_project_title">Project Title</label>
+                                <label for="add_project_title" class="add_project_title">Project Title</label>
                                 <input type="text" class="form-control" id="add_project_title"
                                     name="add_project_title" required>
                             </div>
@@ -29,53 +37,53 @@
                                     name="add_project_owner" required>
                             </div>
                             <div class="form-group">
-                                <label for="add_unit_office">Unit Office</label>
-                                <input type="text" class="form-control" id="add_unit_office" name="add_unit_office"
-                                    required>
-                            </div>
-                            <div class="form-group">
                                 <label for="add_project_description">Project Description</label>
                                 <input type="text" class="form-control" id="add_project_description"
                                     name="add_project_description" required>
                             </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="add_project_contract_duration">Contract Duration</label>
                                 <input type="text" class="form-control" id="add_project_contract_duration"
                                     name="add_project_contract_duration" required>
                             </div>
+                        </div>
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="add_project_date_prepared">Project Date Prepared</label>
                                 <input type="date" class="form-control" id="add_project_date_prepared"
                                     name="add_project_date_prepared">
                             </div>
                             <div class="form-group">
-                                <label for="add_project_target_start_date">Project Target Start Date</label>
-                                <input type="date" class="form-control" id="add_project_target_start_date"
-                                    name="add_project_target_start_date">
-                            </div>
-                            <div class="form-group">
-                                <label for="add_project_appropriation">Project Appropriation</label>
+                                <label for="add_project_appropriation">Project Cost</label>
                                 <input type="number" class="form-control" id="add_project_appropriation"
                                     name="add_project_appropriation" required>
                             </div>
-                            <div class="form-group">
-                                <label for="add_project_source_of_fund">Project Source of Fund</label>
-                                <input type="text" class="form-control" id="add_project_source_of_fund"
-                                    name="add_project_source_of_fund" required>
+                            <div class="form-group margin-top">
+                                <label for="add_project_source_of_fund">Project Source Of Fund</label>
+                                <select type="text" class="form-control" id="add_project_source_of_fund"
+                                    name="add_project_source_of_fund" placeholder="Project Source of Fund" required>
+                                    <option value=""></option>
+                                    <option value="General Fund">General Fund</option>
+                                    <option value="Trust Fund">Trust Fund</option>
+                                    <option value="Special Trust Fund">Special Trust Fund</option>
+                                    <option value="RGMO">RGMO</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="add_project_mode_of_implementation">Project Mode of Implementation</label>
-                                <input type="text" class="form-control" id="add_project_mode_of_implementation"
+                                <select type="text" class="form-control" id="add_project_mode_of_implementation"
                                     name="add_project_mode_of_implementation" required>
+                                    <option disabled selected></option>
+                                    <option value="By Admin">By Admin</option>
+                                    <option value="By Contract">By Contract</option>
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn bg-success">Save changes</button>
                 </div>
             </form>
         </div>
@@ -85,5 +93,14 @@
 
 
 <script>
-    // add the function to hide modal after submit
+    $("#add_project_source_of_fund").select2({
+        theme: "bootstrap-5",
+        placeholder: "Select Project Source of Fund",
+        dropdownParent: $('#addProjectModal'),
+    });
+    $("#add_project_mode_of_implementation").select2({
+        theme: "bootstrap-5",
+        placeholder: "Select Project Mode of Implementation",
+        dropdownParent: $('#addProjectModal'),
+    });
 </script>

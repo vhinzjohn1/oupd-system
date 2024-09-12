@@ -11,18 +11,23 @@ class Project extends Model
         'project_title',
         'project_location',
         'project_owner',
-        'unit_office',
         'project_description',
         'project_contract_duration',
         'project_date_prepared',
-        'project_target_start_date',
         'project_appropriation',
         'project_source_of_fund',
         'project_mode_of_implementation',
+        'ocm',
+        'contractors_profit',
     ];
 
+    // Project model
     public function projectParticulars()
     {
-        return $this->hasMany(ProjectParticular::class);
+        return $this->hasMany(ProjectParticular::class, 'project_id', 'project_id');
+    }
+    public function signatures()
+    {
+        return $this->hasMany(Signature::class);
     }
 }

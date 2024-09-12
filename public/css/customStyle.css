@@ -18,7 +18,104 @@
         transform: translate(-15%, 0);
     }
 }
+
+/* Select2 Custom Styles */
+.custom-dropdown .select2-results__options {
+    max-height: 200px; /* Adjust as needed */
+    overflow-y: auto;
+}
+/* End Of Select2 Custom Style */
+
+.table-margin {
+    margin-top: -5px;
+}
 .table-responsive table {
     width: 100% !important;
     overflow-x: auto !important;
+}
+
+.header-column {
+    height: 35px;
+    margin: -5px;
+}
+
+.td-width {
+    width: 33%;
+}
+
+.dark-gray {
+    background-color: darkslategrey;
+    color: white;
+}
+.bg-gradient-success {
+    color: white;
+}
+.page-item.active .page-link {
+    background-color: #00491e;
+    border-color: #00491e;
+    color: white; /* Optional: change the text color to white for better contrast */
+}
+.nav-link.active {
+    color: black !important;
+    background-color: #ffc107 !important; /* Change this to your desired color */
+}
+.dataTables_filter {
+    text-align: right !important;
+}
+.form-top {
+    margin-top: -5px !important;
+}
+
+.custom-right {
+    position: absolute;
+    right: 4px;
+    padding: 5px;
+}
+.modal-header {
+    background-color: #e5e5e5 !important;
+}
+.a-href {
+    text-decoration: none;
+}
+.card-flex {
+    display: flex;
+}
+
+.dropdown-item:active:focus {
+    background-color: #00491e !important;
+}
+.swal2-confirm {
+    background-color: #00491e !important;
+}
+
+.header-hover:hover {
+    cursor: pointer;
+}
+.btn-header {
+    padding: 3px 10px !important; /* Adjust the values as needed */
+}
+
+.padding-header {
+    padding: 1px 10px !important; /* Adjust the values as needed */
+}
+
+/* FOrm Control Focus */
+.form-control:focus {
+    border-color: #00491e !important;
+    border: solid 1px #198f4a !important;
+    box-shadow: 0px 0px 7px 1px rgba(9, 143, 65, 0.7) !important;
+}
+
+.pd-zero {
+    padding: -10px !important;
+    height: 50px !important;
+    margin-top: -10px !important;
+}
+.signature-zero {
+    margin-top: -6px !important;
+}
+@media only screen and (max-width: 768px) {
+    .signature-zero {
+        margin-top: -6px !important;
+    }
 }

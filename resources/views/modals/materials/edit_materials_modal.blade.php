@@ -34,7 +34,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="edit_price">Price</label>
-                                <input type="number" class="form-control" id="edit_price" name="edit_price" required>
+                                <input type="number" class="form-control" id="edit_price" step="any" name="edit_price" required>
                             </div>
                             <div class="form-group">
                                 <label for="edit_quarter">Quarter</label>
@@ -49,7 +49,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn bg-success">Save changes</button>
                     </div>
             </form>
         </div>
