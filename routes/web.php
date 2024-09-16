@@ -4,50 +4,103 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MLEController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectParticularController;
+use App\Http\Controllers\SignatureController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MaterialCategory;
 use App\Models\Project;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\GetAllDataController;
 use App\Http\Controllers\ParticularController;
+use App\Http\Controllers\PDFController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MinimumEquipmentController;
+use App\Http\Controllers\TechnicalPersonnelController;
 use App\Models\EquipmentCategory;
+use App\Models\Particular;
+use Dompdf\Adapter\PDFLib;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
+
+// Make sure only admin can access to this route
+Route::middleware(['auth'])->group(function () {
+    // Routes that only admins can access
+    Route::get('/user-management', function () {
+        return view('user-management.users');
+    })->name('user-management');
+});
+
+// Route::middleware(['auth', 'admin'])->group(function () {
+//     // Routes that only admins can access
+//     Route::get('/user-management', function () {
+//         return view('user-management.users');
+//     })->name('user-management');
+// });
 Auth::routes();
 
 // Route to Controller Material Labor Equipment Resource
 Route::resource('mle', MLEController::class);
+Route::resource('signatures', SignatureController::class);
+
+Route::resource('technical_personnels', TechnicalPersonnelController::class);
+Route::resource('minimum_equipments', MinimumEquipmentController::class);
 
 // Materials Routes and Controller
 Route::resource('materials', MaterialController::class);
 Route::resource('project', ProjectController::class);
 
-
-Route::resource('labor', LaborController::class);
+Route::resource('labors', LaborController::class);
 Route::resource('particulars', ParticularController::class);
 
 Route::resource('projectParticulars', ProjectParticularController::class);
 
+Route::resource('getAllData', GetAllDataController::class)->except(['show']);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/material-categories', function () {
-    $categories = MaterialCategory::all()->pluck('material_category_name');
-    return response()->json($categories);
-});
-Route::get('/equipment-categories', function () {
-    $categories = EquipmentCategory::all()->pluck('equipment_category_name');
-    return response()->json($categories);
-});
+Route::resource('users', UserController::class);
+
+// Define the route for the masterList function
+Route::get('getAllData/master-list', [GetAllDataController::class, 'masterList']);
+
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Route::get('/material-categories', function () {
+//     $categories = MaterialCategory::all()->pluck('material_category_name');
+//     return response()->json($categories);
+// });
+// Route::get('/equipment-categories', function () {
+//     $categories = EquipmentCategory::all()->pluck('equipment_category_name');
+//     return response()->json($categories);
+// });
 
 Route::middleware('auth')->group(function () {
 
+    Route::get('/home', function () {
+        return view('home');
+    })->name('home');
+
+    // Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
+    Route::get('/generate-pdf', function () {
+        return view('printables.print_project_particular');
+    });
     Route::get('/pages/projects', function () {
         return view('pages.projects');
     })->name('projects');
+
+    Route::get('/transactions', function () {
+        return view('transactions');
+    })->name('transactions');
+
+    Route::get('/printables/generate-pdf', function () {
+        return view('printables.print_project_particular');
+    })->name('generate-pdf');
+
+    Route::get('/pages/projects', [ProjectController::class, 'getProjectData'])->name('projects');
 
     Route::get('/formatted-data', [ProjectController::class, 'getProjectData']);
 
@@ -56,17 +109,36 @@ Route::middleware('auth')->group(function () {
 
     Route::view('about', 'about')->name('about');
 
+    // // Route for the index page of technical_personnel
+    // Route::get('/technical_personnel', [TechnicalPersonnelController::class, 'index'])->name('technical_personnel.index');
+
+    // // Route to get the Store function in the TechnicalPersonnelController
+    // Route::post('/technical_personnel', [TechnicalPersonnelController::class, 'store'])->name('technical_personnel.store');
+
+    // // Route to get the update function in the TechnicalPersonnelController
+    // Route::put('/technical_personnel/{id}', [TechnicalPersonnelController::class, 'update'])->name('technical_personnel.update');
+
+    // // Route::view('/pages/transaction', 'pages.transaction')->name('transaction');
+
+    // Route::delete('/technical_personnel/{id}', [TechnicalPersonnelController::class, 'destroy'])->name('technical_personnel.destroy');
+
+    // // Route for the index page of minimum_equipment
+    // Route::get('/minimum_equipment', [MinimumEquipmentController::class, 'index'])->name('minimum_equipment.index');
+
+    // // Route to get the Store function in the MinimumEquipmentController
+    // Route::post('/minimum_equipment', [MinimumEquipmentController::class, 'store'])->name('minimum_equipment.store');
+
+    // // Route to get the update function in the MinimumEquipmentController
+    // Route::put('/minimum_equipment/{id}', [MinimumEquipmentController::class, 'update'])->name('minimum_equipment.update');
+
+    // // Route::view('/pages/transaction', 'pages.transaction')->name('transaction');
+
+    // Route::delete('/minimum_equipment/{id}', [MinimumEquipmentController::class, 'destroy'])->name('minimum_equipment.destroy');
 
     // Routes for labors
     Route::get('/pages/list_of_labors', function () {
         return view('pages.list_of_labors');
     })->name('list_of_labors');
-
-    // Route for the index page of labors
-    Route::get('/labors', [LaborController::class, 'index'])->name('labors.index');
-
-    // Route to get the Store function in the Labor Controller
-    Route::post('/labors', [LaborController::class, 'store'])->name('labors.store');
 
     // Route to get the update function in the Labor Controller
     Route::put('/labors/{id}', [LaborController::class, 'update'])->name('labors.update');
@@ -74,7 +146,6 @@ Route::middleware('auth')->group(function () {
     Route::view('/pages/list_of_labors', 'pages.list_of_labors')->name('list_of_labors');
 
     Route::delete('/labors/{id}', [LaborController::class, 'destroy'])->name('labors.destroy');
-
 
     // Routes for Materials
     Route::get('/pages/list_of_materials', function () {
@@ -104,18 +175,14 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/equipments/{id}', [EquipmentController::class, 'destroy'])->name('equipments.destroy');
 
-
     // Users Routes
-    Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-    Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
-    Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 });
-
-
 
 // Routes for Particulars and Project Particular
 Route::middleware('auth')->group(function () {
-
     // Routes for Particular
     Route::get('particular', function () {
         return view('pages.particular.particular');
@@ -133,6 +200,42 @@ Route::middleware('auth')->group(function () {
     Route::put('/particulars/{id}', [ParticularController::class, 'update'])->name('particulars.update');
     // Particular Delete Routes
     Route::put('/particulars/{particular_id}', [ParticularController::class, 'destroy'])->name('particulars.destroy');
-
-
+    Route::resource('particulars', ParticularController::class);
 });
+
+// Route::get('/generate-pdf-test', [PDFController::class, 'generatePDF']);
+Route::get('/generate-pdf', function () {
+    return view('printables.print_project_particular');
+});
+Route::resource('generatePDF', PDFController::class);
+// Routes
+Route::get('/printables/dupa', function () {
+    return view('printables.dupa');
+})->name('dupa');
+// Routes
+Route::get('/printables/dupa_summary', function () {
+    return view('printables.dupa_summary');
+})->name('dupa_summary');
+// Routes
+Route::get('/printables/abc', function () {
+    return view('printables.abc');
+})->name('abc');
+// Routes
+Route::get('/printables/summary_of_cost', function () {
+    return view('printables.summary_of_cost');
+})->name('summary_of_cost');
+// Routes
+Route::get('/printables/boq', function () {
+    return view('printables.boq');
+})->name('boq');
+Route::get('/printables/ppmp', function () {
+    return view('printables.ppmp');
+})->name('ppmp');
+
+// Project Particular Routes:
+Route::post('/submit-data', [MLEController::class, 'submitData'])->name('submit.data');
+Route::post('/submit-details', [GetAllDataController::class, 'submitDetails'])->name('submit.details');
+// Route for deleting project particular material
+Route::delete('/delete-datails', [GetAllDataController::class, 'destroy'])->name('project_particular_material.destroy');
+
+Route::get('/get-project-particulars', [ParticularController::class, 'getProjectParticular'])->name('getParticulars');
