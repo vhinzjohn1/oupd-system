@@ -4,107 +4,144 @@
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-            <li class="nav-item">
-                <a href="{{ route('profile.show') }}" class="nav-link"><i
-                        class="nav-icon fa fa-address-book"></i>{{ Auth::user()->first_name }}
-                    {{ Auth::user()->last_name }}</a>
+            <!-- User Profile -->
 
-            </li>
-            
-            <hr style="background-color: white;">
-            <li class="nav-item">
-                <a href="{{ route('home') }}" class="nav-link">
-                    <i class="nav-icon fas fa-th"></i>
+            <li class="nav-item dashboard">
+                <a href="{{ route('profile.show') }}" class="nav-link">
+                    <i class="nav-icon fa fa-address-book"></i>
                     <p>
-                        {{ __('Dashboard') }}
+                        {{ Auth::user()->first_name }}
+                        {{ Auth::user()->last_name }}
                     </p>
-
                 </a>
             </li>
-
+            @if (Auth::user()->roles == 'admin')
+                <li class="nav-item">
+                    <a href="{{ route('user-management') }}" class="nav-link">
+                        <i class="nav-icon fa fa-address-book"></i>
+                        <p>
+                            User Management
+                        </p>
+                    </a>
+                </li>
+            @endif
             <hr style="background-color: white;">
 
             <!-- Dashboard -->
             <li class="nav-item dashboard">
                 <a href="{{ route('home') }}" class="nav-link" id="dashboard">
-                    <i class="nav-icon fas fa-th"></i>
+                    <i class="nav-icon fas fa-home"></i>
                     <p>{{ __('Dashboard') }}</p>
                 </a>
             </li>
 
-
-            {{-- List of Material Sidebar Navigation --}}
-            <li class="nav-item">
-                <a href="{{ route('list_of_materials') }}" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        {{ __('List Of Materials') }}
-                    </p>
+            <!-- Transactionals -->
+            <li class="nav-item transaction">
+                <a href="{{ route('transactions') }}" class="nav-link" id="transaction">
+                    <i class="nav-icon fas fa-pencil-ruler"></i>
+                    <p>{{ __('Transaction') }}</p>
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a href="{{ route('list_of_labors') }}" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        {{ __('Labor Rates') }}
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('list_of_equipments') }}" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        {{ __('Equipment Rates') }}
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('particular') }}" class="nav-link">
-                    <i class="nav-icon far fa-address-card"></i>
-                    <p>
-                        {{ __('Particular') }}
-                    </p>
+
+
+            <!-- Projects -->
+            <li class="nav-item projects">
+                <a href="{{ route('projects') }}" class="nav-link" id="projects">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>{{ __('Projects') }}</p>
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a href="" class="nav-link">
-                    <i class="nav-icon fas fa-circle nav-icon"></i>
-                    <p>
-                        Project Particulars
-                        <i class="fas fa-angle-left right"></i>
-                    </p>
+            <!-- Master List -->
+            <li class="nav-item has-treeview" id="masterList">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-list"></i>
+                    <p>Master List <i class="fas fa-angle-left right"></i></p>
                 </a>
                 <ul class="nav nav-treeview" style="display: none;">
 
+                    {{-- List of Material Sidebar Navigation --}}
                     <li class="nav-item">
-                        <a href="{{ route('project_particular') }}" class="nav-link">
+                        <a href="{{ route('particular') }}" class="nav-link">
                             <i class="nav-icon far fa-address-card"></i>
-                            <p>{{ __('List of Particular') }}</p>
+                            <p>{{ __('List of Items') }}</p>
                         </a>
                     </li>
-                    <!-- List of Materials -->
                     <li class="nav-item">
                         <a href="{{ route('list_of_materials') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
+                            <i class="nav-icon fas fa-tools"></i>
                             <p>{{ __('List of Materials') }}</p>
                         </a>
                     </li>
-                    <!-- List of Labor Rates -->
+
                     <li class="nav-item">
                         <a href="{{ route('list_of_labors') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
+                            <i class="nav-icon fas fa-hard-hat"></i>
                             <p>{{ __('List of Labor Rates') }}</p>
                         </a>
                     </li>
-                    <!-- List of Equipments -->
                     <li class="nav-item">
                         <a href="{{ route('list_of_equipments') }}" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
+                            <i class="nav-icon fas fa-snowplow"></i>
                             <p>{{ __('List of Equipments') }}</p>
                         </a>
-                    </li> --}}
+                    </li>
+                </ul>
+            </li>
+            {{--
+            <!-- Transactionals -->
+            {{-- <li class="nav-item printables">
+                <a href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">
+                    <i class="nav-icon fas fa-pencil-ruler"></i>
+                    <p>{{ __('Generate PDF') }}</p>
+                </a>
+            </li> --}}
+            <!-- ESTIMATES -->
+            <li class="nav-item has-treeview" id="masterList">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-list"></i>
+                    <p>Estimates <i class="fas fa-angle-left right"></i></p>
+                </a>
+                <ul class="nav nav-treeview" style="display: none;">
+
+                    {{-- List of Material Sidebar Navigation --}}
+                    <li class="nav-item printables">
+                        <a wire:navigate href="{{ route('generate-pdf') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate POW') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a wire:navigate href="{{ route('dupa') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate DUPA') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a wire:navigate href="{{ route('dupa_summary') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate DUPA SUMMARY') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a wire:navigate href="{{ route('summary_of_cost') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate SUMMARY OF COST') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a wire:navigate href="{{ route('abc') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate ABC') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item printables">
+                        <a wire:navigate href="{{ route('boq') }}" class="nav-link" id="transaction">
+                            <i class="nav-icon fas fa-pencil-ruler"></i>
+                            <p>{{ __('Generate BOQ') }}</p>
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>

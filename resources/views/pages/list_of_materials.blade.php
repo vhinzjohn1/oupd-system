@@ -1,13 +1,18 @@
 @extends('layouts.app')
+@section('title', 'List of Materials')
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Material List') }}</h1>
-
                 </div><!-- /.col -->
+                {{-- <div class="text-right col-sm-6">
+                    <button type="button" class="btn btn-success" id="addMaterialButton">
+                        Add Material
+                    </button>
+                </div> --}}
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -29,7 +34,6 @@
                                 </div>
                                 <thead>
                                     <tr>
-
                                         {{-- <th>Material Id</th> --}}
                                         <th>Material Name</th>
                                         <th>Material Category</th>
@@ -55,66 +59,110 @@
     @include('modals.materials.add_materials_modal')
 
     <script>
-        $(document).ready(function() {
-            // Initialize DataTable
-            $("#materialTable").DataTable({
-                "responsive": true,
-                "lengthChange": true,
-                "autoWidth": true,
-                "searching": true,
-                "ordering": true,
-                "paging": true,
-                "info": true,
-                // "buttons": ["copy", "excel", "pdf", "print"]
-            }).buttons().container().appendTo('#materialTable_wrapper .col-md-6:eq(0)');
-
-            // Call the function to fetch and populate data in the table
-            refreshMaterialsTable();
-
-            // Trigger to open MaterialModal Manually
-            document.getElementById('addMaterialButton').addEventListener('click', function() {
-                $('#addMaterialModal').modal('show');
-            });
-
-            // Handle delete button click
-            $('#materialTable').on('click', '.btn-delete-material', function() {
-                var materialId = $(this).data('id');
-                deleteMaterial(materialId);
-            });
-
-            // Attach the click handler to the table itself (or a closer static parent)
-            // $('#materialTable').on('click', '.btn-edit-material', function() {
-            //     console.log("Edit button clicked!");
-
-            // });
+        // Initialize DataTable
+        $("#materialTable").DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": true,
+            "searching": true,
+            "ordering": true,
+            "paging": true,
+            "info": true,
         });
 
-        // Fetch categories Samples
-        $.ajax({
-            url: '/material-categories', // Your Laravel route
-            type: 'GET',
-            dataType: 'json',
-            success: function(categories) {
-                console.log(categories)
-                const select = $('#add_material_category_menu');
+        // Call the function to fetch and populate data in the table
+        refreshMaterialsTable();
 
-                // Clear any existing options before populating (optional)
-                select.empty();
+        // Trigger to open MaterialModal Manually
+        document.getElementById('addMaterialButton').addEventListener('click', function() {
+            $('#addMaterialModal').modal('show');
+        });
 
-                $.each(categories, function(id, name) {
-                    select.append($('<a></a>').val(id).text(name));
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching categories:', error);
-                // Optionally display an error message to the user
+        // Handle delete button click
+        $('#materialTable').on('click', '.btn-delete-material', function() {
+            var materialId = $(this).data('id');
+            deleteMaterial(materialId);
+        });
+
+
+
+        function refreshMaterialsTable() {
+            // Check if data is already cached in localStorage
+            var cachedData = localStorage.getItem('materialsData');
+
+            if (cachedData) {
+                // If cached data exists, parse and use it
+                displayMaterials(JSON.parse(cachedData));
             }
-        });
+
+            // Fetch new data via AJAX
+            $.ajax({
+                url: "{{ route('materials.index') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Store fetched data in localStorage for future use
+                    localStorage.setItem('materialsData', JSON.stringify(data));
+                    // Display the fetched data
+                    displayMaterials(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+
+        // Function to display materials data in the DataTable
+        function displayMaterials(data) {
+            console.log(data);
+            var table = $('#materialTable').DataTable();
+            var existingRows = table.rows().remove().draw(false);
+
+            data.forEach(function(material, index) {
+                // Assuming each material has a single price associated with it
+                var formattedPrice = parseFloat(material.price).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }); // Format price with commas and two decimal places
+                var newRow = table.row.add([
+                    material.material_name,
+                    material.material_category_name,
+                    material.unit,
+                    `<div class="text-right">${formattedPrice}</div>`, // Right-align and format the price
+                    material.quarter,
+                    material.year,
+                    '<div class="text-center d-flex">' +
+                    `<button type="button" id="editButton" class="btn bg-success mr-2"
+            data-material-id="${material.material_id}" data-priceId="${material.price_id}" data-price="${material.price}" data-quarter="${material.quarter}" data-year="${material.year}" data-material-name="${material.material_name}" data-category-name="${material.material_category_name}" data-unit="${material.unit}"><i class="fa fa-edit"></i></button>` +
+                    `<button type="button" class="btn btn-danger btn-delete-material" data-id="${material.material_id}"><i class="fa fa-trash-alt"></i></button>` +
+                    '</div>'
+                ]).node();
+            });
+
+            table.draw();
+
+            // Add event listeners for dynamically created buttons
+            $('#materialTable').on('click', '#editButton', function() {
+                const materialID = $(this).data('material-id');
+                const priceID = $(this).data('priceId');
+                const price = $(this).data('price');
+                const quarter = $(this).data('quarter');
+                const year = $(this).data('year');
+                const materialName = $(this).data('material-name');
+                const materialCategory = $(this).data('category-name');
+                const unit = $(this).data('unit');
+
+                console.log(materialName);
+                console.log(materialCategory);
+                openEditMaterialModal(materialID, priceID, price, quarter, year, materialName, materialCategory,
+                    unit);
+            });
+        }
 
         function openEditMaterialModal(material_id, price_id, price, quarter, year, material_name, material_category_name,
             unit) {
-            console.log("Material ID: " + material_id + ", Price ID: " + price_id + ", Price: " + price + ", Quarter: " +
-                quarter + ", Year: " + year);
+
             // Call a function to fetch material data by material_id
             $('#edit_material_id').val(material_id);
             $('#edit_material_category_name').val(material_category_name);
@@ -125,52 +173,6 @@
             $('#edit_quarter').val(quarter);
             $('#edit_year').val(year);
             $('#editMaterialModal').modal('show');
-        }
-
-
-
-
-
-
-        function refreshMaterialsTable() {
-            $.ajax({
-                url: "{{ route('materials.index') }}",
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    var table = $('#materialTable').DataTable();
-                    var existingRows = table.rows().remove().draw(false);
-                    console.log(data);
-
-                    data.forEach(function(material, index) {
-                        console.log(material.price_id);
-                        console.log(material.price);
-                        // Assuming each material has a single price associated with it
-                        var newRow = table.row.add([
-                            material.material_name,
-                            material.material_category_name,
-                            material.unit,
-                            material.price,
-                            material.quarter,
-                            material.year,
-                            '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-material mr-2"
-                                data-material-id="${material.material_id}" data-price-id="${material.price_id}"
-                                onclick="openEditMaterialModal(${material.material_id}, ${material.price_id},
-                                '${material.price}', '${material.quarter}', '${material.year}',
-                                '${material.material_name}', '${material.material_category_name}', '${material.unit}')"> Edit </button>` +
-                            '<button type="button" class="btn btn-danger btn-delete-material" data-id="' +
-                            material.material_id + '"> Delete </button>' +
-                            '</div>'
-                        ]).node();
-                    });
-
-                    table.draw();
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
         }
 
         function deleteMaterial(materialId) {
@@ -216,10 +218,9 @@
                 let materialName = $('#add_material_name').val();
                 let materialCategory = $('#add_material_category').val();
                 let unit = $('#add_unit').val();
-                let price = $('#add_price').val();
+                let price = parseFloat($('#add_price').val().replace(/,/g, ''));
                 let quarter = $('#add_quarter').val();
                 let year = $('#add_year').val();
-
 
 
                 // Make AJAX request to add new material
@@ -312,6 +313,20 @@
                         console.error(xhr.responseText); // Log error response for debugging
                         alert('Error occurred. Check console for details.');
                     }
+                });
+            });
+
+            const priceInputs = document.querySelectorAll('.price-input');
+            priceInputs.forEach(input => {
+                const mask = IMask(input, {
+                    mask: Number,
+                    scale: 2,
+                    thousandsSeparator: ',',
+                    padFractionalZeros: true,
+                    normalizeZeros: true,
+                    radix: '.',
+                    mapToRadix: ['.'],
+                    min: 0
                 });
             });
         });

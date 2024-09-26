@@ -165,7 +165,6 @@ class MaterialController extends Controller
             $newPrice->save();
             $material->save();
 
-
             DB::commit();
 
             return response()->json(['success' => true, 'message' => 'Material updated successfully!']);
@@ -174,57 +173,6 @@ class MaterialController extends Controller
             Log::error('Failed to update material: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Material update failed. Check logs for details.']);
         }
-
-        // // Validate incoming request data
-        // $validatedData = $request->validate([
-        //     'edit_material_name' => 'required|string',
-        //     'edit_material_category_name' => 'required|string',
-        //     'edit_unit' => 'required|string',
-        //     'edit_price' => 'required|numeric',
-        //     'edit_quarter' => 'required|string',
-        //     'edit_year' => 'required|string',
-        // ]);
-
-        // try {
-        //     DB::beginTransaction();
-
-        //     // Find the material based on ID
-        //     $material = Material::findOrFail($id);
-
-        //     // Update material details
-        //     $material->material_name = $validatedData['edit_material_name'];
-        //     $material->unit = $validatedData['edit_unit'];
-
-        //     // Update material category (retrieve if exists or create if new)
-        //     $materialCategory = MaterialCategory::firstOrCreate([
-        //         'material_category_name' => $validatedData['edit_material_category_name'],
-        //     ]);
-        //     $material->category()->associate($materialCategory);
-
-        //     // Deactivate existing prices with the same material_id the material
-        //     DB::table('prices')
-        //         ->where('material_id', $material->material_id)
-        //         ->update(['is_active' => false]);
-
-        //     // Create a new price instance
-        //     $newPrice = new Price();
-        //     $newPrice->price = $validatedData['edit_price'];
-        //     $newPrice->quarter = $validatedData['edit_quarter'];
-        //     $newPrice->year = $validatedData['edit_year'];
-        //     $newPrice->material_id = $material->material_id; // Associate with the material
-
-        //     $material->save();   // Save changes to the material
-        //     // Save the new price
-        //     $newPrice->save();
-
-        //     DB::commit();
-
-        //     return response()->json(['success' => true, 'message' => 'Material updated successfully!']);
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     Log::error('Failed to update material: ' . $e->getMessage());
-        //     return response()->json(['success' => false, 'message' => 'Material update failed. Check logs for details.']);
-        // }
     }
 
     public function destroy($id)
@@ -232,23 +180,21 @@ class MaterialController extends Controller
         try {
             // Find the material based on ID
             $material = Material::findOrFail($id);
-    
-            // Deactivate existing prices related to the material
-            $material->prices()->update(['is_active' => false]);
-    
-            // Update foreign key references to null in related material_prices records
-            Price::where('material_id', $material->material_id)->update(['material_id' => null]);
-    
-            // You can choose to delete the material if needed
-            // Comment if you only want to delete it in the table not in the database
+
+            // Delete related prices
+            $material->prices()->delete();
+
+            // Now delete the material
             $material->delete();
-    
+
             return response()->json(['success' => true, 'message' => 'Material details deleted successfully!']);
         } catch (\Exception $e) {
             Log::error('Failed to delete material details: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Failed to delete material details. Check logs for details.']);
         }
     }
+
+
 
 
     // Other controller methods (create, edit, update, destroy) go here

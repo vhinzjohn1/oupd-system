@@ -11,6 +11,13 @@ class ProjectParticularMaterial extends Model
 
     protected $primaryKey = 'project_particular_material_id';
 
+    protected $fillable = [
+        'project_particular_id',
+        'material_id',
+        'quantity',
+        'price_id'
+    ];
+
     public function particular()
     {
         return $this->belongsTo(ProjectParticular::class, 'project_particular_id');

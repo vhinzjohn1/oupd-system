@@ -18,11 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('labor_id')->nullable(); // Foreign Key
             $table->foreign('labor_id')
                 ->references('labor_id')
-                ->on('labors');
+                ->on('labors')->onDelete('cascade');
             $table->boolean('is_active')->default(true);
             $table->timestamp('date_effective')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
-            
+
         });
     }
 

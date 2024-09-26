@@ -1,13 +1,18 @@
 @extends('layouts.app')
-
+@section('title', 'List of Items')
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ __('Particulars') }}</h1>
+                    <h1 class="m-0">{{ __('Project Item') }}</h1>
                 </div><!-- /.col -->
+                {{-- <div class="col-sm-6 text-right">
+                    <button type="button" class="btn btn-success" data-toggle="modal" id="addParticularButton">
+                        Add Item
+                    </button>
+                </div> --}}
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -24,21 +29,18 @@
                                 <div class="text-right">
                                     <button type="button" class="btn btn-success" data-toggle="modal"
                                         id="addParticularButton">
-                                        Add Particular
+                                        Add Item
                                     </button>
-
                                 </div>
                                 @include('modals.particular.add_particular_modal');
-
                                 <thead>
                                     <tr>
-                                        <th>Particular Name</th>
-                                        <th>Description</th>
+                                        <th>Project Item Name</th>
+                                        <th>Project Item (Number)</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                 </tbody>
                             </table>
                         </div>
@@ -48,11 +50,6 @@
         </div><!-- /.container-fluid -->
     </div>
     @include('modals.particular.edit_particular_modal');
-
-
-
-
-
     <script>
         $(document).ready(function() {
             // Initialize DataTable
@@ -63,8 +60,7 @@
                 "searching": true,
                 "ordering": true,
                 "paging": true,
-
-            }).buttons().container().appendTo('#particularTable_wrapper .col-12');
+            });
 
             // Call the function to fetch and populate data in the table
             refreshParticularTable();
@@ -77,30 +73,25 @@
 
         });
 
+        // Populate the Table and Refresh at the same time
         function refreshParticularTable() {
+            // Check if data is already cached in localStorage
+            const cachedData = localStorage.getItem('particularsData');
+
+            if (cachedData) {
+                // If cached data exists, parse and use it
+                displayParticulars(JSON.parse(cachedData));
+            }
+            // If no cached data, fetch new data via AJAX
             $.ajax({
                 url: "{{ route('particulars.index') }}",
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    var table = $('#particularTable').DataTable();
-                    var existingRows = table.rows().remove().draw(false);
-                    console.log(data);
-
-                    data.forEach(function(particular, index) {
-                        var newRow = table.row.add([
-                            particular.particular_name,
-                            particular.description,
-                            '<div class="text-center d-flex">' +
-                            `<button type="button" id="editParticularButton" class="btn btn-primary mr-2" data-id="${particular.particular_id}" onclick="openParticularModal(${particular.particular_id}, '${particular.particular_name}', '${particular.description}')"> Edit </button>` +
-                            `<button type="button" id="deleteParticularButton" class="btn btn-danger" data-id="${particular.particular_id}" onclick="deleteParticular(${particular.particular_id})"> Delete </button>` +
-                            // ... (add your delete button logic here) +
-                            '</div>'
-                        ]).node();
-
-                    });
-
-                    table.draw();
+                    // Store fetched data in localStorage for future use
+                    localStorage.setItem('particularsData', JSON.stringify(data));
+                    // Display the fetched data
+                    displayParticulars(data);
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -108,18 +99,65 @@
             });
         }
 
-        function openParticularModal(particular_id, particular_name, description) {
-            console.log(particular_id);
+        // Function to display particular data in the DataTable
+        function displayParticulars(data) {
+            const table = $('#particularTable').DataTable();
+            table.clear().draw();
+
+            data.forEach(function(particular, index) {
+                const editButton =
+                    `<button type="button" class="btn bg-success mr-2 editParticularButton" data-id="${particular.particular_id}" data-name="${particular.particular_name}" data-pay-item="${particular.pay_item}"><i class="fas fa-edit"></i></button>`;
+                const deleteButton =
+                    `<button type="button" class="btn bg-danger deleteParticularButton" data-id="${particular.particular_id}"><i class="fas fa-trash-alt"></i></button>`;
+                const buttonsContainer = '<div class="text-center d-flex">' + editButton + deleteButton + '</div>';
+
+
+                const particularName = particular.particular_name;
+                const payItem = particular.pay_item;
+
+                const newRow = table.row.add([
+                    particularName,
+                    payItem,
+                    buttonsContainer
+                ]).node();
+            });
+
+            table.draw();
+
+            // Add event listeners for dynamically created buttons
+            $('#particularTable').on('click', '.editParticularButton', function() {
+                const particularId = $(this).data('id');
+                const particularName = $(this).data('name');
+
+                const payItem = $(this).data('pay-item');
+                openParticularModal(particularId, particularName, payItem);
+            });
+
+            $('#particularTable').on('click', '.deleteParticularButton', function() {
+                const particularId = $(this).data('id');
+                deleteParticular(particularId);
+            });
+        }
+
+
+
+        // Manually Open Particular Modal
+        function openParticularModal(particular_id, particular_name, pay_item) {
+            if (pay_item === "null") {
+                pay_item = "";
+            }
             // Populate modal fields with passed values
             $('#edit_particular_id').val(particular_id);
             $('#edit_particular_name').val(particular_name);
-            $('#edit_description').val(description);
+            $('#edit_description').val(pay_item);
 
             // Show the modal
             $('#editParticularModal').modal('show');
 
         }
 
+
+        // Delete Function for Particular
         function deleteParticular(particular_id) {
             Swal.fire({
                 title: 'Are you sure?',
@@ -155,19 +193,15 @@
 
 
 
-
         $(document).ready(function() {
             // Handle Adding of Paticular
             $('#addParticularForm').submit(function(e) {
                 e.preventDefault();
                 let descriptionInput = document.getElementById('add_description');
-                if (descriptionInput.value.trim() === '') {
-                    descriptionInput.value = 'Not specified';
-                }
 
                 // Get form data
                 let particularName = $('#add_particular_name').val();
-                let description = $('#add_description').val();
+                let pay_item = $('#add_description').val();
 
 
                 // Make AJAX request to add new paticular
@@ -176,7 +210,7 @@
                     type: "POST",
                     data: {
                         particular_name: particularName,
-                        description: description,
+                        pay_item: pay_item,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
