@@ -58,46 +58,65 @@ class ProjectParticularController extends Controller
     }
 
 
-
     public function store(Request $request)
     {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'project_id' => 'required',
-            'particular_id' => 'required|array', // Change to array
-            // 'description' => 'nullable|string',
-            // 'remark' => 'nullable|string',
-            // 'total' => 'nullable|numeric',
-        ]);
-
         try {
 
-            // Start a database transaction
-            DB::beginTransaction();
+            // Retrieve or create project
+            $projectParticular = ProjectParticular::updateOrCreate(
+                [
+                    'project_id' => $request['project_id'],
+                    'particular_id' => $request['particular_id'],
+                ],
+                [
+                    'quantity' => $request['detailQuantity'],
+                    'unit' => $request['detailUnit'],
+                    'unit_cost' => $request['detailUnitCost'],
+                    'total' => $request['detailTotal'],
+                ]
+            );
 
-            // Loop through each particular_id and create or find a ProjectParticular record for each
-            foreach ($validatedData['particular_id'] as $particularId) {
-                // Find existing ProjectParticular record or create a new one
-                $projectParticular = ProjectParticular::firstOrCreate([
-                    'project_id' => $validatedData['project_id'],
-                    'particular_id' => $particularId,
-                ]);
-            }
-
-            // Commit the transaction
-            DB::commit();
 
             // Return success response
-            return response()->json(['success' => true, 'message' => 'Project particulars added successfully.']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Project particular added/updated successfully.',
+                'projectParticular' => $projectParticular,
+            ]);
         } catch (\Exception $e) {
             // Rollback the transaction if an exception occurs
             DB::rollBack();
 
             // Log detailed error message
-            Log::error('Failed to add project particulars: ' . $e->getMessage());
+            Log::error('Failed to add/update project particular: ' . $e->getMessage());
 
             // Return error response
-            return response()->json(['success' => false, 'message' => 'Failed to add project particulars. Please check the logs for details.']);
+            return response()->json(['success' => false, 'message' => 'Failed to add/update project particular. Please check the logs for details.']);
+        }
+    }
+
+    public function update(Request $request, $project_particular_id)
+    {
+        try {
+
+            // Retrieve or create project
+            $projectPart = ProjectParticular::updateOrCreate(['particular_id' => $project_particular_id], [
+                'total' => $request['projectPartTotal'],
+            ]);
+            // Return success response with signature data and message
+            return response()->json([
+                'success' => true,
+                'message' => 'Project Particular Edited Successfully',
+                'ProjectParticular' => $projectPart
+            ]);
+
+        } catch (\Exception $e) {
+
+            // Log detailed error message
+            Log::error('Failed to update Total: ' . $e->getMessage());
+
+            // Return error response
+            return response()->json(['success' => false, 'message' => 'Failed to update Total. Please check the logs for details.']);
         }
     }
 
@@ -106,7 +125,7 @@ class ProjectParticularController extends Controller
     public function destroy($projectParticularId)
     {
         try {
-            // Find the ProjectParticular record by its ID and delete it
+            // Find the ProjectParticular record by project_particular_id and delete it
             $projectParticular = ProjectParticular::findOrFail($projectParticularId);
             $projectParticular->delete();
 
@@ -121,7 +140,9 @@ class ProjectParticularController extends Controller
         }
     }
 
-    
+
+
+
 
 
 

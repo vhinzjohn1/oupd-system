@@ -2,11 +2,18 @@
 
 namespace Database\Seeders;
 
+use App\Models\Material;
+use App\Models\MaterialCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Particular;
+use App\Models\Privilege;
+use App\Models\Project;
+use App\Models\Role;
+use App\Models\RolePrivilegeMapping;
 
 class AdminUserSeeder extends Seeder
 {
@@ -15,60 +22,172 @@ class AdminUserSeeder extends Seeder
      */
     public function run()
     {
-        // Create admin user if not exists
+
+        // Role::firstOrCreate(
+        //     ['role_name' => 'Admin']
+        // );
+
+        // Role::firstOrCreate(
+        //     ['role_name' => 'Staff']
+        // );
+
+        // Privilege::firstOrCreate(
+        //     ['description' => 'masterlist'],
+        //     [
+        //         'read' => '0',
+        //         'write' => '0',
+        //         'update' => '0',
+        //         'delete' => '0',
+        //     ]
+        // );
+
+        // Privilege::firstOrCreate(
+        //     ['description' => 'transaction'],
+        //     [
+        //         'read' => '0',
+        //         'write' => '0',
+        //         'update' => '0',
+        //         'delete' => '0',
+        //     ]
+        // );
+
+        // Privilege::firstOrCreate(
+        //     ['description' => 'project'],
+        //     [
+        //         'read' => '0',
+        //         'write' => '0',
+        //         'update' => '0',
+        //         'delete' => '0',
+        //     ]
+        // );
+
         User::firstOrCreate(
-            ['email' => 'admin@gmail.com'],
+            ['first_name' => 'admin'],
             [
-                'first_name' => 'Admin',
                 'middle_name' => 'admin',
                 'last_name' => 'admin',
-                'user_name' => 'admin',
+                'user_name' => 'admin1',
+                'email' => 'admin@gmail.com',
                 'roles' => 'admin',
-                'password' => Hash::make('admin123'),
+                'password' => bcrypt('admin123'), // Fixed typo: bcrypt instead of bycrpt
             ]
         );
 
-        // Create staff user if not exists
         User::firstOrCreate(
-            ['email' => 'staff@gmail.com'],
+            ['first_name' => 'staff'],
             [
-                'first_name' => 'Staff',
                 'middle_name' => 'staff',
                 'last_name' => 'staff',
-                'user_name' => 'staff',
+                'user_name' => 'staff123',
                 'roles' => 'staff',
-                'password' => Hash::make('staff123'),
+                'email' => 'staff@gmail.com',
+                'password' => bcrypt('staff123'), // Fixed typo: bcrypt instead of bycrpt
             ]
         );
 
-        Particular::firstOrCreate(
-            ['particular_name' => 'EARTHWORK'],
-            ['description' => 'Not Set']
-        );
 
-        Particular::firstOrCreate(
-            ['particular_name' => 'COMPACTION'],
-            ['description' => 'Not Set']
-        );
-        Particular::firstOrCreate(
-            ['particular_name' => 'P.P.E'],
-            ['description' => 'Not Set']
-        );
-        Particular::firstOrCreate(
-            ['particular_name' => 'PLAIN AND REINFORCED CONCRETE WORK'],
-            ['description' => 'Not Set']
-        );
-        Particular::firstOrCreate(
-            ['particular_name' => 'FINISHINGS AND OTHER CIVIL WORK'],
-            ['description' => 'Not Set']
-        );
-        Particular::firstOrCreate(
-            ['particular_name' => 'ELECTRICAL WORK'],
-            ['description' => 'Not Set']
-        );
-        Particular::firstOrCreate(
-            ['particular_name' => 'MECHANICAL WORK'],
-            ['description' => 'Not Set']
-        );
+        // $particulars = [
+        //     'EARTHWORK',
+        //     'COMPACTION',
+        //     'P.P.E',
+        //     'PLAIN AND REINFORCED CONCRETE WORK',
+        //     'FINISHINGS AND OTHER CIVIL WORK',
+        //     'ELECTRICAL WORK',
+        //     'MECHANICAL WORK',
+        //     'Moving-In',
+        //     'Moving-Out'
+        // ];
+
+        // foreach ($particulars as $particular) {
+        //     Particular::firstOrCreate(['particular_name' => $particular]);
+        // }
+
+        // Project::firstOrCreate([
+        //     'project_title' => 'CISC Construction Pavements',
+        //     'project_location' => 'University Town Musuan Maramag Bukidnon',
+        //     'project_owner' => 'Central Mindanao University',
+        //     'project_description' => 'On going --',
+        //     'project_contract_duration' => '90 CD',
+        //     'project_date_prepared' => date('Y-m-d', strtotime('01/02/2023')), // Convert date format
+        //     'project_appropriation' => (int) '15000000', // Cast as integer
+        //     'project_source_of_fund' => 'General Fund',
+        //     'project_mode_of_implementation' => 'By Admin',
+        // ]);
+
+
+        // // Define material categories
+        // $categories = ['Embankment', 'Aggregate Surface Course', 'Portland Cement'];
+
+        // foreach ($categories as $categoryName) {
+        //     // Create or retrieve material category
+        //     $materialCategory = MaterialCategory::firstOrCreate(['material_category_name' => $categoryName]);
+
+        //     // Define materials for each category
+        //     $materials = $this->getMaterialsByCategory($categoryName);
+
+        //     // Generate materials for each category
+        //     foreach ($materials as $material) {
+        //         $materialName = $material['name'];
+        //         $unit = $material['unit'];
+        //         $price = $material['price'];
+        //         $quarter = $material['quarter'];
+        //         $year = $material['year'];
+
+        //         // Check if material with the same name exists
+        //         $existingMaterial = Material::where('material_name', $materialName)->first();
+
+        //         if (!$existingMaterial) {
+        //             // If material does not exist, create a new one
+        //             $newMaterial = new Material([
+        //                 'material_name' => $materialName,
+        //                 'unit' => $unit,
+        //             ]);
+
+        //             $newMaterial->category()->associate($materialCategory);
+        //             $newMaterial->save();
+
+        //             // Create a new price instance
+        //             $newMaterial->prices()->create([
+        //                 'price' => $price,
+        //                 'quarter' => $quarter,
+        //                 'year' => $year,
+        //             ]);
+        //         }
+        //     }
+        // }
+
     }
+
+    // private function getMaterialsByCategory($categoryName)
+    // {
+    //     $materials = [];
+
+    //     switch ($categoryName) {
+    //         case 'Embankment':
+    //             $materials = [
+    //                 ['name' => 'Common Borrow', 'unit' => 'cu.m', 'price' => 715.00, 'quarter' => 'Q1', 'year' => 2020],
+    //                 ['name' => 'Selected Borrow', 'unit' => 'cu.m', 'price' => 550.00, 'quarter' => 'Q2', 'year' => 2021],
+    //                 // Add more predefined materials for Embankment category as needed
+    //             ];
+    //             break;
+    //         case 'Aggregate Surface Course':
+    //             $materials = [
+    //                 ['name' => 'Crushed Grading A', 'unit' => 'cu.m', 'price' => 760.00, 'quarter' => 'Q3', 'year' => 2022],
+    //                 ['name' => 'Uncrushed Grading B', 'unit' => 'cu.m', 'price' => 860.00, 'quarter' => 'Q4', 'year' => 2023],
+    //                 // Add more predefined materials for Aggregate Surface Course category as needed
+    //             ];
+    //             break;
+    //         case 'Portland Cement':
+    //             $materials = [
+    //                 ['name' => 'Ready Mix Concrete 3000psi @ 28 Days', 'unit' => 'cu.m', 'price' => 4600.00, 'quarter' => 'Q1', 'year' => 2020],
+    //                 ['name' => 'Curing Compound', 'unit' => 'kg', 'price' => 78.00, 'quarter' => 'Q2', 'year' => 2021],
+    //                 // Add more predefined materials for Portland Cement category as needed
+    //             ];
+    //             break;
+    //     }
+
+    //     return $materials;
+    // }
+
+
 }

@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'List of Equipments')
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -6,8 +7,12 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ __('Equipment List') }}</h1>
-
                 </div><!-- /.col -->
+                {{-- <div class="text-right col-sm-6">
+                    <button type="button" class="btn btn-success" id="addEquipmentButton">
+                        Add Equipment
+                    </button>
+                </div> --}}
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -29,7 +34,6 @@
                                 </div>
                                 <thead>
                                     <tr>
-
                                         {{-- <th>Equipment Id</th> --}}
                                         <th>Equipment Name</th>
                                         <th>Equipment Category</th>
@@ -66,7 +70,7 @@
                 "paging": true,
                 "info": true,
                 // "buttons": ["copy", "excel", "pdf", "print"]
-            }).buttons().container().appendTo('#equipmentTable_wrapper .col-md-6:eq(0)');
+            });
 
             // Call the function to fetch and populate data in the table
             refreshEquipmentsTable();
@@ -75,7 +79,6 @@
             document.getElementById('addEquipmentButton').addEventListener('click', function() {
                 $('#addEquipmentModal').modal('show');
             });
-
             // Handle delete button click
             $('#equipmentTable').on('click', '.btn-delete-equipment', function() {
                 var equipmentId = $(this).data('id');
@@ -89,32 +92,8 @@
             // });
         });
 
-        // // Fetch categories Samples
-        // $.ajax({
-        //     url: '/equipment-categories', // Your Laravel route
-        //     type: 'GET',
-        //     dataType: 'json',
-        //     success: function(categories) {
-        //         console.log(categories)
-        //         const select = $('#add_equipment_category_menu');
-
-        //         // Clear any existing options before populating (optional)
-        //         select.empty();
-
-        //         $.each(categories, function(id, name) {
-        //             select.append($('<a></a>').val(id).text(name));
-        //         });
-        //     },
-        //     error: function(xhr, status, error) {
-        //         console.error('Error fetching categories:', error);
-        //         // Optionally display an error message to the user
-        //     }
-        // });
-
         function openEditEquipmentModal(equipment_id, equipment_rate_id, rate, equipment_name, equipment_category_name,
             equipment_model, equipment_capacity) {
-            console.log("Equipment ID: " + equipment_id + ", Rate ID: " + equipment_rate_id + ", Model: " +
-                equipment_model + ", Capacity: " + equipment_capacity + ", rate: " + rate);
             // Call a function to fetch equipment data by equipment_id
             $('#edit_equipment_id').val(equipment_id);
             $('#edit_equipment_category_name').val(equipment_category_name);
@@ -126,49 +105,58 @@
             $('#editEquipmentModal').modal('show');
         }
 
+
         function refreshEquipmentsTable() {
+            // Check if data is already cached in localStorage
+            var cachedData = localStorage.getItem('equipmentsData');
+
+            if (cachedData) {
+                // If cached data exists, parse and use it
+                displayEquipments(JSON.parse(cachedData));
+            }
+            // If no cached data, fetch new data via AJAX
             $.ajax({
                 url: "{{ route('equipments.index') }}",
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    var table = $('#equipmentTable').DataTable();
-                    var existingRows = table.rows().remove().draw(false);
-                    console.log(data);
-
-                    data.forEach(function(equipment, index) {
-                        console.log(equipment.equipment_rate_id);
-                        console.log(equipment.rate);
-
-                        // Assuming each equipment has a single rate associated with it
-                        var newRow = table.row.add([
-                            equipment.equipment_name,
-                            equipment.equipment_category_name,
-                            equipment.equipment_model,
-                            equipment.equipment_capacity,
-                            equipment.rate,
-                            equipment.date_effective,
-                            '<div class="text-center d-flex">' +
-                            `<button type="button" id="editButton" class="btn btn-primary btn-edit-equipment mr-2"
-                            data-equipment-id="${equipment.equipment_id}" data-rate-id="${equipment.equipment_rate_id}"
-                            onclick="openEditEquipmentModal('${equipment.equipment_id}', '${equipment.equipment_rate_id}',
-                            '${equipment.rate}', '${equipment.equipment_name}', '${equipment.equipment_category_name}', 
-                            '${equipment.equipment_model}', '${equipment.equipment_capacity}')"> Edit </button>` +
-                            '<button type="button" class="btn btn-danger btn-delete-equipment" data-id="' +
-                            equipment.equipment_id + '"> Delete </button>' +
-                            '</div>'
-
-                            // <button type="button" class="btn btn-danger" data-id="${equipment.equipment_id}"> Delete </button>
-                        ]).node();
-                    });
-
-                    table.draw();
+                    // Store fetched data in localStorage for future use
+                    localStorage.setItem('equipmentsData', JSON.stringify(data));
+                    // Display the fetched data
+                    displayEquipments(data);
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
                 }
             });
         }
+
+        function displayEquipments(data) {
+            var table = $('#equipmentTable').DataTable();
+            var existingRows = table.rows().remove().draw(false);
+            data.forEach(function(equipment, index) {
+                // Assuming each equipment has a single rate associated with it
+                var newRow = table.row.add([
+                    equipment.equipment_name,
+                    equipment.equipment_category_name,
+                    equipment.equipment_model,
+                    equipment.equipment_capacity,
+                    equipment.rate,
+                    equipment.date_effective,
+                    '<div class="text-center d-flex">' +
+                    `<button type="button" id="editButton" class="btn bg-success mr-2"
+            data-equipment-id="${equipment.equipment_id}" data-rate-id="${equipment.equipment_rate_id}"
+            onclick="openEditEquipmentModal('${equipment.equipment_id}', '${equipment.equipment_rate_id}',
+            '${equipment.rate}', '${equipment.equipment_name}', '${equipment.equipment_category_name}',
+            '${equipment.equipment_model}', '${equipment.equipment_capacity}')"><i class="fas fa-edit"></i></button>` +
+                    `<button type="button" class="btn bg-danger btn-delete-equipment" data-id="${equipment.equipment_id}"><i class="fas fa-trash-alt"></i></button>` +
+                    '</div>'
+                ]).node();
+            });
+
+            table.draw();
+        }
+
 
         function deleteEquipment(equipmentId) {
             console.log('Deleting equipment with ID:', equipmentId);
@@ -178,9 +166,10 @@
                 text: 'You will not be able to recover this Equipment Entry!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
